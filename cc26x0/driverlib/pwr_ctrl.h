@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       pwr_ctrl.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the System Power Control.
 *
@@ -61,20 +61,20 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_aon_wuc.h>
-#include <inc/hw_aon_sysctl.h>
-#include <inc/hw_aon_rtc.h>
-#include <inc/hw_adi_2_refsys.h>
-#include <driverlib/debug.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/osc.h>
-#include <driverlib/cpu.h>
-#include <driverlib/prcm.h>
-#include <driverlib/aon_ioc.h>
-#include <driverlib/adi.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_aon_wuc.h"
+#include "../inc/hw_aon_sysctl.h"
+#include "../inc/hw_aon_rtc.h"
+#include "../inc/hw_adi_2_refsys.h"
+#include "debug.h"
+#include "interrupt.h"
+#include "osc.h"
+#include "cpu.h"
+#include "prcm.h"
+#include "aon_ioc.h"
+#include "adi.h"
 
 //*****************************************************************************
 //
@@ -181,9 +181,7 @@ PowerCtrlSourceGet(void)
 {
     uint32_t ui32PowerConfig;
 
-    //
     // Return the current power source
-    //
     ui32PowerConfig = HWREG(AON_SYSCTL_BASE + AON_SYSCTL_O_PWRCTL);
     if(ui32PowerConfig & AON_SYSCTL_PWRCTL_DCDC_ACTIVE)
     {
@@ -221,9 +219,7 @@ PowerCtrlSourceGet(void)
 __STATIC_INLINE uint32_t
 PowerCtrlResetSourceGet(void)
 {
-    //
     //  Get the reset source.
-    //
     return (( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) &
         AON_SYSCTL_RESETCTL_RESET_SRC_M ) >>
         AON_SYSCTL_RESETCTL_RESET_SRC_S ) ;
@@ -245,9 +241,7 @@ PowerCtrlResetSourceGet(void)
 __STATIC_INLINE void
 PowerCtrlIOFreezeEnable(void)
 {
-    //
     // Close the IO latches at AON_IOC level and in the padring.
-    //
     AONIOCFreezeEnable();
     HWREG(AON_SYSCTL_BASE + AON_SYSCTL_O_SLEEPCTL) = 0;
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC);
@@ -270,9 +264,7 @@ PowerCtrlIOFreezeEnable(void)
 __STATIC_INLINE void
 PowerCtrlIOFreezeDisable(void)
 {
-    //
     // Open the IO latches at AON_IOC level and in the padring
-    //
     AONIOCFreezeDisable();
     HWREG(AON_SYSCTL_BASE + AON_SYSCTL_O_SLEEPCTL) = 1;
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC);
@@ -285,7 +277,7 @@ PowerCtrlIOFreezeDisable(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_PowerCtrlSourceSet
         #undef  PowerCtrlSourceSet
         #define PowerCtrlSourceSet              ROM_PowerCtrlSourceSet

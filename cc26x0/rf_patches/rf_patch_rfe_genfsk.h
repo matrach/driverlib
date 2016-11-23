@@ -41,7 +41,7 @@
 #define _RF_PATCH_RFE_GENFSK_H
 
 #include <stdint.h>
-#include <inc/hw_types.h>
+#include "../inc/hw_types.h"
 
 #ifndef RFE_PATCH_TYPE
 #define RFE_PATCH_TYPE static const uint32_t

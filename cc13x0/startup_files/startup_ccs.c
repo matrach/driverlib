@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       startup_ccs.c
-*  Revised:        $Date: 2016-05-19 11:08:26 +0200 (to, 19 mai 2016) $
-*  Revision:       $Revision: 17109 $
+*  Revised:        $Date: 2016-09-26 11:02:06 +0200 (ma, 26 sep 2016) $
+*  Revision:       $Revision: 17337 $
 *
 *  Description:    Startup code for CC13xx PG2 device family for use with CCS.
 *
@@ -47,8 +47,8 @@
 #error "startup_ccs.c: Unsupported compiler!"
 #endif
 
-#include <inc/hw_types.h>
-#include <driverlib/setup.h>
+#include "../inc/hw_types.h"
+#include "../driverlib/setup.h"
 
 
 //*****************************************************************************
@@ -88,58 +88,59 @@ extern unsigned long __STACK_END;
 void (* const g_pfnVectors[])(void) =
 {
     (void (*)(void))((unsigned long)&__STACK_END),
-                                            // The initial stack pointer
-    ResetISR,                               // The reset handler
-    NmiSR,                                  // The NMI handler
-    FaultISR,                               // The hard fault handler
-    IntDefaultHandler,                      // The MPU fault handler
-    IntDefaultHandler,                      // The bus fault handler
-    IntDefaultHandler,                      // The usage fault handler
-    0,                                      // Reserved
-    0,                                      // Reserved
-    0,                                      // Reserved
-    0,                                      // Reserved
-    IntDefaultHandler,                      // SVCall handler
-    IntDefaultHandler,                      // Debug monitor handler
-    0,                                      // Reserved
-    IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
-    IntDefaultHandler,                      // AON edge detect
-    IntDefaultHandler,                      // I2C
-    IntDefaultHandler,                      // RF Core Command & Packet Engine 1
-    IntDefaultHandler,                      // AON SpiSplave Rx, Tx and CS
-    IntDefaultHandler,                      // AON RTC
-    IntDefaultHandler,                      // UART0 Rx and Tx
-    IntDefaultHandler,                      // AUX software event 0
-    IntDefaultHandler,                      // SSI0 Rx and Tx
-    IntDefaultHandler,                      // SSI1 Rx and Tx
-    IntDefaultHandler,                      // RF Core Command & Packet Engine 0
-    IntDefaultHandler,                      // RF Core Hardware
-    IntDefaultHandler,                      // RF Core Command Acknowledge
-    IntDefaultHandler,                      // I2S
-    IntDefaultHandler,                      // AUX software event 1
-    IntDefaultHandler,                      // Watchdog timer
-    IntDefaultHandler,                      // Timer 0 subtimer A
-    IntDefaultHandler,                      // Timer 0 subtimer B
-    IntDefaultHandler,                      // Timer 1 subtimer A
-    IntDefaultHandler,                      // Timer 1 subtimer B
-    IntDefaultHandler,                      // Timer 2 subtimer A
-    IntDefaultHandler,                      // Timer 2 subtimer B
-    IntDefaultHandler,                      // Timer 3 subtimer A
-    IntDefaultHandler,                      // Timer 3 subtimer B
-    IntDefaultHandler,                      // Crypto Core Result available
-    IntDefaultHandler,                      // uDMA Software
-    IntDefaultHandler,                      // uDMA Error
-    IntDefaultHandler,                      // Flash controller
-    IntDefaultHandler,                      // Software Event 0
-    IntDefaultHandler,                      // AUX combined event
-    IntDefaultHandler,                      // AON programmable 0
-    IntDefaultHandler,                      // Dynamic Programmable interrupt
-                                            // source (Default: PRCM)
-    IntDefaultHandler,                      // AUX Comparator A
-    IntDefaultHandler,                      // AUX ADC new sample or ADC DMA
-                                            // done, ADC underflow, ADC overflow
-    IntDefaultHandler                       // TRNG event
+                                            //  0 The initial stack pointer
+    ResetISR,                               //  1 The reset handler
+    NmiSR,                                  //  2 The NMI handler
+    FaultISR,                               //  3 The hard fault handler
+    IntDefaultHandler,                      //  4 The MPU fault handler
+    IntDefaultHandler,                      //  5 The bus fault handler
+    IntDefaultHandler,                      //  6 The usage fault handler
+    0,                                      //  7 Reserved
+    0,                                      //  8 Reserved
+    0,                                      //  9 Reserved
+    0,                                      // 10 Reserved
+    IntDefaultHandler,                      // 11 SVCall handler
+    IntDefaultHandler,                      // 12 Debug monitor handler
+    0,                                      // 13 Reserved
+    IntDefaultHandler,                      // 14 The PendSV handler
+    IntDefaultHandler,                      // 15 The SysTick handler
+    //--- External interrupts ---
+    IntDefaultHandler,                      // 16 AON edge detect
+    IntDefaultHandler,                      // 17 I2C
+    IntDefaultHandler,                      // 18 RF Core Command & Packet Engine 1
+    IntDefaultHandler,                      // 19 Reserved
+    IntDefaultHandler,                      // 20 AON RTC
+    IntDefaultHandler,                      // 21 UART0 Rx and Tx
+    IntDefaultHandler,                      // 22 AUX software event 0
+    IntDefaultHandler,                      // 23 SSI0 Rx and Tx
+    IntDefaultHandler,                      // 24 SSI1 Rx and Tx
+    IntDefaultHandler,                      // 25 RF Core Command & Packet Engine 0
+    IntDefaultHandler,                      // 26 RF Core Hardware
+    IntDefaultHandler,                      // 27 RF Core Command Acknowledge
+    IntDefaultHandler,                      // 28 I2S
+    IntDefaultHandler,                      // 29 AUX software event 1
+    IntDefaultHandler,                      // 30 Watchdog timer
+    IntDefaultHandler,                      // 31 Timer 0 subtimer A
+    IntDefaultHandler,                      // 32 Timer 0 subtimer B
+    IntDefaultHandler,                      // 33 Timer 1 subtimer A
+    IntDefaultHandler,                      // 34 Timer 1 subtimer B
+    IntDefaultHandler,                      // 35 Timer 2 subtimer A
+    IntDefaultHandler,                      // 36 Timer 2 subtimer B
+    IntDefaultHandler,                      // 37 Timer 3 subtimer A
+    IntDefaultHandler,                      // 38 Timer 3 subtimer B
+    IntDefaultHandler,                      // 39 Crypto Core Result available
+    IntDefaultHandler,                      // 40 uDMA Software
+    IntDefaultHandler,                      // 41 uDMA Error
+    IntDefaultHandler,                      // 42 Flash controller
+    IntDefaultHandler,                      // 43 Software Event 0
+    IntDefaultHandler,                      // 44 AUX combined event
+    IntDefaultHandler,                      // 45 AON programmable 0
+    IntDefaultHandler,                      // 46 Dynamic Programmable interrupt
+                                            //    source (Default: PRCM)
+    IntDefaultHandler,                      // 47 AUX Comparator A
+    IntDefaultHandler,                      // 48 AUX ADC new sample or ADC DMA
+                                            //    done, ADC underflow, ADC overflow
+    IntDefaultHandler                       // 49 TRNG event
 };
 
 

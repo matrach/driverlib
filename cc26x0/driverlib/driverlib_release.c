@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       driverlib_release.c
-*  Revised:        $Date: 2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016) $
-*  Revision:       $Revision: 46799 $
+*  Revised:        $Date: 2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016) $
+*  Revision:       $Revision: 47152 $
 *
 *  Description:    Provides macros for ensuring that a specfic release of
 *                  DriverLib is used.
@@ -36,10 +36,10 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************************/
-#include <driverlib/driverlib_release.h>
+#include "../driverlib/driverlib_release.h"
 
 
 
 
 /// Declare the current DriverLib release
-DRIVERLIB_DECLARE_RELEASE(0, 47020);
+DRIVERLIB_DECLARE_RELEASE(0, 47555);

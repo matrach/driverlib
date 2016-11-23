@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       timer.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the General Purpose Timer
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/timer.h>
+#include "timer.h"
 
 //*****************************************************************************
 //
@@ -80,10 +80,8 @@ TimerIntNumberGet(uint32_t ui32Base)
 {
     uint32_t ui32Int;
 
-    //
     // Loop through the table that maps timer base addresses to interrupt
     // numbers.
-    //
     switch(ui32Base)
     {
     case GPT0_BASE :
@@ -102,9 +100,7 @@ TimerIntNumberGet(uint32_t ui32Base)
         ui32Int = 0x0;
     }
 
-    //
     // Return the interrupt number or (-1) if not base address is not matched.
-    //
     return (ui32Int);
 }
 
@@ -116,9 +112,7 @@ TimerIntNumberGet(uint32_t ui32Base)
 void
 TimerConfigure(uint32_t ui32Base, uint32_t ui32Config)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Config == TIMER_CFG_ONE_SHOT) ||
            (ui32Config == TIMER_CFG_ONE_SHOT_UP) ||
@@ -145,20 +139,14 @@ TimerConfigure(uint32_t ui32Base, uint32_t ui32Config)
              ((ui32Config & 0x0000FF00) == TIMER_CFG_B_CAP_TIME_UP) ||
              ((ui32Config & 0x0000FF00) == TIMER_CFG_B_PWM))));
 
-    //
     // Disable the timers.
-    //
     HWREG(ui32Base + GPT_O_CTL) &= ~(GPT_CTL_TAEN | GPT_CTL_TBEN);
 
-    //
     // Set the global timer configuration.
-    //
     HWREG(ui32Base + GPT_O_CFG) = ui32Config >> 24;
 
-    //
     // Set the configuration of the A and B timers. Note that the B timer
     // configuration is ignored by the hardware in 32-bit modes.
-    //
     HWREG(ui32Base + GPT_O_TAMR) = (ui32Config & 0xFF) | GPT_TAMR_TAPWMIE;
     HWREG(ui32Base + GPT_O_TBMR) =
         ((ui32Config >> 8) & 0xFF) | GPT_TBMR_TBPWMIE;
@@ -172,16 +160,12 @@ TimerConfigure(uint32_t ui32Base, uint32_t ui32Config)
 void
 TimerLevelControl(uint32_t ui32Base, uint32_t ui32Timer, bool bInvert)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Set the output levels as requested.
-    //
     ui32Timer &= GPT_CTL_TAPWML | GPT_CTL_TBPWML;
     HWREG(ui32Base + GPT_O_CTL) = (bInvert ?
                                    (HWREG(ui32Base + GPT_O_CTL) | ui32Timer) :
@@ -197,16 +181,12 @@ TimerLevelControl(uint32_t ui32Base, uint32_t ui32Timer, bool bInvert)
 void
 TimerStallControl(uint32_t ui32Base, uint32_t ui32Timer, bool bStall)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Set the stall mode.
-    //
     ui32Timer &= GPT_CTL_TASTALL | GPT_CTL_TBSTALL;
     HWREG(ui32Base + GPT_O_CTL) = (bStall ?
                                    (HWREG(ui32Base + GPT_O_CTL) | ui32Timer) :
@@ -221,16 +201,12 @@ TimerStallControl(uint32_t ui32Base, uint32_t ui32Timer, bool bStall)
 void
 TimerWaitOnTriggerControl(uint32_t ui32Base, uint32_t ui32Timer, bool bWait)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Set the wait on trigger mode for timer A.
-    //
     if(ui32Timer & TIMER_A)
     {
         if(bWait)
@@ -243,9 +219,7 @@ TimerWaitOnTriggerControl(uint32_t ui32Base, uint32_t ui32Timer, bool bWait)
         }
     }
 
-    //
     // Set the wait on trigger mode for timer B.
-    //
     if(ui32Timer & TIMER_B)
     {
         if(bWait)
@@ -269,47 +243,31 @@ TimerIntRegister(uint32_t ui32Base, uint32_t ui32Timer, void (*pfnHandler)(void)
 {
     uint32_t ui32Int;
 
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Get the interrupt number for this timer module.
-    //
     ui32Int = TimerIntNumberGet(ui32Base);
 
-    //
     // Register an interrupt handler for timer A if requested.
-    //
     if(ui32Timer & TIMER_A)
     {
-        //
         // Register the interrupt handler.
-        //
         IntRegister(ui32Int, pfnHandler);
 
-        //
         // Enable the interrupt.
-        //
         IntEnable(ui32Int);
     }
 
-    //
     // Register an interrupt handler for timer B if requested.
-    //
     if(ui32Timer & TIMER_B)
     {
-        //
         // Register the interrupt handler.
-        //
         IntRegister(ui32Int + 1, pfnHandler);
 
-        //
         // Enable the interrupt.
-        //
         IntEnable(ui32Int + 1);
     }
 }
@@ -324,47 +282,31 @@ TimerIntUnregister(uint32_t ui32Base, uint32_t ui32Timer)
 {
     uint32_t ui32Int;
 
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Get the interrupt number for this timer module.
-    //
     ui32Int = TimerIntNumberGet(ui32Base);
 
-    //
     // Unregister the interrupt handler for timer A if requested.
-    //
     if(ui32Timer & TIMER_A)
     {
-        //
         // Disable the interrupt.
-        //
         IntDisable(ui32Int);
 
-        //
         // Unregister the interrupt handler.
-        //
         IntUnregister(ui32Int);
     }
 
-    //
     // Unregister the interrupt handler for timer B if requested.
-    //
     if(ui32Timer & TIMER_B)
     {
-        //
         // Disable the interrupt.
-        //
         IntDisable(ui32Int + 1);
 
-        //
         // Unregister the interrupt handler.
-        //
         IntUnregister(ui32Int + 1);
     }
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       interrupt.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the NVIC Interrupt Controller.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/interrupt.h>
+#include "interrupt.h"
 
 //*****************************************************************************
 //
@@ -110,9 +110,7 @@ static const uint32_t g_pui32Regs[] =
 static void
 IntDefaultHandler(void)
 {
-    //
     // Go into an infinite loop.
-    //
     while(1)
     {
     }
@@ -153,25 +151,17 @@ IntRegister(uint32_t ui32Interrupt, void (*pfnHandler)(void))
 {
     uint32_t ui32Idx, ui32Value;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Interrupt < NUM_INTERRUPTS);
 
-    //
     // Make sure that the RAM vector table is correctly aligned.
-    //
     ASSERT(((uint32_t)g_pfnRAMVectors & 0x000000ff) == 0);
 
-    //
     // See if the RAM vector table has been initialized.
-    //
     if(HWREG(NVIC_VTABLE) != (uint32_t)g_pfnRAMVectors)
     {
-        //
         // Copy the vector table from the beginning of FLASH to the RAM vector
         // table.
-        //
         ui32Value = HWREG(NVIC_VTABLE);
         for(ui32Idx = 0; ui32Idx < NUM_INTERRUPTS; ui32Idx++)
         {
@@ -179,15 +169,11 @@ IntRegister(uint32_t ui32Interrupt, void (*pfnHandler)(void))
                                        ui32Value);
         }
 
-        //
         // Point NVIC at the RAM vector table.
-        //
         HWREG(NVIC_VTABLE) = (uint32_t)g_pfnRAMVectors;
     }
 
-    //
     // Save the interrupt handler.
-    //
     g_pfnRAMVectors[ui32Interrupt] = pfnHandler;
 }
 
@@ -199,14 +185,10 @@ IntRegister(uint32_t ui32Interrupt, void (*pfnHandler)(void))
 void
 IntUnregister(uint32_t ui32Interrupt)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Interrupt < NUM_INTERRUPTS);
 
-    //
     // Reset the interrupt handler.
-    //
     g_pfnRAMVectors[ui32Interrupt] = IntDefaultHandler;
 }
 
@@ -218,14 +200,10 @@ IntUnregister(uint32_t ui32Interrupt)
 void
 IntPriorityGroupingSet(uint32_t ui32Bits)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Bits < NUM_PRIORITY);
 
-    //
     // Set the priority grouping.
-    //
     HWREG(NVIC_APINT) = NVIC_APINT_VECTKEY | g_pui32Priority[ui32Bits];
 }
 
@@ -239,28 +217,20 @@ IntPriorityGroupingGet(void)
 {
     uint32_t ui32Loop, ui32Value;
 
-    //
     // Read the priority grouping.
-    //
     ui32Value = HWREG(NVIC_APINT) & NVIC_APINT_PRIGROUP_M;
 
-    //
     // Loop through the priority grouping values.
-    //
     for(ui32Loop = 0; ui32Loop < NUM_PRIORITY; ui32Loop++)
     {
-        //
         // Stop looping if this value matches.
-        //
         if(ui32Value == g_pui32Priority[ui32Loop])
         {
             break;
         }
     }
 
-    //
     // Return the number of priority bits.
-    //
     return(ui32Loop);
 }
 
@@ -274,15 +244,11 @@ IntPrioritySet(uint32_t ui32Interrupt, uint8_t ui8Priority)
 {
     uint32_t ui32Temp;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Interrupt >= 4) && (ui32Interrupt < NUM_INTERRUPTS));
     ASSERT(ui8Priority <= INT_PRI_LEVEL7);
 
-    //
     // Set the interrupt priority.
-    //
     ui32Temp = HWREG(g_pui32Regs[ui32Interrupt >> 2]);
     ui32Temp &= ~(0xFF << (8 * (ui32Interrupt & 3)));
     ui32Temp |= ui8Priority << (8 * (ui32Interrupt & 3));
@@ -297,14 +263,10 @@ IntPrioritySet(uint32_t ui32Interrupt, uint8_t ui8Priority)
 int32_t
 IntPriorityGet(uint32_t ui32Interrupt)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Interrupt >= 4) && (ui32Interrupt < NUM_INTERRUPTS));
 
-    //
     // Return the interrupt priority.
-    //
     return((HWREG(g_pui32Regs[ui32Interrupt >> 2]) >> (8 * (ui32Interrupt & 3))) &
            0xFF);
 }
@@ -317,54 +279,38 @@ IntPriorityGet(uint32_t ui32Interrupt)
 void
 IntEnable(uint32_t ui32Interrupt)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Interrupt < NUM_INTERRUPTS);
 
-    //
     // Determine the interrupt to enable.
-    //
     if(ui32Interrupt == INT_MEMMANAGE_FAULT)
     {
-        //
         // Enable the MemManage interrupt.
-        //
         HWREG(NVIC_SYS_HND_CTRL) |= NVIC_SYS_HND_CTRL_MEM;
     }
     else if(ui32Interrupt == INT_BUS_FAULT)
     {
-        //
         // Enable the bus fault interrupt.
-        //
         HWREG(NVIC_SYS_HND_CTRL) |= NVIC_SYS_HND_CTRL_BUS;
     }
     else if(ui32Interrupt == INT_USAGE_FAULT)
     {
-        //
         // Enable the usage fault interrupt.
-        //
         HWREG(NVIC_SYS_HND_CTRL) |= NVIC_SYS_HND_CTRL_USAGE;
     }
     else if(ui32Interrupt == INT_SYSTICK)
     {
-        //
         // Enable the System Tick interrupt.
-        //
         HWREG(NVIC_ST_CTRL) |= NVIC_ST_CTRL_INTEN;
     }
     else if((ui32Interrupt >= 16) && (ui32Interrupt <= 47))
     {
-        //
         // Enable the general interrupt.
-        //
         HWREG(NVIC_EN0) = 1 << (ui32Interrupt - 16);
     }
     else if(ui32Interrupt >= 48)
     {
-        //
         // Enable the general interrupt.
-        //
         HWREG(NVIC_EN1) = 1 << (ui32Interrupt - 48);
     }
 }
@@ -377,54 +323,38 @@ IntEnable(uint32_t ui32Interrupt)
 void
 IntDisable(uint32_t ui32Interrupt)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Interrupt < NUM_INTERRUPTS);
 
-    //
     // Determine the interrupt to disable.
-    //
     if(ui32Interrupt == INT_MEMMANAGE_FAULT)
     {
-        //
         // Disable the MemManage interrupt.
-        //
         HWREG(NVIC_SYS_HND_CTRL) &= ~(NVIC_SYS_HND_CTRL_MEM);
     }
     else if(ui32Interrupt == INT_BUS_FAULT)
     {
-        //
         // Disable the bus fault interrupt.
-        //
         HWREG(NVIC_SYS_HND_CTRL) &= ~(NVIC_SYS_HND_CTRL_BUS);
     }
     else if(ui32Interrupt == INT_USAGE_FAULT)
     {
-        //
         // Disable the usage fault interrupt.
-        //
         HWREG(NVIC_SYS_HND_CTRL) &= ~(NVIC_SYS_HND_CTRL_USAGE);
     }
     else if(ui32Interrupt == INT_SYSTICK)
     {
-        //
         // Disable the System Tick interrupt.
-        //
         HWREG(NVIC_ST_CTRL) &= ~(NVIC_ST_CTRL_INTEN);
     }
     else if((ui32Interrupt >= 16) && (ui32Interrupt <= 47))
     {
-        //
         // Disable the general interrupt.
-        //
         HWREG(NVIC_DIS0) = 1 << (ui32Interrupt - 16);
     }
     else if(ui32Interrupt >= 48)
     {
-        //
         // Disable the general interrupt.
-        //
         HWREG(NVIC_DIS1) = 1 << (ui32Interrupt - 48);
     }
 }
@@ -437,47 +367,33 @@ IntDisable(uint32_t ui32Interrupt)
 void
 IntPendSet(uint32_t ui32Interrupt)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Interrupt < NUM_INTERRUPTS);
 
-    //
     // Determine the interrupt to pend.
-    //
     if(ui32Interrupt == INT_NMI_FAULT)
     {
-        //
         // Pend the NMI interrupt.
-        //
         HWREG(NVIC_INT_CTRL) |= NVIC_INT_CTRL_NMI_SET;
     }
     else if(ui32Interrupt == INT_PENDSV)
     {
-        //
         // Pend the PendSV interrupt.
-        //
         HWREG(NVIC_INT_CTRL) |= NVIC_INT_CTRL_PEND_SV;
     }
     else if(ui32Interrupt == INT_SYSTICK)
     {
-        //
         // Pend the SysTick interrupt.
-        //
         HWREG(NVIC_INT_CTRL) |= NVIC_INT_CTRL_PENDSTSET;
     }
     else if((ui32Interrupt >= 16) && (ui32Interrupt <= 47))
     {
-        //
         // Pend the general interrupt.
-        //
         HWREG(NVIC_PEND0) = 1 << (ui32Interrupt - 16);
     }
     else if(ui32Interrupt >= 48)
     {
-        //
         // Pend the general interrupt.
-        //
         HWREG(NVIC_PEND1) = 1 << (ui32Interrupt - 48);
     }
 }
@@ -492,33 +408,23 @@ IntPendGet(uint32_t ui32Interrupt)
 {
     uint32_t ui32IntPending;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Interrupt < NUM_INTERRUPTS);
 
-    //
     // Assume no interrupts are pending.
-    //
     ui32IntPending = 0;
 
-    //
     // The lower 16 IRQ vectors are unsupported by this function
-    //
     if (ui32Interrupt < 16)
     {
 
        return 0;
     }
 
-    //
     // Subtract lower 16 irq vectors
-    //
     ui32Interrupt -= 16;
 
-    //
     // Check if the interrupt is pending
-    //
     ui32IntPending = HWREG(NVIC_PEND0 + (ui32Interrupt / 32));
     ui32IntPending &= (1 << (ui32Interrupt & 31));
 
@@ -533,40 +439,28 @@ IntPendGet(uint32_t ui32Interrupt)
 void
 IntPendClear(uint32_t ui32Interrupt)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Interrupt < NUM_INTERRUPTS);
 
-    //
     // Determine the interrupt to unpend.
-    //
     if(ui32Interrupt == INT_PENDSV)
     {
-        //
         // Unpend the PendSV interrupt.
-        //
         HWREG(NVIC_INT_CTRL) |= NVIC_INT_CTRL_UNPEND_SV;
     }
     else if(ui32Interrupt == INT_SYSTICK)
     {
-        //
         // Unpend the SysTick interrupt.
-        //
         HWREG(NVIC_INT_CTRL) |= NVIC_INT_CTRL_PENDSTCLR;
     }
     else if((ui32Interrupt >= 16) && (ui32Interrupt <= 47))
     {
-        //
         // Unpend the general interrupt.
-        //
         HWREG(NVIC_UNPEND0) = 1 << (ui32Interrupt - 16);
     }
     else if(ui32Interrupt >= 48)
     {
-        //
         // Unpend the general interrupt.
-        //
         HWREG(NVIC_UNPEND1) = 1 << (ui32Interrupt - 48);
     }
 }

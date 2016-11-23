@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       trng.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the TRNG module
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/trng.h>
+#include "trng.h"
 
 //*****************************************************************************
 //
@@ -63,23 +63,17 @@ TRNGConfigure(uint32_t ui32MinSamplesPerCycle,
 {
     uint32_t ui32Val;
 
-    //
     // Make sure the TRNG is disabled.
-    //
     ui32Val = HWREG(TRNG_BASE + TRNG_O_CTL) & ~TRNG_CTL_TRNG_EN;
     HWREG(TRNG_BASE + TRNG_O_CTL) = ui32Val;
 
-    //
     // Configure the startup number of samples.
-    //
     ui32Val &= ~TRNG_CTL_STARTUP_CYCLES_M;
     ui32Val |= ((( ui32MaxSamplesPerCycle >> 8 ) << TRNG_CTL_STARTUP_CYCLES_S ) & TRNG_CTL_STARTUP_CYCLES_M );
     HWREG(TRNG_BASE + TRNG_O_CTL) = ui32Val;
 
-    //
     // Configure the minimum and maximum number of samples pr generated number
     // and the number of clocks per sample.
-    //
     HWREG(TRNG_BASE + TRNG_O_CFG0) = (
         ((( ui32MaxSamplesPerCycle >> 8 ) << TRNG_CFG0_MAX_REFILL_CYCLES_S ) & TRNG_CFG0_MAX_REFILL_CYCLES_M ) |
         ((( ui32ClocksPerSample         ) << TRNG_CFG0_SMPL_DIV_S          ) & TRNG_CFG0_SMPL_DIV_M          ) |
@@ -96,15 +90,11 @@ TRNGNumberGet(uint32_t ui32Word)
 {
     uint32_t ui32RandomNumber;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Word == TRNG_HI_WORD) ||
            (ui32Word == TRNG_LOW_WORD));
 
-    //
     // Return the right requested part of the generated number.
-    //
     if(ui32Word == TRNG_HI_WORD)
     {
         ui32RandomNumber = HWREG(TRNG_BASE + TRNG_O_OUT1);
@@ -114,13 +104,9 @@ TRNGNumberGet(uint32_t ui32Word)
         ui32RandomNumber = HWREG(TRNG_BASE + TRNG_O_OUT0);
     }
 
-    //
     // Initiate generation of new number.
-    //
     HWREG(TRNG_BASE + TRNG_O_IRQFLAGCLR) = 0x1;
 
-    //
     // Return the random number.
-    //
     return ui32RandomNumber;
 }

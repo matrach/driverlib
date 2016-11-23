@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_wuc.c
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the AON Wake-Up Controller.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aon_wuc.h>
+#include "aon_wuc.h"
 
 //*****************************************************************************
 //
@@ -95,9 +95,7 @@ AONWUCRechargeCtrlConfigSet(bool bAdaptEnable, uint32_t ui32AdaptRate,
     uint32_t ui32Mantissa;
     uint32_t ui32MaxMantissa;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32AdaptRate >= RC_RATE_MIN) ||
            (ui32AdaptRate <= RC_RATE_MAX));
 
@@ -105,23 +103,17 @@ AONWUCRechargeCtrlConfigSet(bool bAdaptEnable, uint32_t ui32AdaptRate,
     ui32C2 = 0;
     ui32Shift = 9;
 
-    //
     // Clear the previous values.
-    //
     ui32Reg = HWREG(AON_WUC_BASE + AON_WUC_O_RECHARGECFG);
     ui32Reg &= ~(AON_WUC_RECHARGECFG_MAX_PER_M_M | AON_WUC_RECHARGECFG_MAX_PER_E_M |
                  AON_WUC_RECHARGECFG_ADAPTIVE_EN_M | AON_WUC_RECHARGECFG_PER_M_M |
                  AON_WUC_RECHARGECFG_PER_E_M | AON_WUC_RECHARGECFG_C1_M |
                  AON_WUC_RECHARGECFG_C2_M);
 
-    //
     // Check if the recharge controller adaptation algorithm should be active.
-    //
     if(bAdaptEnable)
     {
-        //
         // Calculate adaptation parameters.
-        //
         while(ui32AdaptRate)
         {
             if(ui32AdaptRate & (1 << ui32Shift))
@@ -157,18 +149,14 @@ AONWUCRechargeCtrlConfigSet(bool bAdaptEnable, uint32_t ui32AdaptRate,
         ui32C1 = 10 - ui32C1;
         ui32C2 = 10 - ui32C2;
 
-        //
         // Update the recharge rate parameters.
-        //
         ui32Reg &= ~(AON_WUC_RECHARGECFG_C1_M | AON_WUC_RECHARGECFG_C2_M);
         ui32Reg |= (ui32C1 << AON_WUC_RECHARGECFG_C1_S) |
                    (ui32C2 << AON_WUC_RECHARGECFG_C2_S) |
                    AON_WUC_RECHARGECFG_ADAPTIVE_EN_M;
     }
 
-    //
     // Resolve the period into an exponent and mantissa.
-    //
     ui32Period = (ui32Period >> 4);
     ui32Exponent = 0;
     while(ui32Period > (AON_WUC_RECHARGECFG_PER_M_M >> AON_WUC_RECHARGECFG_PER_M_S))
@@ -178,9 +166,7 @@ AONWUCRechargeCtrlConfigSet(bool bAdaptEnable, uint32_t ui32AdaptRate,
     }
     ui32Mantissa = ui32Period;
 
-    //
     // Resolve the max period into an exponent and mantissa.
-    //
     ui32MaxPeriod = (ui32MaxPeriod >> 4);
     ui32MaxExponent = 0;
     while(ui32MaxPeriod > (AON_WUC_RECHARGECFG_MAX_PER_M_M >> AON_WUC_RECHARGECFG_MAX_PER_M_S))
@@ -190,9 +176,7 @@ AONWUCRechargeCtrlConfigSet(bool bAdaptEnable, uint32_t ui32AdaptRate,
     }
     ui32MaxMantissa = ui32MaxPeriod;
 
-    //
     // Configure the controller.
-    //
     ui32Reg |= ((ui32MaxMantissa << AON_WUC_RECHARGECFG_MAX_PER_M_S) |
                 (ui32MaxExponent << AON_WUC_RECHARGECFG_MAX_PER_E_S) |
                 (ui32Mantissa << AON_WUC_RECHARGECFG_PER_M_S) |
@@ -213,9 +197,7 @@ AONWUCOscConfig(uint32_t ui32Period)
     uint32_t ui32Exponent;
     uint32_t ui32Reg;
 
-    //
     // Resolve the period into a exponent and mantissa.
-    //
     ui32Period = (ui32Period >> 4);
     ui32Exponent = 0;
     while(ui32Period > (AON_WUC_OSCCFG_PER_M_M >> AON_WUC_OSCCFG_PER_M_S))
@@ -225,24 +207,18 @@ AONWUCOscConfig(uint32_t ui32Period)
     }
     ui32Mantissa = ui32Period;
 
-    //
     // Update the period for the oscillator amplitude calibration.
-    //
     HWREG(AON_WUC_BASE + AON_WUC_O_OSCCFG) =
         (ui32Mantissa << AON_WUC_OSCCFG_PER_M_S) |
         (ui32Exponent << AON_WUC_OSCCFG_PER_E_S);
 
-    //
     // Set the maximum recharge period equal to the oscillator amplitude
     // calibration period.
-    //
     ui32Reg = HWREG(AON_WUC_BASE + AON_WUC_O_RECHARGECFG);
     ui32Reg &= ~(AON_WUC_RECHARGECFG_MAX_PER_M_M | AON_WUC_RECHARGECFG_MAX_PER_E_M);
     ui32Reg |= ((ui32Mantissa << AON_WUC_RECHARGECFG_MAX_PER_M_S) |
                 (ui32Exponent << AON_WUC_RECHARGECFG_MAX_PER_E_S));
 
-    //
     // Write the configuration.
-    //
     HWREG(AON_WUC_BASE + AON_WUC_O_RECHARGECFG) = ui32Reg;
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ddi_doc.h
-*  Revised:        2016-03-30 13:03:59 +0200 (Wed, 30 Mar 2016)
-*  Revision:       45971
+*  Revised:        2016-08-30 14:34:13 +0200 (Tue, 30 Aug 2016)
+*  Revision:       47080
 *
 *  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
 *  All rights reserved.

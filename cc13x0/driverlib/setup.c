@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2016-08-10 11:10:10 +0200 (Wed, 10 Aug 2016)
-*  Revision:       46997
+*  Revised:        2016-10-20 13:13:27 +0200 (Thu, 20 Oct 2016)
+*  Revision:       47501
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -37,26 +37,26 @@
 ******************************************************************************/
 
 // Hardware headers
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_adi.h>
-#include <inc/hw_adi_2_refsys.h>
-#include <inc/hw_adi_3_refsys.h>
-#include <inc/hw_aon_ioc.h>
-#include <inc/hw_aon_sysctl.h>
-#include <inc/hw_aon_wuc.h>
-#include <inc/hw_aux_wuc.h>
-#include <inc/hw_ccfg.h>
-#include <inc/hw_fcfg1.h>
-#include <inc/hw_flash.h>
-#include <inc/hw_prcm.h>
-#include <inc/hw_vims.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_adi.h"
+#include "../inc/hw_adi_2_refsys.h"
+#include "../inc/hw_adi_3_refsys.h"
+#include "../inc/hw_aon_ioc.h"
+#include "../inc/hw_aon_sysctl.h"
+#include "../inc/hw_aon_wuc.h"
+#include "../inc/hw_aux_wuc.h"
+#include "../inc/hw_ccfg.h"
+#include "../inc/hw_fcfg1.h"
+#include "../inc/hw_flash.h"
+#include "../inc/hw_prcm.h"
+#include "../inc/hw_vims.h"
 // Driverlib headers
-#include <driverlib/aon_wuc.h>
-#include <driverlib/aux_wuc.h>
-#include <driverlib/chipinfo.h>
-#include <driverlib/setup.h>
-#include <driverlib/setup_rom.h>
+#include "aon_wuc.h"
+#include "aux_wuc.h"
+#include "chipinfo.h"
+#include "setup.h"
+#include "setup_rom.h"
 // ##### INCLUDE IN ROM BEGIN #####
 // We need intrinsic functions for IAR (if used in source code)
 #ifdef __IAR_SYSTEMS_ICC__
@@ -114,43 +114,31 @@ SetupTrimDevice(void)
     uint32_t ui32Fcfg1Revision;
     uint32_t ui32AonSysResetctl;
 
-    //
     // Get layout revision of the factory configuration area
     // (Handle undefined revision as revision = 0)
-    //
     ui32Fcfg1Revision = HWREG(FCFG1_BASE + FCFG1_O_FCFG1_REVISION);
     if ( ui32Fcfg1Revision == 0xFFFFFFFF ) {
         ui32Fcfg1Revision = 0;
     }
 
-    //
-    // This driverlib version and setup file is for CC13xx PG2.0 and later.
+    // This driverlib version and setup file is for CC13x0 PG2.0 and later.
     // Halt if violated
-    //
-    ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated();
+    ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated();
 
-    //
     // Enable standby in flash bank
-    //
     HWREGBITW( FLASH_BASE + FLASH_O_CFG, FLASH_CFG_DIS_STANDBY_BITN ) = 0;
 
-    //
     // Clock must always be enabled for the semaphore module (due to ADI/DDI HW workaround)
-    //
     HWREG( AUX_WUC_BASE + AUX_WUC_O_MODCLKEN1 ) = AUX_WUC_MODCLKEN1_SMPH;
 
-    //
-    // Warm resets on CC26XX complicates software design as much of our software
-    // expect that initialization is done from a full system reset.
+    // Warm resets on CC13x0 and CC26x0 complicates software design because much of
+    // our software expect that initialization is done from a full system reset.
     // This includes RTC setup, oscillator configuration and AUX setup.
     // To ensure a full reset of the device is done when customers get e.g. a Watchdog
     // reset, the following is set here:
-    //
     HWREGBITW( PRCM_BASE + PRCM_O_WARMRESET, PRCM_WARMRESET_WR_TO_PINRESET_BITN ) = 1;
 
-    //
     // Select correct CACHE mode and set correct CACHE configuration
-    //
     SetupSetCacheModeAccordingToCcfgSetting();
 
     // 1. Check for powerdown
@@ -164,7 +152,6 @@ SetupTrimDevice(void)
     //     will all default to the reset configuration when restarting.
     if( ! ( HWREGBITW( AON_IOC_BASE + AON_IOC_O_IOCLATCH, AON_IOC_IOCLATCH_EN_BITN )))
     {
-        //
         // NB. This should be calling a ROM implementation of required trim and
         // compensation
         // e.g. TrimAfterColdResetWakeupFromShutDownWakeupFromPowerDown()
@@ -173,12 +160,11 @@ SetupTrimDevice(void)
     // Check for shutdown
     //
     // When device is going to shutdown the hardware will automatically clear
-    // the SLEEPDIS bit in the SLEEP register in the AON_SYSCTRL12 module.
+    // the SLEEPDIS bit in the SLEEP register in the AON_SYSCTL module.
     // It is left for the application to assert this bit when waking back up,
     // but not before the desired IO configuration has been re-established.
     else if( ! ( HWREGBITW( AON_SYSCTL_BASE + AON_SYSCTL_O_SLEEPCTL, AON_SYSCTL_SLEEPCTL_IO_PAD_SLEEP_DIS_BITN )))
     {
-        //
         // NB. This should be calling a ROM implementation of required trim and
         // compensation
         // e.g. TrimAfterColdResetWakeupFromShutDown()    -->
@@ -202,25 +188,19 @@ SetupTrimDevice(void)
 
     }
 
-    //
     // Set VIMS power domain control.
     // PDCTL1VIMS = 0 ==> VIMS power domain is only powered when CPU power domain is powered
-    //
     HWREG( PRCM_BASE + PRCM_O_PDCTL1VIMS ) = 0;
 
-    //
     // Configure optimal wait time for flash FSM in cases where flash pump
     // wakes up from sleep
-    //
     HWREG(FLASH_BASE + FLASH_O_FPAC1) = (HWREG(FLASH_BASE + FLASH_O_FPAC1) &
                                          ~FLASH_FPAC1_PSLEEPTDIS_M) |
                                         (0x139<<FLASH_FPAC1_PSLEEPTDIS_S);
 
-    //
     // And finally at the end of the flash boot process:
     // SET BOOT_DET bits in AON_SYSCTL to 3 if already found to be 1
     // Note: The BOOT_DET_x_CLR/SET bits must be manually cleared
-    //
     if ((( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) &
         ( AON_SYSCTL_RESETCTL_BOOT_DET_1_M | AON_SYSCTL_RESETCTL_BOOT_DET_0_M )) >>
         AON_SYSCTL_RESETCTL_BOOT_DET_0_S ) == 1 )
@@ -232,10 +212,8 @@ SetupTrimDevice(void)
         HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) = ui32AonSysResetctl;
     }
 
-    //
     // Make sure there are no ongoing VIMS mode change when leaving SetupTrimDevice()
     // (There should typically be no wait time here, but need to be sure)
-    //
     while ( HWREGBITW( VIMS_BASE + VIMS_O_STAT, VIMS_STAT_MODE_CHANGING_BITN )) {
         // Do nothing - wait for an eventual ongoing mode change to complete.
     }
@@ -252,9 +230,7 @@ SetupTrimDevice(void)
 static void
 TrimAfterColdResetWakeupFromShutDownWakeupFromPowerDown( void )
 {
-    //
     // Currently no specific trim for Powerdown
-    //
 }
 
 //*****************************************************************************
@@ -271,34 +247,24 @@ TrimAfterColdResetWakeupFromShutDown(uint32_t ui32Fcfg1Revision)
     uint32_t   ccfg_ModeConfReg  ;
     uint32_t   mp1rev            ;
 
-    //
     // Force AUX on and enable clocks
     //
     // No need to save the current status of the power/clock registers.
     // At this point both AUX and AON should have been reset to 0x0.
-    //
     HWREG(AON_WUC_BASE + AON_WUC_O_AUXCTL) = AON_WUC_AUXCTL_AUX_FORCE_ON;
 
-    //
     // Wait for power on on the AUX domain
-    //
     while( ! ( HWREGBITW( AON_WUC_BASE + AON_WUC_O_PWRSTAT, AON_WUC_PWRSTAT_AUX_PD_ON_BITN )));
 
-    //
     // Enable the clocks for AUX_DDI0_OSC and AUX_ADI4
-    //
     HWREG(AUX_WUC_BASE + AUX_WUC_O_MODCLKEN0) = AUX_WUC_MODCLKEN0_AUX_DDI0_OSC |
                                                 AUX_WUC_MODCLKEN0_AUX_ADI4;
 
-    //
     // Check in CCFG for alternative DCDC setting
-    //
     if (( HWREG( CCFG_BASE + CCFG_O_SIZE_AND_DIS_FLAGS ) & CCFG_SIZE_AND_DIS_FLAGS_DIS_ALT_DCDC_SETTING ) == 0 ) {
-        //
         // ADI_3_REFSYS:DCDCCTL5[3]  (=DITHER_EN) = CCFG_MODE_CONF_1[19]   (=ALT_DCDC_DITHER_EN)
         // ADI_3_REFSYS:DCDCCTL5[2:0](=IPEAK    ) = CCFG_MODE_CONF_1[18:16](=ALT_DCDC_IPEAK    )
         // Using a single 4-bit masked write since layout is equal for both source and destination
-        //
         HWREGB( ADI3_BASE + ADI_O_MASK4B + ( ADI_3_REFSYS_O_DCDCCTL5 * 2 )) = ( 0xF0 |
             ( HWREG( CCFG_BASE + CCFG_O_MODE_CONF_1 ) >> CCFG_MODE_CONF_1_ALT_DCDC_IPEAK_S ));
 
@@ -306,38 +272,33 @@ TrimAfterColdResetWakeupFromShutDown(uint32_t ui32Fcfg1Revision)
 
     //
     // Enable for JTAG to be powered down (will still be powered on if debugger is connected)
-    //
     AONWUCJtagPowerOff();
 
-    //
     // read the MODE_CONF register in CCFG
-    //
     ccfg_ModeConfReg = HWREG( CCFG_BASE + CCFG_O_MODE_CONF );
 
-    //
     // First part of trim done after cold reset and wakeup from shutdown:
-    // -Configure cc13xx boost mode.
+    // -Configure cc13x0 boost mode.
     // -Adjust the VDDR_TRIM_SLEEP value.
     // -Configure DCDC.
-    //
     SetupAfterColdResetWakeupFromShutDownCfg1( ccfg_ModeConfReg );
 
-    //
     // Second part of trim done after cold reset and wakeup from shutdown:
     // -Configure XOSC.
-    //
     SetupAfterColdResetWakeupFromShutDownCfg2( ui32Fcfg1Revision, ccfg_ModeConfReg );
 
-    //
     // Increased margin between digital supply voltage and VDD BOD during standby.
     // VTRIM_UDIG: signed 4 bits value to be incremented by 2 (max = 7)
     // VTRIM_BOD: unsigned 4 bits value to be decremented by 1 (min = 0)
-    // This applies to chips with mp1rev < 542 for cc13xx and for mp1rev < 527 for cc26xx
-    //
-    mp1rev = ( HWREG( FCFG1_BASE + 0x00000314 ) & 0x0000FFFF );
+    // This applies to chips with mp1rev < 542 for cc13x0 and for mp1rev < 527 for cc26x0
+    mp1rev = (( HWREG( FCFG1_BASE + FCFG1_O_TRIM_CAL_REVISION ) & FCFG1_TRIM_CAL_REVISION_MP1_M ) >>
+                                                                  FCFG1_TRIM_CAL_REVISION_MP1_S ) ;
     if ( mp1rev < 542 ) {
-        uint32_t vtrim_bod  = (( HWREG( FCFG1_BASE + 0x000002BC ) >> 24 ) & 0xF ); // bit[27:24] unsigned
-        uint32_t vtrim_udig = (( HWREG( FCFG1_BASE + 0x000002BC ) >> 16 ) & 0xF ); // bit[19:16] signed
+        uint32_t ldoTrimReg = HWREG( FCFG1_BASE + FCFG1_O_BAT_RC_LDO_TRIM );
+        uint32_t vtrim_bod  = (( ldoTrimReg & FCFG1_BAT_RC_LDO_TRIM_VTRIM_BOD_M  ) >>
+                                              FCFG1_BAT_RC_LDO_TRIM_VTRIM_BOD_S  ); // bit[27:24] unsigned
+        uint32_t vtrim_udig = (( ldoTrimReg & FCFG1_BAT_RC_LDO_TRIM_VTRIM_UDIG_M ) >>
+                                              FCFG1_BAT_RC_LDO_TRIM_VTRIM_UDIG_S ); // bit[19:16] signed but treated as unsigned
         if ( vtrim_bod > 0 ) {
             vtrim_bod -= 1;
         }
@@ -353,21 +314,16 @@ TrimAfterColdResetWakeupFromShutDown(uint32_t ui32Fcfg1Revision)
             ( vtrim_bod  << ADI_2_REFSYS_SOCLDOCTL0_VTRIM_BOD_S  ) ;
     }
 
-    //
     // Third part of trim done after cold reset and wakeup from shutdown:
     // -Configure HPOSC.
     // -Setup the LF clock.
-    //
     SetupAfterColdResetWakeupFromShutDownCfg3( ccfg_ModeConfReg );
 
     //
     // Allow AUX to power down
-    //
     AUXWUCPowerCtrl( AUX_WUC_POWER_DOWN );
 
-    //
     // Leaving on AUX and clock for AUX_DDI0_OSC on but turn off clock for AUX_ADI4
-    //
     HWREG( AUX_WUC_BASE + AUX_WUC_O_MODCLKEN0 ) = AUX_WUC_MODCLKEN0_AUX_DDI0_OSC;
 
     // Disable EFUSE clock
@@ -385,7 +341,5 @@ TrimAfterColdResetWakeupFromShutDown(uint32_t ui32Fcfg1Revision)
 static void
 TrimAfterColdReset( void )
 {
-    //
     // Currently no specific trim for Cold Reset
-    //
 }

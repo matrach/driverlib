@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       trng.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the true random number gen.
 *
@@ -61,13 +61,13 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_trng.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <driverlib/debug.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/cpu.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_trng.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "debug.h"
+#include "interrupt.h"
+#include "cpu.h"
 
 //*****************************************************************************
 //
@@ -205,9 +205,7 @@ extern uint32_t TRNGNumberGet(uint32_t ui32Word);
 __STATIC_INLINE uint32_t
 TRNGStatusGet(void)
 {
-    //
     // Return the status.
-    //
     return (HWREG(TRNG_BASE + TRNG_O_IRQFLAGSTAT));
 }
 
@@ -224,9 +222,7 @@ TRNGStatusGet(void)
 __STATIC_INLINE void
 TRNGReset(void)
 {
-    //
     // Reset the TRNG.
-    //
     HWREG(TRNG_BASE + TRNG_O_SWRESET) = 1;
 }
 
@@ -249,15 +245,11 @@ TRNGReset(void)
 __STATIC_INLINE void
 TRNGIntEnable(uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32IntFlags & TRNG_NUMBER_READY) ||
            (ui32IntFlags & TRNG_FRO_SHUTDOWN));
 
-    //
     // Enable the specified interrupts.
-    //
     HWREG(TRNG_BASE + TRNG_O_IRQFLAGMASK) |= ui32IntFlags;
 }
 
@@ -280,15 +272,11 @@ TRNGIntEnable(uint32_t ui32IntFlags)
 __STATIC_INLINE void
 TRNGIntDisable(uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32IntFlags & TRNG_NUMBER_READY) ||
            (ui32IntFlags & TRNG_FRO_SHUTDOWN));
 
-    //
     // Disable the specified interrupts.
-    //
     HWREG(TRNG_BASE + TRNG_O_IRQFLAGMASK) &= ~ui32IntFlags;
 }
 
@@ -314,10 +302,8 @@ TRNGIntStatus(bool bMasked)
 {
     uint32_t ui32Mask;
 
-    //
     // Return either the interrupt status or the raw interrupt status as
     // requested.
-    //
     if(bMasked)
     {
         ui32Mask = HWREG(TRNG_BASE + TRNG_O_IRQFLAGMASK);
@@ -363,15 +349,11 @@ TRNGIntStatus(bool bMasked)
 __STATIC_INLINE void
 TRNGIntClear(uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32IntFlags & TRNG_NUMBER_READY) ||
            (ui32IntFlags & TRNG_FRO_SHUTDOWN));
 
-    //
     // Clear the requested interrupt sources.
-    //
     HWREG(TRNG_BASE + TRNG_O_IRQFLAGCLR) = ui32IntFlags;
 }
 
@@ -396,14 +378,10 @@ TRNGIntClear(uint32_t ui32IntFlags)
 __STATIC_INLINE void
 TRNGIntRegister(void (*pfnHandler)(void))
 {
-    //
     // Register the interrupt handler.
-    //
     IntRegister(INT_TRNG_IRQ, pfnHandler);
 
-    //
     // Enable the TRNG interrupt.
-    //
     IntEnable(INT_TRNG_IRQ);
 }
 
@@ -425,14 +403,10 @@ TRNGIntRegister(void (*pfnHandler)(void))
 __STATIC_INLINE void
 TRNGIntUnregister(void)
 {
-    //
     // Disable the interrupt.
-    //
     IntDisable(INT_TRNG_IRQ);
 
-    //
     // Unregister the interrupt handler.
-    //
     IntUnregister(INT_TRNG_IRQ);
 }
 
@@ -443,7 +417,7 @@ TRNGIntUnregister(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_TRNGConfigure
         #undef  TRNGConfigure
         #define TRNGConfigure                   ROM_TRNGConfigure

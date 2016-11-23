@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the system oscillator control.
 *
@@ -61,14 +61,14 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_aon_wuc.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ddi.h>
-#include <inc/hw_ddi_0_osc.h>
-#include <driverlib/rom.h>
-#include <driverlib/ddi.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_aon_wuc.h"
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ddi.h"
+#include "../inc/hw_ddi_0_osc.h"
+#include "rom.h"
+#include "ddi.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -149,15 +149,11 @@ extern "C"
 __STATIC_INLINE void
 OSCXHfPowerModeSet(uint32_t ui32Mode)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Mode == LOW_POWER_XOSC) ||
            (ui32Mode == HIGH_POWER_XOSC));
 
-    //
     // Change the power mode.
-    //
     DDI16BitWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_CTL0, DDI_0_OSC_CTL0_XOSC_HF_POWER_MODE,
                   ui32Mode);
 }
@@ -289,9 +285,7 @@ extern uint32_t OSCClockSourceGet(uint32_t ui32SrcClk);
 __STATIC_INLINE bool
 OSCHfSourceReady(void)
 {
-    //
     // Return the readiness of the HF clock source
-    //
     return (DDI16BitfieldRead(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_STAT0,
                               DDI_0_OSC_STAT0_PENDINGSCLKHFSWITCHING_M,
                               DDI_0_OSC_STAT0_PENDINGSCLKHFSWITCHING_S)) ?
@@ -319,9 +313,7 @@ OSCHfSourceReady(void)
 __STATIC_INLINE void
 OSCHfSourceSwitch(void)
 {
-    //
     // Switch the HF clock source
-    //
     HapiHFSourceSafeSwitch();
 }
 
@@ -533,7 +525,7 @@ extern int16_t OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert( int32_t HP
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_OSCClockSourceSet
         #undef  OSCClockSourceSet
         #define OSCClockSourceSet               ROM_OSCClockSourceSet

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_tdc.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the AUX Time to Digital Converter interface.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aux_tdc.h>
+#include "aux_tdc.h"
 
 //*****************************************************************************
 //
@@ -60,28 +60,20 @@ void
 AUXTDCConfigSet(uint32_t ui32Base, uint32_t ui32StartCondition,
                 uint32_t ui32StopCondition)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Make sure the AUX TDC is in the idle state before changing the
     // configuration.
-    //
     while(!((HWREG(ui32Base + AUX_TDC_O_STAT) & AUX_TDC_STAT_STATE_M) ==
             AUX_TDC_STAT_STATE_IDLE))
     {
     }
 
-    //
     // Clear previous results.
-    //
     HWREG(ui32Base + AUX_TDC_O_CTL) = 0x0;
 
-    //
     // Change the configuration.
-    //
     HWREG(ui32Base + AUX_TDC_O_TRIGSRC) = ui32StartCondition | ui32StopCondition;
 }
 
@@ -96,14 +88,10 @@ AUXTDCMeasurementDone(uint32_t ui32Base)
     uint32_t ui32Reg;
     uint32_t ui32Status;
 
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Check if the AUX TDC is done measuring.
-    //
     ui32Reg = HWREG(ui32Base + AUX_TDC_O_STAT);
     if(ui32Reg & AUX_TDC_STAT_DONE)
     {
@@ -118,8 +106,6 @@ AUXTDCMeasurementDone(uint32_t ui32Base)
         ui32Status = AUX_TDC_BUSY;
     }
 
-    //
     // Return the status.
-    //
     return (ui32Status);
 }

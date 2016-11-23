@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the RF Core.
 *
@@ -59,15 +59,15 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_rfc_pwr.h>
-#include <inc/hw_rfc_dbell.h>
-#include <driverlib/rf_common_cmd.h>
-#include <driverlib/rf_prop_cmd.h>
-#include <inc/hw_fcfg1.h>
-#include <inc/hw_adi_3_refsys.h>
-#include <inc/hw_adi.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_rfc_pwr.h"
+#include "../inc/hw_rfc_dbell.h"
+#include "rf_common_cmd.h"
+#include "rf_prop_cmd.h"
+#include "../inc/hw_fcfg1.h"
+#include "../inc/hw_adi_3_refsys.h"
+#include "../inc/hw_adi.h"
 
 typedef struct {
    uint32_t configIfAdc;
@@ -120,9 +120,7 @@ typedef struct {
 __STATIC_INLINE void
 RFCClockEnable(void)
 {
-    //
     // Enable all clocks
-    //
     HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) =
                                  RFC_PWR_PWMCLKEN_RFCTRC |
                                  RFC_PWR_PWMCLKEN_FSCA |
@@ -155,9 +153,7 @@ RFCClockEnable(void)
 __STATIC_INLINE void
 RFCClockDisable(void)
 {
-    //
     // Disable all clocks
-    //
     HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) = 0x0;
 }
 
@@ -169,22 +165,16 @@ RFCClockDisable(void)
 __STATIC_INLINE void
 RFCCpe0IntEnable(uint32_t ui32Mask)
 {
-  //
   // Multiplex RF Core interrupts to CPE0 IRQ.
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFCPEISL) &= ~ui32Mask;
 
   do
   {
-    //
     // Clear any pending interrupts.
-    //
     HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFCPEIFG) = 0x0;
   }while(HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFCPEIFG) != 0x0);
 
-  //
   //  Enable the masked interrupts
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFCPEIEN) |= ui32Mask;
 }
 
@@ -197,22 +187,16 @@ RFCCpe0IntEnable(uint32_t ui32Mask)
 __STATIC_INLINE void
 RFCCpe1IntEnable(uint32_t ui32Mask)
 {
-  //
   // Multiplex RF Core interrupts to CPE1 IRQ.
-  //
   HWREG( RFC_DBELL_BASE + RFC_DBELL_O_RFCPEISL) |= ui32Mask;
 
   do
   {
-    //
     // Clear any pending interrupts.
-    //
     HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFCPEIFG) = 0x0;
   }while(HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFCPEIFG) != 0x0);
 
-  //
   //  Enable the masked interrupts
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFCPEIEN) |= ui32Mask;
 }
 
@@ -226,14 +210,10 @@ RFCCpe1IntEnable(uint32_t ui32Mask)
 __STATIC_INLINE void
 RFCHwIntEnable(uint32_t ui32Mask)
 {
-  //
   // Clear any pending interrupts.
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFHWIFG) = 0x0;
 
-  //
   //  Enable the masked interrupts
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFHWIEN) |= ui32Mask;
 }
 
@@ -246,9 +226,7 @@ RFCHwIntEnable(uint32_t ui32Mask)
 __STATIC_INLINE void
 RFCCpeIntDisable(uint32_t ui32Mask)
 {
-  //
   //  Disable the masked interrupts
-  //
   HWREG( RFC_DBELL_BASE + RFC_DBELL_O_RFCPEIEN ) &= ~ui32Mask;
 }
 
@@ -261,9 +239,7 @@ RFCCpeIntDisable(uint32_t ui32Mask)
 __STATIC_INLINE void
 RFCHwIntDisable(uint32_t ui32Mask)
 {
-  //
   //  Disable the masked interrupts
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFHWIEN) &= ~ui32Mask;
 }
 
@@ -286,9 +262,7 @@ RFCCpeIntClear(uint32_t ui32Mask)
 {
   do
   {
-    //
     // Clear interrupts that may now be pending
-    //
     HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFCPEIFG) = ~ui32Mask;
   }while (HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFCPEIFG) & ui32Mask);
 }
@@ -302,9 +276,7 @@ RFCCpeIntClear(uint32_t ui32Mask)
 __STATIC_INLINE void
 RFCHwIntClear(uint32_t ui32Mask)
 {
-  //
   // Clear pending interrupts.
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFHWIFG) = ~ui32Mask;
 }
 
@@ -317,9 +289,7 @@ RFCHwIntClear(uint32_t ui32Mask)
 __STATIC_INLINE void
 RFCAckIntClear(void)
 {
-  //
   // Clear any pending interrupts.
-  //
   HWREG(RFC_DBELL_BASE + RFC_DBELL_O_RFACKIFG) = 0x0;
 }
 
@@ -387,7 +357,7 @@ extern void RFCAdi3VcoLdoVoltageMode(bool bEnable);
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_RFCCpeIntGetAndClear
         #undef  RFCCpeIntGetAndClear
         #define RFCCpeIntGetAndClear            ROM_RFCCpeIntGetAndClear

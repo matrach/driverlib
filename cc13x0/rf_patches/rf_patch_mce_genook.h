@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_genook.h
-*  Revised:        $Date: 2016-06-08 15:35:28 +0200 (on, 08 jun 2016) $
-*  Revision:       $Revision: 17220 $
+*  Revised:        $Date: 2016-09-13 16:37:28 +0200 (ti, 13 sep 2016) $
+*  Revision:       $Revision: 17321 $
 *
 *  Description: RF core patch for CC13XX Generic OOK
 *
@@ -40,7 +40,7 @@
 #define _RF_PATCH_MCE_GENOOK_H
 
 #include <stdint.h>
-#include <inc/hw_types.h>
+#include "../inc/hw_types.h"
 
 #ifndef MCE_PATCH_TYPE
 #define MCE_PATCH_TYPE static const uint32_t

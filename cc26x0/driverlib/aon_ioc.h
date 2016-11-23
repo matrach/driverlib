@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_ioc.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AON IO Controller
 *
@@ -61,10 +61,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_aon_ioc.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_aon_ioc.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -145,9 +145,7 @@ AONIOCDriveStrengthSet(uint32_t ui32DriveLevel, uint32_t ui32DriveStrength)
            (ui32DriveStrength == AONIOC_DRV_STR_7) ||
            (ui32DriveStrength == AONIOC_DRV_STR_8));
 
-    //
     // Set the drive strength.
-    //
     HWREG(AON_IOC_BASE + ui32DriveLevel) = ui32DriveStrength;
 }
 
@@ -182,16 +180,12 @@ AONIOCDriveStrengthSet(uint32_t ui32DriveLevel, uint32_t ui32DriveStrength)
 __STATIC_INLINE uint32_t
 AONIOCDriveStrengthGet(uint32_t ui32DriveLevel)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32DriveLevel == AONIOC_DRV_LVL_MIN) ||
            (ui32DriveLevel == AONIOC_DRV_LVL_MED) ||
            (ui32DriveLevel == AONIOC_DRV_LVL_MAX));
 
-    //
     // Return the drive strength value.
-    //
     return( HWREG(AON_IOC_BASE + ui32DriveLevel) );
 }
 
@@ -213,9 +207,7 @@ AONIOCDriveStrengthGet(uint32_t ui32DriveLevel)
 __STATIC_INLINE void
 AONIOCFreezeEnable(void)
 {
-    //
     // Set the AON IO latches as static.
-    //
     HWREG(AON_IOC_BASE + AON_IOC_O_IOCLATCH) = 0x0;
 }
 
@@ -236,9 +228,7 @@ AONIOCFreezeEnable(void)
 __STATIC_INLINE void
 AONIOCFreezeDisable(void)
 {
-    //
     // Set the AON IOC latches as transparent.
-    //
     HWREG(AON_IOC_BASE + AON_IOC_O_IOCLATCH) = AON_IOC_IOCLATCH_EN;
 }
 
@@ -258,9 +248,7 @@ AONIOCFreezeDisable(void)
 __STATIC_INLINE void
 AONIOC32kHzOutputDisable(void)
 {
-    //
     // Disable the LF clock output.
-    //
     HWREG(AON_IOC_BASE + AON_IOC_O_CLK32KCTL) = AON_IOC_CLK32KCTL_OE_N;
 }
 
@@ -280,9 +268,7 @@ AONIOC32kHzOutputDisable(void)
 __STATIC_INLINE void
 AONIOC32kHzOutputEnable(void)
 {
-    //
     // Enable the LF clock output.
-    //
     HWREG(AON_IOC_BASE + AON_IOC_O_CLK32KCTL) = 0x0;
 }
 

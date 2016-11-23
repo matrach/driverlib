@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the CPU instruction wrapper
 *                  functions.
@@ -62,9 +62,9 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_cpu_scs.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_cpu_scs.h"
 
 //*****************************************************************************
 //
@@ -145,18 +145,14 @@ extern uint32_t CPUcpsie(void);
 __STATIC_INLINE void
 CPUwfi(void)
 {
-    //
     // Wait for the next interrupt.
-    //
     __asm("    wfi\n");
 }
 #elif defined(__CC_ARM) || defined(__ARMCC_VERSION)
 __asm __STATIC_INLINE void
 CPUwfi(void)
 {
-    //
     // Wait for the next interrupt.
-    //
     wfi;
     bx      lr
 }
@@ -164,18 +160,14 @@ CPUwfi(void)
 __STATIC_INLINE void
 CPUwfi(void)
 {
-    //
     // Wait for the next interrupt.
-    //
     __asm("    wfi\n");
 }
 #else
 __STATIC_INLINE void __attribute__((always_inline))
 CPUwfi(void)
 {
-    //
     // Wait for the next interrupt.
-    //
     __asm("    wfi\n");
 }
 #endif
@@ -194,18 +186,14 @@ CPUwfi(void)
 __STATIC_INLINE void
 CPUwfe(void)
 {
-    //
     // Wait for the next event.
-    //
     __asm("    wfe\n");
 }
 #elif defined(__CC_ARM) || defined(__ARMCC_VERSION)
 __asm __STATIC_INLINE void
 CPUwfe(void)
 {
-    //
     // Wait for the next event.
-    //
     wfe;
     bx      lr
 }
@@ -213,18 +201,14 @@ CPUwfe(void)
 __STATIC_INLINE void
 CPUwfe(void)
 {
-    //
     // Wait for the next event.
-    //
     __asm("    wfe\n");
 }
 #else
 __STATIC_INLINE void __attribute__((always_inline))
 CPUwfe(void)
 {
-    //
     // Wait for the next event.
-    //
     __asm("    wfe\n");
 }
 #endif
@@ -243,18 +227,14 @@ CPUwfe(void)
 __STATIC_INLINE void
 CPUsev(void)
 {
-    //
     // Send event.
-    //
     __asm("    sev\n");
 }
 #elif defined(__CC_ARM) || defined(__ARMCC_VERSION)
 __asm __STATIC_INLINE void
 CPUsev(void)
 {
-    //
     // Send event.
-    //
     sev;
     bx      lr
 }
@@ -262,18 +242,14 @@ CPUsev(void)
 __STATIC_INLINE void
 CPUsev(void)
 {
-    //
     // Send event.
-    //
     __asm("    sev\n");
 }
 #else
 __STATIC_INLINE void __attribute__((always_inline))
 CPUsev(void)
 {
-    //
     // Send event.
-    //
     __asm("    sev\n");
 }
 #endif
@@ -295,18 +271,14 @@ CPUsev(void)
 __STATIC_INLINE void
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
-    //
     // Set the BASEPRI register.
-    //
     __asm("    msr     BASEPRI, r0\n");
 }
 #elif defined(__CC_ARM) || defined(__ARMCC_VERSION)
 __asm __STATIC_INLINE void
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
-    //
     // Set the BASEPRI register.
-    //
     msr     BASEPRI, r0;
     bx      lr
 }
@@ -314,9 +286,7 @@ CPUbasepriSet(uint32_t ui32NewBasepri)
 __STATIC_INLINE void
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
-    //
     // Set the BASEPRI register.
-    //
     __asm("    msr     BASEPRI, r0\n");
 }
 #else
@@ -325,9 +295,7 @@ CPUbasepriSet(uint32_t ui32NewBasepri)
 __STATIC_INLINE void __attribute__ ((naked))
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
-   //
    // Set the BASEPRI register.
-   //
    __asm("    msr     BASEPRI, r0\n"
          "    bx      lr\n");
 }
@@ -410,7 +378,7 @@ CPU_WriteBufferEnable( void )
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_CPUcpsid
         #undef  CPUcpsid
         #define CPUcpsid                        ROM_CPUcpsid

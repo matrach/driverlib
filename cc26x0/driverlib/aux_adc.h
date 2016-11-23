@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_adc.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
+*  Revision:       47179
 *
 *  Description:    Defines and prototypes for the AUX Analog-to-Digital
 *                  Converter
@@ -62,13 +62,13 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_event.h>
-#include <inc/hw_adi.h>
-#include <inc/hw_adi_4_aux.h>
-#include <inc/hw_aux_anaif.h>
-#include <driverlib/rom.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_event.h"
+#include "../inc/hw_adi.h"
+#include "../inc/hw_adi_4_aux.h"
+#include "../inc/hw_aux_anaif.h"
+#include "rom.h"
 
 //*****************************************************************************
 //
@@ -515,7 +515,7 @@ extern int32_t AUXADCUnadjustValueForGainAndOffset(int32_t adcValue, int32_t gai
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AUXADCDisable
         #undef  AUXADCDisable
         #define AUXADCDisable                   ROM_AUXADCDisable

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       vims.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the VIMS.
 *
@@ -61,10 +61,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_vims.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_vims.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -298,9 +298,7 @@ extern void VIMSModeSafeSet( uint32_t ui32Base    ,
 __STATIC_INLINE void
 VIMSLineBufDisable(uint32_t ui32Base)
 {
-    //
     // Disable line buffers
-    //
     HWREG(ui32Base + VIMS_O_CTL) |= VIMS_CTL_IDCODE_LB_DIS_M |
                                         VIMS_CTL_SYSBUS_LB_DIS_M;
 }
@@ -322,9 +320,7 @@ VIMSLineBufDisable(uint32_t ui32Base)
 __STATIC_INLINE void
 VIMSLineBufEnable(uint32_t ui32Base)
 {
-    //
     // Enable linebuffers
-    //
     HWREG(ui32Base + VIMS_O_CTL) &= ~(VIMS_CTL_IDCODE_LB_DIS_M |
                                           VIMS_CTL_SYSBUS_LB_DIS_M);
 }
@@ -336,7 +332,7 @@ VIMSLineBufEnable(uint32_t ui32Base)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_VIMSConfigure
         #undef  VIMSConfigure
         #define VIMSConfigure                   ROM_VIMSConfigure

@@ -54,8 +54,8 @@
 //! @{
 
 #include <stdint.h>
-#include <driverlib/rf_mailbox.h>
-#include <driverlib/rf_common_cmd.h>
+#include "rf_mailbox.h"
+#include "rf_common_cmd.h"
 
 typedef struct __RFC_STRUCT rfc_bleRadioOp_s rfc_bleRadioOp_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE_SLAVE_s rfc_CMD_BLE_SLAVE_t;
@@ -108,7 +108,7 @@ struct __RFC_STRUCT rfc_bleRadioOp_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0&ndash;39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
                                         //!<        60&ndash;207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>

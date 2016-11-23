@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       systick.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Prototypes for the SysTick driver.
 *
@@ -61,11 +61,11 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_nvic.h>
-#include <inc/hw_types.h>
-#include <driverlib/debug.h>
-#include <driverlib/interrupt.h>
+#include "../inc/hw_ints.h"
+#include "../inc/hw_nvic.h"
+#include "../inc/hw_types.h"
+#include "debug.h"
+#include "interrupt.h"
 
 //*****************************************************************************
 //
@@ -94,9 +94,7 @@ extern "C"
 __STATIC_INLINE void
 SysTickEnable(void)
 {
-    //
     // Enable SysTick.
-    //
     HWREG(NVIC_ST_CTRL) |= NVIC_ST_CTRL_CLK_SRC | NVIC_ST_CTRL_ENABLE;
 }
 
@@ -113,9 +111,7 @@ SysTickEnable(void)
 __STATIC_INLINE void
 SysTickDisable(void)
 {
-    //
     // Disable SysTick.
-    //
     HWREG(NVIC_ST_CTRL) &= ~(NVIC_ST_CTRL_ENABLE);
 }
 
@@ -137,14 +133,10 @@ SysTickDisable(void)
 __STATIC_INLINE void
 SysTickIntRegister(void (*pfnHandler)(void))
 {
-    //
     // Register the interrupt handler, returning an error if an error occurs.
-    //
     IntRegister(INT_SYSTICK, pfnHandler);
 
-    //
     // Enable the SysTick interrupt.
-    //
     HWREG(NVIC_ST_CTRL) |= NVIC_ST_CTRL_INTEN;
 }
 
@@ -164,14 +156,10 @@ SysTickIntRegister(void (*pfnHandler)(void))
 __STATIC_INLINE void
 SysTickIntUnregister(void)
 {
-    //
     // Disable the SysTick interrupt.
-    //
     HWREG(NVIC_ST_CTRL) &= ~(NVIC_ST_CTRL_INTEN);
 
-    //
     // Unregister the interrupt handler.
-    //
     IntUnregister(INT_SYSTICK);
 }
 
@@ -192,9 +180,7 @@ SysTickIntUnregister(void)
 __STATIC_INLINE void
 SysTickIntEnable(void)
 {
-    //
     // Enable the SysTick interrupt.
-    //
     HWREG(NVIC_ST_CTRL) |= NVIC_ST_CTRL_INTEN;
 }
 
@@ -211,9 +197,7 @@ SysTickIntEnable(void)
 __STATIC_INLINE void
 SysTickIntDisable(void)
 {
-    //
     // Disable the SysTick interrupt.
-    //
     HWREG(NVIC_ST_CTRL) &= ~(NVIC_ST_CTRL_INTEN);
 }
 
@@ -239,14 +223,10 @@ SysTickIntDisable(void)
 __STATIC_INLINE void
 SysTickPeriodSet(uint32_t ui32Period)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Period > 0) && (ui32Period <= 16777216));
 
-    //
     // Set the period of the SysTick counter.
-    //
     HWREG(NVIC_ST_RELOAD) = ui32Period - 1;
 }
 
@@ -263,9 +243,7 @@ SysTickPeriodSet(uint32_t ui32Period)
 __STATIC_INLINE uint32_t
 SysTickPeriodGet(void)
 {
-    //
     // Return the period of the SysTick counter.
-    //
     return(HWREG(NVIC_ST_RELOAD) + 1);
 }
 
@@ -282,9 +260,7 @@ SysTickPeriodGet(void)
 __STATIC_INLINE uint32_t
 SysTickValueGet(void)
 {
-    //
     // Return the current value of the SysTick counter.
-    //
     return(HWREG(NVIC_ST_CURRENT));
 }
 

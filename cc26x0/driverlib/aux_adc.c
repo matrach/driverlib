@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_adc.c
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
+*  Revision:       47179
 *
 *  Description:    Driver for the AUX Time to Digital Converter interface.
 *
@@ -36,12 +36,12 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aux_adc.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_aux_wuc.h>
-#include <inc/hw_fcfg1.h>
-#include <driverlib/adi.h>
-#include <driverlib/event.h>
+#include "aux_adc.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_aux_wuc.h"
+#include "../inc/hw_fcfg1.h"
+#include "adi.h"
+#include "event.h"
 
 //*****************************************************************************
 //

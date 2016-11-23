@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-19 12:14:28 +0200 (Wed, 19 Oct 2016)
+*  Revision:       47480
 *
 *  Description:    Driver for the RF Core.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/rfc.h>
+#include "rfc.h"
 #include <string.h>
 
 //*****************************************************************************
@@ -144,14 +144,15 @@ RFCSynthPowerDown()
   // Disable CPE clock, enable FSCA clock. NOTE: Radio will no longer respond to commands!
   HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) = (HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) & ~RFC_PWR_PWMCLKEN_CPE_M) | RFC_PWR_PWMCLKEN_FSCA_M;
 
-  (*((volatile unsigned long *)(RFC_RESERVED0))) = 3;
-  (*((volatile unsigned long *)(RFC_RESERVED1))) = 0x1030;
-  (*((volatile unsigned long *)(RFC_RESERVED2))) = 1;
-  (*((volatile unsigned long *)(RFC_RESERVED1))) = 0x50;
-  (*((volatile unsigned long *)(RFC_RESERVED2))) = 1;
-  (*((volatile unsigned long *)(RFC_RESERVED1))) = 0x650;
-  (*((volatile unsigned long *)(RFC_RESERVED2))) = 1;
-  (*((volatile unsigned long *)(RFC_RESERVED3))) = 1;
+  HWREG(RFC_RESERVED0) = 3;
+  HWREG(RFC_RESERVED1) = 0x1030;
+  HWREG(RFC_RESERVED2) = 1;
+  HWREG(RFC_RESERVED1) = 0x50;
+  HWREG(RFC_RESERVED2) = 1;
+  HWREG(RFC_RESERVED1) = 0x650;
+  HWREG(RFC_RESERVED2) = 1;
+  HWREG(RFC_RESERVED3) = 1;
+
 }
 
 
@@ -179,7 +180,7 @@ void RFCRfTrimRead(rfc_radioOp_t *pOpSetup, rfTrim_t* pRfTrim)
 //*****************************************************************************
 void RFCRTrim(rfc_radioOp_t *pOpSetup)
 {
- // Function is left blank for compatibility with CC13xx.
+ // Function is left blank for compatibility reasons.
 }
 
 
@@ -221,7 +222,7 @@ void RFCCPEPatchReset(void)
 //*****************************************************************************
 void RFCAdi3VcoLdoVoltageMode(bool bEnable)
 {
- // Function is left blank for compatibility with CC13xx.
+ // Function is left blank for compatibility reasons.
 }
 
 

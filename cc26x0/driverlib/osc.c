@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.c
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for setting up the system Oscillators
 *
@@ -36,12 +36,12 @@
 *
 ******************************************************************************/
 
-#include <inc/hw_types.h>
-#include <inc/hw_ccfg.h>
-#include <inc/hw_fcfg1.h>
-#include <driverlib/aon_batmon.h>
-#include <driverlib/aon_rtc.h>
-#include <driverlib/osc.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_ccfg.h"
+#include "../inc/hw_fcfg1.h"
+#include "aon_batmon.h"
+#include "aon_rtc.h"
+#include "osc.h"
 
 //*****************************************************************************
 //
@@ -91,7 +91,6 @@ typedef struct {
 
 static OscHfGlobals_t oscHfGlobals;
 
-
 //*****************************************************************************
 //
 //  Configure the oscillator input to the a source clock.
@@ -100,9 +99,7 @@ static OscHfGlobals_t oscHfGlobals;
 void
 OSCClockSourceSet(uint32_t ui32SrcClk, uint32_t ui32Osc)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32SrcClk & OSC_SRC_CLK_LF) ||
            (ui32SrcClk & OSC_SRC_CLK_MF) ||
            (ui32SrcClk & OSC_SRC_CLK_HF));
@@ -111,23 +108,17 @@ OSCClockSourceSet(uint32_t ui32SrcClk, uint32_t ui32Osc)
            (ui32Osc == OSC_XOSC_HF) ||
            (ui32Osc == OSC_XOSC_LF));
 
-    //
     // Request the high frequency source clock (using 24 MHz XTAL)
-    //
     if(ui32SrcClk & OSC_SRC_CLK_HF)
     {
-        //
         // Enable the HF XTAL as HF clock source
-        //
         DDI16BitfieldWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_CTL0,
                            DDI_0_OSC_CTL0_SCLK_HF_SRC_SEL_M,
                            DDI_0_OSC_CTL0_SCLK_HF_SRC_SEL_S,
                            ui32Osc);
     }
 
-    //
     // Configure the medium frequency source clock
-    //
     if(ui32SrcClk & OSC_SRC_CLK_MF)
     {
         DDI16BitfieldWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_CTL0,
@@ -136,14 +127,10 @@ OSCClockSourceSet(uint32_t ui32SrcClk, uint32_t ui32Osc)
                            ui32Osc);
     }
 
-    //
     // Configure the low frequency source clock.
-    //
     if(ui32SrcClk & OSC_SRC_CLK_LF)
     {
-        //
         // Change the clock source.
-        //
         DDI16BitfieldWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_CTL0,
                            DDI_0_OSC_CTL0_SCLK_LF_SRC_SEL_M,
                            DDI_0_OSC_CTL0_SCLK_LF_SRC_SEL_S,
@@ -161,15 +148,11 @@ OSCClockSourceGet(uint32_t ui32SrcClk)
 {
     uint32_t ui32ClockSource;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32SrcClk & OSC_SRC_CLK_LF) ||
            (ui32SrcClk & OSC_SRC_CLK_HF));
 
-    //
     // Return the source for the selected clock.
-    //
     if(ui32SrcClk == OSC_SRC_CLK_LF)
     {
         ui32ClockSource = DDI16BitfieldRead(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_STAT0,
@@ -265,9 +248,7 @@ OSCHF_AttemptToSwitchToXosc( void )
    if ( OSCHfSourceReady()) {
       OSCHfSourceSwitch();
 
-      //
       // Store startup time, but limit to 25 percent reduction each time.
-      //
       oscHfGlobals.timeXoscStable_CV  = AONRTCCurrentCompareValueGet();
       startupTimeInUs   = RTC_CV_TO_US( oscHfGlobals.timeXoscStable_CV - oscHfGlobals.timeXoscOn_CV );
       prevLimmit25InUs  = oscHfGlobals.previousStartupTimeInUs;
@@ -290,15 +271,11 @@ OSCHF_AttemptToSwitchToXosc( void )
 void
 OSCHF_SwitchToRcOscTurnOffXosc( void )
 {
-   //
    // Set SCLK_HF and SCLK_MF to RCOSC_HF without checking
    // Doing this anyway to keep HF and MF in sync
-   //
    OSCClockSourceSet( OSC_SRC_CLK_HF | OSC_SRC_CLK_MF, OSC_RCOSC_HF );
 
-   //
    // Do the switching if not already running on RCOSC_HF
-   //
    if ( OSCClockSourceGet( OSC_SRC_CLK_HF ) != OSC_RCOSC_HF ) {
       OSCHfSourceSwitch();
    }
@@ -404,7 +381,6 @@ OSCHF_DebugGetCrystalAmplitude( void )
    uint32_t deltaTime      ;
    uint32_t ampValue       ;
 
-   //
    // The specified method is as follows:
    // 1. Set minimum interval between oscillator amplitude calibrations.
    //    (Done by setting PER_M=0 and PER_E=1)
@@ -413,7 +389,6 @@ OSCHF_DebugGetCrystalAmplitude( void )
    // 3. Read out the crystal amplitude value from the peek detector.
    // 4. Restore original oscillator amplitude calibrations interval.
    // 5. Return crystal amplitude value converted to millivolt.
-   //
    oscCfgRegCopy = HWREG( AON_WUC_BASE + AON_WUC_O_OSCCFG );
    HWREG( AON_WUC_BASE + AON_WUC_O_OSCCFG ) = ( 1 << AON_WUC_OSCCFG_PER_E_S );
    startTime = AONRTCCurrentCompareValueGet();

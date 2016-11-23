@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       smph.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the MCU Semaphore.
 *
@@ -61,10 +61,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_smph.h>
-#include <inc/hw_memmap.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_smph.h"
+#include "../inc/hw_memmap.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -177,9 +177,7 @@ SMPHTryAcquire(uint32_t ui32Semaphore)
 {
     uint32_t ui32SemaReg;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Semaphore == SMPH_0) ||
            (ui32Semaphore == SMPH_1) ||
            (ui32Semaphore == SMPH_2) ||
@@ -213,10 +211,8 @@ SMPHTryAcquire(uint32_t ui32Semaphore)
            (ui32Semaphore == SMPH_30) ||
            (ui32Semaphore == SMPH_31));
 
-    //
     // Semaphore register reads 1 if lock was acquired
     // (i.e. SMPH_FREE).
-    //
     ui32SemaReg = HWREG(SMPH_BASE + SMPH_O_SMPH0 + 4 * ui32Semaphore);
 
     return (ui32SemaReg == SMPH_FREE);
@@ -243,9 +239,7 @@ SMPHTryAcquire(uint32_t ui32Semaphore)
 __STATIC_INLINE void
 SMPHRelease(uint32_t ui32Semaphore)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Semaphore == SMPH_0) ||
            (ui32Semaphore == SMPH_1) ||
            (ui32Semaphore == SMPH_2) ||
@@ -279,10 +273,8 @@ SMPHRelease(uint32_t ui32Semaphore)
            (ui32Semaphore == SMPH_30) ||
            (ui32Semaphore == SMPH_31));
 
-    //
     // No check before release, it is up to the application to provide the
     // conventions for who and when a semaphore can be released.
-    //
     HWREG(SMPH_BASE + SMPH_O_SMPH0 + 4 * ui32Semaphore) = SMPH_FREE;
 }
 
@@ -293,7 +285,7 @@ SMPHRelease(uint32_t ui32Semaphore)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_SMPHAcquire
         #undef  SMPHAcquire
         #define SMPHAcquire                     ROM_SMPHAcquire

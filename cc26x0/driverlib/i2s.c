@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       i2s.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the I2S.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/i2s.h>
+#include "i2s.h"
 
 //*****************************************************************************
 //
@@ -78,30 +78,22 @@ I2SControlTable *g_pControlTable;
 void
 I2SEnable(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Make sure the control table pointer is setup to a memory location.
-    //
     if(!(g_pControlTable))
     {
         return;
     }
 
-    //
     // Write the address to the first input/output buffer.
-    //
     HWREG(I2S0_BASE + I2S_O_AIFINPTRNEXT) = g_pControlTable->ui32InBase;
     g_pControlTable->ui32InOffset = 0;
     HWREG(I2S0_BASE + I2S_O_AIFOUTPTRNEXT) = g_pControlTable->ui32OutBase;
     g_pControlTable->ui32OutOffset = 0;
 
-    //
     // Enable the I2S module.
-    //
     HWREG(I2S0_BASE + I2S_O_AIFDMACFG) = (uint32_t)g_pControlTable->ui16DMABufSize - 1;
 }
 
@@ -114,20 +106,14 @@ void
 I2SAudioFormatConfigure(uint32_t ui32Base, uint32_t ui32FmtCfg,
                         uint32_t ui32BitClkDelay)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
     ASSERT(ui32BitClkDelay <= 255);
 
-    //
     // Save the length of the audio words stored in memory.
-    //
     g_pControlTable->ui16MemLen = (ui32FmtCfg & I2S_MEM_LENGTH_24) ? 24 : 16;
 
-    //
     // Write the configuration.
-    //
     HWREG(I2S0_BASE + I2S_O_AIFFMTCFG) = ui32FmtCfg | (ui32BitClkDelay << I2S_AIFFMTCFG_DATA_DELAY_S);
 }
 
@@ -144,9 +130,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
     uint32_t ui32OutChan;
     uint32_t ui32ChanMask;
 
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
     ASSERT(ui32Chan0Cfg & (I2S_CHAN_CFG_MASK | I2S_LINE_MASK))
     ASSERT(ui32Chan1Cfg & (I2S_CHAN_CFG_MASK | I2S_LINE_MASK))
@@ -155,9 +139,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
     ui32InChan = 0;
     ui32OutChan = 0;
 
-    //
     // Configure input/output channels.
-    //
     HWREG(I2S0_BASE + I2S_O_AIFDIRCFG) = ((ui32Chan0Cfg << I2S_AIFDIRCFG_AD0_S)
                                          & I2S_AIFDIRCFG_AD0_M) |
                                         ((ui32Chan1Cfg << I2S_AIFDIRCFG_AD1_S)
@@ -165,16 +147,12 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
                                         ((ui32Chan2Cfg << I2S_AIFDIRCFG_AD2_S)
                                          & I2S_AIFDIRCFG_AD2_M);
 
-    //
     // Configure the valid channel mask.
-    //
     HWREG(I2S0_BASE + I2S_O_AIFWMASK0) = (ui32Chan0Cfg >> 8) & I2S_AIFWMASK0_MASK_M;
     HWREG(I2S0_BASE + I2S_O_AIFWMASK1) = (ui32Chan1Cfg >> 8) & I2S_AIFWMASK1_MASK_M;
     HWREG(I2S0_BASE + I2S_O_AIFWMASK2) = (ui32Chan2Cfg >> 8) & I2S_AIFWMASK2_MASK_M;
 
-    //
     // Resolve and save the number of input and output channels.
-    //
     ui32ChanMask = (ui32Chan0Cfg & I2S_CHAN_CFG_MASK) >> 8;
     if(ui32Chan0Cfg & I2S_LINE_INPUT)
     {
@@ -184,9 +162,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
             {
                 ui32InChan++;
             }
-            //
             // Shift down channel mask
-            //
             ui32ChanMask >>= 1;
         }
 
@@ -199,9 +175,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
             {
                 ui32OutChan++;
             }
-            //
             // Shift down channel mask
-            //
             ui32ChanMask >>= 1;
         }
     }
@@ -215,9 +189,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
             {
                 ui32InChan++;
             }
-            //
             // Shift down channel mask
-            //
             ui32ChanMask >>= 1;
         }
     }
@@ -229,9 +201,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
             {
                 ui32OutChan++;
             }
-            //
             // Shift down channel mask
-            //
             ui32ChanMask >>= 1;
         }
     }
@@ -245,9 +215,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
             {
                 ui32InChan++;
             }
-            //
             // Shift down channel mask
-            //
             ui32ChanMask >>= 1;
         }
     }
@@ -259,9 +227,7 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
             {
                 ui32OutChan++;
             }
-            //
             // Shift down channel mask
-            //
             ui32ChanMask >>= 1;
         }
     }
@@ -280,15 +246,11 @@ I2SBufferConfig(uint32_t ui32Base, uint32_t ui32InBufBase,
                 uint32_t ui32OutBufBase, uint16_t ui16DMABufSize,
                 uint16_t ui16ChanBufSize)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
     ASSERT(ui16DMABufSize > 0);
 
-    //
     // Setup the input data pointer and buffer sizes.
-    //
     g_pControlTable->ui16DMABufSize = ui16DMABufSize;
     g_pControlTable->ui16ChBufSize = ui16ChanBufSize;
     g_pControlTable->ui32InBase = ui32InBufBase;
@@ -303,14 +265,10 @@ I2SBufferConfig(uint32_t ui32Base, uint32_t ui32InBufBase,
 void
 I2SPointerSet(uint32_t ui32Base, bool bInput, void * pNextPointer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Update the next input/output pointer with the correct address.
-    //
     if(bInput == true)
     {
         HWREG(I2S0_BASE + I2S_O_AIFINPTRNEXT) = (uint32_t)pNextPointer;
@@ -331,14 +289,10 @@ I2SPointerUpdate(uint32_t ui32Base, bool bInput)
 {
     uint32_t ui32NextPtr;
 
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Update the next input/output pointer with the correct address.
-    //
     if(bInput == true)
     {
         ui32NextPtr = (g_pControlTable->ui8InChan *
@@ -374,25 +328,19 @@ I2SSampleStampConfigure(uint32_t ui32Base, bool bInput, bool bOutput)
 {
     uint32_t ui32Trigger;
 
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
     ui32Trigger = HWREG(I2S0_BASE + I2S_O_STMPWCNT);
     ui32Trigger = (ui32Trigger + 2) % g_pControlTable->ui16ChBufSize;
 
-    //
     // Setup the sample stamp trigger for input streams.
-    //
     if(bInput)
     {
         HWREG(I2S0_BASE + I2S_O_STMPINTRIG) = ui32Trigger;
     }
 
-    //
     // Setup the sample stamp trigger for output streams.
-    //
     if(bOutput)
     {
         HWREG(I2S0_BASE + I2S_O_STMPOUTTRIG) = ui32Trigger;
@@ -413,24 +361,16 @@ I2SSampleStampGet(uint32_t ui32Base, uint32_t ui32Channel)
     uint32_t ui32PeriodSysClkCnt;
     uint32_t ui32SampleStamp;
 
-    //
     // Get the number of Frame clock counts since last stamp.
-    //
     ui32FrameClkCnt = HWREG(I2S0_BASE + I2S_O_STMPWCNTCAPT0);
 
-    //
     // Get the number of system clock ticks since last frame clock edge.
-    //
     ui32SysClkCnt = HWREG(I2S0_BASE + I2S_O_STMPXCNTCAPT0);
 
-    //
     // Get the number system clock ticks in the last frame clock period.
-    //
     ui32PeriodSysClkCnt = HWREG(I2S0_BASE + I2S_O_STMPXPER);
 
-    //
     // Calculate the sample stamp.
-    //
     ui32SampleStamp = (ui32SysClkCnt << 16) / ui32PeriodSysClkCnt;
     ui32SampleStamp = (ui32SampleStamp > I2S_STMP_SATURATION) ?
                       I2S_STMP_SATURATION : ui32SampleStamp;

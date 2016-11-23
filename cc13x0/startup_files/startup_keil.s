@@ -1,7 +1,7 @@
 ; /******************************************************************************
 ; *  Filename:       startup_keil.c
-; *  Revised:        $Date: 2016-05-19 11:08:26 +0200 (to, 19 mai 2016) $
-; *  Revision:       $Revision: 17109 $
+; *  Revised:        $Date: 2016-09-26 11:02:06 +0200 (ma, 26 sep 2016) $
+; *  Revision:       $Revision: 17337 $
 ; *
 ; *  Description:    Startup code for CC13xx device family for use with KEIL.
 ; *
@@ -38,7 +38,7 @@
 ; ******************************************************************************/
 ;// <<< Use Configuration Wizard in Context Menu >>>
 ;*/
-#include <driverlib/setup.h>
+#include "../driverlib/setup.h"
 
 ; <h> Stack Configuration
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
@@ -72,60 +72,60 @@ __heap_limit
                 EXPORT  __Vectors_End
                 EXPORT  __Vectors_Size
 
-__Vectors       DCD     __initial_sp              ; Top of Stack
-                DCD     ResetISR                  ; Reset Handler
-                DCD     NmiSR                     ; NMI Handler
-                DCD     FaultISR                  ; Hard Fault Handler
-                DCD     MPUFaultIntHandler        ; The MPU fault handler
-                DCD     BusFaultIntHandler        ; The bus fault handler
-                DCD     UsageFaultIntHandler      ; The usage fault handler
-                DCD     0                         ; Reserved
-                DCD     0                         ; Reserved
-                DCD     0                         ; Reserved
-                DCD     0                         ; Reserved
-                DCD     SVCallIntHandler          ; SVCall Handler
-                DCD     DebugMonIntHandler        ; Debug monitor handler
-                DCD     0                         ; Reserved
-                DCD     PendSVIntHandler          ; PendSV Handler
-                DCD     SysTickIntHandler         ; SysTick Handler
+__Vectors       DCD     __initial_sp              ;  0 Top of Stack
+                DCD     ResetISR                  ;  1 Reset Handler
+                DCD     NmiSR                     ;  2 NMI Handler
+                DCD     FaultISR                  ;  3 Hard Fault Handler
+                DCD     MPUFaultIntHandler        ;  4 The MPU fault handler
+                DCD     BusFaultIntHandler        ;  5 The bus fault handler
+                DCD     UsageFaultIntHandler      ;  6 The usage fault handler
+                DCD     0                         ;  7 Reserved
+                DCD     0                         ;  8 Reserved
+                DCD     0                         ;  9 Reserved
+                DCD     0                         ; 10 Reserved
+                DCD     SVCallIntHandler          ; 11 SVCall Handler
+                DCD     DebugMonIntHandler        ; 12 Debug monitor handler
+                DCD     0                         ; 13 Reserved
+                DCD     PendSVIntHandler          ; 14 PendSV Handler
+                DCD     SysTickIntHandler         ; 15 SysTick Handler
 
-                ; External Interrupts
-                DCD     GPIOIntHandler            ; 0 AON edge detect
-                DCD     I2CIntHandler             ; 1 I2C
-                DCD     RFCCPE1IntHandler         ; 2 RF Core Command & Packet Engine 1
-                DCD     AONIntHandler             ; 3 AON SpiSplave Rx, Tx and CS
-                DCD     AONRTCIntHandler          ; 4 AON RTC
-                DCD     UART0IntHandler           ; 5 UART0 Rx and Tx
-                DCD     IntDefaultHandler         ; 6 AUX software event 0
-                DCD     SSI0IntHandler            ; 7 SSI0 Rx and Tx
-                DCD     SSI1IntHandler            ; 8 SSI1 Rx and Tx
-                DCD     RFCCPE0IntHandler         ; 9 RF Core Command & Packet Engine 0
-                DCD     RFCHardwareIntHandler     ; 10 RF Core Hardware
-                DCD     RFCCmdAckIntHandler       ; 11 RF Core Command Acknowledge
-                DCD     I2SIntHandler             ; 12 I2S
-                DCD     IntDefaultHandler         ; 13 AUX software event 1
-                DCD     WatchdogIntHandler        ; 14 Watchdog timer
-                DCD     Timer0AIntHandler         ; 15 Timer 0 subtimer A
-                DCD     Timer0BIntHandler         ; 16 Timer 0 subtimer B
-                DCD     Timer1AIntHandler         ; 17 Timer 1 subtimer A
-                DCD     Timer1BIntHandler         ; 18 Timer 1 subtimer B
-                DCD     Timer2AIntHandler         ; 19 Timer 2 subtimer A
-                DCD     Timer2BIntHandler         ; 20 Timer 2 subtimer B
-                DCD     Timer3AIntHandler         ; 21 Timer 3 subtimer A
-                DCD     Timer3BIntHandler         ; 22 Timer 3 subtimer B
-                DCD     CryptoIntHandler          ; 23 Crypto Core Result available
-                DCD     uDMAIntHandler            ; 24 uDMA Software
-                DCD     uDMAErrIntHandler         ; 25 uDMA Error
-                DCD     FlashIntHandler           ; 26 Flash controller
-                DCD     SWEvent0IntHandler        ; 27 Software Event 0
-                DCD     AUXCombEventIntHandler    ; 28 AUX combined event
-                DCD     AONProgIntHandler         ; 29 AON programmable 0
-                DCD     DynProgIntHandler         ; 30 Dynamic Programmable interrupt
+                ; External interrupts
+                DCD     GPIOIntHandler            ; 16 AON edge detect
+                DCD     I2CIntHandler             ; 17 I2C
+                DCD     RFCCPE1IntHandler         ; 18 RF Core Command & Packet Engine 1
+                DCD     IntDefaultHandler         ; 19 Reserved
+                DCD     AONRTCIntHandler          ; 20 AON RTC
+                DCD     UART0IntHandler           ; 21 UART0 Rx and Tx
+                DCD     IntDefaultHandler         ; 22 AUX software event 0
+                DCD     SSI0IntHandler            ; 23 SSI0 Rx and Tx
+                DCD     SSI1IntHandler            ; 24 SSI1 Rx and Tx
+                DCD     RFCCPE0IntHandler         ; 25 RF Core Command & Packet Engine 0
+                DCD     RFCHardwareIntHandler     ; 26 RF Core Hardware
+                DCD     RFCCmdAckIntHandler       ; 27 RF Core Command Acknowledge
+                DCD     I2SIntHandler             ; 28 I2S
+                DCD     IntDefaultHandler         ; 29 AUX software event 1
+                DCD     WatchdogIntHandler        ; 30 Watchdog timer
+                DCD     Timer0AIntHandler         ; 31 Timer 0 subtimer A
+                DCD     Timer0BIntHandler         ; 32 Timer 0 subtimer B
+                DCD     Timer1AIntHandler         ; 33 Timer 1 subtimer A
+                DCD     Timer1BIntHandler         ; 34 Timer 1 subtimer B
+                DCD     Timer2AIntHandler         ; 35 Timer 2 subtimer A
+                DCD     Timer2BIntHandler         ; 36 Timer 2 subtimer B
+                DCD     Timer3AIntHandler         ; 37 Timer 3 subtimer A
+                DCD     Timer3BIntHandler         ; 38 Timer 3 subtimer B
+                DCD     CryptoIntHandler          ; 39 Crypto Core Result available
+                DCD     uDMAIntHandler            ; 40 uDMA Software
+                DCD     uDMAErrIntHandler         ; 41 uDMA Error
+                DCD     FlashIntHandler           ; 42 Flash controller
+                DCD     SWEvent0IntHandler        ; 43 Software Event 0
+                DCD     AUXCombEventIntHandler    ; 44 AUX combined event
+                DCD     AONProgIntHandler         ; 45 AON programmable 0
+                DCD     DynProgIntHandler         ; 46 Dynamic Programmable interrupt
                                                   ;    source (Default: PRCM)
-                DCD     AUXCompAIntHandler        ; 31 AUX Comparator A
-                DCD     AUXADCIntHandler          ; 32 AUX ADC new sample or ADC DMA
+                DCD     AUXCompAIntHandler        ; 47 AUX Comparator A
+                DCD     AUXADCIntHandler          ; 48 AUX ADC new sample or ADC DMA
                                                   ;    done, ADC underflow, ADC overflow
-                DCD     TRNGIntHandler            ; 33 TRNG event
+                DCD     TRNGIntHandler            ; 49 TRNG event
 __Vectors_End
 
 __Vectors_Size  EQU     __Vectors_End - __Vectors
@@ -201,7 +201,6 @@ IntDefaultHandler\
                 EXPORT  GPIOIntHandler            [WEAK]
                 EXPORT  I2CIntHandler             [WEAK]
                 EXPORT  RFCCPE1IntHandler         [WEAK]
-                EXPORT  AONIntHandler             [WEAK]
                 EXPORT  AONRTCIntHandler          [WEAK]
                 EXPORT  UART0IntHandler           [WEAK]
                 EXPORT  SSI0IntHandler            [WEAK]
@@ -233,7 +232,6 @@ IntDefaultHandler\
 GPIOIntHandler
 I2CIntHandler
 RFCCPE1IntHandler
-AONIntHandler
 AONRTCIntHandler
 UART0IntHandler
 SSI0IntHandler

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ddi.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the DDI master interface
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/ddi.h>
+#include "ddi.h"
 
 //*****************************************************************************
 //
@@ -66,15 +66,11 @@ void
 DDI32RegWrite(uint32_t ui32Base, uint32_t ui32Reg,
               uint32_t ui32Val)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
     ASSERT(ui32Reg < DDI_SLAVE_REGS);
 
-    //
     // Write the value to the register.
-    //
     AuxAdiDdiSafeWrite(ui32Base + ui32Reg, ui32Val, 4);
 }
 
@@ -90,35 +86,25 @@ DDI16BitWrite(uint32_t ui32Base, uint32_t ui32Reg,
     uint32_t ui32RegAddr;
     uint32_t ui32Data;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
     ASSERT(!((ui32Mask & 0xFFFF0000) ^ (ui32Mask & 0x0000FFFF)));
     ASSERT(!(ui32WrData & 0xFFFF0000));
 
-    //
     // DDI 16-bit target is on 32-bit boundary so double offset
-    //
     ui32RegAddr = ui32Base + (ui32Reg << 1) + DDI_O_MASK16B;
 
-    //
     // Adjust for target bit in high half of the word.
-    //
     if(ui32Mask & 0xFFFF0000)
     {
         ui32RegAddr += 4;
         ui32Mask >>= 16;
     }
 
-    //
     // Write mask if data is not zero (to set mask bit), else write '0'.
-    //
     ui32Data = ui32WrData ? ui32Mask : 0x0;
 
-    //
     // Update the register.
-    //
     AuxAdiDdiSafeWrite(ui32RegAddr, (ui32Mask << 16) | ui32Data, 4);
 }
 
@@ -135,19 +121,13 @@ DDI16BitfieldWrite(uint32_t ui32Base, uint32_t ui32Reg,
     uint32_t ui32RegAddr;
     uint32_t ui32WrData;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
 
-    //
     // 16-bit target is on 32-bit boundary so double offset.
-    //
     ui32RegAddr = ui32Base + (ui32Reg << 1) + DDI_O_MASK16B;
 
-    //
     // Adjust for target bit in high half of the word.
-    //
     if(ui32Shift >= 16)
     {
         ui32Shift = ui32Shift - 16;
@@ -155,14 +135,10 @@ DDI16BitfieldWrite(uint32_t ui32Base, uint32_t ui32Reg,
         ui32Mask = ui32Mask >> 16;
     }
 
-    //
     // Shift data in to position.
-    //
     ui32WrData = ui32Data << ui32Shift;
 
-    //
     // Write data.
-    //
     AuxAdiDdiSafeWrite(ui32RegAddr, (ui32Mask << 16) | ui32WrData, 4);
 }
 
@@ -177,38 +153,26 @@ DDI16BitRead(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Mask)
     uint32_t ui32RegAddr;
     uint16_t ui16Data;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
 
-    //
     // Calculate the address of the register.
-    //
     ui32RegAddr = ui32Base + ui32Reg + DDI_O_DIR;
 
-    //
     // Adjust for target bit in high half of the word.
-    //
     if(ui32Mask & 0xFFFF0000)
     {
         ui32RegAddr += 2;
         ui32Mask = ui32Mask >> 16;
     }
 
-    //
     // Read a halfword on the DDI interface.
-    //
     ui16Data = AuxAdiDdiSafeRead(ui32RegAddr, 2);
 
-    //
     // Mask data.
-    //
     ui16Data = ui16Data & ui32Mask;
 
-    //
     // Return masked data.
-    //
     return(ui16Data);
 }
 
@@ -224,19 +188,13 @@ DDI16BitfieldRead(uint32_t ui32Base, uint32_t ui32Reg,
     uint32_t ui32RegAddr;
     uint16_t ui16Data;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
 
-    //
     // Calculate the register address.
-    //
     ui32RegAddr = ui32Base + ui32Reg + DDI_O_DIR;
 
-    //
     // Adjust for target bit in high half of the word.
-    //
     if(ui32Shift >= 16)
     {
         ui32Shift = ui32Shift - 16;
@@ -244,19 +202,13 @@ DDI16BitfieldRead(uint32_t ui32Base, uint32_t ui32Reg,
         ui32Mask = ui32Mask >> 16;
     }
 
-    //
     // Read the register.
-    //
     ui16Data = AuxAdiDdiSafeRead(ui32RegAddr, 2);
 
-    //
     // Mask data and shift into place.
-    //
     ui16Data &= ui32Mask;
     ui16Data >>= ui32Shift;
 
-    //
     // Return data.
-    //
     return(ui16Data);
 }

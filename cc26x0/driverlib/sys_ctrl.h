@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the System Controller.
 *
@@ -61,33 +61,33 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_sysctl.h>
-#include <inc/hw_prcm.h>
-#include <inc/hw_nvic.h>
-#include <inc/hw_aon_wuc.h>
-#include <inc/hw_aux_wuc.h>
-#include <inc/hw_aon_ioc.h>
-#include <inc/hw_ddi_0_osc.h>
-#include <inc/hw_rfc_pwr.h>
-#include <inc/hw_prcm.h>
-#include <inc/hw_adi_3_refsys.h>
-#include <inc/hw_aon_sysctl.h>
-#include <inc/hw_aon_rtc.h>
-#include <inc/hw_fcfg1.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/debug.h>
-#include <driverlib/pwr_ctrl.h>
-#include <driverlib/osc.h>
-#include <driverlib/prcm.h>
-#include <driverlib/aux_wuc.h>
-#include <driverlib/aon_wuc.h>
-#include <driverlib/adi.h>
-#include <driverlib/ddi.h>
-#include <driverlib/cpu.h>
-#include <driverlib/vims.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_sysctl.h"
+#include "../inc/hw_prcm.h"
+#include "../inc/hw_nvic.h"
+#include "../inc/hw_aon_wuc.h"
+#include "../inc/hw_aux_wuc.h"
+#include "../inc/hw_aon_ioc.h"
+#include "../inc/hw_ddi_0_osc.h"
+#include "../inc/hw_rfc_pwr.h"
+#include "../inc/hw_prcm.h"
+#include "../inc/hw_adi_3_refsys.h"
+#include "../inc/hw_aon_sysctl.h"
+#include "../inc/hw_aon_rtc.h"
+#include "../inc/hw_fcfg1.h"
+#include "interrupt.h"
+#include "debug.h"
+#include "pwr_ctrl.h"
+#include "osc.h"
+#include "prcm.h"
+#include "aux_wuc.h"
+#include "aon_wuc.h"
+#include "adi.h"
+#include "ddi.h"
+#include "cpu.h"
+#include "vims.h"
 
 //*****************************************************************************
 //
@@ -172,9 +172,7 @@ extern void SysCtrlPowerEverything(void);
 __STATIC_INLINE uint32_t
 SysCtrlClockGet( void )
 {
-    //
     // Return fixed clock speed
-    //
     return( GET_MCU_CLOCK );
 }
 
@@ -195,9 +193,7 @@ SysCtrlClockGet( void )
 __STATIC_INLINE void
 SysCtrlAonSync(void)
 {
-    //
     // Sync the AON interface
-    //
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC);
 }
 
@@ -222,10 +218,8 @@ SysCtrlAonSync(void)
 __STATIC_INLINE void
 SysCtrlAonUpdate(void)
 {
-    //
     // Force a clock cycle on the AON interface to guarantee all registers are
     // in sync.
-    //
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC) = 1;
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC);
 }
@@ -361,9 +355,7 @@ SysCtrlSystemReset( void )
 __STATIC_INLINE void
 SysCtrlClockLossResetEnable(void)
 {
-    //
     // Set clock loss enable bit in AON_SYSCTRL using bit banding
-    //
     HWREGBITW(AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL, AON_SYSCTL_RESETCTL_CLK_LOSS_EN_BITN) = 1;
 }
 
@@ -383,9 +375,7 @@ SysCtrlClockLossResetEnable(void)
 __STATIC_INLINE void
 SysCtrlClockLossResetDisable(void)
 {
-    //
     // Clear clock loss enable bit in AON_SYSCTRL using bit banding
-    //
     HWREGBITW(AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL, AON_SYSCTL_RESETCTL_CLK_LOSS_EN_BITN) = 0;
 }
 
@@ -396,7 +386,7 @@ SysCtrlClockLossResetDisable(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_SysCtrlPowerEverything
         #undef  SysCtrlPowerEverything
         #define SysCtrlPowerEverything          ROM_SysCtrlPowerEverything

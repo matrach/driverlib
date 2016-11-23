@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rom.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Prototypes for the ROM utility functions.
 *
@@ -50,19 +50,15 @@ extern "C"
 {
 #endif
 
-#include <inc/hw_types.h>
+#include "../inc/hw_types.h"
 
 #ifndef __HAPI_H__
 #define __HAPI_H__
 
-//
 // Start address of the ROM hard API access table (located after the ROM FW rev field)
-//
 #define ROM_HAPI_TABLE_ADDR 0x10000048
 
-//
 // ROM Hard-API function interface types
-//
 typedef uint32_t     (* FPTR_CRC32_T)              ( uint8_t*     /* pui8Data        */,\
                                                      uint32_t     /* ui32ByteCount   */,\
                                                      uint32_t     /* ui32RepeatCount */);
@@ -116,9 +112,7 @@ extern uint32_t MemBusWrkAroundHapiProgramFlash(uint8_t *pui8DataBuffer,
 
 extern uint32_t MemBusWrkAroundHapiEraseSector(uint32_t ui32Address);
 
-//
 // ROM Hard-API access table type
-//
 typedef struct
 {
     FPTR_CRC32_T                    Crc32;
@@ -142,14 +136,10 @@ typedef struct
     FPTR_COMPBREF_T                 SelectCompBRef;
 } HARD_API_T;
 
-//
 // Pointer to the ROM HAPI table
-//
 #define P_HARD_API                   ((HARD_API_T*) ROM_HAPI_TABLE_ADDR)
 
-//
 // Add wrapper around the Hapi functions needing the "bus arbitration issue" workaround
-//
 extern void SafeHapiVoid( FPTR_VOID_VOID_T fPtr );
 extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
 
@@ -170,10 +160,8 @@ extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
 #define HapiSelectADCCompBInput(a)   SafeHapiAuxAdiSelect( P_HARD_API->SelectADCCompBInput, a )
 #define HapiSelectCompBRef(a)        SafeHapiAuxAdiSelect( P_HARD_API->SelectCompBRef     , a )
 
-//
 // Defines for input parameter to the HapiSelectCompAInput function.
 // The define values can not be changed!
-//
 #define COMPA_IN_NC            0x00
 #define COMPA_IN_AUXIO7        0x09
 #define COMPA_IN_AUXIO6        0x0A
@@ -184,10 +172,8 @@ extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
 #define COMPA_IN_AUXIO1        0x0F
 #define COMPA_IN_AUXIO0        0x10
 
-//
 // Defines for input parameter to the HapiSelectCompARef function.
 // The define values can not be changed!
-//
 #define COMPA_REF_NC           0x00
 #define COMPA_REF_DCOUPL       0x01
 #define COMPA_REF_VSS          0x02
@@ -202,10 +188,8 @@ extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
 #define COMPA_REF_AUXIO1       0x0F
 #define COMPA_REF_AUXIO0       0x10
 
-//
 // Defines for input parameter to the HapiSelectADCCompBInput function.
 // The define values can not be changed!
-//
 #define ADC_COMPB_IN_NC        0x00
 #define ADC_COMPB_IN_DCOUPL    0x03
 #define ADC_COMPB_IN_VSS       0x04
@@ -219,10 +203,8 @@ extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
 #define ADC_COMPB_IN_AUXIO1    0x0F
 #define ADC_COMPB_IN_AUXIO0    0x10
 
-//
 // Defines for input parameter to the HapiSelectCompBRef function.
 // The define values can not be changed!
-//
 #define COMPB_REF_NC           0x00
 #define COMPB_REF_DCOUPL       0x01
 #define COMPB_REF_VSS          0x02

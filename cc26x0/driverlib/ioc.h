@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ioc.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the IO Controller.
 *
@@ -61,13 +61,13 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ioc.h>
-#include <inc/hw_ints.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/debug.h>
-#include <driverlib/gpio.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ioc.h"
+#include "../inc/hw_ints.h"
+#include "interrupt.h"
+#include "debug.h"
+#include "gpio.h"
 
 //*****************************************************************************
 //
@@ -701,14 +701,10 @@ extern void IOCIOPortIdSet(uint32_t ui32IOId, uint32_t ui32PortId);
 __STATIC_INLINE void
 IOCIntRegister(void (*pfnHandler)(void))
 {
-    //
     // Register the interrupt handler.
-    //
     IntRegister(INT_AON_GPIO_EDGE, pfnHandler);
 
-    //
     // Enable the IO edge interrupt.
-    //
     IntEnable(INT_AON_GPIO_EDGE);
 }
 
@@ -728,14 +724,10 @@ IOCIntRegister(void (*pfnHandler)(void))
 __STATIC_INLINE void
 IOCIntUnregister(void)
 {
-    //
     // Disable the interrupts.
-    //
     IntDisable(INT_AON_GPIO_EDGE);
 
-    //
     // Unregister the interrupt handler.
-    //
     IntUnregister(INT_AON_GPIO_EDGE);
 }
 
@@ -806,14 +798,10 @@ extern void IOCIntDisable(uint32_t ui32IOId);
 __STATIC_INLINE void
 IOCIntClear(uint32_t ui32IOId)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
 
-    //
     // Clear the requested interrupt source by clearing the event.
-    //
     GPIO_clearEventDio(ui32IOId);
 }
 
@@ -832,14 +820,10 @@ IOCIntClear(uint32_t ui32IOId)
 __STATIC_INLINE uint32_t
 IOCIntStatus(uint32_t ui32IOId)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
 
-    //
     // Get the event status.
-    //
     return (GPIO_getEventDio(ui32IOId));
 }
 
@@ -1057,7 +1041,7 @@ extern void IOCPinTypeAux(uint32_t ui32IOId);
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_IOCPortConfigureSet
         #undef  IOCPortConfigureSet
         #define IOCPortConfigureSet             ROM_IOCPortConfigureSet

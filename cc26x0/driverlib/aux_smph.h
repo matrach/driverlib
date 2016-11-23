@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_smph.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AUX Semaphore
 *
@@ -61,10 +61,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_aux_smph.h>
-#include <inc/hw_memmap.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_aux_smph.h"
+#include "../inc/hw_memmap.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -124,9 +124,7 @@ extern "C"
 __STATIC_INLINE void
 AUXSMPHAcquire(uint32_t ui32Semaphore)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Semaphore == AUX_SMPH_0) ||
            (ui32Semaphore == AUX_SMPH_1) ||
            (ui32Semaphore == AUX_SMPH_2) ||
@@ -136,11 +134,9 @@ AUXSMPHAcquire(uint32_t ui32Semaphore)
            (ui32Semaphore == AUX_SMPH_6) ||
            (ui32Semaphore == AUX_SMPH_7));
 
-    //
     // Wait for semaphore to be released such that it can be claimed
     // Semaphore register reads 1 when lock was acquired otherwise 0
     // (i.e. AUX_SMPH_CLAIMED).
-    //
     while(HWREG(AUX_SMPH_BASE + AUX_SMPH_O_SMPH0 + 4 * ui32Semaphore) ==
             AUX_SMPH_CLAIMED)
     {
@@ -178,9 +174,7 @@ AUXSMPHTryAcquire(uint32_t ui32Semaphore)
 {
     uint32_t ui32SemaReg;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Semaphore == AUX_SMPH_0) ||
            (ui32Semaphore == AUX_SMPH_1) ||
            (ui32Semaphore == AUX_SMPH_2) ||
@@ -190,10 +184,8 @@ AUXSMPHTryAcquire(uint32_t ui32Semaphore)
            (ui32Semaphore == AUX_SMPH_6) ||
            (ui32Semaphore == AUX_SMPH_7));
 
-    //
     // AUX Semaphore register reads 1 if lock was acquired
     // (i.e. SMPH_FREE when read) but subsequent reads will read 0.
-    //
     ui32SemaReg = HWREG(AUX_SMPH_BASE + AUX_SMPH_O_SMPH0 + 4 * ui32Semaphore);
 
     return (ui32SemaReg == AUX_SMPH_FREE);
@@ -230,9 +222,7 @@ AUXSMPHTryAcquire(uint32_t ui32Semaphore)
 __STATIC_INLINE void
 AUXSMPHRelease(uint32_t ui32Semaphore)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Semaphore == AUX_SMPH_0) ||
            (ui32Semaphore == AUX_SMPH_1) ||
            (ui32Semaphore == AUX_SMPH_2) ||
@@ -242,10 +232,8 @@ AUXSMPHRelease(uint32_t ui32Semaphore)
            (ui32Semaphore == AUX_SMPH_6) ||
            (ui32Semaphore == AUX_SMPH_7));
 
-    //
     // No check before release. It is up to the application to provide the
     // conventions for who and when a semaphore can be released.
-    //
     HWREG(AUX_SMPH_BASE + AUX_SMPH_O_SMPH0 + 4 * ui32Semaphore) =
         AUX_SMPH_FREE;
 }

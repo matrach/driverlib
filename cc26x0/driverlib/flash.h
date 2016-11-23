@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       flash.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the Flash driver.
 *
@@ -61,14 +61,14 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_flash.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_aon_sysctl.h>
-#include <inc/hw_fcfg1.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_flash.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_aon_sysctl.h"
+#include "../inc/hw_fcfg1.h"
+#include "interrupt.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -254,9 +254,7 @@ FlashSectorSizeGet(void)
                              FLASH_FCFG_B0_SSIZE0_B0_SECT_SIZE_M) >>
                             FLASH_FCFG_B0_SSIZE0_B0_SECT_SIZE_S;
 
-    //
     // Return flash sector size in number of bytes.
-    //
     return(ui32SectorSizeInKbyte * 1024);
 }
 
@@ -274,16 +272,12 @@ FlashSizeGet(void)
 {
     uint32_t ui32NoOfSectors;
 
-    //
     // Get number of flash sectors
-    //
     ui32NoOfSectors = (HWREG(FLASH_BASE + FLASH_O_FLASH_SIZE) &
                        FLASH_FLASH_SIZE_SECTORS_M) >>
                       FLASH_FLASH_SIZE_SECTORS_S;
 
-    //
     // Return flash size in number of bytes
-    //
     return(ui32NoOfSectors * FlashSectorSizeGet());
 }
 
@@ -486,14 +480,10 @@ FlashCheckFsmForReady(void)
 __STATIC_INLINE void
 FlashIntRegister(void (*pfnHandler)(void))
 {
-    //
     // Register the interrupt handler.
-    //
     IntRegister(INT_FLASH, pfnHandler);
 
-    //
     // Enable the flash interrupt.
-    //
     IntEnable(INT_FLASH);
 }
 
@@ -515,14 +505,10 @@ FlashIntRegister(void (*pfnHandler)(void))
 __STATIC_INLINE void
 FlashIntUnregister(void)
 {
-    //
     // Disable the interrupts.
-    //
     IntDisable(INT_FLASH);
 
-    //
     // Unregister the interrupt handler.
-    //
     IntUnregister(INT_FLASH);
 }
 
@@ -587,17 +573,13 @@ FlashIntStatus(void)
 
     ui32IntFlags = 0;
 
-    //
     // Check if FSM_DONE interrupt status is set.
-    //
     if(HWREG(FLASH_BASE + FLASH_O_FEDACSTAT) & FLASH_FEDACSTAT_FSM_DONE)
     {
         ui32IntFlags = FLASH_INT_FSM_DONE;
     }
 
-    //
     // Check if RVF_INT interrupt status is set.
-    //
     if(HWREG(FLASH_BASE + FLASH_O_FEDACSTAT) & FLASH_FEDACSTAT_RVF_INT)
     {
         ui32IntFlags |= FLASH_INT_RV;
@@ -654,9 +636,7 @@ FlashIntClear(uint32_t ui32IntFlags)
         ui32TempVal |= FLASH_FEDACSTAT_RVF_INT;
     }
 
-    //
     // Clear the flash interrupt source.
-    //
     HWREG(FLASH_BASE + FLASH_O_FEDACSTAT) = ui32TempVal;
 }
 
@@ -766,7 +746,7 @@ extern void FlashDisableSectorsForWrite(void);
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_FlashPowerModeSet
         #undef  FlashPowerModeSet
         #define FlashPowerModeSet               ROM_FlashPowerModeSet

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_rtc.h
-*  Revised:        2016-08-15 13:37:26 +0200 (Mon, 15 Aug 2016)
-*  Revision:       47015
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AON RTC
 *
@@ -61,10 +61,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_aon_rtc.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_aon_rtc.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -173,9 +173,7 @@ extern "C"
 __STATIC_INLINE void
 AONRTCEnable(void)
 {
-    //
     // Enable RTC.
-    //
     HWREGBITW(AON_RTC_BASE + AON_RTC_O_CTL, AON_RTC_CTL_EN_BITN) = 1;
 }
 
@@ -196,9 +194,7 @@ AONRTCEnable(void)
 __STATIC_INLINE void
 AONRTCDisable(void)
 {
-    //
     // Disable RTC
-    //
     HWREGBITW(AON_RTC_BASE + AON_RTC_O_CTL, AON_RTC_CTL_EN_BITN) = 0;
 }
 
@@ -214,9 +210,7 @@ AONRTCDisable(void)
 __STATIC_INLINE void
 AONRTCReset(void)
 {
-    //
     // Reset RTC.
-    //
     HWREGBITW(AON_RTC_BASE + AON_RTC_O_CTL, AON_RTC_CTL_RESET_BITN) = 1;
 }
 
@@ -309,9 +303,7 @@ AONRTCDelayConfig(uint32_t ui32Delay)
 {
     uint32_t ui32Cfg;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Delay <= AON_RTC_CONFIG_DELAY_144);
 
 
@@ -346,9 +338,7 @@ AONRTCCombinedEventConfig(uint32_t ui32Channels)
 {
     uint32_t ui32Cfg;
 
-    //
     // Check the arguments.
-    //
     ASSERT( (ui32Channels & (AON_RTC_CH0 | AON_RTC_CH1 | AON_RTC_CH2)) ||
             (ui32Channels == AON_RTC_CH_NONE) );
 
@@ -466,10 +456,8 @@ AONRTCEventGet(uint32_t ui32Channel)
 __STATIC_INLINE uint32_t
 AONRTCSecGet(void)
 {
-    //
     // The following read gets the seconds, but also latches the fractional
     // part.
-    //
     return(HWREG(AON_RTC_BASE + AON_RTC_O_SEC));
 }
 
@@ -496,14 +484,12 @@ AONRTCSecGet(void)
 __STATIC_INLINE uint32_t
 AONRTCFractionGet(void)
 {
-    //
     // Note1: It is recommended to use AON RTCCurrentCompareValueGet() instead
     //        of this function if the <16.16> format is sufficient.
     // Note2: AONRTCSecGet() must be called before this function to get a
     //        consistent reading.
     // Note3: Interrupts must be disabled between the call to AONRTCSecGet() and this
     //        call since there are interrupt functions that reads AON_RTC_O_SEC
-    //
     return(HWREG(AON_RTC_BASE + AON_RTC_O_SUBSEC));
 }
 
@@ -919,7 +905,7 @@ AONRTCCaptureValueCh1Get(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AONRTCCurrentCompareValueGet
         #undef  AONRTCCurrentCompareValueGet
         #define AONRTCCurrentCompareValueGet    ROM_AONRTCCurrentCompareValueGet

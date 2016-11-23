@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ddi.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the DDI master interface.
 *
@@ -61,12 +61,12 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ddi.h>
-#include <inc/hw_aux_smph.h>
-#include <driverlib/debug.h>
-#include <driverlib/cpu.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ddi.h"
+#include "../inc/hw_aux_smph.h"
+#include "debug.h"
+#include "cpu.h"
 
 //*****************************************************************************
 //
@@ -230,15 +230,11 @@ DDIBaseValid(uint32_t ui32Base)
 __STATIC_INLINE uint32_t
 DDI32RegRead(uint32_t ui32Base, uint32_t ui32Reg)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
     ASSERT(ui32Reg < DDI_SLAVE_REGS);
 
-    //
     // Read the register and return the value.
-    //
     return AuxAdiDdiSafeRead(ui32Base + ui32Reg, 4);
 }
 
@@ -269,21 +265,15 @@ DDI32BitsSet(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Val)
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
     ASSERT(ui32Reg < DDI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the DDI slave.
-    //
     ui32RegOffset = DDI_O_SET;
 
-    //
     // Set the selected bits.
-    //
     AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + ui32Reg, ui32Val, 4);
 }
 
@@ -310,21 +300,15 @@ DDI32BitsClear(uint32_t ui32Base, uint32_t ui32Reg,
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
     ASSERT(ui32Reg < DDI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the DDI slave.
-    //
     ui32RegOffset = DDI_O_CLR;
 
-    //
     // Clear the selected bits.
-    //
     AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + ui32Reg, ui32Val, 4);
 }
 
@@ -361,23 +345,17 @@ DDI8SetValBit(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Byte,
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
     ASSERT(ui32Reg < DDI_SLAVE_REGS);
     ASSERT(!(ui16Val & 0xFF00));
     ASSERT(!(ui16Mask & 0xFF00));
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the DDI slave.
-    //
     ui32RegOffset = DDI_O_MASK8B + (ui32Reg << 1) + (ui32Byte << 1);
 
-    //
     // Set the selected bits.
-    //
     AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset, (ui16Mask << 8) | ui16Val, 2);
 }
 
@@ -414,23 +392,17 @@ DDI16SetValBit(uint32_t ui32Base, uint32_t ui32Reg, bool bWriteHigh,
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(DDIBaseValid(ui32Base));
     ASSERT(ui32Reg < DDI_SLAVE_REGS);
     ASSERT(!(ui32Val & 0xFFFF0000));
     ASSERT(!(ui32Mask & 0xFFFF0000));
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the DDI slave.
-    //
     ui32RegOffset = DDI_O_MASK16B + (ui32Reg << 1) + (bWriteHigh ? 4 : 0);
 
-    //
     // Set the selected bits.
-    //
     AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset, (ui32Mask << 16) | ui32Val, 4);
 }
 
@@ -548,7 +520,7 @@ extern uint16_t DDI16BitfieldRead(uint32_t ui32Base, uint32_t ui32Reg,
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_DDI32RegWrite
         #undef  DDI32RegWrite
         #define DDI32RegWrite                   ROM_DDI32RegWrite

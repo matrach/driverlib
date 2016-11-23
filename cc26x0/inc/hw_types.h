@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_types.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016)
+*  Revision:       47152
 *
 *  Description:    Common types and macros.
 *
@@ -41,7 +41,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <inc/hw_chip_def.h>
+#include "../inc/hw_chip_def.h"
 
 //*****************************************************************************
 //

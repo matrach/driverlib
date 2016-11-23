@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ioc.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the IOC.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/ioc.h>
+#include "ioc.h"
 
 //*****************************************************************************
 //
@@ -98,20 +98,14 @@ IOCPortConfigureSet(uint32_t ui32IOId, uint32_t ui32PortId,
 {
     uint32_t ui32Reg;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT(ui32PortId <= IOC_PORT_RFC_GPI1);
 
-    //
     // Get the register address.
-    //
     ui32Reg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the port.
-    //
     HWREG(ui32Reg) = ui32IOConfig | ui32PortId;
 }
 
@@ -125,19 +119,13 @@ IOCPortConfigureGet(uint32_t ui32IOId)
 {
     uint32_t ui32Reg;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
 
-    //
     // Get the register address.
-    //
     ui32Reg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Return the IO configuration.
-    //
     return HWREG(ui32Reg);
 }
 
@@ -152,22 +140,16 @@ IOCIOShutdownSet(uint32_t ui32IOId, uint32_t ui32IOShutdown)
     uint32_t ui32Reg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32IOShutdown == IOC_NO_WAKE_UP) ||
            (ui32IOShutdown == IOC_WAKE_ON_LOW) ||
            (ui32IOShutdown == IOC_WAKE_ON_HIGH));
 
-    //
     // Get the register address.
-    //
     ui32Reg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32Reg);
     ui32Config &= ~IOC_IOCFG0_WU_CFG_M;
     HWREG(ui32Reg) = ui32Config | ui32IOShutdown;
@@ -185,9 +167,7 @@ IOCIOModeSet(uint32_t ui32IOId, uint32_t ui32IOMode)
     uint32_t ui32Reg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32IOMode == IOC_IOMODE_NORMAL) ||
            (ui32IOMode == IOC_IOMODE_INV) ||
@@ -196,14 +176,10 @@ IOCIOModeSet(uint32_t ui32IOId, uint32_t ui32IOMode)
            (ui32IOMode == IOC_IOMODE_OPEN_SRC_NORMAL) ||
            (ui32IOMode == IOC_IOMODE_OPEN_SRC_INV));
 
-    //
     // Get the register address.
-    //
     ui32Reg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32Reg);
     ui32Config &= ~IOC_IOCFG0_IOMODE_M;
     HWREG(ui32Reg) = ui32Config | ui32IOMode;
@@ -220,9 +196,7 @@ IOCIOIntSet(uint32_t ui32IOId, uint32_t ui32Int, uint32_t ui32EdgeDet)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32Int == IOC_INT_ENABLE) ||
            (ui32Int == IOC_INT_DISABLE));
@@ -231,14 +205,10 @@ IOCIOIntSet(uint32_t ui32IOId, uint32_t ui32Int, uint32_t ui32EdgeDet)
            (ui32EdgeDet == IOC_RISING_EDGE) ||
            (ui32EdgeDet == IOC_BOTH_EDGES));
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &=  ~(IOC_IOCFG0_EDGE_IRQ_EN | IOC_IOCFG0_EDGE_DET_M);
     HWREG(ui32IOReg) = ui32Config | ((ui32Int ? IOC_IOCFG0_EDGE_IRQ_EN : 0) | ui32EdgeDet);
@@ -255,22 +225,16 @@ IOCIOPortPullSet(uint32_t ui32IOId, uint32_t ui32Pull)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the argument.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32Pull == IOC_NO_IOPULL) ||
            (ui32Pull == IOC_IOPULL_UP) ||
            (ui32Pull == IOC_IOPULL_DOWN));
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &= ~IOC_IOCFG0_PULL_CTL_M;
     HWREG(ui32IOReg) = ui32Config | ui32Pull;
@@ -287,21 +251,15 @@ IOCIOHystSet(uint32_t ui32IOId, uint32_t ui32Hysteresis)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32Hysteresis == IOC_HYST_ENABLE) ||
            (ui32Hysteresis == IOC_HYST_DISABLE));
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &= ~IOC_IOCFG0_HYST_EN;
     HWREG(ui32IOReg) = ui32Config | ui32Hysteresis;
@@ -318,21 +276,15 @@ IOCIOInputSet(uint32_t ui32IOId, uint32_t ui32Input)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32Input == IOC_INPUT_ENABLE) ||
            (ui32Input == IOC_INPUT_DISABLE));
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &= ~IOC_IOCFG0_IE;
     HWREG(ui32IOReg) = ui32Config | ui32Input;
@@ -349,21 +301,15 @@ IOCIOSlewCtrlSet(uint32_t ui32IOId, uint32_t ui32SlewEnable)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32SlewEnable == IOC_SLEW_ENABLE) ||
            (ui32SlewEnable == IOC_SLEW_DISABLE));
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &= ~IOC_IOCFG0_SLEW_RED;
     HWREG(ui32IOReg) = ui32Config | ui32SlewEnable;
@@ -381,9 +327,7 @@ IOCIODrvStrengthSet(uint32_t ui32IOId, uint32_t ui32IOCurrent,
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT((ui32IOCurrent == IOC_CURRENT_2MA) ||
            (ui32IOCurrent == IOC_CURRENT_4MA) ||
@@ -393,14 +337,10 @@ IOCIODrvStrengthSet(uint32_t ui32IOId, uint32_t ui32IOCurrent,
            (ui32DrvStrength == IOC_STRENGTH_MED) ||
            (ui32DrvStrength == IOC_STRENGTH_AUTO));
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &= ~(IOC_IOCFG0_IOCURR_M | IOC_IOCFG0_IOSTR_M);
     HWREG(ui32IOReg) = ui32Config | (ui32IOCurrent | ui32DrvStrength);
@@ -417,20 +357,14 @@ IOCIOPortIdSet(uint32_t ui32IOId, uint32_t ui32PortId)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
     ASSERT(ui32PortId <= IOC_PORT_RFC_GPI1);
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Configure the IO.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &= ~IOC_IOCFG0_PORT_ID_M;
     HWREG(ui32IOReg) = ui32Config | ui32PortId;
@@ -447,19 +381,13 @@ IOCIntEnable(uint32_t ui32IOId)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Enable the specified interrupt.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config |= IOC_IOCFG0_EDGE_IRQ_EN;
     HWREG(ui32IOReg) = ui32Config;
@@ -476,19 +404,13 @@ IOCIntDisable(uint32_t ui32IOId)
     uint32_t ui32IOReg;
     uint32_t ui32Config;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
 
-    //
     // Get the register address.
-    //
     ui32IOReg = IOC_BASE + ( ui32IOId << 2 );
 
-    //
     // Disable the specified interrupt.
-    //
     ui32Config = HWREG(ui32IOReg);
     ui32Config &= ~IOC_IOCFG0_EDGE_IRQ_EN;
     HWREG(ui32IOReg) = ui32Config;
@@ -502,19 +424,13 @@ IOCIntDisable(uint32_t ui32IOId)
 void
 IOCPinTypeGpioInput(uint32_t ui32IOId)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
 
-    //
     // Setup the IO for standard input.
-    //
     IOCPortConfigureSet(ui32IOId, IOC_PORT_GPIO, IOC_STD_INPUT);
 
-    //
     // Enable input mode in the GPIO module.
-    //
     GPIO_setOutputEnableDio(ui32IOId, GPIO_OUTPUT_DISABLE);
 }
 
@@ -526,19 +442,13 @@ IOCPinTypeGpioInput(uint32_t ui32IOId)
 void
 IOCPinTypeGpioOutput(uint32_t ui32IOId)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32IOId <= IOID_31);
 
-    //
     // Setup the IO for standard input.
-    //
     IOCPortConfigureSet(ui32IOId, IOC_PORT_GPIO, IOC_STD_OUTPUT);
 
-    //
     // Enable output mode in the GPIO module.
-    //
     GPIO_setOutputEnableDio(ui32IOId, GPIO_OUTPUT_ENABLE);
 }
 
@@ -551,18 +461,14 @@ void
 IOCPinTypeUart(uint32_t ui32Base, uint32_t ui32Rx, uint32_t ui32Tx,
                uint32_t ui32Cts, uint32_t ui32Rts)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Base == UART0_BASE);
     ASSERT((ui32Rx <= IOID_31) || (ui32Rx == IOID_UNUSED));
     ASSERT((ui32Tx <= IOID_31) || (ui32Tx == IOID_UNUSED));
     ASSERT((ui32Cts <= IOID_31) || (ui32Cts == IOID_UNUSED));
     ASSERT((ui32Rts <= IOID_31) || (ui32Rts == IOID_UNUSED));
 
-    //
     // Setup the IOs in the desired configuration.
-    //
     if(ui32Rx != IOID_UNUSED)
     {
         IOCPortConfigureSet(ui32Rx, IOC_PORT_MCU_UART0_RX, IOC_STD_INPUT);
@@ -591,18 +497,14 @@ IOCPinTypeSsiMaster(uint32_t ui32Base, uint32_t ui32Rx,
                     uint32_t ui32Tx, uint32_t ui32Fss,
                     uint32_t ui32Clk)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Base == SSI0_BASE) || (ui32Base == SSI1_BASE));
     ASSERT((ui32Rx <= IOID_31) || (ui32Rx == IOID_UNUSED));
     ASSERT((ui32Tx <= IOID_31) || (ui32Tx == IOID_UNUSED));
     ASSERT((ui32Fss <= IOID_31) || (ui32Fss == IOID_UNUSED));
     ASSERT((ui32Clk <= IOID_31) || (ui32Clk == IOID_UNUSED));
 
-    //
     // Setup the IOs in the desired configuration.
-    //
     if(ui32Base == SSI0_BASE)
     {
         if(ui32Rx != IOID_UNUSED)
@@ -653,18 +555,14 @@ IOCPinTypeSsiSlave(uint32_t ui32Base, uint32_t ui32Rx,
                    uint32_t ui32Tx, uint32_t ui32Fss,
                    uint32_t ui32Clk)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Base == SSI0_BASE) || (ui32Base == SSI1_BASE));
     ASSERT((ui32Rx <= IOID_31) || (ui32Rx == IOID_UNUSED));
     ASSERT((ui32Tx <= IOID_31) || (ui32Tx == IOID_UNUSED));
     ASSERT((ui32Fss <= IOID_31) || (ui32Fss == IOID_UNUSED));
     ASSERT((ui32Clk <= IOID_31) || (ui32Clk == IOID_UNUSED));
 
-    //
     // Setup the IOs in the desired configuration.
-    //
     if(ui32Base == SSI0_BASE)
     {
         if(ui32Rx != IOID_UNUSED)
@@ -715,23 +613,17 @@ IOCPinTypeI2c(uint32_t ui32Base, uint32_t ui32Data, uint32_t ui32Clk)
 {
     uint32_t ui32IOConfig;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Data <= IOID_31) || (ui32Data == IOID_UNUSED));
     ASSERT((ui32Clk <= IOID_31) || (ui32Clk == IOID_UNUSED));
 
-    //
     // Define the IO configuration parameters.
-    //
     ui32IOConfig = IOC_CURRENT_2MA | IOC_STRENGTH_AUTO | IOC_IOPULL_UP |
                    IOC_SLEW_DISABLE | IOC_HYST_DISABLE | IOC_NO_EDGE |
                    IOC_INT_DISABLE | IOC_IOMODE_OPEN_DRAIN_NORMAL |
                    IOC_NO_WAKE_UP | IOC_INPUT_ENABLE;
 
-    //
     // Setup the IOs in the desired configuration.
-    //
     IOCPortConfigureSet(ui32Data, IOC_PORT_MCU_I2C_MSSDA, ui32IOConfig);
     IOCPortConfigureSet(ui32Clk, IOC_PORT_MCU_I2C_MSSCL, ui32IOConfig);
 }
@@ -745,13 +637,9 @@ IOCPinTypeI2c(uint32_t ui32Base, uint32_t ui32Data, uint32_t ui32Clk)
 void
 IOCPinTypeAux(uint32_t ui32IOId)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32IOId <= IOID_31) || (ui32IOId == IOID_UNUSED));
 
-    //
     // Setup the IO.
-    //
     IOCPortConfigureSet(ui32IOId, IOC_PORT_AUX_IO, IOC_STD_INPUT);
 }

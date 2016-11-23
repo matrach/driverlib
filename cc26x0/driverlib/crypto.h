@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       crypto.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    AES header file.
 *
@@ -61,13 +61,13 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_crypto.h>
-#include <driverlib/debug.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/cpu.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_crypto.h"
+#include "debug.h"
+#include "interrupt.h"
+#include "cpu.h"
 
 //*****************************************************************************
 //
@@ -351,10 +351,8 @@ extern uint32_t CRYPTOAesEcbStatus(void);
 __STATIC_INLINE void
 CRYPTOAesEcbFinish(void)
 {
-    //
     // Result has already been copied to the output buffer by DMA.
     // Disable master control/DMA clock and clear the operating mode.
-    //
     HWREG(CRYPTO_BASE + CRYPTO_O_ALGSEL) = 0x00000000;
     HWREG(CRYPTO_BASE + CRYPTO_O_AESCTL) = 0x00000000;
 }
@@ -374,10 +372,8 @@ CRYPTOAesEcbFinish(void)
 __STATIC_INLINE void
 CRYPTOAesCbcFinish(void)
 {
-    //
     // Result has already been copied to the output buffer by DMA.
     // Disable master control/DMA clock and clear the operating mode.
-    //
     HWREG(CRYPTO_BASE + CRYPTO_O_ALGSEL) = 0x00000000;
     HWREG(CRYPTO_BASE + CRYPTO_O_AESCTL) = 0x00000000;
 }
@@ -557,9 +553,7 @@ extern uint32_t CRYPTOCcmInvAuthDecryptResultGet(uint32_t ui32AuthLength,
 __STATIC_INLINE uint32_t
 CRYPTODmaStatus(void)
 {
-    //
     // Return the value of the status register.
-    //
     return (HWREG(CRYPTO_BASE + CRYPTO_O_DMASTAT));
 }
 
@@ -611,20 +605,14 @@ extern void CRYPTODmaDisable(uint32_t ui32Channels);
 __STATIC_INLINE void
 CRYPTOIntEnable(uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32IntFlags & CRYPTO_DMA_IN_DONE) |
            (ui32IntFlags & CRYPTO_RESULT_RDY));
 
-    //
     // Using level interrupt.
-    //
     HWREG(CRYPTO_BASE + CRYPTO_O_IRQTYPE) = CRYPTO_IRQTYPE_LEVEL;
 
-    //
     // Enable the specified interrupts.
-    //
     HWREG(CRYPTO_BASE + CRYPTO_O_IRQEN) |= ui32IntFlags;
 }
 
@@ -646,15 +634,11 @@ CRYPTOIntEnable(uint32_t ui32IntFlags)
 __STATIC_INLINE void
 CRYPTOIntDisable(uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32IntFlags & CRYPTO_DMA_IN_DONE) |
            (ui32IntFlags & CRYPTO_RESULT_RDY));
 
-    //
     // Disable the specified interrupts.
-    //
     HWREG(CRYPTO_BASE + CRYPTO_O_IRQEN) &= ~ui32IntFlags;
 }
 
@@ -680,10 +664,8 @@ CRYPTOIntStatus(bool bMasked)
 {
     uint32_t ui32Mask;
 
-    //
     // Return either the interrupt status or the raw interrupt status as
     // requested.
-    //
     if(bMasked)
     {
         ui32Mask = HWREG(CRYPTO_BASE + CRYPTO_O_IRQEN);
@@ -728,15 +710,11 @@ CRYPTOIntStatus(bool bMasked)
 __STATIC_INLINE void
 CRYPTOIntClear(uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32IntFlags & CRYPTO_DMA_IN_DONE) |
            (ui32IntFlags & CRYPTO_RESULT_RDY));
 
-    //
     // Clear the requested interrupt sources,
-    //
     HWREG(CRYPTO_BASE + CRYPTO_O_IRQCLR) = ui32IntFlags;
 }
 
@@ -761,14 +739,10 @@ CRYPTOIntClear(uint32_t ui32IntFlags)
 __STATIC_INLINE void
 CRYPTOIntRegister(void (*pfnHandler)(void))
 {
-    //
     // Register the interrupt handler.
-    //
     IntRegister(INT_CRYPTO_RESULT_AVAIL_IRQ, pfnHandler);
 
-    //
     // Enable the UART interrupt.
-    //
     IntEnable(INT_CRYPTO_RESULT_AVAIL_IRQ);
 }
 
@@ -790,14 +764,10 @@ CRYPTOIntRegister(void (*pfnHandler)(void))
 __STATIC_INLINE void
 CRYPTOIntUnregister(void)
 {
-    //
     // Disable the interrupt.
-    //
     IntDisable(INT_CRYPTO_RESULT_AVAIL_IRQ);
 
-    //
     // Unregister the interrupt handler.
-    //
     IntUnregister(INT_CRYPTO_RESULT_AVAIL_IRQ);
 }
 
@@ -808,7 +778,7 @@ CRYPTOIntUnregister(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_CRYPTOAesLoadKey
         #undef  CRYPTOAesLoadKey
         #define CRYPTOAesLoadKey                ROM_CRYPTOAesLoadKey

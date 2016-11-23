@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ccfg.c
-*  Revised:        $Date: 2016-03-14 10:46:32 +0100 (ma, 14 mar 2016) $
-*  Revision:       $Revision: 16862 $
+*  Revised:        $Date: 2016-09-26 11:02:06 +0200 (ma, 26 sep 2016) $
+*  Revision:       $Revision: 17337 $
 *
 *  Description:    Customer Configuration for CC13xx device family (HW rev 2).
 *
@@ -38,9 +38,9 @@
 ******************************************************************************/
 
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_ccfg.h>
-#include <inc/hw_ccfg_simple_struct.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_ccfg.h"
+#include "../inc/hw_ccfg_simple_struct.h"
 
 //*****************************************************************************
 //

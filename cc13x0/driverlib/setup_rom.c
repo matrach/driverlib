@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup_rom.c
-*  Revised:        2016-07-07 19:12:02 +0200 (to, 07 jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -37,23 +37,23 @@
 ******************************************************************************/
 
 // Hardware headers
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_adi.h>
-#include <inc/hw_adi_2_refsys.h>
-#include <inc/hw_adi_3_refsys.h>
-#include <inc/hw_adi_4_aux.h>
-#include <inc/hw_aon_batmon.h>
-#include <inc/hw_aon_sysctl.h>
-#include <inc/hw_ccfg.h>
-#include <inc/hw_ddi_0_osc.h>
-#include <inc/hw_fcfg1.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_adi.h"
+#include "../inc/hw_adi_2_refsys.h"
+#include "../inc/hw_adi_3_refsys.h"
+#include "../inc/hw_adi_4_aux.h"
+#include "../inc/hw_aon_batmon.h"
+#include "../inc/hw_aon_sysctl.h"
+#include "../inc/hw_ccfg.h"
+#include "../inc/hw_ddi_0_osc.h"
+#include "../inc/hw_fcfg1.h"
 // Driverlib headers
-#include <driverlib/ddi.h>
-#include <driverlib/ioc.h>
-#include <driverlib/osc.h>
-#include <driverlib/sys_ctrl.h>
-#include <driverlib/setup_rom.h>
+#include "ddi.h"
+#include "ioc.h"
+#include "osc.h"
+#include "sys_ctrl.h"
+#include "setup_rom.h"
 // ##### INCLUDE IN ROM BEGIN #####
 // We need intrinsic functions for IAR (if used in source code)
 #ifdef __IAR_SYSTEMS_ICC__
@@ -135,7 +135,6 @@ SetupSetVddrLevel( uint32_t ccfg_ModeConfReg )
       //
       // VDDS_BOD_LEVEL = 1 means that boost mode is selected
       // - Step up VDDR_TRIM to FCFG1..VDDR_TRIM_HH
-      //
       newTrimRaw = (( HWREG( FCFG1_BASE + FCFG1_O_VOLT_TRIM ) &
          FCFG1_VOLT_TRIM_VDDR_TRIM_HH_M ) >>
          FCFG1_VOLT_TRIM_VDDR_TRIM_HH_S ) ;
@@ -193,24 +192,19 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
     int32_t    i32VddrSleepTrim;
     int32_t    i32VddrSleepDelta;
 
-    //
     // Check for CC13xx boost mode
     // The combination VDDR_EXT_LOAD=0 and VDDS_BOD_LEVEL=1 is defined to selct boost mode
-    //
     if ((( ccfg_ModeConfReg & CCFG_MODE_CONF_VDDR_EXT_LOAD  ) == 0 ) &&
         (( ccfg_ModeConfReg & CCFG_MODE_CONF_VDDS_BOD_LEVEL ) != 0 )    ) {
-        //
         // Set VDDS_BOD trim - using masked write {MASK8:DATA8}
         // - TRIM_VDDS_BOD is bits[7:3] of ADI3..REFSYSCTL1
         // - Needs a positive transition on BOD_BG_TRIM_EN (bit[7] of REFSYSCTL3) to
         //   latch new VDDS BOD. Set to 0 first to guarantee a positive transition.
-        //
         HWREGB( ADI3_BASE + ADI_O_CLR + ADI_3_REFSYS_O_REFSYSCTL3 ) = ADI_3_REFSYS_REFSYSCTL3_BOD_BG_TRIM_EN;
 //        if ( ccfg_ModeConfReg & CCFG_MODE_CONF_VDDS_BOD_LEVEL ) {
             //
             // VDDS_BOD_LEVEL = 1 means that boost mode is selected
             // - Max out the VDDS_BOD trim (=VDDS_BOD_POS_31)
-            //
             HWREGH( ADI3_BASE + ADI_O_MASK8B + ( ADI_3_REFSYS_O_REFSYSCTL1 * 2 )) =
                 ( ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_M << 8 ) |
                 ( ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_POS_31 ) ;
@@ -241,10 +235,8 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
             FCFG1_LDO_TRIM_VDDR_TRIM_SLEEP_S ) ;
     }
 
-    //
     // Adjust the VDDR_TRIM_SLEEP value with value adjustable by customer (CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA)
     // Read and sign extend VddrSleepDelta (in range -8 to +7)
-    //
     i32VddrSleepDelta = ((((int32_t)ccfg_ModeConfReg )
         << ( 32 - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_W - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_S ))
         >> ( 32 - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_W ));
@@ -256,7 +248,6 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
     HWREGH( ADI3_BASE + ADI_O_MASK8B + ( ADI_3_REFSYS_O_DCDCCTL1 * 2 )) = (( ADI_3_REFSYS_DCDCCTL1_VDDR_TRIM_SLEEP_M << 8 ) |
         (( i32VddrSleepTrim << ADI_3_REFSYS_DCDCCTL1_VDDR_TRIM_SLEEP_S ) & ADI_3_REFSYS_DCDCCTL1_VDDR_TRIM_SLEEP_M ));
 
-    //
     // 1.
     // Do not allow DCDC to be enabled if in external regulator mode.
     // Preventing this by setting both the RECHARGE and the ACTIVE bits bit in the CCFG_MODE_CONF copy register (ccfg_ModeConfReg).
@@ -264,24 +255,19 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
     // 2.
     // Adjusted battery monitor low limit in internal regulator mode.
     // This is done by setting AON_BATMON_FLASHPUMPP0_LOWLIM=0 in internal regulator mode.
-    //
     if ( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_PWRCTL ) & AON_SYSCTL_PWRCTL_EXT_REG_MODE ) {
         ccfg_ModeConfReg |= ( CCFG_MODE_CONF_DCDC_RECHARGE_M | CCFG_MODE_CONF_DCDC_ACTIVE_M );
     } else {
         HWREGBITW( AON_BATMON_BASE + AON_BATMON_O_FLASHPUMPP0, AON_BATMON_FLASHPUMPP0_LOWLIM_BITN ) = 0;
     }
 
-    //
     // set the RECHARGE source based upon CCFG:MODE_CONF:DCDC_RECHARGE
     // Note: Inverse polarity
-    //
     HWREGBITW( AON_SYSCTL_BASE + AON_SYSCTL_O_PWRCTL, AON_SYSCTL_PWRCTL_DCDC_EN_BITN ) =
         ((( ccfg_ModeConfReg >> CCFG_MODE_CONF_DCDC_RECHARGE_S ) & 1 ) ^ 1 );
 
-    //
     // set the ACTIVE source based upon CCFG:MODE_CONF:DCDC_ACTIVE
     // Note: Inverse polarity
-    //
     HWREGBITW( AON_SYSCTL_BASE + AON_SYSCTL_O_PWRCTL, AON_SYSCTL_PWRCTL_DCDC_ACTIVE_BITN ) =
         ((( ccfg_ModeConfReg >> CCFG_MODE_CONF_DCDC_ACTIVE_S ) & 1 ) ^ 1 );
 }
@@ -296,7 +282,6 @@ SetupAfterColdResetWakeupFromShutDownCfg2( uint32_t ui32Fcfg1Revision, uint32_t 
 {
     uint32_t   ui32Trim;
 
-    //
     // Following sequence is required for using XOSCHF, if not included
     // devices crashes when trying to switch to XOSCHF.
     //
@@ -329,71 +314,57 @@ SetupAfterColdResetWakeupFromShutDownCfg2( uint32_t ui32Fcfg1Revision, uint32_t 
     ui32Trim = SetupGetTrimForAmpcompCtrl( ui32Fcfg1Revision );
     DDI32RegWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_AMPCOMPCTL, ui32Trim);
 
-    //
     // Set trim for DDI_0_OSC_ADCDOUBLERNANOAMPCTL_ADC_SH_MODE_EN in accordance to FCFG1 setting
     // This is bit[5] in the DDI_0_OSC_O_ADCDOUBLERNANOAMPCTL register
     // Using MASK4 write + 1 => writing to bits[7:4]
-    //
     ui32Trim = SetupGetTrimForAdcShModeEn( ui32Fcfg1Revision );
     HWREGB( AUX_DDI0_OSC_BASE + DDI_O_MASK4B + ( DDI_0_OSC_O_ADCDOUBLERNANOAMPCTL * 2 ) + 1 ) =
       ( 0x20 | ( ui32Trim << 1 ));
 
-    //
     // Set trim for DDI_0_OSC_ADCDOUBLERNANOAMPCTL_ADC_SH_VBUF_EN in accordance to FCFG1 setting
     // This is bit[4] in the DDI_0_OSC_O_ADCDOUBLERNANOAMPCTL register
     // Using MASK4 write + 1 => writing to bits[7:4]
-    //
     ui32Trim = SetupGetTrimForAdcShVbufEn( ui32Fcfg1Revision );
     HWREGB( AUX_DDI0_OSC_BASE + DDI_O_MASK4B + ( DDI_0_OSC_O_ADCDOUBLERNANOAMPCTL * 2 ) + 1 ) =
       ( 0x10 | ( ui32Trim ));
 
-    //
     // Set trim for the PEAK_DET_ITRIM, HP_BUF_ITRIM and LP_BUF_ITRIM bit fields
     // in the DDI0_OSC_O_XOSCHFCTL register in accordance to FCFG1 setting.
     // Remaining register bit fields are set to their reset values of 0.
-    //
     ui32Trim = SetupGetTrimForXoscHfCtl(ui32Fcfg1Revision);
     DDI32RegWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_XOSCHFCTL, ui32Trim);
 
-    //
     // Set trim for DBLR_LOOP_FILTER_RESET_VOLTAGE in accordance to FCFG1 setting
     // (This is bits [18:17] in DDI_0_OSC_O_ADCDOUBLERNANOAMPCTL)
     // (Using MASK4 write + 4 => writing to bits[19:16] => (4*4))
     // (Assuming: DDI_0_OSC_ADCDOUBLERNANOAMPCTL_DBLR_LOOP_FILTER_RESET_VOLTAGE_S = 17 and
     //  that DDI_0_OSC_ADCDOUBLERNANOAMPCTL_DBLR_LOOP_FILTER_RESET_VOLTAGE_M = 0x00060000)
-    //
     ui32Trim = SetupGetTrimForDblrLoopFilterResetVoltage( ui32Fcfg1Revision );
     HWREGB( AUX_DDI0_OSC_BASE + DDI_O_MASK4B + ( DDI_0_OSC_O_ADCDOUBLERNANOAMPCTL * 2 ) + 4 ) =
       ( 0x60 | ( ui32Trim << 1 ));
 
-    //
     // Update DDI_0_OSC_ATESTCTL_ATESTLF_RCOSCLF_IBIAS_TRIM with data from
     // FCFG1_OSC_CONF_ATESTLF_RCOSCLF_IBIAS_TRIM
     // This is DDI_0_OSC_O_ATESTCTL bit[7]
     // ( DDI_0_OSC_O_ATESTCTL is currently hidden (but=0x00000020))
     // Using MASK4 write + 1 => writing to bits[7:4]
-    //
     ui32Trim = SetupGetTrimForRcOscLfIBiasTrim( ui32Fcfg1Revision );
     HWREGB( AUX_DDI0_OSC_BASE + DDI_O_MASK4B + ( 0x00000020 * 2 ) + 1 ) =
       ( 0x80 | ( ui32Trim << 3 ));
 
-    //
     // Update DDI_0_OSC_LFOSCCTL_XOSCLF_REGULATOR_TRIM and
     //        DDI_0_OSC_LFOSCCTL_XOSCLF_CMIRRWR_RATIO in one write
     // This can be simplified since the registers are packed together in the same
     // order both in FCFG1 and in the HW register.
     // This spans DDI_0_OSC_O_LFOSCCTL bits[23:18]
     // Using MASK8 write + 4 => writing to bits[23:16]
-    //
     ui32Trim = SetupGetTrimForXoscLfRegulatorAndCmirrwrRatio( ui32Fcfg1Revision );
     HWREGH( AUX_DDI0_OSC_BASE + DDI_O_MASK8B + ( DDI_0_OSC_O_LFOSCCTL * 2 ) + 4 ) =
       ( 0xFC00 | ( ui32Trim << 2 ));
 
-    //
     // Set trim the HPM_IBIAS_WAIT_CNT, LPM_IBIAS_WAIT_CNT and IDAC_STEP bit
     // fields in the DDI0_OSC_O_RADCEXTCFG register in accordance to FCFG1 setting.
     // Remaining register bit fields are set to their reset values of 0.
-    //
     ui32Trim = SetupGetTrimForRadcExtCfg(ui32Fcfg1Revision);
     DDI32RegWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_RADCEXTCFG, ui32Trim);
 
@@ -415,9 +386,7 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
     uint32_t   currentHfClock;
     uint32_t   ccfgExtLfClk;
 
-    //
     // Examin the XOSC_FREQ field to select 0x1=HPOSC, 0x2=48MHz XOSC, 0x3=24MHz XOSC
-    //
     switch (( ccfg_ModeConfReg & CCFG_MODE_CONF_XOSC_FREQ_M ) >> CCFG_MODE_CONF_XOSC_FREQ_S ) {
     case 2 :
         // XOSC source is a 48 MHz xtal
@@ -463,10 +432,8 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
         break;
     }
 
-    //
     // Set XOSC_HF in bypass mode if CCFG is configured for external TCXO
     // Please note that it is up to the custommer to make sure that the external clock source is up and running before XOSC_HF can be used.
-    //
     if (( HWREG( CCFG_BASE + CCFG_O_SIZE_AND_DIS_FLAGS ) & CCFG_SIZE_AND_DIS_FLAGS_DIS_TCXO ) == 0 ) {
         HWREG( AUX_DDI0_OSC_BASE + DDI_O_SET + DDI_0_OSC_O_XOSCHFCTL ) = DDI_0_OSC_XOSCHFCTL_BYPASS;
     }
@@ -479,9 +446,7 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
     ui32Trim = SetupGetTrimForXoscHfFastStart();
     HWREGB( AUX_DDI0_OSC_BASE + DDI_O_MASK4B + ( DDI_0_OSC_O_CTL1 * 2 )) = ( 0x30 | ui32Trim );
 
-    //
     // setup the LF clock based upon CCFG:MODE_CONF:SCLK_LF_OPTION
-    //
     switch (( ccfg_ModeConfReg & CCFG_MODE_CONF_SCLK_LF_OPTION_M ) >> CCFG_MODE_CONF_SCLK_LF_OPTION_S ) {
     case 0 : // XOSC_HF_DLF (XOSCHF/1536) -> SCLK_LF (=31250Hz)
         OSCClockSourceSet( OSC_SRC_CLK_LF, OSC_XOSC_HF );
@@ -511,26 +476,20 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
         break;
     }
 
-    //
     // Update ADI_4_AUX_ADCREF1_VTRIM with value from FCFG1
-    //
     HWREGB( AUX_ADI4_BASE + ADI_4_AUX_O_ADCREF1 ) =
       ((( HWREG( FCFG1_BASE + FCFG1_O_SOC_ADC_REF_TRIM_AND_OFFSET_EXT ) >>
       FCFG1_SOC_ADC_REF_TRIM_AND_OFFSET_EXT_SOC_ADC_REF_VOLTAGE_TRIM_TEMP1_S ) <<
       ADI_4_AUX_ADCREF1_VTRIM_S ) &
       ADI_4_AUX_ADCREF1_VTRIM_M );
 
-    //
     // Set ADI_4_AUX:ADC0.SMPL_CYCLE_EXP to it's default minimum value (=3)
     // (Note: Using MASK8B requires that the bits to be modified must be within the same
     //        byte boundary which is the case for the ADI_4_AUX_ADC0_SMPL_CYCLE_EXP field)
-    //
     HWREGH( AUX_ADI4_BASE + ADI_O_MASK8B + ( ADI_4_AUX_O_ADC0 * 2 )) =
       ( ADI_4_AUX_ADC0_SMPL_CYCLE_EXP_M << 8 ) | ( 3 << ADI_4_AUX_ADC0_SMPL_CYCLE_EXP_S );
 
-    //
     // Sync with AON
-    //
     SysCtrlAonSync();
 }
 
@@ -989,7 +948,6 @@ SetupGetTrimForXoscLfRegulatorAndCmirrwrRatio( uint32_t ui32Fcfg1Revision )
 void
 SetupSetCacheModeAccordingToCcfgSetting( void )
 {
-    //
     // - Make sure to enable aggressive VIMS clock gating for power optimization
     //   Only for PG2 devices.
     // - Enable cache prefetch enable as default setting
@@ -999,7 +957,6 @@ SetupSetCacheModeAccordingToCcfgSetting( void )
     //         (This is done because it's not set by boot code when running inside
     //         a debugger supporting the Halt In Boot (HIB) functionality).
     //   else: Set MODE_GPRAM if not already set (see inline comments as well)
-    //
     uint32_t vimsCtlMode0 ;
 
     while ( HWREGBITW( VIMS_BASE + VIMS_O_STAT, VIMS_STAT_MODE_CHANGING_BITN )) {
@@ -1007,9 +964,7 @@ SetupSetCacheModeAccordingToCcfgSetting( void )
         // (There should typically be no wait time here, but need to be sure)
     }
 
-    //
     // Note that Mode=0 is equal to MODE_GPRAM
-    //
     vimsCtlMode0 = (( HWREG( VIMS_BASE + VIMS_O_CTL ) & ~VIMS_CTL_MODE_M ) | VIMS_CTL_DYN_CG_EN_M | VIMS_CTL_PREF_EN_M );
 
 
@@ -1017,10 +972,8 @@ SetupSetCacheModeAccordingToCcfgSetting( void )
         // Enable cache (and hence disable GPRAM)
         HWREG( VIMS_BASE + VIMS_O_CTL ) = ( vimsCtlMode0 | VIMS_CTL_MODE_CACHE );
     } else if (( HWREG( VIMS_BASE + VIMS_O_STAT ) & VIMS_STAT_MODE_M ) != VIMS_STAT_MODE_GPRAM ) {
-        //
         // GPRAM is enabled in CCFG but not selected
         // Note: It is recommended to go via MODE_OFF when switching to MODE_GPRAM
-        //
         HWREG( VIMS_BASE + VIMS_O_CTL ) = ( vimsCtlMode0 | VIMS_CTL_MODE_OFF );
         while (( HWREG( VIMS_BASE + VIMS_O_STAT ) & VIMS_STAT_MODE_M ) != VIMS_STAT_MODE_OFF ) {
             // Do nothing - wait for an eventual mode change to complete (This goes fast).
@@ -1042,14 +995,12 @@ SetupSetCacheModeAccordingToCcfgSetting( void )
 void
 SetupSetAonRtcSubSecInc( uint32_t subSecInc )
 {
-   //
    // Loading a new RTCSUBSECINC value is done in 5 steps:
    // 1. Write bit[15:0] of new SUBSECINC value to AUX_WUC_O_RTCSUBSECINC0
    // 2. Write bit[23:16] of new SUBSECINC value to AUX_WUC_O_RTCSUBSECINC1
    // 3. Set AUX_WUC_RTCSUBSECINCCTL_UPD_REQ
    // 4. Wait for AUX_WUC_RTCSUBSECINCCTL_UPD_ACK
    // 5. Clear AUX_WUC_RTCSUBSECINCCTL_UPD_REQ
-   //
    HWREG( AUX_WUC_BASE + AUX_WUC_O_RTCSUBSECINC0 ) = (( subSecInc       ) & AUX_WUC_RTCSUBSECINC0_INC15_0_M  );
    HWREG( AUX_WUC_BASE + AUX_WUC_O_RTCSUBSECINC1 ) = (( subSecInc >> 16 ) & AUX_WUC_RTCSUBSECINC1_INC23_16_M );
 

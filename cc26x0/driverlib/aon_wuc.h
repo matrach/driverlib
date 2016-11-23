@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_wuc.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AON Wake-Up Controller
 *
@@ -61,13 +61,13 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_aon_wuc.h>
-#include <inc/hw_aon_rtc.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_aon_wuc.h"
+#include "../inc/hw_aon_rtc.h"
+#include "interrupt.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -227,15 +227,11 @@ AONWUCMcuPowerDownConfig(uint32_t ui32ClkSrc)
 {
     uint32_t ui32Reg;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32ClkSrc == AONWUC_NO_CLOCK) ||
            (ui32ClkSrc == AONWUC_CLOCK_SRC_LF));
 
-    //
     // Set the clock source for the MCU domain when in power down.
-    //
     ui32Reg = HWREG(AON_WUC_BASE + AON_WUC_O_MCUCLK);
     ui32Reg &= ~AON_WUC_MCUCLK_PWR_DWN_SRC_M;
     HWREG(AON_WUC_BASE + AON_WUC_O_MCUCLK) = ui32Reg |
@@ -332,15 +328,11 @@ AONWUCMcuSRamConfig(uint32_t ui32Retention)
 {
     uint32_t ui32Reg;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Retention & MCU_RAM_BLOCK_RETENTION);
     ASSERT(!(ui32Retention & ~MCU_RAM_BLOCK_RETENTION));
 
-    //
     // Configure the retention.
-    //
     ui32Reg = HWREG(AON_WUC_BASE + AON_WUC_O_MCUCFG) & ~MCU_RAM_BLOCK_RETENTION;
     ui32Reg |= ui32Retention;
     HWREG(AON_WUC_BASE + AON_WUC_O_MCUCFG) = ui32Reg;
@@ -370,9 +362,7 @@ AONWUCMcuSRamConfig(uint32_t ui32Retention)
 __STATIC_INLINE uint32_t
 AONWUCAuxClockConfigGet(void)
 {
-    //
     // Return the clock divider value.
-    //
     return ((HWREG(AON_WUC_BASE + AON_WUC_O_AUXCLK) &
              AON_WUC_AUXCLK_SCLK_HF_DIV_M) >>
              AON_WUC_AUXCLK_SCLK_HF_DIV_S);
@@ -401,15 +391,11 @@ AONWUCAuxPowerDownConfig(uint32_t ui32ClkSrc)
 {
     uint32_t ui32Reg;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32ClkSrc == AONWUC_NO_CLOCK) ||
            (ui32ClkSrc == AONWUC_CLOCK_SRC_LF));
 
-    //
     // Set the clock source for the AUX domain when in power down.
-    //
     ui32Reg = HWREG(AON_WUC_BASE + AON_WUC_O_AUXCLK);
     ui32Reg &= ~AON_WUC_AUXCLK_PWR_DWN_SRC_M;
     HWREG(AON_WUC_BASE + AON_WUC_O_AUXCLK) = ui32Reg |
@@ -555,9 +541,7 @@ AONWUCAuxImageInvalid(void)
 __STATIC_INLINE uint32_t
 AONWUCPowerStatusGet(void)
 {
-    //
     // Return the power status.
-    //
     return (HWREG(AON_WUC_BASE + AON_WUC_O_PWRSTAT));
 }
 
@@ -655,15 +639,11 @@ AONWUCDomainPowerDownDisable(void)
 __STATIC_INLINE void
 AONWUCMcuResetClear(uint32_t ui32Status)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Status & AONWUC_MCU_RESET_SRC) ||
            (ui32Status & AONWUC_MCU_WARM_RESET));
 
-    //
     // Clear the status bits.
-    //
     HWREG(AON_WUC_BASE + AON_WUC_O_CTL1) = ui32Status;
 }
 
@@ -679,9 +659,7 @@ AONWUCMcuResetClear(uint32_t ui32Status)
 __STATIC_INLINE uint32_t
 AONWUCMcuResetStatusGet(void)
 {
-    //
     // Return the current status.
-    //
     return (HWREG(AON_WUC_BASE + AON_WUC_O_CTL1));
 }
 
@@ -755,9 +733,7 @@ extern void AONWUCRechargeCtrlConfigSet(bool bAdaptEnable,
 __STATIC_INLINE uint32_t
 AONWUCRechargeCtrlConfigGet(void)
 {
-    //
     // Return the current configuration.
-    //
     return(HWREG(AON_WUC_BASE + AON_WUC_O_RECHARGECFG));
 }
 
@@ -815,9 +791,7 @@ extern void AONWUCOscConfig(uint32_t ui32Period);
 __STATIC_INLINE void
 AONWUCJtagPowerOff(void)
 {
-    //
     // Request the power off of the Jtag domain
-    //
     HWREG(AON_WUC_BASE + AON_WUC_O_JTAGCFG) = 0;
 }
 
@@ -829,7 +803,7 @@ AONWUCJtagPowerOff(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AONWUCAuxReset
         #undef  AONWUCAuxReset
         #define AONWUCAuxReset                  ROM_AONWUCAuxReset

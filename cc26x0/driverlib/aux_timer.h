@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_timer.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AUX Timer
 *
@@ -61,12 +61,12 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_aux_timer.h>
-#include <driverlib/debug.h>
-#include <driverlib/interrupt.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_aux_timer.h"
+#include "debug.h"
+#include "interrupt.h"
 
 //*****************************************************************************
 //
@@ -320,9 +320,7 @@ AUXTimerTargetValSet(uint32_t ui32Timer, uint32_t ui32Target)
 {
     uint32_t ui32Addr;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Timer == AUX_TIMER_0) || (ui32Timer == AUX_TIMER_1));
     ASSERT(((ui32Timer & AUX_TIMER_0) && (ui32Target <= 65535)) ||
            ((ui32Timer & AUX_TIMER_1) && (ui32Target <= 255)));
@@ -354,9 +352,7 @@ AUXTimerTargetValSet(uint32_t ui32Timer, uint32_t ui32Target)
 __STATIC_INLINE uint32_t
 AUXTimerTargetValGet(uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Timer == AUX_TIMER_0) || (ui32Timer == AUX_TIMER_1));
 
     return(HWREG((ui32Timer & AUX_TIMER_0) ?
@@ -442,7 +438,7 @@ extern uint32_t AUXTimerPrescaleGet(uint32_t ui32Timer);
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AUXTimerConfigure
         #undef  AUXTimerConfigure
         #define AUXTimerConfigure               ROM_AUXTimerConfigure

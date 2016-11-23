@@ -40,7 +40,7 @@
 #define _RF_PATCH_MCE_GENFSK_H
 
 #include <stdint.h>
-#include <inc/hw_types.h>
+#include "../inc/hw_types.h"
 
 #ifndef MCE_PATCH_TYPE
 #define MCE_PATCH_TYPE static const uint32_t

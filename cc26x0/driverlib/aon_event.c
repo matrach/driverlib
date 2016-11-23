@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_event.c
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the AON Event fabric.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aon_event.h>
+#include "aon_event.h"
 
 //*****************************************************************************
 //
@@ -69,9 +69,7 @@ AONEventMcuWakeUpSet(uint32_t ui32MCUWUEvent, uint32_t ui32EventSrc)
 {
     uint32_t ui32Ctrl;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32MCUWUEvent == AON_EVENT_MCU_WU0) ||
            (ui32MCUWUEvent == AON_EVENT_MCU_WU1) ||
            (ui32MCUWUEvent == AON_EVENT_MCU_WU2) ||
@@ -114,9 +112,7 @@ AONEventMcuWakeUpGet(uint32_t ui32MCUWUEvent)
 {
     uint32_t ui32EventSrc;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32MCUWUEvent == AON_EVENT_MCU_WU0) ||
            (ui32MCUWUEvent == AON_EVENT_MCU_WU1) ||
            (ui32MCUWUEvent == AON_EVENT_MCU_WU2) ||
@@ -145,9 +141,7 @@ AONEventMcuWakeUpGet(uint32_t ui32MCUWUEvent)
                AON_EVENT_MCUWUSEL_WU3_EV_S);
     }
 
-    //
     // Should never get to this statement, but suppress warning.
-    //
     ASSERT(0);
     return(0);
 }
@@ -162,9 +156,7 @@ AONEventAuxWakeUpSet(uint32_t ui32AUXWUEvent, uint32_t ui32EventSrc)
 {
     uint32_t ui32Ctrl;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32AUXWUEvent == AON_EVENT_AUX_WU0) ||
            (ui32AUXWUEvent == AON_EVENT_AUX_WU1) ||
            (ui32AUXWUEvent == AON_EVENT_AUX_WU2));
@@ -201,9 +193,7 @@ AONEventAuxWakeUpGet(uint32_t ui32AUXWUEvent)
 {
     uint32_t ui32EventSrc;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32AUXWUEvent == AON_EVENT_AUX_WU0) ||
            (ui32AUXWUEvent == AON_EVENT_AUX_WU1) ||
            (ui32AUXWUEvent == AON_EVENT_AUX_WU2));
@@ -226,9 +216,7 @@ AONEventAuxWakeUpGet(uint32_t ui32AUXWUEvent)
                AON_EVENT_AUXWUSEL_WU2_EV_S);
     }
 
-    //
     // Should never get to this statement, but suppress warning.
-    //
     ASSERT(0);
     return(0);
 }
@@ -244,9 +232,7 @@ AONEventMcuSet(uint32_t ui32MCUEvent, uint32_t ui32EventSrc)
 {
     uint32_t ui32Ctrl;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32MCUEvent == AON_EVENT_MCU_EVENT0) ||
            (ui32MCUEvent == AON_EVENT_MCU_EVENT1) ||
            (ui32MCUEvent == AON_EVENT_MCU_EVENT2));
@@ -284,9 +270,7 @@ AONEventMcuGet(uint32_t ui32MCUEvent)
 {
     uint32_t ui32EventSrc;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32MCUEvent == AON_EVENT_MCU_EVENT0) ||
            (ui32MCUEvent == AON_EVENT_MCU_EVENT1) ||
            (ui32MCUEvent == AON_EVENT_MCU_EVENT2));
@@ -309,9 +293,7 @@ AONEventMcuGet(uint32_t ui32MCUEvent)
                AON_EVENT_EVTOMCUSEL_AON_PROG2_EV_S);
     }
 
-    //
     // Should never get to this statement, but suppress warning.
-    //
     ASSERT(0);
     return(0);
 }

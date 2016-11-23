@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       uart.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the UART.
 *
@@ -61,12 +61,12 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_uart.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_uart.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "interrupt.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -235,9 +235,7 @@ UARTBaseValid(uint32_t ui32Base)
 __STATIC_INLINE void
 UARTParityModeSet(uint32_t ui32Base, uint32_t ui32Parity)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
     ASSERT((ui32Parity == UART_CONFIG_PAR_NONE) ||
            (ui32Parity == UART_CONFIG_PAR_EVEN) ||
@@ -245,9 +243,7 @@ UARTParityModeSet(uint32_t ui32Base, uint32_t ui32Parity)
            (ui32Parity == UART_CONFIG_PAR_ONE) ||
            (ui32Parity == UART_CONFIG_PAR_ZERO));
 
-    //
     // Set the parity mode.
-    //
     HWREG(ui32Base + UART_O_LCRH) = ((HWREG(ui32Base + UART_O_LCRH) &
                                       ~(UART_LCRH_SPS | UART_LCRH_EPS |
                                         UART_LCRH_PEN)) | ui32Parity);
@@ -273,14 +269,10 @@ UARTParityModeSet(uint32_t ui32Base, uint32_t ui32Parity)
 __STATIC_INLINE uint32_t
 UARTParityModeGet(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Return the current parity setting
-    //
     return(HWREG(ui32Base + UART_O_LCRH) &
            (UART_LCRH_SPS | UART_LCRH_EPS | UART_LCRH_PEN));
 }
@@ -313,9 +305,7 @@ __STATIC_INLINE void
 UARTFIFOLevelSet(uint32_t ui32Base, uint32_t ui32TxLevel,
                  uint32_t ui32RxLevel)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
     ASSERT((ui32TxLevel == UART_FIFO_TX1_8) ||
            (ui32TxLevel == UART_FIFO_TX2_8) ||
@@ -328,9 +318,7 @@ UARTFIFOLevelSet(uint32_t ui32Base, uint32_t ui32TxLevel,
            (ui32RxLevel == UART_FIFO_RX6_8) ||
            (ui32RxLevel == UART_FIFO_RX7_8));
 
-    //
     // Set the FIFO interrupt levels.
-    //
     HWREG(ui32Base + UART_O_IFLS) = ui32TxLevel | ui32RxLevel;
 }
 
@@ -441,19 +429,13 @@ extern void UARTConfigGetExpClk(uint32_t ui32Base, uint32_t ui32UARTClk,
 __STATIC_INLINE void
 UARTEnable(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Enable the FIFO.
-    //
     HWREG(ui32Base + UART_O_LCRH) |= UART_LCRH_FEN;
 
-    //
     // Enable RX, TX, and the UART.
-    //
     HWREG(ui32Base + UART_O_CTL) |= (UART_CTL_UARTEN | UART_CTL_TXE |
                                      UART_CTL_RXE);
 }
@@ -486,14 +468,10 @@ extern void UARTDisable(uint32_t ui32Base);
 __STATIC_INLINE void
 UARTFIFOEnable(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Enable the FIFO.
-    //
     HWREG(ui32Base + UART_O_LCRH) |= UART_LCRH_FEN;
 }
 
@@ -511,14 +489,10 @@ UARTFIFOEnable(uint32_t ui32Base)
 __STATIC_INLINE void
 UARTFIFODisable(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Disable the FIFO.
-    //
     HWREG(ui32Base + UART_O_LCRH) &= ~(UART_LCRH_FEN);
 }
 
@@ -539,14 +513,10 @@ UARTFIFODisable(uint32_t ui32Base)
 __STATIC_INLINE bool
 UARTCharsAvail(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Return the availability of characters.
-    //
     return((HWREG(ui32Base + UART_O_FR) & UART_FR_RXFE) ? false : true);
 }
 
@@ -567,14 +537,10 @@ UARTCharsAvail(uint32_t ui32Base)
 __STATIC_INLINE bool
 UARTSpaceAvail(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Return the availability of space.
-    //
     return((HWREG(ui32Base + UART_O_FR) & UART_FR_TXFF) ? false : true);
 }
 
@@ -669,14 +635,10 @@ extern void UARTCharPut(uint32_t ui32Base, uint8_t ui8Data);
 __STATIC_INLINE bool
 UARTBusy(uint32_t ui32Base)
 {
-    //
     // Check the argument.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Determine if the UART is busy.
-    //
     return((HWREG(ui32Base + UART_O_FR) & UART_FR_BUSY) ?
            UART_BUSY : UART_IDLE);
 }
@@ -699,14 +661,10 @@ UARTBusy(uint32_t ui32Base)
 __STATIC_INLINE void
 UARTBreakCtl(uint32_t ui32Base, bool bBreakState)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Set the break condition as requested.
-    //
     HWREG(ui32Base + UART_O_LCRH) =
          (bBreakState ?
          (HWREG(ui32Base + UART_O_LCRH) | UART_LCRH_BRK) :
@@ -779,14 +737,10 @@ extern void UARTIntUnregister(uint32_t ui32Base);
 __STATIC_INLINE void
 UARTIntEnable(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Enable the specified interrupts.
-    //
     HWREG(ui32Base + UART_O_IMSC) |= ui32IntFlags;
 }
 
@@ -815,14 +769,10 @@ UARTIntEnable(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE void
 UARTIntDisable(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Disable the specified interrupts.
-    //
     HWREG(ui32Base + UART_O_IMSC) &= ~(ui32IntFlags);
 }
 
@@ -853,15 +803,11 @@ UARTIntDisable(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE uint32_t
 UARTIntStatus(uint32_t ui32Base, bool bMasked)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Return either the interrupt status or the raw interrupt status as
     // requested.
-    //
     if(bMasked)
     {
         return(HWREG(ui32Base + UART_O_MIS));
@@ -912,14 +858,10 @@ UARTIntStatus(uint32_t ui32Base, bool bMasked)
 __STATIC_INLINE void
 UARTIntClear(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Clear the requested interrupt sources
-    //
     HWREG(ui32Base + UART_O_ICR) = ui32IntFlags;
 }
 
@@ -947,14 +889,10 @@ UARTIntClear(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE void
 UARTDMAEnable(uint32_t ui32Base, uint32_t ui32DMAFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Set the requested bits in the UART DMA control register.
-    //
     HWREG(ui32Base + UART_O_DMACTL) |= ui32DMAFlags;
 }
 
@@ -978,14 +916,10 @@ UARTDMAEnable(uint32_t ui32Base, uint32_t ui32DMAFlags)
 __STATIC_INLINE void
 UARTDMADisable(uint32_t ui32Base, uint32_t ui32DMAFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Clear the requested bits in the UART DMA control register.
-    //
     HWREG(ui32Base + UART_O_DMACTL) &= ~ui32DMAFlags;
 }
 
@@ -1011,14 +945,10 @@ UARTDMADisable(uint32_t ui32Base, uint32_t ui32DMAFlags)
 __STATIC_INLINE uint32_t
 UARTRxErrorGet(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Return the current value of the receive status register.
-    //
     return(HWREG(ui32Base + UART_O_RSR) & 0x0000000F);
 }
 
@@ -1039,15 +969,11 @@ UARTRxErrorGet(uint32_t ui32Base)
 __STATIC_INLINE void
 UARTRxErrorClear(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(UARTBaseValid(ui32Base));
 
-    //
     // Any write to the Error Clear Register will clear all bits which are
     // currently set.
-    //
     HWREG(ui32Base + UART_O_ECR) = 0;
 }
 
@@ -1065,9 +991,7 @@ UARTRxErrorClear(uint32_t ui32Base)
 __STATIC_INLINE void
 UARTHwFlowControlEnable( uint32_t ui32Base )
 {
-    //
     // Check the arguments.
-    //
     ASSERT( UARTBaseValid( ui32Base ));
 
     HWREG( ui32Base + UART_O_CTL ) |= ( UART_CTL_CTSEN | UART_CTL_RTSEN );
@@ -1087,9 +1011,7 @@ UARTHwFlowControlEnable( uint32_t ui32Base )
 __STATIC_INLINE void
 UARTHwFlowControlDisable( uint32_t ui32Base )
 {
-    //
     // Check the arguments.
-    //
     ASSERT( UARTBaseValid( ui32Base ));
 
     HWREG( ui32Base + UART_O_CTL ) &= ~( UART_CTL_CTSEN | UART_CTL_RTSEN );
@@ -1103,7 +1025,7 @@ UARTHwFlowControlDisable( uint32_t ui32Base )
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_UARTFIFOLevelGet
         #undef  UARTFIFOLevelGet
         #define UARTFIFOLevelGet                ROM_UARTFIFOLevelGet

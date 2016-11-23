@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       timer.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
 *  All rights reserved.
@@ -59,12 +59,12 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_gpt.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_ints.h"
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_gpt.h"
+#include "interrupt.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -234,16 +234,12 @@ TimerBaseValid(uint32_t ui32Base)
 __STATIC_INLINE void
 TimerEnable(uint32_t ui32Base, uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Enable the timer(s) module.
-    //
     HWREG(ui32Base + GPT_O_CTL) |= ui32Timer & (GPT_CTL_TAEN | GPT_CTL_TBEN);
 }
 
@@ -265,16 +261,12 @@ TimerEnable(uint32_t ui32Base, uint32_t ui32Timer)
 __STATIC_INLINE void
 TimerDisable(uint32_t ui32Base, uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Disable the timer module.
-    //
     HWREG(ui32Base + GPT_O_CTL) &= ~(ui32Timer &
                                      (GPT_CTL_TAEN | GPT_CTL_TBEN));
 }
@@ -377,16 +369,12 @@ extern void TimerLevelControl(uint32_t ui32Base, uint32_t ui32Timer,
 __STATIC_INLINE void
 TimerEventControl(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Event)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Set the event type.
-    //
     ui32Timer &= GPT_CTL_TAEVENT_M | GPT_CTL_TBEVENT_M;
     HWREG(ui32Base + GPT_O_CTL) = ((HWREG(ui32Base + GPT_O_CTL) & ~ui32Timer) |
                                    (ui32Event & ui32Timer));
@@ -479,25 +467,19 @@ extern void TimerWaitOnTriggerControl(uint32_t ui32Base, uint32_t ui32Timer,
 __STATIC_INLINE void
 TimerPrescaleSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
     ASSERT(ui32Value < 256);
 
-    //
     // Set the timer A prescaler if requested.
-    //
     if(ui32Timer & TIMER_A)
     {
         HWREG(ui32Base + GPT_O_TAPR) = ui32Value;
     }
 
-    //
     // Set the timer B prescaler if requested.
-    //
     if(ui32Timer & TIMER_B)
     {
         HWREG(ui32Base + GPT_O_TBPR) = ui32Value;
@@ -534,16 +516,12 @@ TimerPrescaleSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 __STATIC_INLINE uint32_t
 TimerPrescaleGet(uint32_t ui32Base, uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Return the appropriate prescale value.
-    //
     return((ui32Timer == TIMER_A) ? HWREG(ui32Base + GPT_O_TAPR) :
            HWREG(ui32Base + GPT_O_TBPR));
 }
@@ -573,25 +551,19 @@ TimerPrescaleGet(uint32_t ui32Base, uint32_t ui32Timer)
 __STATIC_INLINE void
 TimerPrescaleMatchSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
     ASSERT(ui32Value < 256);
 
-    //
     // Set the timer A prescale match if requested.
-    //
     if(ui32Timer & TIMER_A)
     {
         HWREG(ui32Base + GPT_O_TAPMR) = ui32Value;
     }
 
-    //
     // Set the timer B prescale match if requested.
-    //
     if(ui32Timer & TIMER_B)
     {
         HWREG(ui32Base + GPT_O_TBPMR) = ui32Value;
@@ -620,15 +592,11 @@ TimerPrescaleMatchSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 __STATIC_INLINE uint32_t
 TimerPrescaleMatchGet(uint32_t ui32Base, uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B));
 
-    //
     // Return the appropriate prescale match value.
-    //
     return((ui32Timer == TIMER_A) ? HWREG(ui32Base + GPT_O_TAPMR) :
            HWREG(ui32Base + GPT_O_TBPMR));
 }
@@ -659,24 +627,18 @@ TimerPrescaleMatchGet(uint32_t ui32Base, uint32_t ui32Timer)
 __STATIC_INLINE void
 TimerLoadSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Set the timer A load value if requested.
-    //
     if(ui32Timer & TIMER_A)
     {
         HWREG(ui32Base + GPT_O_TAILR) = ui32Value;
     }
 
-    //
     // Set the timer B load value if requested.
-    //
     if(ui32Timer & TIMER_B)
     {
         HWREG(ui32Base + GPT_O_TBILR) = ui32Value;
@@ -707,15 +669,11 @@ TimerLoadSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 __STATIC_INLINE uint32_t
 TimerLoadGet(uint32_t ui32Base, uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B));
 
-    //
     // Return the appropriate load value.
-    //
     return((ui32Timer == TIMER_A) ? HWREG(ui32Base + GPT_O_TAILR) :
            HWREG(ui32Base + GPT_O_TBILR));
 }
@@ -743,15 +701,11 @@ TimerLoadGet(uint32_t ui32Base, uint32_t ui32Timer)
 __STATIC_INLINE uint32_t
 TimerValueGet(uint32_t ui32Base, uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B));
 
-    //
     // Return the appropriate timer value.
-    //
     return((ui32Timer == TIMER_A) ? HWREG(ui32Base + GPT_O_TAR) :
            HWREG(ui32Base + GPT_O_TBR));
 }
@@ -785,24 +739,18 @@ TimerValueGet(uint32_t ui32Base, uint32_t ui32Timer)
 __STATIC_INLINE void
 TimerMatchSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B) ||
            (ui32Timer == TIMER_BOTH));
 
-    //
     // Set the timer A match value if requested.
-    //
     if(ui32Timer & TIMER_A)
     {
         HWREG(ui32Base + GPT_O_TAMATCHR) = ui32Value;
     }
 
-    //
     // Set the timer B match value if requested.
-    //
     if(ui32Timer & TIMER_B)
     {
         HWREG(ui32Base + GPT_O_TBMATCHR) = ui32Value;
@@ -833,15 +781,11 @@ TimerMatchSet(uint32_t ui32Base, uint32_t ui32Timer, uint32_t ui32Value)
 __STATIC_INLINE uint32_t
 TimerMatchGet(uint32_t ui32Base, uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
     ASSERT((ui32Timer == TIMER_A) || (ui32Timer == TIMER_B));
 
-    //
     // Return the appropriate match value.
-    //
     return((ui32Timer == TIMER_A) ? HWREG(ui32Base + GPT_O_TAMATCHR) :
            HWREG(ui32Base + GPT_O_TBMATCHR));
 }
@@ -920,14 +864,10 @@ extern void TimerIntUnregister(uint32_t ui32Base, uint32_t ui32Timer);
 __STATIC_INLINE void
 TimerIntEnable(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
 
-    //
     // Enable the specified interrupts.
-    //
     HWREG(ui32Base + GPT_O_IMR) |= ui32IntFlags;
 }
 
@@ -956,14 +896,10 @@ TimerIntEnable(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE void
 TimerIntDisable(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
 
-    //
     // Disable the specified interrupts.
-    //
     HWREG(ui32Base + GPT_O_IMR) &= ~(ui32IntFlags);
 }
 
@@ -992,15 +928,11 @@ TimerIntDisable(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE uint32_t
 TimerIntStatus(uint32_t ui32Base, bool bMasked)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
 
-    //
     // Return either the interrupt status or the raw interrupt status as
     // requested.
-    //
     return(bMasked ? HWREG(ui32Base + GPT_O_MIS) :
            HWREG(ui32Base + GPT_O_RIS));
 }
@@ -1045,14 +977,10 @@ TimerIntStatus(uint32_t ui32Base, bool bMasked)
 __STATIC_INLINE void
 TimerIntClear(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(TimerBaseValid(ui32Base));
 
-    //
     // Clear the requested interrupt sources.
-    //
     HWREG(ui32Base + GPT_O_ICLR) = ui32IntFlags;
 }
 
@@ -1085,14 +1013,10 @@ TimerIntClear(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE void
 TimerSynchronize(uint32_t ui32Base, uint32_t ui32Timers)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ui32Base == GPT0_BASE);
 
-    //
     // Synchronize the specified timers.
-    //
     HWREG(ui32Base + GPT_O_SYNC) = ui32Timers;
 }
 
@@ -1194,7 +1118,7 @@ extern void TimerIntervalLoadMode(uint32_t ui32Base, uint32_t ui32Timer, uint32_
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_TimerConfigure
         #undef  TimerConfigure
         #define TimerConfigure                  ROM_TimerConfigure

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       adi.h
-*  Revised:        2016-08-10 11:10:10 +0200 (Wed, 10 Aug 2016)
-*  Revision:       46997
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the ADI master interface.
 *
@@ -61,13 +61,13 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_uart.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_adi.h>
-#include <driverlib/debug.h>
-#include <driverlib/ddi.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_uart.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_adi.h"
+#include "debug.h"
+#include "ddi.h"
 
 //*****************************************************************************
 //
@@ -148,15 +148,11 @@ ADIBaseValid(uint32_t ui32Base)
 __STATIC_INLINE void
 ADI8RegWrite(uint32_t ui32Base, uint32_t ui32Reg, uint8_t ui8Val)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Write the value to the register.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32Reg, ui8Val, 1);
     } else {
@@ -198,15 +194,11 @@ __STATIC_INLINE void
 ADI16RegWrite(uint32_t ui32Base, uint32_t ui32Reg,
               uint16_t ui16Val)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Write the value to the register.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + (ui32Reg & 0xFE), ui16Val, 2);
     } else {
@@ -247,15 +239,11 @@ ADI16RegWrite(uint32_t ui32Base, uint32_t ui32Reg,
 __STATIC_INLINE void
 ADI32RegWrite(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Val)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Write the value to the register.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + (ui32Reg & 0xFC), ui32Val, 4);
     } else {
@@ -287,15 +275,11 @@ ADI32RegWrite(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Val)
 __STATIC_INLINE uint32_t
 ADI8RegRead(uint32_t ui32Base, uint32_t ui32Reg)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Read the register and return the value.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         return AuxAdiDdiSafeRead(ui32Base + ui32Reg, 1);
     } else {
@@ -330,15 +314,11 @@ ADI8RegRead(uint32_t ui32Base, uint32_t ui32Reg)
 __STATIC_INLINE uint32_t
 ADI16RegRead(uint32_t ui32Base, uint32_t ui32Reg)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Read the registers and return the value.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         return AuxAdiDdiSafeRead(ui32Base + (ui32Reg & 0xFE), 2);
     } else {
@@ -371,15 +351,11 @@ ADI16RegRead(uint32_t ui32Base, uint32_t ui32Reg)
 __STATIC_INLINE uint32_t
 ADI32RegRead(uint32_t ui32Base, uint32_t ui32Reg)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Read the registers and return the value.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         return AuxAdiDdiSafeRead(ui32Base + (ui32Reg & 0xFC), 4);
     } else {
@@ -422,21 +398,15 @@ ADI8BitsSet(uint32_t ui32Base, uint32_t ui32Reg, uint8_t ui8Val)
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_SET;
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + ui32Reg, ui8Val, 1);
     } else {
@@ -479,21 +449,15 @@ ADI16BitsSet(uint32_t ui32Base, uint32_t ui32Reg, uint16_t ui16Val)
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_SET;
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + (ui32Reg & 0xFE), ui16Val, 2);
     } else {
@@ -536,21 +500,15 @@ ADI32BitsSet(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Val)
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_SET;
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + (ui32Reg & 0xFC), ui32Val, 4);
     } else {
@@ -593,21 +551,15 @@ ADI8BitsClear(uint32_t ui32Base, uint32_t ui32Reg, uint8_t ui8Val)
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_CLR;
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + ui32Reg, ui8Val, 1);
     } else {
@@ -650,21 +602,15 @@ ADI16BitsClear(uint32_t ui32Base, uint32_t ui32Reg, uint16_t ui16Val)
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_CLR;
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + (ui32Reg & 0xFE), ui16Val, 2);
     } else {
@@ -707,21 +653,15 @@ ADI32BitsClear(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Val)
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_CLR;
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset + (ui32Reg & 0xFC), ui32Val, 4);
     } else {
@@ -768,23 +708,17 @@ ADI4SetValBit(uint32_t ui32Base, uint32_t ui32Reg, bool bWriteHigh,
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
     ASSERT(!(ui8Val & 0xF0));
     ASSERT(!(ui8Mask & 0xF0));
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_MASK4B + (ui32Reg << 1) + (bWriteHigh ? 1 : 0);
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset, (ui8Mask << 4) | ui8Val, 1);
     } else {
@@ -826,23 +760,17 @@ ADI8SetValBit(uint32_t ui32Base, uint32_t ui32Reg, uint16_t ui16Mask,
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
     ASSERT(!(ui16Val & 0xFF00));
     ASSERT(!(ui16Mask & 0xFF00));
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_MASK8B + (ui32Reg << 1);
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset, (ui16Mask << 8) | ui16Val, 2);
     } else {
@@ -885,23 +813,17 @@ ADI16SetValBit(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Mask,
 {
     uint32_t ui32RegOffset;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ADIBaseValid(ui32Base));
     ASSERT(ui32Reg < ADI_SLAVE_REGS);
     ASSERT(!(ui32Val & 0xFFFF0000));
     ASSERT(!(ui32Mask & 0xFFFF0000));
 
-    //
     // Get the correct address of the first register used for setting bits
     // in the ADI slave.
-    //
     ui32RegOffset = ADI_O_MASK16B + ((ui32Reg << 1) & 0xFC);
 
-    //
     // Set the selected bits.
-    //
     if (ui32Base==AUX_ADI4_BASE) {
         AuxAdiDdiSafeWrite(ui32Base + ui32RegOffset, (ui32Mask << 16) | ui32Val, 4);
     } else {

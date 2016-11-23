@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_rtc.c
-*  Revised:        2016-08-15 13:37:26 +0200 (Mon, 15 Aug 2016)
-*  Revision:       47015
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the AON RTC.
 *
@@ -36,8 +36,8 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aon_rtc.h>
-#include <driverlib/cpu.h>
+#include "aon_rtc.h"
+#include "cpu.h"
 
 //*****************************************************************************
 //
@@ -65,10 +65,8 @@ AONRTCCurrentCompareValueGet( void )
     uint32_t   ui32CurrentSubSec ;
     uint32_t   ui32SecondSecRead ;
 
-    //
     // Reading SEC both before and after SUBSEC in order to detect if SEC incremented while reading SUBSEC
     // If SEC incremented, we can't be sure which SEC the SUBSEC belongs to, so repeating the sequence then.
-    //
     do {
         ui32CurrentSec    = HWREG( AON_RTC_BASE + AON_RTC_O_SEC    );
         ui32CurrentSubSec = HWREG( AON_RTC_BASE + AON_RTC_O_SUBSEC );
@@ -92,10 +90,8 @@ AONRTCCurrent64BitValueGet( void )
     } currentRtc                    ;
     uint32_t      ui32SecondSecRead ;
 
-    //
     // Reading SEC both before and after SUBSEC in order to detect if SEC incremented while reading SUBSEC
     // If SEC incremented, we can't be sure which SEC the SUBSEC belongs to, so repeating the sequence then.
-    //
     do {
         currentRtc.secAndSubSec[ 1 ] = HWREG( AON_RTC_BASE + AON_RTC_O_SEC    );
         currentRtc.secAndSubSec[ 0 ] = HWREG( AON_RTC_BASE + AON_RTC_O_SUBSEC );

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_batmon.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the AON Battery and Temperature Monitor
 *
@@ -36,8 +36,8 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aon_batmon.h>
-#include <inc/hw_fcfg1.h>
+#include "aon_batmon.h"
+#include "../inc/hw_fcfg1.h"
 
 //*****************************************************************************
 //
@@ -63,17 +63,13 @@ AONBatMonTemperatureGetDegC( void )
    int32_t  tempCorrection    ; // Voltage dependent temp correction with 8 fractional bits
    int8_t   voltageSlope      ; // Signed byte value representing the TEMP slope with battery voltage, in degrees C/V, with 4 fractional bits.
 
-   //
    // Shift left then right to sign extend the BATMON_TEMP field
-   //
    signedTemp = ((((int32_t)HWREG( AON_BATMON_BASE + AON_BATMON_O_TEMP ))
      << ( 32 - AON_BATMON_TEMP_INT_W - AON_BATMON_TEMP_INT_S ))
      >> ( 32 - AON_BATMON_TEMP_INT_W - AON_BATMON_TEMP_INT_S ));
 
-   //
    // Typecasting voltageSlope to int8_t prior to assignment in order to make sure sign extension works properly
    // Using byte read (HWREGB) in order to make more efficient code since voltageSlope is assigned to bits[7:0] of FCFG1_O_MISC_TRIM
-   //
    voltageSlope      = ((int8_t)HWREGB( FCFG1_BASE + FCFG1_O_MISC_TRIM ));
    tempCorrection    = (( voltageSlope * (((int32_t)HWREG( AON_BATMON_BASE + AON_BATMON_O_BAT )) - 0x300 )) >> 4 );
 

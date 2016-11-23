@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_gpt_h
-*  Revised:        2016-03-14 09:20:59 +0100 (Mon, 14 Mar 2016)
-*  Revision:       45924
+*  Revised:        2016-10-20 18:33:46 +0200 (Thu, 20 Oct 2016)
+*  Revision:       47507
 *
 * Copyright (c) 2015 - 2016, Texas Instruments Incorporated
 * All rights reserved.
@@ -582,7 +582,7 @@
 
 // Field:     [4] TBCDIR
 //
-// grep
+// GPT Timer B Count Direction
 // ENUMs:
 // UP                       The timer counts up. When counting up, the timer
 //                          starts from a value of 0x0.

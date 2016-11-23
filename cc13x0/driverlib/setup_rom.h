@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup_rom.h
-*  Revised:        2016-07-07 19:12:02 +0200 (to, 07 jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Prototypes and defines for the setup API.
 *
@@ -60,7 +60,7 @@ extern "C"
 #endif
 
 // Hardware headers
-#include <inc/hw_types.h>
+#include "../inc/hw_types.h"
 // Driverlib headers
 // - None needed
 
@@ -232,10 +232,8 @@ extern uint32_t SetupGetTrimForXoscLfRegulatorAndCmirrwrRatio( uint32_t ui32Fcfg
 __STATIC_INLINE int32_t
 SetupSignExtendVddrTrimValue( uint32_t ui32VddrTrimVal )
 {
-    //
     // The VDDR trim value is 5 bits representing the range from -10 to +21
     // (where -10=0x16, -1=0x1F, 0=0x00, 1=0x01 and +21=0x15)
-    //
     int32_t i32SignedVddrVal = ui32VddrTrimVal;
     if ( i32SignedVddrVal > 0x15 ) {
         i32SignedVddrVal -= 0x20;
@@ -277,7 +275,7 @@ extern void SetupSetVddrLevel( uint32_t ccfg_ModeConfReg );
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_SetupAfterColdResetWakeupFromShutDownCfg1
         #undef  SetupAfterColdResetWakeupFromShutDownCfg1
         #define SetupAfterColdResetWakeupFromShutDownCfg1 ROM_SetupAfterColdResetWakeupFromShutDownCfg1

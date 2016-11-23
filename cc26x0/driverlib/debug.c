@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       debug.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
+*  Revision:       47179
 *
 *  Description:    Driver for the Debug functionality (NB. This is a stub which
 *                  should never be included in a release).
@@ -39,8 +39,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "debug.h"
 
 //*****************************************************************************
 //

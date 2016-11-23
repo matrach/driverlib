@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_wuc.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AUX Wakeup Controller
 *
@@ -61,10 +61,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_aux_wuc.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_aux_wuc.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -231,15 +231,11 @@ extern uint32_t AUXWUCClockStatus(uint32_t ui32Clocks);
 __STATIC_INLINE void
 AUXWUCClockFreqReq(uint32_t ui32ClockFreq)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32ClockFreq == AUX_WUC_CLOCK_HIFREQ) ||
            (ui32ClockFreq == AUX_WUC_CLOCK_LOFREQ));
 
-    //
     // Set the request
-    //
     HWREG(AUX_WUC_BASE + AUX_WUC_O_CLKLFREQ) = ui32ClockFreq;
 }
 
@@ -278,9 +274,7 @@ extern void AUXWUCPowerCtrl(uint32_t ui32PowerMode);
 __STATIC_INLINE void
 AUXWUCFreezeEnable(void)
 {
-    //
     // Set the AUX WUC latches as static.
-    //
     HWREG(AUX_WUC_BASE + AUX_WUC_O_AUXIOLATCH) = 0x0;
 }
 
@@ -303,9 +297,7 @@ AUXWUCFreezeEnable(void)
 __STATIC_INLINE void
 AUXWUCFreezeDisable(void)
 {
-    //
     // Set the AUX WUC latches as transparent.
-    //
     HWREG(AUX_WUC_BASE + AUX_WUC_O_AUXIOLATCH) = AUX_WUC_AUXIOLATCH_EN;
 }
 
@@ -316,7 +308,7 @@ AUXWUCFreezeDisable(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AUXWUCClockEnable
         #undef  AUXWUCClockEnable
         #define AUXWUCClockEnable               ROM_AUXWUCClockEnable

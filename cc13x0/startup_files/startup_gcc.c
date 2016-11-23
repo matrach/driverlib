@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       startup_gcc.c
-*  Revised:        $Date: 2016-05-19 11:08:26 +0200 (to, 19 mai 2016) $
-*  Revision:       $Revision: 17109 $
+*  Revised:        $Date: 2016-09-26 11:02:06 +0200 (ma, 26 sep 2016) $
+*  Revision:       $Revision: 17337 $
 *
 *  Description:    Startup code for CC13xx PG2 device family for use with GCC.
 *
@@ -46,8 +46,8 @@
 #error "startup_gcc.c: Unsupported compiler!"
 #endif
 
-#include <inc/hw_types.h>
-#include <driverlib/setup.h>
+#include "../inc/hw_types.h"
+#include "../driverlib/setup.h"
 
 
 //*****************************************************************************
@@ -82,7 +82,6 @@ void SysTickIntHandler(void) WEAK_ALIAS(IntDefaultHandler);
 void GPIOIntHandler(void) WEAK_ALIAS(IntDefaultHandler);
 void I2CIntHandler(void) WEAK_ALIAS(IntDefaultHandler);
 void RFCCPE1IntHandler(void) WEAK_ALIAS(IntDefaultHandler);
-void AONIntHandler(void) WEAK_ALIAS(IntDefaultHandler);
 void AONRTCIntHandler(void) WEAK_ALIAS(IntDefaultHandler);
 void UART0IntHandler(void) WEAK_ALIAS(IntDefaultHandler);
 void AUXSWEvent0IntHandler(void) WEAK_ALIAS(IntDefaultHandler);
@@ -138,58 +137,59 @@ extern uint32_t _estack;
 __attribute__ ((section(".vectors"), used))
 void (* const g_pfnVectors[])(void) =
 {
-    (void (*)(void))&_estack,               // The initial stack pointer 
-    ResetISR,                               // The reset handler
-    NmiSR,                                  // The NMI handler
-    FaultISR,                               // The hard fault handler
-    MPUFaultIntHandler,                     // The MPU fault handler
-    BusFaultIntHandler,                     // The bus fault handler
-    UsageFaultIntHandler,                   // The usage fault handler
-    0,                                      // Reserved
-    0,                                      // Reserved
-    0,                                      // Reserved
-    0,                                      // Reserved
-    SVCallIntHandler,                       // SVCall handler
-    DebugMonIntHandler,                     // Debug monitor handler
-    0,                                      // Reserved
-    PendSVIntHandler,                       // The PendSV handler
-    SysTickIntHandler,                      // The SysTick handler
-    GPIOIntHandler,                         // AON edge detect
-    I2CIntHandler,                          // I2C
-    RFCCPE1IntHandler,                      // RF Core Command & Packet Engine 1
-    AONIntHandler,                          // AON SpiSplave Rx, Tx and CS
-    AONRTCIntHandler,                       // AON RTC
-    UART0IntHandler,                        // UART0 Rx and Tx
-    AUXSWEvent0IntHandler,                  // AUX software event 0
-    SSI0IntHandler,                         // SSI0 Rx and Tx
-    SSI1IntHandler,                         // SSI1 Rx and Tx
-    RFCCPE0IntHandler,                      // RF Core Command & Packet Engine 0
-    RFCHardwareIntHandler,                  // RF Core Hardware
-    RFCCmdAckIntHandler,                    // RF Core Command Acknowledge
-    I2SIntHandler,                          // I2S
-    AUXSWEvent1IntHandler,                  // AUX software event 1
-    WatchdogIntHandler,                     // Watchdog timer
-    Timer0AIntHandler,                      // Timer 0 subtimer A
-    Timer0BIntHandler,                      // Timer 0 subtimer B
-    Timer1AIntHandler,                      // Timer 1 subtimer A
-    Timer1BIntHandler,                      // Timer 1 subtimer B
-    Timer2AIntHandler,                      // Timer 2 subtimer A
-    Timer2BIntHandler,                      // Timer 2 subtimer B
-    Timer3AIntHandler,                      // Timer 3 subtimer A
-    Timer3BIntHandler,                      // Timer 3 subtimer B
-    CryptoIntHandler,                       // Crypto Core Result available
-    uDMAIntHandler,                         // uDMA Software
-    uDMAErrIntHandler,                      // uDMA Error
-    FlashIntHandler,                        // Flash controller
-    SWEvent0IntHandler,                     // Software Event 0
-    AUXCombEventIntHandler,                 // AUX combined event
-    AONProgIntHandler,                      // AON programmable 0
-    DynProgIntHandler,                      // Dynamic Programmable interrupt
-                                            // source (Default: PRCM)
-    AUXCompAIntHandler,                     // AUX Comparator A
-    AUXADCIntHandler,                       // AUX ADC new sample or ADC DMA
-                                            // done, ADC underflow, ADC overflow
-    TRNGIntHandler                          // TRNG event
+    (void (*)(void))&_estack,               //  0 The initial stack pointer 
+    ResetISR,                               //  1 The reset handler
+    NmiSR,                                  //  2 The NMI handler
+    FaultISR,                               //  3 The hard fault handler
+    MPUFaultIntHandler,                     //  4 The MPU fault handler
+    BusFaultIntHandler,                     //  5 The bus fault handler
+    UsageFaultIntHandler,                   //  6 The usage fault handler
+    0,                                      //  7 Reserved
+    0,                                      //  8 Reserved
+    0,                                      //  9 Reserved
+    0,                                      // 10 Reserved
+    SVCallIntHandler,                       // 11 SVCall handler
+    DebugMonIntHandler,                     // 12 Debug monitor handler
+    0,                                      // 13 Reserved
+    PendSVIntHandler,                       // 14 The PendSV handler
+    SysTickIntHandler,                      // 15 The SysTick handler
+    //--- External interrupts ---
+    GPIOIntHandler,                         // 16 AON edge detect
+    I2CIntHandler,                          // 17 I2C
+    RFCCPE1IntHandler,                      // 18 RF Core Command & Packet Engine 1
+    IntDefaultHandler,                      // 19 Reserved
+    AONRTCIntHandler,                       // 20 AON RTC
+    UART0IntHandler,                        // 21 UART0 Rx and Tx
+    AUXSWEvent0IntHandler,                  // 22 AUX software event 0
+    SSI0IntHandler,                         // 23 SSI0 Rx and Tx
+    SSI1IntHandler,                         // 24 SSI1 Rx and Tx
+    RFCCPE0IntHandler,                      // 25 RF Core Command & Packet Engine 0
+    RFCHardwareIntHandler,                  // 26 RF Core Hardware
+    RFCCmdAckIntHandler,                    // 27 RF Core Command Acknowledge
+    I2SIntHandler,                          // 28 I2S
+    AUXSWEvent1IntHandler,                  // 29 AUX software event 1
+    WatchdogIntHandler,                     // 30 Watchdog timer
+    Timer0AIntHandler,                      // 31 Timer 0 subtimer A
+    Timer0BIntHandler,                      // 32 Timer 0 subtimer B
+    Timer1AIntHandler,                      // 33 Timer 1 subtimer A
+    Timer1BIntHandler,                      // 34 Timer 1 subtimer B
+    Timer2AIntHandler,                      // 35 Timer 2 subtimer A
+    Timer2BIntHandler,                      // 36 Timer 2 subtimer B
+    Timer3AIntHandler,                      // 37 Timer 3 subtimer A
+    Timer3BIntHandler,                      // 38 Timer 3 subtimer B
+    CryptoIntHandler,                       // 39 Crypto Core Result available
+    uDMAIntHandler,                         // 40 uDMA Software
+    uDMAErrIntHandler,                      // 41 uDMA Error
+    FlashIntHandler,                        // 42 Flash controller
+    SWEvent0IntHandler,                     // 43 Software Event 0
+    AUXCombEventIntHandler,                 // 44 AUX combined event
+    AONProgIntHandler,                      // 45 AON programmable 0
+    DynProgIntHandler,                      // 46 Dynamic Programmable interrupt
+                                            //    source (Default: PRCM)
+    AUXCompAIntHandler,                     // 47 AUX Comparator A
+    AUXADCIntHandler,                       // 48 AUX ADC new sample or ADC DMA
+                                            //    done, ADC underflow, ADC overflow
+    TRNGIntHandler                          // 49 TRNG event
 };
 
 

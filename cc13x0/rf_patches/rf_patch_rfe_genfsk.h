@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_rfe_genfsk.h
-*  Revised:        $Date: 2016-06-21 14:04:50 +0200 (ti, 21 jun 2016) $
-*  Revision:       $Revision: 17238 $
+*  Revised:        $Date: 2016-09-13 16:37:28 +0200 (ti, 13 sep 2016) $
+*  Revision:       $Revision: 17321 $
 *
 *  Description: RF core patch for CC13XX Generic FSK
 *
@@ -41,7 +41,7 @@
 #define _RF_PATCH_RFE_GENFSK_H
 
 #include <stdint.h>
-#include <inc/hw_types.h>
+#include "../inc/hw_types.h"
 
 #ifndef RFE_PATCH_TYPE
 #define RFE_PATCH_TYPE static const uint32_t

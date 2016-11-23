@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_event.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AON Event fabric.
 *
@@ -61,11 +61,11 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_device.h>
-#include <inc/hw_aon_event.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_device.h"
+#include "../inc/hw_aon_event.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -126,9 +126,7 @@ extern "C"
                                        // Event ID 57-62 is reserved for future use
 #define AON_EVENT_NONE              63 // No event, always low
 
-//
 // Keeping backward compatibility until major revision number is incremented
-//
 #define AON_EVENT_RTC0     ( AON_EVENT_RTC_CH0 )
 
 //*****************************************************************************
@@ -514,9 +512,7 @@ AONEventRtcSet(uint32_t ui32EventSrc)
 {
     uint32_t ui32Ctrl;
 
-    //
     // Check the arguments.
-    //
     ASSERT(ui32EventSrc <= AON_EVENT_NONE);
 
     ui32Ctrl = HWREG(AON_EVENT_BASE + AON_EVENT_O_RTCSEL);
@@ -570,9 +566,7 @@ AONEventRtcGet(void)
 {
     uint32_t ui32EventSrc;
 
-    //
     // Return the active event.
-    //
     ui32EventSrc = HWREG(AON_EVENT_BASE + AON_EVENT_O_RTCSEL);
 
     return ((ui32EventSrc & AON_EVENT_RTCSEL_RTC_CH1_CAPT_EV_M) >>
@@ -586,7 +580,7 @@ AONEventRtcGet(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AONEventMcuWakeUpSet
         #undef  AONEventMcuWakeUpSet
         #define AONEventMcuWakeUpSet            ROM_AONEventMcuWakeUpSet

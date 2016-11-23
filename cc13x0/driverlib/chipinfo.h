@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2016-07-07 17:52:37 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46847
+*  Revised:        2016-10-20 13:13:27 +0200 (Thu, 20 Oct 2016)
+*  Revision:       47501
 *
 *  Description:    Collection of functions returning chip information.
 *
@@ -61,9 +61,9 @@ extern "C"
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_fcfg1.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_fcfg1.h"
 
 //*****************************************************************************
 //
@@ -84,7 +84,7 @@ extern "C"
     #define ChipInfo_GetChipType            NOROM_ChipInfo_GetChipType
     #define ChipInfo_GetChipFamily          NOROM_ChipInfo_GetChipFamily
     #define ChipInfo_GetHwRevision          NOROM_ChipInfo_GetHwRevision
-    #define ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated NOROM_ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated
+    #define ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated NOROM_ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated
 #endif
 
 //*****************************************************************************
@@ -323,7 +323,8 @@ typedef enum {
    CHIP_TYPE_CC2640        =  4, //!<  4 means that this is a CC2640 chip.
    CHIP_TYPE_CC2650        =  5, //!<  5 means that this is a CC2650 chip.
    CHIP_TYPE_CUSTOM_0      =  6, //!<  6 means that this is a CUSTOM_0 chip.
-   CHIP_TYPE_CUSTOM_1      =  7  //!<  7 means that this is a CUSTOM_1 chip.
+   CHIP_TYPE_CUSTOM_1      =  7, //!<  7 means that this is a CUSTOM_1 chip.
+   CHIP_TYPE_CC2640R2      =  8  //!<  4 means that this is a CC2640R2 chip.
 } ChipType_t;
 
 //*****************************************************************************
@@ -343,12 +344,12 @@ extern ChipType_t ChipInfo_GetChipType( void );
 //
 //*****************************************************************************
 typedef enum {
-   FAMILY_Unknown       = -1, //!< -1 means that the chip's family member is unknown.
-   FAMILY_CC26xx        =  0, //!<  0 means that the chip is a CC26x0 family member.
-   FAMILY_CC13xx        =  1, //!<  1 means that the chip is a CC13x0 family member.
-   FAMILY_CC26xx_Liz    =  2, //!<  2 means that the chip is a CC26x1 family member.
-   FAMILY_CC26xx_Aga    =  3, //!<  3 means that the chip is a CCxxx2/xxx4 family member.
-   FAMILY_CC26xx_R2     =  4  //!<  4 means that the chip is a CC26x0_R2 family (new ROM contents).
+   FAMILY_Unknown               = -1, //!< -1 means that the chip's family member is unknown.
+   FAMILY_CC26x0                =  0, //!<  0 means that the chip is a CC26x0 family member.
+   FAMILY_CC13x0                =  1, //!<  1 means that the chip is a CC13x0 family member.
+   FAMILY_CC26x1                =  2, //!<  2 means that the chip is a CC26x1 family member.
+   FAMILY_CC26x0R2              =  3, //!<  3 means that the chip is a CC26x0R2 family (new ROM contents).
+   FAMILY_CC13x2_13x4_26x2_26x4 =  4  //!<  4 means that the chip is a CC13x2, CC13x4, CC26x2, CC26x4 family member.
 } ChipFamily_t;
 
 //*****************************************************************************
@@ -363,72 +364,72 @@ extern ChipFamily_t ChipInfo_GetChipFamily( void );
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC26xx family.
+//! \brief Returns true if this chip is member of the CC13x0 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC26xx family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC13x0 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIsCC26xx( void )
+ChipInfo_ChipFamilyIs_CC13x0( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC26xx );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x0 );
 }
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC13xx family.
+//! \brief Returns true if this chip is member of the CC26x0 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC13xx family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC26x0 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIsCC13xx( void )
+ChipInfo_ChipFamilyIs_CC26x0( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC13xx );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC26x0 );
 }
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC26xx_R2 family.
+//! \brief Returns true if this chip is member of the CC26x0R2 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC26xx_R2 family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC26x0R2 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIsCC26xx_R2( void )
+ChipInfo_ChipFamilyIs_CC26x0R2( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC26xx_R2 );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC26x0R2 );
 }
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC26xx_Liz family.
+//! \brief Returns true if this chip is member of the CC26x1 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC26xx_Liz family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC26x1 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIsCC26xx_Liz( void )
+ChipInfo_ChipFamilyIs_CC26x1( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC26xx_Liz );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC26x1 );
 }
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC26xx_Aga family.
+//! \brief Returns true if this chip is member of the CC13x2, CC13x4, CC26x2, CC26x4 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC26xx_Aga family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC13x2, CC13x4, CC26x2, CC26x4 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIsCC26xx_Aga( void )
+ChipInfo_ChipFamilyIs_CC13x2_13x4_26x2_26x4( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC26xx_Aga );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x2_13x4_26x2_26x4 );
 }
 
 
@@ -571,12 +572,12 @@ ChipInfo_HwRevisionIs_GTEQ_2_3( void )
 
 //*****************************************************************************
 //
-//! \brief Verifies that curent chip is built for CC13xx HwRev 2.0 or later and never returns if violated.
+//! \brief Verifies that curent chip is CC13x0 HwRev 2.0 or later and never returns if violated.
 //!
 //! \return None
 //
 //*****************************************************************************
-extern void ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated( void );
+extern void ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated( void );
 
 //*****************************************************************************
 //
@@ -585,7 +586,7 @@ extern void ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated( void );
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_ChipInfo_GetSupportedProtocol_BV
         #undef  ChipInfo_GetSupportedProtocol_BV
         #define ChipInfo_GetSupportedProtocol_BV ROM_ChipInfo_GetSupportedProtocol_BV
@@ -606,9 +607,9 @@ extern void ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated( void );
         #undef  ChipInfo_GetHwRevision
         #define ChipInfo_GetHwRevision          ROM_ChipInfo_GetHwRevision
     #endif
-    #ifdef ROM_ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated
-        #undef  ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated
-        #define ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated ROM_ThisCodeIsBuiltForCC13xxHwRev20AndLater_HaltIfViolated
+    #ifdef ROM_ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated
+        #undef  ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated
+        #define ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated ROM_ThisLibraryIsFor_CC13x0_HwRev20AndLater_HaltIfViolated
     #endif
 #endif
 

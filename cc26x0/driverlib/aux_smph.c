@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_smph.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
+*  Revision:       47179
 *
 *  Description:    Driver for the AUX Semaphore.
 *
@@ -36,6 +36,6 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aux_smph.h>
+#include "aux_smph.h"
 
 // See aux_smph.h for implementation

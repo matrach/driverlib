@@ -54,7 +54,7 @@
 //! @{
 
 #include <stdint.h>
-#include <driverlib/rf_mailbox.h>
+#include "rf_mailbox.h"
 
 typedef struct __RFC_STRUCT rfc_dataEntry_s rfc_dataEntry_t;
 typedef struct __RFC_STRUCT rfc_dataEntryGeneral_s rfc_dataEntryGeneral_t;

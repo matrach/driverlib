@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       adi.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
+*  Revision:       47179
 *
 *  Description:    Driver for the ADI interface
 *
@@ -36,11 +36,11 @@
 *
 ******************************************************************************/
 
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_aux_smph.h>
-#include <driverlib/adi.h>
-#include <driverlib/cpu.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_aux_smph.h"
+#include "adi.h"
+#include "cpu.h"
 
 
 //*****************************************************************************

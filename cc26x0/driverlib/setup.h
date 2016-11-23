@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.h
-*  Revised:        2016-08-10 11:10:10 +0200 (Wed, 10 Aug 2016)
-*  Revision:       46997
+*  Revised:        2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016)
+*  Revision:       47152
 *
 *  Description:    Prototypes and defines for the setup API.
 *
@@ -60,7 +60,7 @@ extern "C"
 #endif
 
 // Hardware headers
-#include <inc/hw_types.h>
+#include "../inc/hw_types.h"
 // Driverlib headers
 // - None needed
 
@@ -101,7 +101,7 @@ extern void SetupTrimDevice( void );
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_SetupTrimDevice
         #undef  SetupTrimDevice
         #define SetupTrimDevice                 ROM_SetupTrimDevice

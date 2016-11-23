@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       smph.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the MCU Semaphore.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/smph.h>
+#include "smph.h"
 
 //*****************************************************************************
 //
@@ -57,9 +57,7 @@
 void
 SMPHAcquire(uint32_t ui32Semaphore)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Semaphore == SMPH_0) ||
            (ui32Semaphore == SMPH_1) ||
            (ui32Semaphore == SMPH_2) ||
@@ -93,11 +91,9 @@ SMPHAcquire(uint32_t ui32Semaphore)
            (ui32Semaphore == SMPH_30) ||
            (ui32Semaphore == SMPH_31));
 
-    //
     // Wait for semaphore to be release such that it can be claimed
     // Semaphore register reads 1 when lock was acquired otherwise 0
     // (i.e. SMPH_CLAIMED).
-    //
     while(HWREG(SMPH_BASE + SMPH_O_SMPH0 + 4 * ui32Semaphore) ==
             SMPH_CLAIMED)
     {

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       pwr_ctrl.c
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-07 08:57:43 +0200 (Fri, 07 Oct 2016)
+*  Revision:       47345
 *
 *  Description:    Power Control driver.
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/pwr_ctrl.h>
+#include "pwr_ctrl.h"
 
 //*****************************************************************************
 //
@@ -58,16 +58,12 @@
 void
 PowerCtrlSourceSet(uint32_t ui32PowerConfig)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32PowerConfig == PWRCTRL_PWRSRC_DCDC) ||
            (ui32PowerConfig == PWRCTRL_PWRSRC_GLDO) ||
            (ui32PowerConfig == PWRCTRL_PWRSRC_ULDO));
 
-    //
     // Configure the power.
-    //
     if(ui32PowerConfig == PWRCTRL_PWRSRC_DCDC) {
         HWREG(AON_SYSCTL_BASE + AON_SYSCTL_O_PWRCTL) |=
             (AON_SYSCTL_PWRCTL_DCDC_EN | AON_SYSCTL_PWRCTL_DCDC_ACTIVE);

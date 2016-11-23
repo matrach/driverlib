@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_timer.c
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the AUX Timer Module
 *
@@ -36,7 +36,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/aux_timer.h>
+#include "aux_timer.h"
 
 //*****************************************************************************
 //
@@ -67,9 +67,7 @@ AUXTimerConfigure(uint32_t ui32Timer, uint32_t ui32Config)
 {
     uint32_t ui32Val;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Timer == AUX_TIMER_0) || (ui32Timer == AUX_TIMER_1) ||
            (ui32Timer == AUX_TIMER_BOTH));
     ASSERT(((ui32Config & 0x0000000F) == AUX_TIMER_CFG_ONE_SHOT) ||
@@ -106,45 +104,33 @@ AUXTimerConfigure(uint32_t ui32Timer, uint32_t ui32Config)
            ((ui32Config & 0x00000F00) == AUX_TIMER_CFG_TICK_SRC_MCU_EVENT) ||
            ((ui32Config & 0x00000F00) == AUX_TIMER_CFG_TICK_SRC_ADC_IRQ));
 
-    //
     // Configure Timer 0.
-    //
     if(ui32Timer & AUX_TIMER_0)
     {
-        //
         // Stop timer 0.
-        //
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CTL) = 0;
 
-        //
         // Set mode.
-        //
         ui32Val = HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CFG);
         ui32Val &= ~(AUX_TIMER_T0CFG_MODE_M | AUX_TIMER_T0CFG_RELOAD_M);
         ui32Val |= (ui32Config & (AUX_TIMER_T0CFG_MODE_M |
                                   AUX_TIMER_T0CFG_RELOAD_M));
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CFG) = ui32Val;
 
-        //
         // If edge counter, set rising/falling edge and tick source.
-        //
         if(ui32Config & AUX_TIMER_T0CFG_MODE_M)
         {
             ui32Val = HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CFG);
             ui32Val &= ~(AUX_TIMER_T0CFG_TICK_SRC_POL_M |
                          AUX_TIMER_T0CFG_TICK_SRC_M);
 
-            //
             // Set edge polarity.
-            //
             if(ui32Config & AUX_TIMER_CFG_FALLING_EDGE)
             {
                 ui32Val |= AUX_TIMER_T0CFG_TICK_SRC_POL;
             }
 
-            //
             // Set tick source.
-            //
             ui32Val |= ((ui32Config & 0x00000F00) >> 8) <<
                        AUX_TIMER_T0CFG_TICK_SRC_S;
 
@@ -152,45 +138,33 @@ AUXTimerConfigure(uint32_t ui32Timer, uint32_t ui32Config)
         }
     }
 
-    //
     // Configure Timer 1.
-    //
     if(ui32Timer & AUX_TIMER_1)
     {
-        //
         // Stop timer 1.
-        //
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CTL) = 0;
 
-        //
         // Set mode.
-        //
         ui32Val = HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CFG);
         ui32Val &= ~(AUX_TIMER_T1CFG_MODE_M | AUX_TIMER_T1CFG_RELOAD_M);
         ui32Val |= ((ui32Config) & (AUX_TIMER_T1CFG_MODE_M |
                                     AUX_TIMER_T1CFG_RELOAD_M));
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CFG) = ui32Val;
 
-        //
         // If edge counter, set rising/falling edge and tick source.
-        //
         if(ui32Config & AUX_TIMER_T1CFG_MODE)
         {
             ui32Val = HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CFG);
             ui32Val &= ~(AUX_TIMER_T1CFG_TICK_SRC_POL_M |
                          AUX_TIMER_T1CFG_TICK_SRC_M);
 
-            //
             // Set edge polarity.
-            //
             if(ui32Config & AUX_TIMER_CFG_FALLING_EDGE)
             {
                 ui32Val |= AUX_TIMER_T1CFG_TICK_SRC_POL;
             }
 
-            //
             // Set tick source.
-            //
             ui32Val |= ((ui32Config & 0x00000F00) >> 8) <<
                        AUX_TIMER_T1CFG_TICK_SRC_S;
             HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CFG) = ui32Val;
@@ -206,25 +180,19 @@ AUXTimerConfigure(uint32_t ui32Timer, uint32_t ui32Config)
 void
 AUXTimerStart(uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Timer == AUX_TIMER_0) ||
            (ui32Timer == AUX_TIMER_1) ||
            (ui32Timer == AUX_TIMER_BOTH));
 
     if(ui32Timer & AUX_TIMER_0)
     {
-        //
         // Start timer 0.
-        //
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CTL) = AUX_TIMER_T0CTL_EN;
     }
     if(ui32Timer & AUX_TIMER_1)
     {
-        //
         // Start timer 1.
-        //
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CTL) = AUX_TIMER_T1CTL_EN;
     }
 }
@@ -237,25 +205,19 @@ AUXTimerStart(uint32_t ui32Timer)
 void
 AUXTimerStop(uint32_t ui32Timer)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Timer == AUX_TIMER_0) ||
            (ui32Timer == AUX_TIMER_1) ||
            (ui32Timer == AUX_TIMER_BOTH));
 
     if(ui32Timer & AUX_TIMER_0)
     {
-        //
         // Stop timer 0.
-        //
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CTL) = 0;
     }
     if(ui32Timer & AUX_TIMER_1)
     {
-        //
         // Stop timer 1.
-        //
         HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CTL) = 0;
     }
 }
@@ -270,18 +232,14 @@ AUXTimerPrescaleSet(uint32_t ui32Timer, uint32_t ui32PrescaleDiv)
 {
     uint32_t ui32Val;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Timer == AUX_TIMER_0) || (ui32Timer == AUX_TIMER_1) ||
            (ui32Timer == AUX_TIMER_BOTH));
     ASSERT(ui32PrescaleDiv <= AUX_TIMER_PRESCALE_DIV_32768);
 
     if(ui32Timer & AUX_TIMER_0)
     {
-        //
         // Set timer 0 prescale value.
-        //
         ui32Val = HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CFG);
         ui32Val &= ~AUX_TIMER_T0CFG_PRE_M;
         ui32Val |=  ui32PrescaleDiv << AUX_TIMER_T0CFG_PRE_S;
@@ -289,9 +247,7 @@ AUXTimerPrescaleSet(uint32_t ui32Timer, uint32_t ui32PrescaleDiv)
     }
     if(ui32Timer & AUX_TIMER_1)
     {
-        //
         // Set timer 1 prescale value.
-        //
         ui32Val = HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T1CFG);
         ui32Val &= ~AUX_TIMER_T1CFG_PRE_M;
         ui32Val |=  ui32PrescaleDiv << AUX_TIMER_T1CFG_PRE_S;
@@ -310,25 +266,19 @@ AUXTimerPrescaleGet(uint32_t ui32Timer)
     uint32_t ui32Val;
     uint32_t ui32PrescaleDiv;
 
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Timer == AUX_TIMER_0) || (ui32Timer == AUX_TIMER_1));
 
     ui32Val = (HWREG(AUX_TIMER_BASE + AUX_TIMER_O_T0CFG));
     if(ui32Timer & AUX_TIMER_0)
     {
-        //
         // Get timer 0 prescale value.
-        //
         ui32PrescaleDiv =
             (ui32Val & AUX_TIMER_T0CFG_PRE_M) >> AUX_TIMER_T0CFG_PRE_S;
     }
     else
     {
-        //
         // Get timer 1 prescale value.
-        //
         ui32PrescaleDiv =
             (ui32Val & AUX_TIMER_T1CFG_PRE_M) >> AUX_TIMER_T1CFG_PRE_S;
     }

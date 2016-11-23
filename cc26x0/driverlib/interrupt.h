@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       interrupt.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the NVIC Interrupt Controller
 *
@@ -61,11 +61,11 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_types.h>
-#include <inc/hw_nvic.h>
-#include <driverlib/debug.h>
-#include <driverlib/cpu.h>
+#include "../inc/hw_ints.h"
+#include "../inc/hw_types.h"
+#include "../inc/hw_nvic.h"
+#include "debug.h"
+#include "cpu.h"
 
 //*****************************************************************************
 //
@@ -136,9 +136,7 @@ extern "C"
 __STATIC_INLINE bool
 IntMasterEnable(void)
 {
-    //
     // Enable processor interrupts.
-    //
     return(CPUcpsie());
 }
 
@@ -158,9 +156,7 @@ IntMasterEnable(void)
 __STATIC_INLINE bool
 IntMasterDisable(void)
 {
-    //
     // Disable processor interrupts.
-    //
     return(CPUcpsid());
 }
 
@@ -443,7 +439,7 @@ IntPriorityMaskGet(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_IntRegister
         #undef  IntRegister
         #define IntRegister                     ROM_IntRegister

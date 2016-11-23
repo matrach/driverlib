@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.c
-*  Revised:        2016-08-09 12:38:32 +0200 (Tue, 09 Aug 2016)
-*  Revision:       46980
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Driver for the System Control.
 *
@@ -37,12 +37,12 @@
 ******************************************************************************/
 
 // Hardware headers
-#include <inc/hw_types.h>
-#include <inc/hw_ccfg.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_ccfg.h"
 // Driverlib headers
-#include <driverlib/aon_batmon.h>
-#include <driverlib/sys_ctrl.h>
-#include <driverlib/setup_rom.h>
+#include "aon_batmon.h"
+#include "sys_ctrl.h"
+#include "setup_rom.h"
 
 
 //*****************************************************************************
@@ -104,13 +104,12 @@ static const uint32_t g_pui32ModuleCG[] =
     PRCM_PERIPH_SSI1,
     PRCM_PERIPH_UART0,
     PRCM_PERIPH_I2C0,
-    PRCM_PERIPH_UDMA,
-    PRCM_PERIPH_TRNG,
     PRCM_PERIPH_CRYPTO,
+    PRCM_PERIPH_TRNG,
+    PRCM_PERIPH_UDMA,
     PRCM_PERIPH_GPIO,
     PRCM_PERIPH_I2S
 };
-
 
 //*****************************************************************************
 //
@@ -123,16 +122,12 @@ SysCtrlPowerEverything(void)
     uint32_t ui32Idx;
     uint32_t ui32AuxClocks;
 
-    //
     // Force power on AUX
-    //
     AONWUCAuxWakeupEvent(AONWUC_AUX_WAKEUP);
     while(!(AONWUCPowerStatusGet() & AONWUC_AUX_POWER_ON))
     { }
 
-    //
     // Enable all the AUX domain clocks and wait for them to be ready
-    //
     ui32AuxClocks = AUX_WUC_ADI_CLOCK | AUX_WUC_OSCCTRL_CLOCK |
                     AUX_WUC_TDCIF_CLOCK | AUX_WUC_ANAIF_CLOCK |
                     AUX_WUC_TIMER_CLOCK | AUX_WUC_AIODIO0_CLOCK |
@@ -143,50 +138,40 @@ SysCtrlPowerEverything(void)
     while(AUXWUCClockStatus(ui32AuxClocks) != AUX_WUC_CLOCK_READY)
     { }
 
-    //
     // Request to switch to the crystal to enable radio operation.
     // It takes a while for the XTAL to be ready so it is possible to
     // perform other tasks while waiting.
     OSCClockSourceSet(OSC_SRC_CLK_MF | OSC_SRC_CLK_HF, OSC_XOSC_HF);
     OSCClockSourceSet(OSC_SRC_CLK_LF, OSC_XOSC_LF);
 
-    //
     // Switch the HF source to XTAL - must be performed safely out of ROM to
     // avoid flash issues when switching the clock.
     //
     // NB. If already running XTAL on HF clock source the ROM will wait forever
     // on a flag that will never be set - need to check.
-    //
     if(OSCClockSourceGet(OSC_SRC_CLK_HF) != OSC_XOSC_HF) {
         OSCHfSourceSwitch();
     }
 
-    //
     // Turn on all the MCU power domains
     // If the CPU is running and executing code the SYSBUS, VIMS and CPU are
     // automatically on as well.
-    //
     PRCMPowerDomainOn(PRCM_DOMAIN_RFCORE | PRCM_DOMAIN_SERIAL |
                       PRCM_DOMAIN_PERIPH);
-    //
     // Wait for power to be on
-    //
     while(PRCMPowerDomainStatus(PRCM_DOMAIN_RFCORE | PRCM_DOMAIN_SERIAL |
                                 PRCM_DOMAIN_PERIPH) != PRCM_DOMAIN_POWER_ON);
 
     PRCMLoadSet();
     while(!PRCMLoadGet());
 
-    //
     // Ensure the domain clocks are running and wait for the clock settings to
     // take effect
-    //
     PRCMDomainEnable(PRCM_DOMAIN_RFCORE | PRCM_DOMAIN_VIMS);
     PRCMLoadSet();
     while(!PRCMLoadGet())
     { }
 
-    //
     // Enable all the RF Core clocks
     //
     // Do not read back to check, for two reasons:
@@ -194,9 +179,7 @@ SysCtrlPowerEverything(void)
     // 2. The PWMCLKENABLE register always reads back what is written
     HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) = 0x7FF;
 
-    //
     // Enable all peripheral clocks in System CPU run/sleep/deep-sleep mode.
-    //
     for(ui32Idx = 0; ui32Idx < sizeof(g_pui32ModuleCG) / sizeof(uint32_t);
         ui32Idx++)
     {
@@ -239,12 +222,10 @@ SysCtrlSetRechargeBeforePowerDown( uint32_t xoscPowerMode )
    uint32_t          perM                    ;
    const uint32_t  * pLookupTable            ;
 
-   //
    // If external regulator mode we shall:
    // - Disable adaptive recharge (bit[31]=0) in AON_WUC_O_RECHARGECFG
    // - Set recharge period to approximately 500 mS (perM=31, perE=5 => 0xFD)
    // - Make sure you get a recalculation if leaving external regulator mode by setting powerQualGlobals.pdState accordingly
-   //
    if ( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_PWRCTL ) & AON_SYSCTL_PWRCTL_EXT_REG_MODE ) {
       powerQualGlobals.pdState = PD_STATE_EXT_REG_MODE;
       HWREG( AON_WUC_BASE + AON_WUC_O_RECHARGECFG  ) = 0x00A4FDFD;
@@ -489,21 +470,17 @@ SysCtrl_DCDC_VoltageConditionalControl( void )
    uint32_t ccfg_ModeConfReg ;  // Holds a copy of the CCFG_O_MODE_CONF register.
    uint32_t aonSysctlPwrctl  ;  // Reflect whats read/written to the AON_SYSCTL_O_PWRCTL register.
 
-   //
    // We could potentially call this function before any battery voltage measurement
    // is made/available. In that case we must make sure that we do not turn off the DCDC.
    // This can be done by doing nothing as long as the battery voltage is 0 (Since the
    // reset value of the battery voltage register is 0).
-   //
    aonBatmonBat = HWREG( AON_BATMON_BASE + AON_BATMON_O_BAT );
    if ( aonBatmonBat != 0 ) {
-      //
       // Check if Voltage Conditional Control is enabled
       // It is enabled if all the following are true:
       // - DCDC in use (either in active or recharge mode), (in use if one of the corresponding CCFG bits are zero).
       // - Alternative DCDC settings are enabled ( DIS_ALT_DCDC_SETTING == 0 )
       // - Not in external regulator mode ( EXT_REG_MODE == 0 )
-      //
       ccfg_ModeConfReg = HWREG( CCFG_BASE + CCFG_O_MODE_CONF );
 
       if (((( ccfg_ModeConfReg & CCFG_MODE_CONF_DCDC_RECHARGE_M ) == 0                                            ) ||
@@ -517,18 +494,14 @@ SysCtrl_DCDC_VoltageConditionalControl( void )
             CCFG_MODE_CONF_1_ALT_DCDC_VMIN_S ) + 28 ) << 4 );
 
          if ( aonSysctlPwrctl & ( AON_SYSCTL_PWRCTL_DCDC_EN_M | AON_SYSCTL_PWRCTL_DCDC_ACTIVE_M )) {
-            //
             // DCDC is ON, check if it should be switched off
-            //
             if ( aonBatmonBat < batThreshold ) {
                aonSysctlPwrctl &= ~( AON_SYSCTL_PWRCTL_DCDC_EN_M | AON_SYSCTL_PWRCTL_DCDC_ACTIVE_M );
 
                HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_PWRCTL ) = aonSysctlPwrctl;
             }
          } else {
-            //
             // DCDC is OFF, check if it should be switched on
-            //
             if ( aonBatmonBat > batThreshold ) {
                if (( ccfg_ModeConfReg & CCFG_MODE_CONF_DCDC_RECHARGE_M ) == 0 ) aonSysctlPwrctl |= AON_SYSCTL_PWRCTL_DCDC_EN_M     ;
                if (( ccfg_ModeConfReg & CCFG_MODE_CONF_DCDC_ACTIVE_M   ) == 0 ) aonSysctlPwrctl |= AON_SYSCTL_PWRCTL_DCDC_ACTIVE_M ;

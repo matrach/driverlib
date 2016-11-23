@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_tdc.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AUX Time-to-Digital Converter
 *
@@ -61,11 +61,11 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_aux_tdc.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_aux_tdc.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -270,14 +270,10 @@ AUXTDCBaseValid(uint32_t ui32Base)
 __STATIC_INLINE uint32_t
 AUXTDCStatusGet(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Return the status value for the correct ADI Slave.
-    //
     return((HWREG(ui32Base + AUX_TDC_O_STAT) & AUX_TDC_STAT_STATE_M) >>
            AUX_TDC_STAT_STATE_S);
 }
@@ -398,14 +394,10 @@ extern void AUXTDCConfigSet(uint32_t ui32Base, uint32_t ui32StartCondition,
 __STATIC_INLINE bool
 AUXTDCIdle(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Check if the AUX TDC is in the Idle state.
-    //
     return (((HWREG(ui32Base + AUX_TDC_O_STAT) & AUX_TDC_STAT_STATE_M) ==
              AUX_TDC_STAT_STATE_IDLE) ? true : false);
 }
@@ -442,16 +434,12 @@ AUXTDCIdle(uint32_t ui32Base)
 __STATIC_INLINE void
 AUXTDCEnable(uint32_t ui32Base, uint32_t ui32RunMode)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
     ASSERT((ui32RunMode == AUX_TDC_RUN) ||
            (ui32RunMode == AUX_TDC_RUNSYNC));
 
-    //
     // Enable the AUX TDC.
-    //
     HWREG(ui32Base + AUX_TDC_O_CTL) = ui32RunMode;
 }
 
@@ -474,14 +462,10 @@ AUXTDCEnable(uint32_t ui32Base, uint32_t ui32RunMode)
 __STATIC_INLINE void
 AUXTDCIdleForce(uint32_t ui32Base)
 {
-    //
     // Check the arguments
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Abort operation of AUX TDC and force into Idle mode.
-    //
     HWREG(ui32Base + AUX_TDC_O_CTL) = AUX_TDC_CTL_CMD_ABORT;
 }
 
@@ -520,14 +504,10 @@ extern uint32_t AUXTDCMeasurementDone(uint32_t ui32Base);
 __STATIC_INLINE uint32_t
 AUXTDCMeasurementGet(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Return the measurement.
-    //
     return (HWREG(ui32Base + AUX_TDC_O_RESULT));
 }
 
@@ -566,15 +546,11 @@ AUXTDCMeasurementGet(uint32_t ui32Base)
 __STATIC_INLINE void
 AUXTDCLimitSet(uint32_t ui32Base, uint32_t ui32Limit)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
     ASSERT(ui32Limit < AUXTDC_NUM_SAT_VALS);
 
-    //
     // Set the saturation limit.
-    //
     HWREG(ui32Base + AUX_TDC_O_SATCFG) = ui32Limit;
 }
 
@@ -608,14 +584,10 @@ AUXTDCLimitSet(uint32_t ui32Base, uint32_t ui32Limit)
 __STATIC_INLINE uint32_t
 AUXTDCLimitGet(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Return the saturation limit.
-    //
     return (HWREG(ui32Base + AUX_TDC_O_SATCFG));
 }
 
@@ -643,29 +615,21 @@ AUXTDCLimitGet(uint32_t ui32Base)
 __STATIC_INLINE bool
 AUXTDCCounterEnable(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Check if the AUX TDC is in idle mode. If not in Idle mode, the counter
     // will not be enabled.
-    //
     if(!((HWREG(ui32Base + AUX_TDC_O_STAT) & AUX_TDC_STAT_STATE_M) ==
             AUX_TDC_STAT_STATE_IDLE))
     {
         return false;
     }
 
-    //
     // Enable the counter.
-    //
     HWREG(ui32Base + AUX_TDC_O_TRIGCNTCFG) = AUX_TDC_TRIGCNTCFG_EN;
 
-    //
     // Counter successfully enabled.
-    //
     return true;
 }
 
@@ -687,29 +651,21 @@ AUXTDCCounterEnable(uint32_t ui32Base)
 __STATIC_INLINE bool
 AUXTDCCounterDisable(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Check if the AUX TDC is in Idle mode. If not in Idle mode, the counter
     // will not be disabled.
-    //
     if(!((HWREG(ui32Base + AUX_TDC_O_STAT) & AUX_TDC_STAT_STATE_M) ==
             AUX_TDC_STAT_STATE_IDLE))
     {
         return false;
     }
 
-    //
     // Disable the counter.
-    //
     HWREG(ui32Base + AUX_TDC_O_TRIGCNTCFG) = 0;
 
-    //
     // Counter successfully disabled.
-    //
     return true;
 }
 
@@ -736,29 +692,21 @@ AUXTDCCounterDisable(uint32_t ui32Base)
 __STATIC_INLINE bool
 AUXTDCCounterSet(uint32_t ui32Base, uint32_t ui32Events)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Check if the AUX TDC is in idle mode. If not in idle mode, the counter
     // will not be disabled.
-    //
     if(!((HWREG(ui32Base + AUX_TDC_O_STAT) & AUX_TDC_STAT_STATE_M) ==
             AUX_TDC_STAT_STATE_IDLE))
     {
         return false;
     }
 
-    //
     // Update the reset counter value.
-    //
     HWREG(ui32Base + AUX_TDC_O_TRIGCNTLOAD) = ui32Events;
 
-    //
     // Counter successfully updated.
-    //
     return true;
 }
 
@@ -783,14 +731,10 @@ AUXTDCCounterSet(uint32_t ui32Base, uint32_t ui32Events)
 __STATIC_INLINE uint32_t
 AUXTDCCounterGet(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(AUXTDCBaseValid(ui32Base));
 
-    //
     // Return the current counter value.
-    //
     return (HWREG(ui32Base + AUX_TDC_O_TRIGCNT));
 }
 
@@ -801,7 +745,7 @@ AUXTDCCounterGet(uint32_t ui32Base)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AUXTDCConfigSet
         #undef  AUXTDCConfigSet
         #define AUXTDCConfigSet                 ROM_AUXTDCConfigSet

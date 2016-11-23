@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_ddi_0_osc_h
-*  Revised:        2016-06-16 09:00:03 +0200 (Thu, 16 Jun 2016)
-*  Revision:       46679
+*  Revised:        2016-10-20 18:33:46 +0200 (Thu, 20 Oct 2016)
+*  Revision:       47507
 *
 * Copyright (c) 2015 - 2016, Texas Instruments Incorporated
 * All rights reserved.
@@ -55,10 +55,10 @@
 // Amplitude Compensation Control
 #define DDI_0_OSC_O_AMPCOMPCTL                                      0x0000000C
 
-// Amplitude Compensation threshold 1
+// Amplitude Compensation Threshold 1
 #define DDI_0_OSC_O_AMPCOMPTH1                                      0x00000010
 
-// Amplitude Compensation threshold 2
+// Amplitude Compensation Threshold 2
 #define DDI_0_OSC_O_AMPCOMPTH2                                      0x00000014
 
 // Analog Bypass Values 1
@@ -193,7 +193,7 @@
 // This bit will only have effect when SCLK_LF_SRC_SEL is selecting the xosc_lf
 // as the sclk_lf source. The muxing performed by this bit is not glitch free.
 // The following procedure should be followed when changing this field to avoid
-// glitches on sclk_lf..
+// glitches on sclk_lf.
 //
 // 1) Set SCLK_LF_SRC_SEL to select any source other than the xosc_lf clock
 // source.
@@ -209,7 +209,7 @@
 
 // Field:     [9] CLK_LOSS_EN
 //
-// Enable clock loss circuit and hence the indicators to system controller.
+// Enable clock loss detection and hence the indicators to system controller.
 // Checks both SCLK_HF and SCLK_LF clock loss indicators.
 //
 // 0: Disable
@@ -862,7 +862,7 @@
 // this value is the amplitude of the crystal oscillations measured by the
 // on-chip oscillator ADC, divided by 15 mV.  For example, a value of 0x20
 // would indicate that the crystal's amplitude is approximately 480 mV.  To
-// enable amplitude compensation, AON_WUC OSCCFG must be set to a on-zero
+// enable amplitude compensation, AON_WUC OSCCFG must be set to a non-zero
 // value.
 #define DDI_0_OSC_STAT1_HPM_UPDATE_AMP_W                                     6
 #define DDI_0_OSC_STAT1_HPM_UPDATE_AMP_M                            0x0FC00000
@@ -875,7 +875,7 @@
 // value is the amplitude of the crystal oscillations measured by the on-chip
 // oscillator ADC, divided by 15 mV.  For example, a value of 0x20 would
 // indicate that the crystal's amplitude is approximately 480 mV.  To enable
-// amplitude compensation, AON_WUC OSCCFG must be set to a on-zero value.
+// amplitude compensation, AON_WUC OSCCFG must be set to a non-zero value.
 #define DDI_0_OSC_STAT1_LPM_UPDATE_AMP_W                                     6
 #define DDI_0_OSC_STAT1_LPM_UPDATE_AMP_M                            0x003F0000
 #define DDI_0_OSC_STAT1_LPM_UPDATE_AMP_S                                    16

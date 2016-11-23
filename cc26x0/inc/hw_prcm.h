@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_prcm_h
-*  Revised:        2016-05-20 20:32:53 +0200 (Fri, 20 May 2016)
-*  Revision:       46429
+*  Revised:        2016-10-20 18:33:46 +0200 (Thu, 20 Oct 2016)
+*  Revision:       47507
 *
 * Copyright (c) 2015 - 2016, Texas Instruments Incorporated
 * All rights reserved.
@@ -55,7 +55,7 @@
 // MCU Voltage Domain Control
 #define PRCM_O_VDCTL                                                0x0000000C
 
-// Clock Load Control
+// Load PRCM Settings To CLKCTRL Power Domain
 #define PRCM_O_CLKLOADCTL                                           0x00000028
 
 // RFC Clock Gate
@@ -181,28 +181,28 @@
 // Power Domain Control
 #define PRCM_O_PDCTL1                                               0x0000017C
 
-// CPU Power Domain Control
+// CPU Power Domain Direct Control
 #define PRCM_O_PDCTL1CPU                                            0x00000184
 
-// RFC Power Domain Control
+// RFC Power Domain Direct Control
 #define PRCM_O_PDCTL1RFC                                            0x00000188
 
-// VIMS Power Domain Control
+// VIMS Mode Direct Control
 #define PRCM_O_PDCTL1VIMS                                           0x0000018C
 
-// Power Domain Status
+// Power Manager Status
 #define PRCM_O_PDSTAT1                                              0x00000194
 
-// BUS Power Domain Status
+// BUS Power Domain Direct Read Status
 #define PRCM_O_PDSTAT1BUS                                           0x00000198
 
-// RFC Power Domain Status
+// RFC Power Domain Direct Read Status
 #define PRCM_O_PDSTAT1RFC                                           0x0000019C
 
-// CPU Power Domain Status
+// CPU Power Domain Direct Read Status
 #define PRCM_O_PDSTAT1CPU                                           0x000001A0
 
-// VIMS Power Domain Status
+// VIMS Mode Direct Read Status
 #define PRCM_O_PDSTAT1VIMS                                          0x000001A4
 
 // Selected RFC Mode
@@ -1550,6 +1550,8 @@
 //
 // 0: Retention for RFC SRAM disabled
 // 1: Retention for RFC SRAM enabled
+//
+// Memories controlled: CPERAM  MCERAM  RFERAM
 #define PRCM_RAMRETEN_RFC                                           0x00000004
 #define PRCM_RAMRETEN_RFC_BITN                                               2
 #define PRCM_RAMRETEN_RFC_M                                         0x00000004

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Instruction wrappers for special CPU instructions needed by
 *                  the drivers.
@@ -37,7 +37,7 @@
 *
 ******************************************************************************/
 
-#include <driverlib/cpu.h>
+#include "cpu.h"
 
 //*****************************************************************************
 //
@@ -67,17 +67,13 @@
 uint32_t
 CPUcpsid(void)
 {
-    //
     // Read PRIMASK and disable interrupts.
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    cpsid   i\n");
 
-    //
     // "Warning[Pe940]: missing return statement at end of non-void function"
     // is suppressed here to avoid putting a "bx lr" in the inline assembly
     // above and a superfluous return statement here.
-    //
 #pragma diag_suppress=Pe940
 }
 #pragma diag_default=Pe940
@@ -85,9 +81,7 @@ CPUcpsid(void)
 __asm uint32_t
 CPUcpsid(void)
 {
-    //
     // Read PRIMASK and disable interrupts.
-    //
     mrs     r0, PRIMASK;
     cpsid   i;
     bx      lr
@@ -96,20 +90,16 @@ CPUcpsid(void)
 uint32_t
 CPUcpsid(void)
 {
-    //
     // Read PRIMASK and disable interrupts.
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    cpsid   i\n"
           "    bx      lr\n");
 
-    //
     // The following keeps the compiler happy, because it wants to see a
     // return value from this function.  It will generate code to return
     // a zero.  However, the real return is the "bx lr" above, so the
     // return(0) is never executed and the function returns with the value
     // you expect in R0.
-    //
     return(0);
 }
 #else
@@ -118,20 +108,16 @@ CPUcpsid(void)
 {
     uint32_t ui32Ret;
 
-    //
     // Read PRIMASK and disable interrupts
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    cpsid   i\n"
           "    bx      lr\n"
       : "=r"(ui32Ret));
 
-    //
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
     // that this does not result in any code being produced because of the
     // naked attribute).
-    //
     return(ui32Ret);
 }
 #endif
@@ -145,16 +131,12 @@ CPUcpsid(void)
 uint32_t
 CPUprimask(void)
 {
-    //
     // Read PRIMASK.
-    //
     __asm("    mrs     r0, PRIMASK\n");
 
-    //
     // "Warning[Pe940]: missing return statement at end of non-void function"
     // is suppressed here to avoid putting a "bx lr" in the inline assembly
     // above and a superfluous return statement here.
-    //
 #pragma diag_suppress=Pe940
 }
 #pragma diag_default=Pe940
@@ -162,9 +144,7 @@ CPUprimask(void)
 __asm uint32_t
 CPUprimask(void)
 {
-    //
     // Read PRIMASK.
-    //
     mrs     r0, PRIMASK;
     bx      lr
 }
@@ -172,19 +152,15 @@ CPUprimask(void)
 uint32_t
 CPUprimask(void)
 {
-    //
     // Read PRIMASK.
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    bx      lr\n");
 
-    //
     // The following keeps the compiler happy, because it wants to see a
     // return value from this function.  It will generate code to return
     // a zero.  However, the real return is the "bx lr" above, so the
     // return(0) is never executed and the function returns with the value
     // you expect in R0.
-    //
     return(0);
 }
 #else
@@ -193,19 +169,15 @@ CPUprimask(void)
 {
     uint32_t ui32Ret;
 
-    //
     // Read PRIMASK
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    bx      lr\n"
       : "=r"(ui32Ret));
 
-    //
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
     // that this does not result in any code being produced because of the
     // naked attribute).
-    //
     return(ui32Ret);
 }
 #endif
@@ -219,17 +191,13 @@ CPUprimask(void)
 uint32_t
 CPUcpsie(void)
 {
-    //
     // Read PRIMASK and enable interrupts.
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    cpsie   i\n");
 
-    //
     // "Warning[Pe940]: missing return statement at end of non-void function"
     // is suppressed here to avoid putting a "bx lr" in the inline assembly
     // above and a superfluous return statement here.
-    //
 #pragma diag_suppress=Pe940
 }
 #pragma diag_default=Pe940
@@ -237,9 +205,7 @@ CPUcpsie(void)
 __asm uint32_t
 CPUcpsie(void)
 {
-    //
     // Read PRIMASK and enable interrupts.
-    //
     mrs     r0, PRIMASK;
     cpsie   i;
     bx      lr
@@ -248,20 +214,16 @@ CPUcpsie(void)
 uint32_t
 CPUcpsie(void)
 {
-    //
     // Read PRIMASK and enable interrupts.
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    cpsie   i\n"
           "    bx      lr\n");
 
-    //
     // The following keeps the compiler happy, because it wants to see a
     // return value from this function.  It will generate code to return
     // a zero.  However, the real return is the "bx lr" above, so the
     // return(0) is never executed and the function returns with the value
     // you expect in R0.
-    //
     return(0);
 }
 #else
@@ -270,20 +232,16 @@ CPUcpsie(void)
 {
     uint32_t ui32Ret;
 
-    //
     // Read PRIMASK and enable interrupts.
-    //
     __asm("    mrs     r0, PRIMASK\n"
           "    cpsie   i\n"
           "    bx      lr\n"
       : "=r"(ui32Ret));
 
-    //
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
     // that this does not result in any code being produced because of the
     // naked attribute).
-    //
     return(ui32Ret);
 }
 #endif
@@ -297,16 +255,12 @@ CPUcpsie(void)
 uint32_t
 CPUbasepriGet(void)
 {
-    //
     // Read BASEPRI.
-    //
     __asm("    mrs     r0, BASEPRI\n");
 
-    //
     // "Warning[Pe940]: missing return statement at end of non-void function"
     // is suppressed here to avoid putting a "bx lr" in the inline assembly
     // above and a superfluous return statement here.
-    //
 #pragma diag_suppress=Pe940
 }
 #pragma diag_default=Pe940
@@ -314,9 +268,7 @@ CPUbasepriGet(void)
 __asm uint32_t
 CPUbasepriGet(void)
 {
-    //
     // Read BASEPRI.
-    //
     mrs     r0, BASEPRI;
     bx      lr
 }
@@ -324,19 +276,15 @@ CPUbasepriGet(void)
 uint32_t
 CPUbasepriGet(void)
 {
-    //
     // Read BASEPRI.
-    //
     __asm("    mrs     r0, BASEPRI\n"
           "    bx      lr\n");
 
-    //
     // The following keeps the compiler happy, because it wants to see a
     // return value from this function.  It will generate code to return
     // a zero.  However, the real return is the "bx lr" above, so the
     // return(0) is never executed and the function returns with the value
     // you expect in R0.
-    //
     return(0);
 }
 #else
@@ -345,19 +293,15 @@ CPUbasepriGet(void)
 {
     uint32_t ui32Ret;
 
-    //
     // Read BASEPRI.
-    //
     __asm("    mrs     r0, BASEPRI\n"
           "    bx      lr\n"
       : "=r"(ui32Ret));
 
-    //
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
     // that this does not result in any code being produced because of the
     // naked attribute).
-    //
     return(ui32Ret);
 }
 #endif
@@ -370,9 +314,7 @@ CPUbasepriGet(void)
 void
 CPUdelay(uint32_t ui32Count)
 {
-    //
     // Delay the specified number of times (3 cycles pr. loop)
-    //
     __asm("CPUdelay:\n"
           "    subs    r0, #1\n"
           "    bne.n   CPUdelay\n"
@@ -384,22 +326,17 @@ CPUdelay(uint32_t ui32Count)
 __asm void
 CPUdelay(uint32_t ui32Count)
 {
-    //
     // Delay the specified number of times (3 cycles pr. loop)
-    //
 CPUdel
     subs    r0, #1;
     bne     CPUdel;
     bx      lr;
 }
 #elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
-//
-// For CCS implement this function in pure assembly. This prevents the TI
-// compiler from doing funny things with the optimizer.
-//
-    //
+    // For CCS implement this function in pure assembly. This prevents the TI
+    // compiler from doing funny things with the optimizer.
+
     // Delay the specified number of times (3 cycles pr. loop)
-    //
 __asm("    .sect \".text:NOROM_CPUdelay\"\n"
       "    .clink\n"
       "    .thumbfunc NOROM_CPUdelay\n"
@@ -413,9 +350,7 @@ __asm("    .sect \".text:NOROM_CPUdelay\"\n"
 void __attribute__((naked))
 CPUdelay(uint32_t ui32Count)
 {
-    //
     // Delay the specified number of times (3 cycles pr. loop)
-    //
     __asm("    subs    r0, #1\n"
           "    bne     NOROM_CPUdelay\n"
           "    bx      lr");

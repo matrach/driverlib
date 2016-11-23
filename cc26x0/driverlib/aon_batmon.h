@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_batmon.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the AON Battery and Temperature
 *                  Monitor
@@ -62,10 +62,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_aon_batmon.h>
-#include <driverlib/debug.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_aon_batmon.h"
+#include "debug.h"
 
 //*****************************************************************************
 //
@@ -122,9 +122,7 @@ extern "C"
 __STATIC_INLINE void
 AONBatMonEnable(void)
 {
-    //
     // Enable the measurements.
-    //
     HWREG(AON_BATMON_BASE + AON_BATMON_O_CTL) =
         AON_BATMON_CTL_CALC_EN |
         AON_BATMON_CTL_MEAS_EN;
@@ -143,9 +141,7 @@ AONBatMonEnable(void)
 __STATIC_INLINE void
 AONBatMonDisable(void)
 {
-    //
     // Disable the measurements.
-    //
     HWREG(AON_BATMON_BASE + AON_BATMON_O_CTL) = 0;
 }
 
@@ -194,9 +190,7 @@ AONBatMonBatteryVoltageGet(void)
 
     ui32CurrentBattery = HWREG(AON_BATMON_BASE + AON_BATMON_O_BAT);
 
-    //
     // Return the current battery voltage measurement.
-    //
     return (ui32CurrentBattery >> AON_BATMON_BAT_FRAC_S);
 }
 
@@ -225,23 +219,17 @@ AONBatMonNewBatteryMeasureReady(void)
 {
     bool bStatus;
 
-    //
     // Check the status bit.
-    //
     bStatus = HWREG(AON_BATMON_BASE + AON_BATMON_O_BATUPD) &
               AON_BATMON_BATUPD_STAT ? true : false;
 
-    //
     // Clear status bit if set.
-    //
     if(bStatus)
     {
         HWREG(AON_BATMON_BASE + AON_BATMON_O_BATUPD) = 1;
     }
 
-    //
     // Return status.
-    //
     return (bStatus);
 }
 
@@ -270,23 +258,17 @@ AONBatMonNewTempMeasureReady(void)
 {
     bool bStatus;
 
-    //
     // Check the status bit.
-    //
     bStatus = HWREG(AON_BATMON_BASE + AON_BATMON_O_TEMPUPD) &
               AON_BATMON_TEMPUPD_STAT ? true : false;
 
-    //
     // Clear status bit if set.
-    //
     if(bStatus)
     {
         HWREG(AON_BATMON_BASE + AON_BATMON_O_TEMPUPD) = 1;
     }
 
-    //
     // Return status.
-    //
     return (bStatus);
 }
 
@@ -297,7 +279,7 @@ AONBatMonNewTempMeasureReady(void)
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_AONBatMonTemperatureGetDegC
         #undef  AONBatMonTemperatureGetDegC
         #define AONBatMonTemperatureGetDegC     ROM_AONBatMonTemperatureGetDegC

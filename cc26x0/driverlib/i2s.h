@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       i2s.h
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the I2S.
 *
@@ -61,12 +61,12 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_i2s.h>
-#include <driverlib/debug.h>
-#include <driverlib/interrupt.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_i2s.h"
+#include "debug.h"
+#include "interrupt.h"
 
 //*****************************************************************************
 //
@@ -291,14 +291,10 @@ extern void I2SEnable(uint32_t ui32Base);
 __STATIC_INLINE void
 I2SDisable(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Disable the I2S module.
-    //
     HWREG(I2S0_BASE + I2S_O_AIFDMACFG) = 0x0;
 }
 
@@ -415,14 +411,10 @@ extern void I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
 __STATIC_INLINE void
 I2SClockConfigure(uint32_t ui32Base, uint32_t ui32ClkConfig)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Setup register WCLK Source.
-    //
     HWREG(I2S0_BASE + I2S_O_AIFWCLKSRC) = ui32ClkConfig &
                                          (I2S_AIFWCLKSRC_WCLK_INV_M |
                                           I2S_AIFWCLKSRC_WCLK_SRC_M);
@@ -527,19 +519,13 @@ extern void I2SPointerSet(uint32_t ui32Base, bool bInput, void * pNextPointer);
 __STATIC_INLINE void
 I2SIntRegister(uint32_t ui32Base, void (*pfnHandler)(void))
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Register the interrupt handler.
-    //
     IntRegister(INT_I2S_IRQ, pfnHandler);
 
-    //
     // Enable the I2S interrupt.
-    //
     IntEnable(INT_I2S_IRQ);
 }
 
@@ -563,19 +549,13 @@ I2SIntRegister(uint32_t ui32Base, void (*pfnHandler)(void))
 __STATIC_INLINE void
 I2SIntUnregister(uint32_t ui32Base)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Disable the interrupt.
-    //
     IntDisable(INT_I2S_IRQ);
 
-    //
     // Unregister the interrupt handler.
-    //
     IntUnregister(INT_I2S_IRQ);
 }
 
@@ -604,14 +584,10 @@ I2SIntUnregister(uint32_t ui32Base)
 __STATIC_INLINE void
 I2SIntEnable(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Enable the specified interrupts.
-    //
     HWREG(I2S0_BASE + I2S_O_IRQMASK) |= ui32IntFlags;
 }
 
@@ -640,14 +616,10 @@ I2SIntEnable(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE void
 I2SIntDisable(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Disable the specified interrupts.
-    //
     HWREG(I2S0_BASE + I2S_O_IRQMASK) &= ~ui32IntFlags;
 }
 
@@ -678,15 +650,11 @@ I2SIntStatus(uint32_t ui32Base, bool bMasked)
 {
     uint32_t ui32Mask;
 
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Return either the interrupt status or the raw interrupt status as
     // requested.
-    //
     if(bMasked)
     {
         ui32Mask = HWREG(I2S0_BASE + I2S_O_IRQFLAGS);
@@ -738,14 +706,10 @@ I2SIntStatus(uint32_t ui32Base, bool bMasked)
 __STATIC_INLINE void
 I2SIntClear(uint32_t ui32Base, uint32_t ui32IntFlags)
 {
-    //
     // Check the arguments.
-    //
     ASSERT(I2SBaseValid(ui32Base));
 
-    //
     // Clear the requested interrupt sources.
-    //
     HWREG(I2S0_BASE + I2S_O_IRQCLR) = ui32IntFlags;
 }
 
@@ -766,9 +730,7 @@ I2SIntClear(uint32_t ui32Base, uint32_t ui32IntFlags)
 __STATIC_INLINE void
 I2SSampleStampEnable(uint32_t ui32Base)
 {
-    //
     // Set the enable bit.
-    //
     HWREG(I2S0_BASE + I2S_O_STMPCTL) = I2S_STMPCTL_STMP_EN;
 }
 
@@ -785,9 +747,7 @@ I2SSampleStampEnable(uint32_t ui32Base)
 __STATIC_INLINE void
 I2SSampleStampDisable(uint32_t ui32Base)
 {
-    //
     // Clear the enable bit.
-    //
     HWREG(I2S0_BASE + I2S_O_STMPCTL) = 0;
 
 }
@@ -827,7 +787,7 @@ extern uint32_t I2SSampleStampGet(uint32_t ui32Base, uint32_t ui32Channel);
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_I2SEnable
         #undef  I2SEnable
         #define I2SEnable                       ROM_I2SEnable

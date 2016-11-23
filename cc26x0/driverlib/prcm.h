@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.h
-*  Revised:        2016-07-07 19:12:02 +0200 (Thu, 07 Jul 2016)
-*  Revision:       46848
+*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
+*  Revision:       47343
 *
 *  Description:    Defines and prototypes for the PRCM
 *
@@ -61,15 +61,15 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <inc/hw_types.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_ints.h>
-#include <inc/hw_prcm.h>
-#include <inc/hw_nvic.h>
-#include <inc/hw_aon_rtc.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/debug.h>
-#include <driverlib/cpu.h>
+#include "../inc/hw_types.h"
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_ints.h"
+#include "../inc/hw_prcm.h"
+#include "../inc/hw_nvic.h"
+#include "../inc/hw_aon_rtc.h"
+#include "interrupt.h"
+#include "debug.h"
+#include "cpu.h"
 
 //*****************************************************************************
 //
@@ -173,25 +173,25 @@ extern "C"
 
 //*****************************************************************************
 //
-// Defines used for enabling and disabling peripheral modules in the MCU
-// domain
+// Defines used for enabling and disabling peripheral modules in the MCU domain
+// bits[11:8] Defines the index into the register offset constant tables:
+//            g_pui32RCGCRegs, g_pui32SCGCRegs and g_pui32DCGCRegs
+// bits[4:0]  Defines the bit position within the register pointet on in [11:8]
 //
 //*****************************************************************************
-#define PRCM_PERIPH_TIMER0      0x00000000  // Peripheral ID for GPT module 0
-#define PRCM_PERIPH_TIMER1      0x00000001  // Peripheral ID for GPT module 1
-#define PRCM_PERIPH_TIMER2      0x00000002  // Peripheral ID for GPT module 2
-#define PRCM_PERIPH_TIMER3      0x00000003  // Peripheral ID for GPT module 3
-#define PRCM_PERIPH_SSI0        0x00000100  // Peripheral ID for SSI module 0
-#define PRCM_PERIPH_SSI1        0x00000101  // Peripheral ID for SSI module 1
-#define PRCM_PERIPH_UART0       0x00000200  // Peripheral ID for UART module 0
-#define PRCM_PERIPH_UART1       0x00000201  // Peripheral ID for UART module 1
-#define PRCM_PERIPH_I2C0        0x00000300  // Peripheral ID for I2C module 0
-#define PRCM_PERIPH_I2C1        0x00000301  // Peripheral ID for I2C module 1
-#define PRCM_PERIPH_CRYPTO      0x00000400  // Peripheral ID for CRYPTO module
-#define PRCM_PERIPH_TRNG        0x00000401  // Peripheral ID for TRNG module
-#define PRCM_PERIPH_UDMA        0x00000408  // Peripheral ID for UDMA module
-#define PRCM_PERIPH_GPIO        0x00000500  // Peripheral ID for GPIO module
-#define PRCM_PERIPH_I2S         0x00000600  // Peripheral ID for I2S module
+#define PRCM_PERIPH_TIMER0 ( 0x00000000 | ( PRCM_GPTCLKGR_CLK_EN_S           )) // Peripheral ID for GPT module 0
+#define PRCM_PERIPH_TIMER1 ( 0x00000000 | ( PRCM_GPTCLKGR_CLK_EN_S       + 1 )) // Peripheral ID for GPT module 1
+#define PRCM_PERIPH_TIMER2 ( 0x00000000 | ( PRCM_GPTCLKGR_CLK_EN_S       + 2 )) // Peripheral ID for GPT module 2
+#define PRCM_PERIPH_TIMER3 ( 0x00000000 | ( PRCM_GPTCLKGR_CLK_EN_S       + 3 )) // Peripheral ID for GPT module 3
+#define PRCM_PERIPH_SSI0   ( 0x00000100 | ( PRCM_SSICLKGR_CLK_EN_S           )) // Peripheral ID for SSI module 0
+#define PRCM_PERIPH_SSI1   ( 0x00000100 | ( PRCM_SSICLKGR_CLK_EN_S       + 1 )) // Peripheral ID for SSI module 1
+#define PRCM_PERIPH_UART0  ( 0x00000200 | ( PRCM_UARTCLKGR_CLK_EN_S          )) // Peripheral ID for UART module 0
+#define PRCM_PERIPH_I2C0   ( 0x00000300 | ( PRCM_I2CCLKGR_CLK_EN_S           )) // Peripheral ID for I2C module 0
+#define PRCM_PERIPH_CRYPTO ( 0x00000400 | ( PRCM_SECDMACLKGR_CRYPTO_CLK_EN_S )) // Peripheral ID for CRYPTO module
+#define PRCM_PERIPH_TRNG   ( 0x00000400 | ( PRCM_SECDMACLKGR_TRNG_CLK_EN_S   )) // Peripheral ID for TRNG module
+#define PRCM_PERIPH_UDMA   ( 0x00000400 | ( PRCM_SECDMACLKGR_DMA_CLK_EN_S    )) // Peripheral ID for UDMA module
+#define PRCM_PERIPH_GPIO   ( 0x00000500 | ( PRCM_GPIOCLKGR_CLK_EN_S          )) // Peripheral ID for GPIO module
+#define PRCM_PERIPH_I2S    ( 0x00000600 | ( PRCM_I2SCLKGR_CLK_EN_S           )) // Peripheral ID for I2S module
 
 //*****************************************************************************
 //
@@ -223,12 +223,10 @@ PRCMPeripheralValid(uint32_t ui32Peripheral)
            (ui32Peripheral == PRCM_PERIPH_SSI0)     ||
            (ui32Peripheral == PRCM_PERIPH_SSI1)     ||
            (ui32Peripheral == PRCM_PERIPH_UART0)    ||
-           (ui32Peripheral == PRCM_PERIPH_UART1)    ||
            (ui32Peripheral == PRCM_PERIPH_I2C0)     ||
-           (ui32Peripheral == PRCM_PERIPH_I2C1)     ||
-           (ui32Peripheral == PRCM_PERIPH_UDMA)     ||
-           (ui32Peripheral == PRCM_PERIPH_TRNG)     ||
            (ui32Peripheral == PRCM_PERIPH_CRYPTO)   ||
+           (ui32Peripheral == PRCM_PERIPH_TRNG)     ||
+           (ui32Peripheral == PRCM_PERIPH_UDMA)     ||
            (ui32Peripheral == PRCM_PERIPH_GPIO)     ||
            (ui32Peripheral == PRCM_PERIPH_I2S));
 }
@@ -305,9 +303,7 @@ extern uint32_t PRCMInfClockConfigureGet(uint32_t ui32PowerMode);
 __STATIC_INLINE void
 PRCMMcuPowerOff(void)
 {
-    //
     // Assert the power off request signal.
-    //
     HWREGBITW(PRCM_BASE + PRCM_O_VDCTL, PRCM_VDCTL_MCU_VD_BITN) = 1;
 }
 
@@ -327,9 +323,7 @@ PRCMMcuPowerOff(void)
 __STATIC_INLINE void
 PRCMMcuPowerOffCancel(void)
 {
-    //
     // Assert the power off request signal.
-    //
     HWREGBITW(PRCM_BASE + PRCM_O_VDCTL, PRCM_VDCTL_MCU_VD_BITN) = 0;
 }
 
@@ -553,9 +547,7 @@ extern void PRCMAudioClockConfigSetOverride(uint32_t ui32ClkConfig, uint32_t ui3
 __STATIC_INLINE void
 PRCMLoadSet(void)
 {
-    //
     // Enable the update of all load related registers.
-    //
     HWREG(PRCM_NONBUF_BASE + PRCM_O_CLKLOADCTL) = PRCM_CLKLOADCTL_LOAD;
 }
 
@@ -573,9 +565,7 @@ PRCMLoadSet(void)
 __STATIC_INLINE bool
 PRCMLoadGet(void)
 {
-    //
     // Return the load status.
-    //
     return ((HWREG(PRCM_BASE + PRCM_O_CLKLOADCTL) & PRCM_CLKLOADCTL_LOAD_DONE) ?
             true : false);
 }
@@ -603,15 +593,11 @@ PRCMLoadGet(void)
 __STATIC_INLINE void
 PRCMDomainEnable(uint32_t ui32Domains)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Domains & PRCM_DOMAIN_RFCORE) ||
            (ui32Domains & PRCM_DOMAIN_VIMS));
 
-    //
     // Enable the clock domain(s).
-    //
     if(ui32Domains & PRCM_DOMAIN_RFCORE)
     {
         HWREG(PRCM_BASE + PRCM_O_RFCCLKG) = PRCM_RFCCLKG_CLK_EN;
@@ -646,15 +632,11 @@ PRCMDomainEnable(uint32_t ui32Domains)
 __STATIC_INLINE void
 PRCMDomainDisable(uint32_t ui32Domains)
 {
-    //
     // Check the arguments.
-    //
     ASSERT((ui32Domains & PRCM_DOMAIN_RFCORE) ||
            (ui32Domains & PRCM_DOMAIN_VIMS));
 
-    //
     // Disable the power domains.
-    //
     if(ui32Domains & PRCM_DOMAIN_RFCORE)
     {
         HWREG(PRCM_BASE + PRCM_O_RFCCLKG) = 0x0;
@@ -789,9 +771,7 @@ PRCMRfPowerDownWhenIdle(void)
 //! - \ref PRCM_PERIPH_SSI0
 //! - \ref PRCM_PERIPH_SSI1
 //! - \ref PRCM_PERIPH_UART0
-//! - \ref PRCM_PERIPH_UART1
 //! - \ref PRCM_PERIPH_I2C0
-//! - \ref PRCM_PERIPH_I2C1
 //! - \ref PRCM_PERIPH_CRYPTO
 //! - \ref PRCM_PERIPH_TRNG
 //! - \ref PRCM_PERIPH_UDMA
@@ -831,9 +811,7 @@ extern void PRCMPeripheralRunEnable(uint32_t ui32Peripheral);
 //! - \ref PRCM_PERIPH_SSI0
 //! - \ref PRCM_PERIPH_SSI1
 //! - \ref PRCM_PERIPH_UART0
-//! - \ref PRCM_PERIPH_UART1
 //! - \ref PRCM_PERIPH_I2C0
-//! - \ref PRCM_PERIPH_I2C1
 //! - \ref PRCM_PERIPH_CRYPTO
 //! - \ref PRCM_PERIPH_TRNG
 //! - \ref PRCM_PERIPH_UDMA
@@ -871,9 +849,7 @@ extern void PRCMPeripheralRunDisable(uint32_t ui32Peripheral);
 //! - \ref PRCM_PERIPH_SSI0
 //! - \ref PRCM_PERIPH_SSI1
 //! - \ref PRCM_PERIPH_UART0
-//! - \ref PRCM_PERIPH_UART1
 //! - \ref PRCM_PERIPH_I2C0
-//! - \ref PRCM_PERIPH_I2C1
 //! - \ref PRCM_PERIPH_CRYPTO
 //! - \ref PRCM_PERIPH_TRNG
 //! - \ref PRCM_PERIPH_UDMA
@@ -912,9 +888,7 @@ extern void PRCMPeripheralSleepEnable(uint32_t ui32Peripheral);
 //! - \ref PRCM_PERIPH_SSI0
 //! - \ref PRCM_PERIPH_SSI1
 //! - \ref PRCM_PERIPH_UART0
-//! - \ref PRCM_PERIPH_UART1
 //! - \ref PRCM_PERIPH_I2C0
-//! - \ref PRCM_PERIPH_I2C1
 //! - \ref PRCM_PERIPH_CRYPTO
 //! - \ref PRCM_PERIPH_TRNG
 //! - \ref PRCM_PERIPH_UDMA
@@ -952,9 +926,7 @@ extern void PRCMPeripheralSleepDisable(uint32_t ui32Peripheral);
 //! - \ref PRCM_PERIPH_SSI0
 //! - \ref PRCM_PERIPH_SSI1
 //! - \ref PRCM_PERIPH_UART0
-//! - \ref PRCM_PERIPH_UART1
 //! - \ref PRCM_PERIPH_I2C0
-//! - \ref PRCM_PERIPH_I2C1
 //! - \ref PRCM_PERIPH_CRYPTO
 //! - \ref PRCM_PERIPH_TRNG
 //! - \ref PRCM_PERIPH_UDMA
@@ -995,9 +967,7 @@ extern void PRCMPeripheralDeepSleepEnable(uint32_t ui32Peripheral);
 //! - \ref PRCM_PERIPH_SSI0
 //! - \ref PRCM_PERIPH_SSI1
 //! - \ref PRCM_PERIPH_UART0
-//! - \ref PRCM_PERIPH_UART1
 //! - \ref PRCM_PERIPH_I2C0
-//! - \ref PRCM_PERIPH_I2C1
 //! - \ref PRCM_PERIPH_CRYPTO
 //! - \ref PRCM_PERIPH_TRNG
 //! - \ref PRCM_PERIPH_UDMA
@@ -1048,9 +1018,7 @@ extern uint32_t PRCMPowerDomainStatus(uint32_t ui32Domains);
 __STATIC_INLINE bool
 PRCMRfReady(void)
 {
-    //
     // Return the ready status of the RF Core.
-    //
     return ((HWREG(PRCM_BASE + PRCM_O_PDSTAT1RFC) &
              PRCM_PDSTAT1RFC_ON) ? true : false);
 }
@@ -1073,9 +1041,7 @@ PRCMRfReady(void)
 __STATIC_INLINE void
 PRCMSleep(void)
 {
-    //
     // Wait for an interrupt.
-    //
     CPUwfi();
 }
 
@@ -1133,7 +1099,7 @@ PRCMCacheRetentionDisable( void )
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include <driverlib/rom.h>
+    #include "../driverlib/rom.h"
     #ifdef ROM_PRCMInfClockConfigureSet
         #undef  PRCMInfClockConfigureSet
         #define PRCMInfClockConfigureSet        ROM_PRCMInfClockConfigureSet

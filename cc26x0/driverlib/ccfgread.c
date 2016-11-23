@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ccfgread.c
-*  Revised:        2016-06-30 09:21:03 +0200 (Thu, 30 Jun 2016)
-*  Revision:       46799
+*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
+*  Revision:       47179
 *
 *  Description:    API for reading CCFG.
 *
@@ -36,6 +36,6 @@
 *
 ******************************************************************************/
 
-#include <driverlib/ccfgread.h>
+#include "ccfgread.h"
 
 // See ccfgread.h for implementation

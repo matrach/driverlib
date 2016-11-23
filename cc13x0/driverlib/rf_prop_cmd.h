@@ -54,8 +54,8 @@
 //! @{
 
 #include <stdint.h>
-#include <driverlib/rf_mailbox.h>
-#include <driverlib/rf_common_cmd.h>
+#include "rf_mailbox.h"
+#include "rf_common_cmd.h"
 
 typedef struct __RFC_STRUCT rfc_carrierSense_s rfc_carrierSense_t;
 typedef struct __RFC_STRUCT rfc_CMD_PROP_TX_s rfc_CMD_PROP_TX_t;
