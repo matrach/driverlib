@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_prop_cmd.h
-*  Revised:        $ $
-*  Revision:       $ $
+*  Revised:        2016-11-14 16:07:52 +0100 (Mon, 14 Nov 2016)
+*  Revision:       17451
 *
 *  Description:    CC26xx R2 API for Proprietary mode commands
 *
@@ -258,7 +258,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_TX_ADV_s {
       uint8_t bCrcIncHdr:1;             //!< \brief 0: Do not include header in CRC calculation<br>
                                         //!<        1: Include header in CRC calculation
    } pktConf;
-   uint8_t numHdrBits;                  //!<        Number of bits in header (0&ndash;32)
+   uint8_t numHdrBits;                  //!<        Number of bits in header (0--32)
    uint16_t pktLen;                     //!<        Packet length. 0: Unlimited
    struct {
       uint8_t bExtTxTrig:1;             //!< \brief 0: Start packet on a fixed time from the command start trigger<br>
@@ -344,9 +344,9 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_ADV_s {
    uint16_t maxPktLen;                  //!< \brief Packet length for fixed length, maximum packet length for variable length<br>
                                         //!<        0: Unlimited or unknown length
    struct {
-      uint16_t numHdrBits:6;            //!<        Number of bits in header (0&ndash;32)
-      uint16_t lenPos:5;                //!<        Position of length field in header (0&ndash;31)
-      uint16_t numLenBits:5;            //!<        Number of bits in length field (0&ndash;16)
+      uint16_t numHdrBits:6;            //!<        Number of bits in header (0--32)
+      uint16_t lenPos:5;                //!<        Position of length field in header (0--31)
+      uint16_t numLenBits:5;            //!<        Number of bits in length field (0--16)
    } hdrConf;
    struct {
       uint16_t addrType:1;              //!< \brief 0: Address after header<br>
@@ -478,15 +478,19 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
    } symbolRate;                        //!<        Symbol rate setting
    uint8_t rxBw;                        //!<        Receiver bandwidth
    struct {
-      uint8_t nPreamBytes:6;            //!< \brief 0&ndash;30: Number of preamble bytes<br>
-                                        //!<        31: 4 preamble bits
+      uint8_t nPreamBytes:6;            //!< \brief 0: 1 preamble bit<br>
+                                        //!<        1--16: Number of preamble bytes<br>
+                                        //!<        18, 20, ..., 30: Number of preamble bytes<br>
+                                        //!<        31: 4 preamble bits<br>
+                                        //!<        32: 32 preamble bytes<br>
+                                        //!<        Others: <i>Reserved</i>
       uint8_t preamMode:2;              //!< \brief 0: Send 0 as the first preamble bit<br>
                                         //!<        1: Send 1 as the first preamble bit<br>
                                         //!<        2: Send same first bit in preamble and sync word<br>
                                         //!<        3: Send different first bit in preamble and sync word
    } preamConf;
    struct {
-      uint16_t nSwBits:6;               //!<        Number of sync word bits (up to 32)
+      uint16_t nSwBits:6;               //!<        Number of sync word bits (8--32)
       uint16_t bBitReversal:1;          //!< \brief 0: Use positive deviation for 1<br>
                                         //!<        1: Use positive deviation for 0
       uint16_t bMsbFirst:1;             //!< \brief 0: Least significant bit transmitted first<br>
@@ -705,9 +709,9 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_ADV_SNIFF_s {
    uint16_t maxPktLen;                  //!< \brief Packet length for fixed length, maximum packet length for variable length<br>
                                         //!<        0: Unlimited or unknown length
    struct {
-      uint16_t numHdrBits:6;            //!<        Number of bits in header (0&ndash;32)
-      uint16_t lenPos:5;                //!<        Position of length field in header (0&ndash;31)
-      uint16_t numLenBits:5;            //!<        Number of bits in length field (0&ndash;16)
+      uint16_t numHdrBits:6;            //!<        Number of bits in header (0--32)
+      uint16_t lenPos:5;                //!<        Position of length field in header (0--31)
+      uint16_t numLenBits:5;            //!<        Number of bits in length field (0--16)
    } hdrConf;
    struct {
       uint16_t addrType:1;              //!< \brief 0: Address after header<br>

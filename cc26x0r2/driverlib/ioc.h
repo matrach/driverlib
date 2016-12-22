@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ioc.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-11-25 14:43:39 +0100 (Fri, 25 Nov 2016)
+*  Revision:       47793
 *
 *  Description:    Defines and prototypes for the IO Controller.
 *
@@ -203,6 +203,10 @@ extern "C"
 #define IOC_PORT_RFC_GPO3         0x00000032  // RC Core Data Out Pin 3
 #define IOC_PORT_RFC_GPI0         0x00000033  // RC Core Data In Pin 0
 #define IOC_PORT_RFC_GPI1         0x00000034  // RC Core Data In Pin 1
+#define IOC_PORT_RFC_SMI_DL_OUT   0x00000035  // RF Core SMI Data Link Out
+#define IOC_PORT_RFC_SMI_DL_IN    0x00000036  // RF Core SMI Data Link in
+#define IOC_PORT_RFC_SMI_CL_OUT   0x00000037  // RF Core SMI Command Link Out
+#define IOC_PORT_RFC_SMI_CL_IN    0x00000038  // RF Core SMI Command Link In
 
 //*****************************************************************************
 //

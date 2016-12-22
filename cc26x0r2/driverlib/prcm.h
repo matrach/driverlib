@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-11-22 11:46:16 +0100 (Tue, 22 Nov 2016)
+*  Revision:       47743
 *
 *  Description:    Defines and prototypes for the PRCM
 *
@@ -651,33 +651,32 @@ PRCMDomainDisable(uint32_t ui32Domains)
 //
 //! \brief Turn power on in power domains in the MCU domain.
 //!
-//! Use this function to turn on power domains inside the MCU voltage
-//! domain.
+//! Use this function to turn on power domains inside the MCU voltage domain.
 //!
 //! Power on and power off request has different implications for the
 //! different power domains.
 //! - RF Core power domain:
-//!   - Power On : Domain is on or in the process of turning on.
-//!   - Power Off: Domain is powered down when System CPU is in deep sleep. The third
-//!                option for the RF Core is to power down when the it is idle.
-//!                This can be set using \b PRCMRfPowerDownWhenIdle()
+//!   - Power On  : Domain is on or in the process of turning on.
+//!   - Power Off : Domain is powered down when System CPU is in deep sleep. The third
+//!                 option for the RF Core is to power down when the it is idle.
+//!                 This can be set using \b PRCMRfPowerDownWhenIdle()
 //! - SERIAL power domain:
-//!   - Power on : Domain is powered on.
+//!   - Power on  : Domain is powered on.
 //!   - Power off : Domain is powered off.
 //! - PERIPHERIAL power domain:
-//!   - Power on : Domain is powered on.
+//!   - Power on  : Domain is powered on.
 //!   - Power off : Domain is powered off.
 //! - VIMS power domain:
-//!   - Power On: Domain is powered if Bus domain is powered.
-//!   - Power Off: Domain is only powered when CPU domain is on.
+//!   - Power On  : Domain is powered if Bus domain is powered.
+//!   - Power Off : Domain is only powered when CPU domain is on.
 //! - BUS power domain:
-//!   - Power On: Domain is on.
-//!   - Power Off: Domain is on if requested by RF Core or if CPU domain is on.
+//!   - Power On  : Domain is on.
+//!   - Power Off : Domain is on if requested by RF Core or if CPU domain is on.
 //! - CPU power domain:
-//!   - Power On: Domain is on.
-//!   - Power Off: Domain is powering down if System CPU is idle. This will also
-//!                initiate a power down of the SRAM and BUS power domains, unless
-//!                RF Core is requesting them to be on.
+//!   - Power On  : Domain is on.
+//!   - Power Off : Domain is powering down if System CPU is idle. This will also
+//!                 initiate a power down of the SRAM and BUS power domains, unless
+//!                 RF Core is requesting them to be on.
 //!
 //! \note After a call to this function the status of the power domain should
 //! be checked using either \ref PRCMPowerDomainStatus().
@@ -703,8 +702,7 @@ extern void PRCMPowerDomainOn(uint32_t ui32Domains);
 //
 //! \brief Turn off a specific power domain.
 //!
-//! Use this function to power down domains inside the MCU voltage
-//! domain.
+//! Use this function to power down domains inside the MCU voltage domain.
 //!
 //! \note For specifics regarding on/off configuration please see
 //! \ref PRCMPowerDomainOn().

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-11-22 11:46:16 +0100 (Tue, 22 Nov 2016)
+*  Revision:       47743
 *
 *  Description:    Driver for the PRCM.
 *
@@ -369,9 +369,9 @@ PRCMPowerDomainOn(uint32_t ui32Domains)
     if(ui32Domains & PRCM_DOMAIN_RFCORE)
     {
         HWREG(PRCM_BASE + PRCM_O_PDCTL0RFC   ) = 1;
-        // The PDCTL1RFC access is meant to: "be used by RFC in autonomous mode", but keeping
+        // The PDCTL1RFC access is meant to "be used by RFC in autonomous mode", but keeping
         // it for compatibility on already ROM'ed products (since this is a ROM function).
-        // (RFC power domain is on if ( PRCM_O_PDCTL0RFC || PRCM_O_PDCTL1RFC )
+        // RFC power domain is on if ( PRCM_O_PDCTL0RFC || PRCM_O_PDCTL1RFC ).
         HWREG(PRCM_BASE + PRCM_O_PDCTL1RFC   ) = 1;
     }
     if(ui32Domains & PRCM_DOMAIN_SERIAL)
@@ -411,9 +411,9 @@ PRCMPowerDomainOff(uint32_t ui32Domains)
     if(ui32Domains & PRCM_DOMAIN_RFCORE)
     {
         HWREG(PRCM_BASE + PRCM_O_PDCTL0RFC   ) = 0;
-        // The PDCTL1RFC access is meant to: "be used by RFC in autonomous mode", but keeping
+        // The PDCTL1RFC access is meant to "be used by RFC in autonomous mode", but keeping
         // it for compatibility on already ROM'ed products (since this is a ROM function).
-        // (RFC power domain is on if ( PRCM_O_PDCTL0RFC || PRCM_O_PDCTL1RFC )
+        // RFC power domain is on if ( PRCM_O_PDCTL0RFC || PRCM_O_PDCTL1RFC ).
         HWREG(PRCM_BASE + PRCM_O_PDCTL1RFC   ) = 0;
     }
     if(ui32Domains & PRCM_DOMAIN_SERIAL)

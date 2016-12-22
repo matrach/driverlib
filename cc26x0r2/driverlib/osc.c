@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-11-10 10:01:27 +0100 (Thu, 10 Nov 2016)
+*  Revision:       47656
 *
 *  Description:    Driver for setting up the system Oscillators
 *
@@ -225,7 +225,11 @@ OSCHF_GetStartupTime( uint32_t timeUntilWakeupInMs )
 void
 OSCHF_TurnOnXosc( void )
 {
+#if ( defined( ROM_OSCClockSourceSet ))
+   ROM_OSCClockSourceSet( OSC_SRC_CLK_HF | OSC_SRC_CLK_MF, OSC_XOSC_HF );
+#else
    OSCClockSourceSet( OSC_SRC_CLK_HF | OSC_SRC_CLK_MF, OSC_XOSC_HF );
+#endif
    oscHfGlobals.timeXoscOn_CV  = AONRTCCurrentCompareValueGet();
 }
 
@@ -241,7 +245,11 @@ OSCHF_AttemptToSwitchToXosc( void )
    uint32_t startupTimeInUs;
    uint32_t prevLimmit25InUs;
 
+#if ( defined( ROM_OSCClockSourceGet ))
+   if ( ROM_OSCClockSourceGet( OSC_SRC_CLK_HF ) == OSC_XOSC_HF ) {
+#else
    if ( OSCClockSourceGet( OSC_SRC_CLK_HF ) == OSC_XOSC_HF ) {
+#endif
       // Already on XOSC - nothing to do
       return ( 1 );
    }
@@ -273,10 +281,18 @@ OSCHF_SwitchToRcOscTurnOffXosc( void )
 {
    // Set SCLK_HF and SCLK_MF to RCOSC_HF without checking
    // Doing this anyway to keep HF and MF in sync
+#if ( defined( ROM_OSCClockSourceSet ))
+   ROM_OSCClockSourceSet( OSC_SRC_CLK_HF | OSC_SRC_CLK_MF, OSC_RCOSC_HF );
+#else
    OSCClockSourceSet( OSC_SRC_CLK_HF | OSC_SRC_CLK_MF, OSC_RCOSC_HF );
+#endif
 
    // Do the switching if not already running on RCOSC_HF
+#if ( defined( ROM_OSCClockSourceGet ))
+   if ( ROM_OSCClockSourceGet( OSC_SRC_CLK_HF ) != OSC_RCOSC_HF ) {
+#else
    if ( OSCClockSourceGet( OSC_SRC_CLK_HF ) != OSC_RCOSC_HF ) {
+#endif
       OSCHfSourceSwitch();
    }
 

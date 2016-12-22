@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       uart.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-11-21 13:43:38 +0100 (Mon, 21 Nov 2016)
+*  Revision:       47731
 *
 *  Description:    Defines and prototypes for the UART.
 *
@@ -100,14 +100,14 @@ extern "C"
 // as the ui32IntFlags parameter, and returned from UARTIntStatus.
 //
 //*****************************************************************************
-#define UART_INT_OE             0x400       // Overrun Error Interrupt Mask
-#define UART_INT_BE             0x200       // Break Error Interrupt Mask
-#define UART_INT_PE             0x100       // Parity Error Interrupt Mask
-#define UART_INT_FE             0x080       // Framing Error Interrupt Mask
-#define UART_INT_RT             0x040       // Receive Timeout Interrupt Mask
-#define UART_INT_TX             0x020       // Transmit Interrupt Mask
-#define UART_INT_RX             0x010       // Receive Interrupt Mask
-#define UART_INT_CTS            0x002       // CTS Modem Interrupt Mask
+#define UART_INT_OE    ( UART_IMSC_OEIM   ) // Overrun Error Interrupt Mask
+#define UART_INT_BE    ( UART_IMSC_BEIM   ) // Break Error Interrupt Mask
+#define UART_INT_PE    ( UART_IMSC_PEIM   ) // Parity Error Interrupt Mask
+#define UART_INT_FE    ( UART_IMSC_FEIM   ) // Framing Error Interrupt Mask
+#define UART_INT_RT    ( UART_IMSC_RTIM   ) // Receive Timeout Interrupt Mask
+#define UART_INT_TX    ( UART_IMSC_TXIM   ) // Transmit Interrupt Mask
+#define UART_INT_RX    ( UART_IMSC_RXIM   ) // Receive Interrupt Mask
+#define UART_INT_CTS   ( UART_IMSC_CTSMIM ) // CTS Modem Interrupt Mask
 
 //*****************************************************************************
 //

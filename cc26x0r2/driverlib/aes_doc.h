@@ -1,10 +1,7 @@
 /******************************************************************************
-*  Filename:       driverlib_release.c
-*  Revised:        $Date: 2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016) $
-*  Revision:       $Revision: 47152 $
-*
-*  Description:    Provides macros for ensuring that a specfic release of
-*                  DriverLib is used.
+*  Filename:       aes_doc.h
+*  Revised:        2016-03-30 13:03:59 +0200 (Wed, 30 Mar 2016)
+*  Revision:       45971
 *
 *  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
 *  All rights reserved.
@@ -36,10 +33,34 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************************/
-#include "../driverlib/driverlib_release.h"
-
-
-
-
-/// Declare the current DriverLib release
-DRIVERLIB_DECLARE_RELEASE(0, 47851);
+//! \addtogroup aes_api
+//! @{
+//! \section sec_aes Introduction
+//!
+//!	The AES (advanced encryption standard) API provides access to the AES and key
+//!	store functionality of the crypto core. The SHA2 accelerator is also
+//!	contained within the crypto core. Hence, only one of SHA2 and AES may be
+//!	used at the same time.
+//!	This module offers hardware acceleration for several protocols using the
+//!	AES block cypher. The protocols below are supported by the hardware. The
+//!	driverlib documentation only explicitly references the most commonly used ones.
+//!	- ECB
+//!	- CBC
+//!	- CCM
+//!	- CBC-MAC
+//!	- GCM
+//!
+//! The key store is a section of crypto memory that is only accessible to the crypto module
+//! and may be written to by the application via the crypto DMA. It is not possible to
+//! read from the key store to main memory. Thereby, it is not possible to
+//! compromise the key should the application be hacked if the original key in main
+//! memory was overwritten already.
+//!
+//!	The crypto core does not have retention and all configuration settings and
+//!	keys in the key store are lost when going into standby or shutdown.
+//!	The typical security advantages a key store offers are not available in these
+//!	low power modes as the key must	be saved in regular memory to reload
+//!	it after going into standby or shutdown.
+//!	Consequently, the key store primarily serves as an interface to the AES accelerator.
+//!
+//! @}

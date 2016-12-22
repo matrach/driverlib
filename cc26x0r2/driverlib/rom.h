@@ -313,14 +313,6 @@ extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
     ((uint32_t (*)(uint32_t ui32SectorAddress)) \
     ROM_API_FLASH_TABLE[4])
 
-#define ROM_FlashSectorErase \
-    ((uint32_t (*)(uint32_t ui32SectorAddress)) \
-    ROM_API_FLASH_TABLE[5])
-
-#define ROM_FlashProgram \
-    ((uint32_t (*)(uint8_t *pui8DataBuffer, uint32_t ui32Address, uint32_t ui32Count)) \
-    ROM_API_FLASH_TABLE[6])
-
 #define ROM_FlashEfuseReadRow \
     ((bool (*)(uint32_t *pui32EfuseData, uint32_t ui32RowAddress)) \
     ROM_API_FLASH_TABLE[8])

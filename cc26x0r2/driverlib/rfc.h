@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-11-14 15:20:26 +0100 (Mon, 14 Nov 2016)
+*  Revision:       47683
 *
 *  Description:    Defines and prototypes for the RF Core.
 *
@@ -155,6 +155,50 @@ RFCClockDisable(void)
 {
     // Disable all clocks
     HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) = 0x0;
+}
+
+//*****************************************************************************
+//
+//! \brief Enable some of the RF core clocks.
+//!
+//! As soon as the RF core is started it will handle clock control
+//! autonomously. No check should be performed to check the clocks. Instead
+//! the radio can be ping'ed through the command interface.
+//!
+//! \return None
+//
+//*****************************************************************************
+__STATIC_INLINE void
+RFCClockSet(uint32_t ui32Mask)
+{
+    //
+    // Enable clocks
+    //
+    HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) |= ui32Mask;
+}
+
+//*****************************************************************************
+//
+//! \brief Disable some of the RF core clocks.
+//!
+//! As soon as the RF core is started it will handle clock control
+//! autonomously. No check should be performed to check the clocks. Instead
+//! the radio can be ping'ed through the command interface.
+//!
+//! When disabling clocks it is the programmers responsibility that the
+//! RF core clocks can be safely gated. I.e. the RF core should be safely
+//! 'parked'.
+//!
+//! \return None
+//
+//*****************************************************************************
+__STATIC_INLINE void
+RFCClockClear(uint32_t ui32Mask)
+{
+    //
+    // Disable clocks
+    //
+    HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) &= ~ui32Mask;
 }
 
 //*****************************************************************************

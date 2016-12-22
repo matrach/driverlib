@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_data_entry.h
-*  Revised:        $ $
-*  Revision:       $ $
+*  Revised:        2016-11-14 16:07:52 +0100 (Mon, 14 Nov 2016)
+*  Revision:       17451
 *
 *  Description:    Definition of API for data exchange
 *

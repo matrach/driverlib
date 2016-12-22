@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_chip_def.h
-*  Revised:        2015-05-12 17:41:19 +0200 (Tue, 12 May 2015)
-*  Revision:       43491
+*  Revised:        2016-11-17 16:01:57 +0100 (Thu, 17 Nov 2016)
+*  Revision:       47704
 *
 *  Description:    Defines for device properties.
 *

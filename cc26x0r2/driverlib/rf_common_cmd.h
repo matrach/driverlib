@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_common_cmd.h
-*  Revised:        $ $
-*  Revision:       $ $
+*  Revised:        2016-11-30 17:17:07 +0100 (Wed, 30 Nov 2016)
+*  Revision:       17538
 *
 *  Description:    CC26xx API for common/generic commands
 *
@@ -209,7 +209,13 @@ struct __RFC_STRUCT rfc_CMD_RADIO_SETUP_s {
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
    } config;                            //!<        Configuration options
-   uint16_t txPower;                    //!<        Transmit power
+   uint16_t txPower;                    //!< \brief Transmit power
+                                        //!<        Bits 0--5: IB
+                                        //!<        Value to write to the PA power control field at 25 &deg;C
+                                        //!<        Bits 6--7: GC
+                                        //!<        Value to write to the gain control of the 1st stage of the PA
+                                        //!<        Bits 8--15: tempCoeff
+                                        //!<        Temperature coefficient for IB. 0: No temperature compensation
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
                                         //!<        override is used.
 };
@@ -307,7 +313,7 @@ struct __RFC_STRUCT rfc_CMD_RX_TEST_s {
    } condition;
    struct {
       uint8_t bEnaFifo:1;               //!< \brief 0: Do not enable FIFO in modem, so that received data is not available<br>
-                                        //!<        1: Enable FIFO in modem &ndash; the data must be read out by the application
+                                        //!<        1: Enable FIFO in modem -- the data must be read out by the application
       uint8_t bFsOff:1;                 //!< \brief 0: Keep frequency synth on after command<br>
                                         //!<        1: Turn frequency synth off after command
       uint8_t bNoSync:1;                //!< \brief 0: Run sync search as normal for the configured mode<br>
@@ -615,7 +621,7 @@ struct __RFC_STRUCT rfc_CMD_PATTERN_CHECK_s {
                                         //!<        most-significant-byte-first.
       uint16_t bBitRev:1;               //!<        If 1, perform bit reversal of the value
       uint16_t signExtend:5;            //!< \brief 0: Treat value and <code>compareVal</code> as unsigned<br>
-                                        //!<        1&ndash;31: Treat value and <code>compareVal</code> as signed, where the value
+                                        //!<        1--31: Treat value and <code>compareVal</code> as signed, where the value
                                         //!<        gives the number of the most significant bit in the signed number.
       uint16_t bRxVal:1;                //!< \brief 0: Use <code>pValue</code> as a pointer<br>
                                         //!<        1: Use <code>pValue</code> as a signed offset to the start of the last
@@ -888,7 +894,13 @@ struct __RFC_STRUCT rfc_CMD_DISARM_RAT_CH_s {
 //! Set Transmit Power
 struct __RFC_STRUCT rfc_CMD_SET_TX_POWER_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0010
-   uint16_t txPower;                    //!<        New TX power setting
+   uint16_t txPower;                    //!< \brief New TX power setting
+                                        //!<        Bits 0--5: IB
+                                        //!<        Value to write to the PA power control field at 25 &deg;C
+                                        //!<        Bits 6--7: GC
+                                        //!<        Value to write to the gain control of the 1st stage of the PA
+                                        //!<        Bits 8--15: tempCoeff
+                                        //!<        Temperature coefficient for IB. 0: No temperature compensation
 };
 
 //! @}
