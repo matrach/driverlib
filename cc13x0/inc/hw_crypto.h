@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       hw_crypto_h
-*  Revised:        2016-06-07 14:59:08 +0200 (Tue, 07 Jun 2016)
-*  Revision:       46618
+*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
+*  Revision:       48345
 *
-* Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+* Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without

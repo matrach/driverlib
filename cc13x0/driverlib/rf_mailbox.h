@@ -5,7 +5,7 @@
 *
 *  Description:    Definitions for interface between system and radio CPU
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

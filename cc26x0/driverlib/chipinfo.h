@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2016-10-20 13:13:27 +0200 (Thu, 20 Oct 2016)
-*  Revision:       47501
+*  Revised:        2017-01-19 13:55:31 +0100 (Thu, 19 Jan 2017)
+*  Revision:       48292
 *
 *  Description:    Collection of functions returning chip information.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -113,7 +113,6 @@ typedef enum {
 //*****************************************************************************
 extern ProtocolBitVector_t ChipInfo_GetSupportedProtocol_BV( void );
 
-
 //*****************************************************************************
 //
 //! \brief Returns true if the chip supports the BLE protocol.
@@ -156,19 +155,22 @@ ChipInfo_SupportsPROPRIETARY( void )
    return (( ChipInfo_GetSupportedProtocol_BV() & PROTOCOLBIT_Proprietary ) != 0 );
 }
 
-
 //*****************************************************************************
 //
 //! \brief Package type enumeration
+//!
+//! \note
+//! Packages available for a specific device are shown in the device datasheet.
 //
 //*****************************************************************************
 typedef enum {
-   PACKAGE_Unknown   = -1, //!< -1 means that current chip type is unknown.
-   PACKAGE_4x4       =  0, //!<  0 means that this is a 4x4mm chip.
-   PACKAGE_5x5       =  1, //!<  1 means that this is a 5x5mm chip.
-   PACKAGE_7x7       =  2, //!<  2 means that this is a 7x7mm chip.
-   PACKAGE_WAFER     =  3, //!<  3 means that this is a wafer sale chip (naked die).
-   PACKAGE_WCSP      =  4  //!<  4 means that this is a WCSP chip (flip chip).
+   PACKAGE_Unknown   = -1, //!< -1 means that current package type is unknown.
+   PACKAGE_4x4       =  0, //!<  0 means that this is a 4x4 mm QFN (RHB) package.
+   PACKAGE_5x5       =  1, //!<  1 means that this is a 5x5 mm QFN (RSM) package.
+   PACKAGE_7x7       =  2, //!<  2 means that this is a 7x7 mm QFN (RGZ) package.
+   PACKAGE_WAFER     =  3, //!<  3 means that this is a wafer sale package (naked die).
+   PACKAGE_WCSP      =  4, //!<  4 means that this is a 2.7x2.7 mm WCSP (YFV).
+   PACKAGE_7x7_Q1    =  5  //!<  5 means that this is a 7x7 mm QFN package with Wettable Flanks.
 } PackageType_t;
 
 //*****************************************************************************
@@ -251,6 +253,19 @@ ChipInfo_PackageTypeIsWCSP( void )
    return ( ChipInfo_GetPackageType() == PACKAGE_WCSP );
 }
 
+//*****************************************************************************
+//
+//! \brief Returns true if this is a 7x7 Q1 chip.
+//!
+//! \return
+//! Returns \c true if this is a 7x7 Q1 chip, \c false otherwise.
+//
+//*****************************************************************************
+__STATIC_INLINE bool
+ChipInfo_PackageTypeIs7x7Q1( void )
+{
+   return ( ChipInfo_GetPackageType() == PACKAGE_7x7_Q1 );
+}
 
 //*****************************************************************************
 //
@@ -291,7 +306,6 @@ ChipInfo_GetMinorHwRev( void )
    return( minorRev );
 }
 
-
 //*****************************************************************************
 //
 //! \brief Returns the 32 bits USER_ID field
@@ -307,7 +321,6 @@ ChipInfo_GetUserId( void )
 {
    return ( HWREG( FCFG1_BASE + FCFG1_O_USER_ID ));
 }
-
 
 //*****************************************************************************
 //
@@ -336,7 +349,6 @@ typedef enum {
 //
 //*****************************************************************************
 extern ChipType_t ChipInfo_GetChipType( void );
-
 
 //*****************************************************************************
 //
@@ -432,7 +444,6 @@ ChipInfo_ChipFamilyIs_CC13x2_13x4_26x2_26x4( void )
    return ( ChipInfo_GetChipFamily() == FAMILY_CC13x2_13x4_26x2_26x4 );
 }
 
-
 //*****************************************************************************
 //
 //! \brief HW revision enumeration.
@@ -441,10 +452,12 @@ ChipInfo_ChipFamilyIs_CC13x2_13x4_26x2_26x4( void )
 typedef enum {
    HWREV_Unknown     = -1, //!< -1 means that the chip's HW revision is unknown.
    HWREV_1_0         = 10, //!< 10 means that the chip's HW revision is 1.0
+   HWREV_1_1         = 11, //!< 10 means that the chip's HW revision is 1.0
    HWREV_2_0         = 20, //!< 20 means that the chip's HW revision is 2.0
    HWREV_2_1         = 21, //!< 21 means that the chip's HW revision is 2.1
    HWREV_2_2         = 22, //!< 22 means that the chip's HW revision is 2.2
-   HWREV_2_3         = 23  //!< 23 means that the chip's HW revision is 2.3
+   HWREV_2_3         = 23, //!< 23 means that the chip's HW revision is 2.3
+   HWREV_2_4         = 24  //!< 24 means that the chip's HW revision is 2.4
 } HwRevision_t;
 
 //*****************************************************************************
@@ -569,6 +582,19 @@ ChipInfo_HwRevisionIs_GTEQ_2_3( void )
    return ( ChipInfo_GetHwRevision() >= HWREV_2_3 );
 }
 
+//*****************************************************************************
+//
+//! \brief Returns true if HW revision for this chip is 2.4 or greater.
+//!
+//! \return
+//! Returns \c true if HW revision for this chip is 2.4 or greater, \c false otherwise.
+//
+//*****************************************************************************
+__STATIC_INLINE bool
+ChipInfo_HwRevisionIs_GTEQ_2_4( void )
+{
+   return ( ChipInfo_GetHwRevision() >= HWREV_2_4 );
+}
 
 //*****************************************************************************
 //

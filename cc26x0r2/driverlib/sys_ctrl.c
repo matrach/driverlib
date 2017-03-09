@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.c
-*  Revised:        2016-11-29 15:12:06 +0100 (Tue, 29 Nov 2016)
-*  Revision:       47817
+*  Revised:        2017-01-31 10:31:33 +0100 (Tue, 31 Jan 2017)
+*  Revision:       48347
 *
 *  Description:    Driver for the System Control.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -52,8 +52,6 @@
 //
 //*****************************************************************************
 #if !defined(DOXYGEN)
-    #undef  SysCtrlPowerEverything
-    #define SysCtrlPowerEverything          NOROM_SysCtrlPowerEverything
     #undef  SysCtrlSetRechargeBeforePowerDown
     #define SysCtrlSetRechargeBeforePowerDown NOROM_SysCtrlSetRechargeBeforePowerDown
     #undef  SysCtrlAdjustRechargeAfterPowerDown
@@ -84,113 +82,6 @@ typedef struct {
 
 static PowerQualGlobals_t powerQualGlobals;
 
-
-//*****************************************************************************
-//
-// Arrays that maps the "peripheral set" number (which is stored in the
-// third nibble of the PRCM_PERIPH_* defines) to the PRCM register that
-// contains the relevant bit for that peripheral.
-//
-//*****************************************************************************
-
-// Run mode registers
-static const uint32_t g_pui32ModuleCG[] =
-{
-    PRCM_PERIPH_TIMER0,
-    PRCM_PERIPH_TIMER1,
-    PRCM_PERIPH_TIMER2,
-    PRCM_PERIPH_TIMER3,
-    PRCM_PERIPH_SSI0,
-    PRCM_PERIPH_SSI1,
-    PRCM_PERIPH_UART0,
-    PRCM_PERIPH_I2C0,
-    PRCM_PERIPH_CRYPTO,
-    PRCM_PERIPH_TRNG,
-    PRCM_PERIPH_UDMA,
-    PRCM_PERIPH_GPIO,
-    PRCM_PERIPH_I2S
-};
-
-//*****************************************************************************
-//
-// Power up everything
-//
-//*****************************************************************************
-void
-SysCtrlPowerEverything(void)
-{
-    uint32_t ui32Idx;
-    uint32_t ui32AuxClocks;
-
-    // Force power on AUX
-    AONWUCAuxWakeupEvent(AONWUC_AUX_WAKEUP);
-    while(!(AONWUCPowerStatusGet() & AONWUC_AUX_POWER_ON))
-    { }
-
-    // Enable all the AUX domain clocks and wait for them to be ready
-    ui32AuxClocks = AUX_WUC_ADI_CLOCK | AUX_WUC_OSCCTRL_CLOCK |
-                    AUX_WUC_TDCIF_CLOCK | AUX_WUC_ANAIF_CLOCK |
-                    AUX_WUC_TIMER_CLOCK | AUX_WUC_AIODIO0_CLOCK |
-                    AUX_WUC_AIODIO1_CLOCK | AUX_WUC_SMPH_CLOCK |
-                    AUX_WUC_TDC_CLOCK | AUX_WUC_ADC_CLOCK |
-                    AUX_WUC_REF_CLOCK;
-    AUXWUCClockEnable(ui32AuxClocks);
-    while(AUXWUCClockStatus(ui32AuxClocks) != AUX_WUC_CLOCK_READY)
-    { }
-
-    // Request to switch to the crystal to enable radio operation.
-    // It takes a while for the XTAL to be ready so it is possible to
-    // perform other tasks while waiting.
-    OSCClockSourceSet(OSC_SRC_CLK_MF | OSC_SRC_CLK_HF, OSC_XOSC_HF);
-    OSCClockSourceSet(OSC_SRC_CLK_LF, OSC_XOSC_LF);
-
-    // Switch the HF source to XTAL - must be performed safely out of ROM to
-    // avoid flash issues when switching the clock.
-    //
-    // NB. If already running XTAL on HF clock source the ROM will wait forever
-    // on a flag that will never be set - need to check.
-    if(OSCClockSourceGet(OSC_SRC_CLK_HF) != OSC_XOSC_HF) {
-        OSCHfSourceSwitch();
-    }
-
-    // Turn on all the MCU power domains
-    // If the CPU is running and executing code the SYSBUS, VIMS and CPU are
-    // automatically on as well.
-    PRCMPowerDomainOn(PRCM_DOMAIN_RFCORE | PRCM_DOMAIN_SERIAL |
-                      PRCM_DOMAIN_PERIPH);
-    // Wait for power to be on
-    while(PRCMPowerDomainStatus(PRCM_DOMAIN_RFCORE | PRCM_DOMAIN_SERIAL |
-                                PRCM_DOMAIN_PERIPH) != PRCM_DOMAIN_POWER_ON);
-
-    PRCMLoadSet();
-    while(!PRCMLoadGet());
-
-    // Ensure the domain clocks are running and wait for the clock settings to
-    // take effect
-    PRCMDomainEnable(PRCM_DOMAIN_RFCORE | PRCM_DOMAIN_VIMS);
-    PRCMLoadSet();
-    while(!PRCMLoadGet())
-    { }
-
-    // Enable all the RF Core clocks
-    //
-    // Do not read back to check, for two reasons:
-    // 1. CPE will update the PWMCLKENABLE register right after boot
-    // 2. The PWMCLKENABLE register always reads back what is written
-    HWREG(RFC_PWR_NONBUF_BASE + RFC_PWR_O_PWMCLKEN) = 0x7FF;
-
-    // Enable all peripheral clocks in System CPU run/sleep/deep-sleep mode.
-    for(ui32Idx = 0; ui32Idx < sizeof(g_pui32ModuleCG) / sizeof(uint32_t);
-        ui32Idx++)
-    {
-        PRCMPeripheralRunEnable(g_pui32ModuleCG[ui32Idx]);
-        PRCMPeripheralSleepEnable(g_pui32ModuleCG[ui32Idx]);
-        PRCMPeripheralDeepSleepEnable(g_pui32ModuleCG[ui32Idx]);
-    }
-    PRCMLoadSet();
-    while(!PRCMLoadGet())
-    { }
-}
 
 //*****************************************************************************
 //
@@ -511,7 +402,11 @@ uint32_t
 SysCtrlResetSourceGet( void )
 {
    if ( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) & AON_SYSCTL_RESETCTL_WU_FROM_SD_M ) {
-      return ( RSTSRC_WAKEUP_FROM_SHUTDOWN );
+      if ( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) & AON_SYSCTL_RESETCTL_GPIO_WU_FROM_SD_M ) {
+         return ( RSTSRC_WAKEUP_FROM_SHUTDOWN );
+      } else {
+         return ( RSTSRC_WAKEUP_FROM_TCK_NOISE );
+      }
    } else {
       return (( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) &
                 AON_SYSCTL_RESETCTL_RESET_SRC_M ) >>

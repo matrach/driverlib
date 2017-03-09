@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       hw_ccfg_h
-*  Revised:        2016-05-27 11:02:27 +0200 (Fri, 27 May 2016)
-*  Revision:       46523
+*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
+*  Revision:       48345
 *
-* Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+* Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -350,9 +350,9 @@
 // Field:    [24] VDDS_BOD_LEVEL
 //
 // VDDS BOD level.
-// 0: VDDS BOD level is 2.0V (necessary for external load mode, or for maximum
-// PA output power on CC13xx).
-// 1: VDDS BOD level is 1.8V (or 1.65V for external regulator mode) (default).
+// 0: VDDS BOD level is 2.0 V (necessary for maximum PA output power on
+// CC13xx).
+// 1: VDDS BOD level is 1.8 V (or 1.7 V for external regulator mode) (default).
 #define CCFG_MODE_CONF_VDDS_BOD_LEVEL                               0x01000000
 #define CCFG_MODE_CONF_VDDS_BOD_LEVEL_BITN                                  24
 #define CCFG_MODE_CONF_VDDS_BOD_LEVEL_M                             0x01000000
@@ -855,11 +855,16 @@
 //*****************************************************************************
 // Field:  [31:0] IMAGE_VALID
 //
+// This field must have a value of 0x00000000 in order for enabling the boot
+// sequence to transfer control to a flash image.
+// A non-zero value forces the boot sequence to call the boot loader.
+//
+// For CC2640R2:
 // This field must have the address value of the start of the flash vector
-// table in order to enable the boot FW in ROM to transfer control to a flash
+// table in order for enabling the boot sequence to transfer control to a flash
 // image.
-// Any illegal vector table start address value will force the boot FW in ROM
-// to transfer control to the serial boot loader in ROM.
+// Any illegal vector table start address value forces the boot sequence to
+// call the boot loader.
 // Note that if any other legal vector table start address value than 0x0 is
 // selected the PRCM:WARMRESET.WR_TO_PINRESET must be set to 1.
 #define CCFG_IMAGE_VALID_CONF_IMAGE_VALID_W                                 32

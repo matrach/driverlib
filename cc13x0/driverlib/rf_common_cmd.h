@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_common_cmd.h
-*  Revised:        $ $
-*  Revision:       $ $
+*  Revised:        2016-12-07 13:37:33 +0100 (Wed, 07 Dec 2016)
+*  Revision:       17556
 *
-*  Description:    CC13xx API for common/generic commands
+*  Description:    CC13x0 API for common/generic commands
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -308,7 +308,7 @@ struct __RFC_STRUCT rfc_CMD_RX_TEST_s {
    } condition;
    struct {
       uint8_t bEnaFifo:1;               //!< \brief 0: Do not enable FIFO in modem, so that received data is not available<br>
-                                        //!<        1: Enable FIFO in modem &ndash; the data must be read out by the application
+                                        //!<        1: Enable FIFO in modem -- the data must be read out by the application
       uint8_t bFsOff:1;                 //!< \brief 0: Keep frequency synth on after command<br>
                                         //!<        1: Turn frequency synth off after command
       uint8_t bNoSync:1;                //!< \brief 0: Run sync search as normal for the configured mode<br>
@@ -616,7 +616,7 @@ struct __RFC_STRUCT rfc_CMD_PATTERN_CHECK_s {
                                         //!<        most-significant-byte-first.
       uint16_t bBitRev:1;               //!<        If 1, perform bit reversal of the value
       uint16_t signExtend:5;            //!< \brief 0: Treat value and <code>compareVal</code> as unsigned<br>
-                                        //!<        1&ndash;31: Treat value and <code>compareVal</code> as signed, where the value
+                                        //!<        1--31: Treat value and <code>compareVal</code> as signed, where the value
                                         //!<        gives the number of the most significant bit in the signed number.
       uint16_t bRxVal:1;                //!< \brief 0: Use <code>pValue</code> as a pointer<br>
                                         //!<        1: Use <code>pValue</code> as a signed offset to the start of the last

@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_patch_rfe_lrm.h
-*  Revised:        $Date$
-*  Revision:       $Revision$
+*  Revised:        $Date: 2017-02-06 11:29:58 +0100 (ma, 06 feb 2017) $
+*  Revision:       $Revision: 17639 $
 *
-*  Description: RF core patch for CC13XX Long range mode
+*  Description: RF core patch for CC13x0 Legacy Long Range Mode
 *
 *  Copyright (c) 2015-2016, Texas Instruments Incorporated
 *  All rights reserved.
@@ -40,8 +40,15 @@
 #ifndef _RF_PATCH_RFE_LRM_H
 #define _RF_PATCH_RFE_LRM_H
 
+#ifdef DEVICE_FAMILY
+    #undef DEVICE_FAMILY_PATH
+    #define DEVICE_FAMILY_PATH(x) <ti/devices/DEVICE_FAMILY/x>
+#else
+    #error "You must define DEVICE_FAMILY at the project level as one of cc26x0, cc26x0r2, cc13x0, etc."
+#endif
+
 #include <stdint.h>
-#include "../inc/hw_types.h"
+#include DEVICE_FAMILY_PATH(inc/hw_types.h)
 
 #ifndef RFE_PATCH_TYPE
 #define RFE_PATCH_TYPE static const uint32_t
@@ -53,6 +60,10 @@
 
 #ifndef RFC_RFERAM_BASE
 #define RFC_RFERAM_BASE 0x2100C000
+#endif
+
+#ifndef RFE_PATCH_MODE
+#define RFE_PATCH_MODE 0
 #endif
 
 RFE_PATCH_TYPE patchLrmRfe[429] = { 

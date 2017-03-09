@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_hsp_4mbps.h
-*  Revised:        $Date: 2016-09-13 16:37:28 +0200 (ti, 13 sep 2016) $
-*  Revision:       $Revision: 17321 $
+*  Revised:        $Date: 2017-02-06 11:29:58 +0100 (ma, 06 feb 2017) $
+*  Revision:       $Revision: 17639 $
 *
-*  Description: RF core patch for CC13XX 4Mbps High speed mode
+*  Description: RF core patch for CC13x0 4Mbps High speed mode
 *
 *  Copyright (c) 2015-2016, Texas Instruments Incorporated
 *  All rights reserved.
@@ -39,8 +39,15 @@
 #ifndef _RF_PATCH_MCE_HSP_4MBPS_H
 #define _RF_PATCH_MCE_HSP_4MBPS_H
 
+#ifdef DEVICE_FAMILY
+    #undef DEVICE_FAMILY_PATH
+    #define DEVICE_FAMILY_PATH(x) <ti/devices/DEVICE_FAMILY/x>
+#else
+    #error "You must define DEVICE_FAMILY at the project level as one of cc26x0, cc26x0r2, cc13x0, etc."
+#endif
+
 #include <stdint.h>
-#include "../inc/hw_types.h"
+#include DEVICE_FAMILY_PATH(inc/hw_types.h)
 
 #ifndef MCE_PATCH_TYPE
 #define MCE_PATCH_TYPE static const uint32_t
@@ -52,6 +59,10 @@
 
 #ifndef RFC_MCERAM_BASE
 #define RFC_MCERAM_BASE 0x21008000
+#endif
+
+#ifndef MCE_PATCH_MODE
+#define MCE_PATCH_MODE 0
 #endif
 
 MCE_PATCH_TYPE patchHsp4mbpsMce[252] = { 

@@ -1,12 +1,12 @@
 /******************************************************************************
 *  Filename:       cpu.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-01-16 19:01:21 +0100 (Mon, 16 Jan 2017)
+*  Revision:       48248
 *
 *  Description:    Defines and prototypes for the CPU instruction wrapper
 *                  functions.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -133,6 +133,35 @@ extern uint32_t CPUcpsie(void);
 
 //*****************************************************************************
 //
+//! \brief Get the interrupt priority disable level.
+//!
+//! Use this function to get the the level of priority that will disable
+//! interrupts with a lower priority level.
+//!
+//! \return Returns the value of the \b BASEPRI register.
+//
+//*****************************************************************************
+extern uint32_t CPUbasepriGet(void);
+
+//*****************************************************************************
+//
+//! \brief Provide a small delay.
+//!
+//! This function provides means for generating a constant length delay. It
+//! is written in assembly to keep the delay consistent across tool chains,
+//! avoiding the need to tune the delay based on the tool chain in use.
+//!
+//! The loop takes 3 cycles/loop.
+//!
+//! \param ui32Count is the number of delay loop iterations to perform.
+//!
+//! \return None
+//
+//*****************************************************************************
+extern void CPUdelay(uint32_t ui32Count);
+
+//*****************************************************************************
+//
 //! \brief Wait for interrupt.
 //!
 //! Use this function to let the System CPU wait for the next interrupt. This
@@ -141,7 +170,13 @@ extern uint32_t CPUcpsie(void);
 //! \return None
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+__STATIC_INLINE void
+CPUwfi(void)
+{
+    // This function is written in assembly. See cpu.h for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 __STATIC_INLINE void
 CPUwfi(void)
 {
@@ -156,7 +191,7 @@ CPUwfi(void)
     wfi;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 __STATIC_INLINE void
 CPUwfi(void)
 {
@@ -182,7 +217,13 @@ CPUwfi(void)
 //! \return None
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+__STATIC_INLINE void
+CPUwfe(void)
+{
+    // This function is written in assembly. See cpu.h for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 __STATIC_INLINE void
 CPUwfe(void)
 {
@@ -197,7 +238,7 @@ CPUwfe(void)
     wfe;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 __STATIC_INLINE void
 CPUwfe(void)
 {
@@ -223,7 +264,13 @@ CPUwfe(void)
 //! \return None
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+__STATIC_INLINE void
+CPUsev(void)
+{
+    // This function is written in assembly. See cpu.h for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 __STATIC_INLINE void
 CPUsev(void)
 {
@@ -238,7 +285,7 @@ CPUsev(void)
     sev;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 __STATIC_INLINE void
 CPUsev(void)
 {
@@ -267,7 +314,13 @@ CPUsev(void)
 //! \return None
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+__STATIC_INLINE void
+CPUbasepriSet(uint32_t ui32NewBasepri)
+{
+    // This function is written in assembly. See cpu.h for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 __STATIC_INLINE void
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
@@ -282,7 +335,7 @@ CPUbasepriSet(uint32_t ui32NewBasepri)
     msr     BASEPRI, r0;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 __STATIC_INLINE void
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
@@ -301,35 +354,6 @@ CPUbasepriSet(uint32_t ui32NewBasepri)
 }
 #pragma GCC diagnostic pop
 #endif
-
-//*****************************************************************************
-//
-//! \brief Get the interrupt priority disable level.
-//!
-//! Use this function to get the the level of priority that will disable
-//! interrupts with a lower priority level.
-//!
-//! \return Returns the value of the \b BASEPRI register.
-//
-//*****************************************************************************
-extern uint32_t CPUbasepriGet(void);
-
-//*****************************************************************************
-//
-//! \brief Provide a small delay.
-//!
-//! This function provides means for generating a constant length delay. It
-//! is written in assembly to keep the delay consistent across tool chains,
-//! avoiding the need to tune the delay based on the tool chain in use.
-//!
-//! The loop takes 3 cycles/loop.
-//!
-//! \param ui32Count is the number of delay loop iterations to perform.
-//!
-//! \return None
-//
-//*****************************************************************************
-extern void CPUdelay(uint32_t ui32Count);
 
 //*****************************************************************************
 //

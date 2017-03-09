@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       osc.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-12-02 14:28:56 +0100 (Fri, 02 Dec 2016)
+*  Revision:       47862
 *
 *  Description:    Defines and prototypes for the system oscillator control.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -319,53 +319,6 @@ OSCHfSourceSwitch(void)
 
 //*****************************************************************************
 //
-//! \brief Deprecated: Empty function - original functionality is removed.
-//!
-//! \deprecated Functionality has been moved to the startup code. The dummy function
-//! will be removed in the next major release of CC26xxWare/CC13xxWare.
-//!
-//! The original functionality was described as follows:
-//! Enable System CPU access to the OSC_DIG module.
-//! Force power on AUX and enable clocks to allow System CPU access on
-//! the OSC_DIG interface.
-//!
-//! \note Access to the OSC_DIG interface is a shared resource between the
-//! Sensor Controller and the CPU, so enabling or disabling this interface must
-//! be done with consideration.
-//!
-//! \return None
-//
-//*****************************************************************************
-__STATIC_INLINE void
-OSCInterfaceEnable(void)
-{
-}
-
-//*****************************************************************************
-//
-//! \brief Deprecated: Empty function - original functionality is removed.
-//!
-//! \deprecated Functionality has been moved to the startup code. The dummy function
-//! will be removed in the next major release of CC26xxWare/CC13xxWare.
-//!
-//! The original functionality was described as follows:
-//! Disable System CPU access to the OSC_DIG module.
-//! Release the "force power on" of AUX and disable clock to AUX.
-//!
-//! \note Access to the OSC_DIG interface is a shared resource between the
-//! Sensor Controller and the CPU, so enabling or disabling this interface must
-//! be done with consideration.
-//!
-//! \return None
-//
-//*****************************************************************************
-__STATIC_INLINE void
-OSCInterfaceDisable(void)
-{
-}
-
-//*****************************************************************************
-//
 //! \brief Returns maximum startup time (in microseconds) of XOSC_HF.
 //!
 //! The startup time depends on several factors. This function calculates the
@@ -379,7 +332,6 @@ OSCInterfaceDisable(void)
 //*****************************************************************************
 extern uint32_t OSCHF_GetStartupTime( uint32_t timeUntilWakeupInMs );
 
-
 //*****************************************************************************
 //
 //! \brief Turns on XOSC_HF (but without switching to XOSC_HF).
@@ -391,7 +343,6 @@ extern uint32_t OSCHF_GetStartupTime( uint32_t timeUntilWakeupInMs );
 //
 //*****************************************************************************
 extern void OSCHF_TurnOnXosc( void );
-
 
 //*****************************************************************************
 //
@@ -407,7 +358,6 @@ extern void OSCHF_TurnOnXosc( void );
 //
 //*****************************************************************************
 extern bool OSCHF_AttemptToSwitchToXosc( void );
-
 
 //*****************************************************************************
 //
@@ -517,7 +467,6 @@ extern int32_t OSC_HPOSCRelativeFrequencyOffsetGet( int32_t tempDegC );
 //*****************************************************************************
 extern int16_t OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert( int32_t HPOSC_RelFreqOffset );
 
-
 //*****************************************************************************
 //
 // Support for DriverLib in ROM:
@@ -576,7 +525,6 @@ extern int16_t OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert( int32_t HP
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif // __OSC_H__
 

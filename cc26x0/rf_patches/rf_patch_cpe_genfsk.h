@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_genfsk.h
-*  Revised:        $Date$
-*  Revision:       $Revision$
+*  Revised:        $Date: 2017-01-30 18:00:26 +0100 (ma, 30 jan 2017) $
+*  Revision:       $Revision: 17599 $
 *
-*  Description: RF core patch for CC26XX Generic FSK
+*  Description: RF core patch for CC26x0 Generic FSK
 *
 *  Copyright (c) 2015, Texas Instruments Incorporated
 *  All rights reserved.

@@ -5,7 +5,7 @@
 *
 *  Description:    Prototypes for the ROM utility functions.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -418,10 +418,6 @@ extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
 #define ROM_CRYPTOAesEcbStatus \
     ((uint32_t (*)(void)) \
     ROM_API_CRYPTO_TABLE[1])
-
-#define ROM_CRYPTOAesLoadKey \
-    ((uint32_t (*)(uint32_t *pui32AesKey, uint32_t ui32KeyLocation)) \
-    ROM_API_CRYPTO_TABLE[2])
 
 #define ROM_CRYPTOCcmAuthEncrypt \
     ((uint32_t (*)(bool bEncrypt, uint32_t ui32AuthLength, uint32_t *pui32Nonce, uint32_t *pui32PlainText, uint32_t ui32PlainTextLength, uint32_t *pui32Header, uint32_t ui32HeaderLength, uint32_t ui32KeyLocation, uint32_t ui32FieldLength, bool bIntEnable)) \

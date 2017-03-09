@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_hs_cmd.h
-*  Revised:        $ $
-*  Revision:       $ $
+*  Revised:        2016-12-07 13:37:33 +0100 (Wed, 07 Dec 2016)
+*  Revision:       17556
 *
-*  Description:    CC26xx/CC13xx API for high-speed mode commands
+*  Description:    CC26x0/CC13x0 API for high-speed mode commands
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

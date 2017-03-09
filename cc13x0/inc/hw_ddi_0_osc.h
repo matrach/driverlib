@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       hw_ddi_0_osc_h
-*  Revised:        2016-10-20 18:33:46 +0200 (Thu, 20 Oct 2016)
-*  Revision:       47507
+*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
+*  Revision:       48345
 *
-* Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+* Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -192,7 +192,7 @@
 //
 // This bit will only have effect when SCLK_LF_SRC_SEL is selecting the xosc_lf
 // as the sclk_lf source. The muxing performed by this bit is not glitch free.
-// The following procedure should be followed when changing this field to avoid
+// The following procedure must be followed when changing this field to avoid
 // glitches on sclk_lf.
 //
 // 1) Set SCLK_LF_SRC_SEL to select any source other than the xosc_lf clock
@@ -215,7 +215,7 @@
 // 0: Disable
 // 1: Enable
 //
-// Clock loss detection should be disabled when changing the sclk_lf source.
+// Clock loss detection must be disabled when changing the sclk_lf source.
 // STAT0.SCLK_LF_SRC can be polled to determine when a change to a new sclk_lf
 // source has completed.
 #define DDI_0_OSC_CTL0_CLK_LOSS_EN                                  0x00000200
@@ -224,7 +224,7 @@
 
 // Field:   [8:7] ACLK_TDC_SRC_SEL
 //
-// Source select for aclk_tdc
+// Source select for aclk_tdc.
 //
 // 00: RCOSC_HF (48MHz)
 // 01: RCOSC_HF (24MHz)
@@ -279,7 +279,8 @@
 
 // Field:     [0] SCLK_HF_SRC_SEL
 //
-// Source select for sclk_hf
+// Source select for sclk_hf.  XOSC option is supported for test and debug only
+// and should be used when the XOSC_HF is running.
 // ENUMs:
 // XOSC                     High frequency XOSC clk
 // RCOSC                    High frequency RCOSC clock
@@ -861,8 +862,8 @@
 // When amplitude compensation of XOSC_HF is enabled in high performance mode,
 // this value is the amplitude of the crystal oscillations measured by the
 // on-chip oscillator ADC, divided by 15 mV.  For example, a value of 0x20
-// would indicate that the crystal's amplitude is approximately 480 mV.  To
-// enable amplitude compensation, AON_WUC OSCCFG must be set to a non-zero
+// would indicate that the amplitude of the crystal is approximately 480 mV.
+// To enable amplitude compensation, AON_WUC OSCCFG must be set to a non-zero
 // value.
 #define DDI_0_OSC_STAT1_HPM_UPDATE_AMP_W                                     6
 #define DDI_0_OSC_STAT1_HPM_UPDATE_AMP_M                            0x0FC00000
@@ -874,8 +875,9 @@
 // When amplitude compensation of XOSC_HF is enabled in low power mode, this
 // value is the amplitude of the crystal oscillations measured by the on-chip
 // oscillator ADC, divided by 15 mV.  For example, a value of 0x20 would
-// indicate that the crystal's amplitude is approximately 480 mV.  To enable
-// amplitude compensation, AON_WUC OSCCFG must be set to a non-zero value.
+// indicate that the amplitude of the crystal is approximately 480 mV.  To
+// enable amplitude compensation, AON_WUC OSCCFG must be set to a non-zero
+// value.
 #define DDI_0_OSC_STAT1_LPM_UPDATE_AMP_W                                     6
 #define DDI_0_OSC_STAT1_LPM_UPDATE_AMP_M                            0x003F0000
 #define DDI_0_OSC_STAT1_LPM_UPDATE_AMP_S                                    16

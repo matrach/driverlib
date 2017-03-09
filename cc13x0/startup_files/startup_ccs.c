@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       startup_ccs.c
-*  Revised:        $Date: 2016-09-26 11:02:06 +0200 (ma, 26 sep 2016) $
-*  Revision:       $Revision: 17337 $
+*  Revised:        $Date: 2017-02-03 19:16:31 +0100 (fr, 03 feb 2017) $
+*  Revision:       $Revision: 17635 $
 *
-*  Description:    Startup code for CC13xx PG2 device family for use with CCS.
+*  Description:    Startup code for CC13x0 rev2 device family for use with CCS.
 *
-*  Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/
+*  Copyright (C) 2017 Texas Instruments Incorporated - http://www.ti.com/
 *
 *
 *  Redistribution and use in source and binary forms, with or without

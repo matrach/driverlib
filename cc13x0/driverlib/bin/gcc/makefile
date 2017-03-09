@@ -71,6 +71,8 @@ all :
 		@ $(COMPILER_TOOL) -mthumb -mcpu=cortex-m3 -Os -Wall -fno-strict-aliasing -pedantic -ffunction-sections -fdata-sections -std=c99 -c --asm -g -o "pwr_ctrl.o" $(MAKEFILE_DIR)../../../driverlib/pwr_ctrl.c
 		@ echo GCC: Compile rfc.c
 		@ $(COMPILER_TOOL) -mthumb -mcpu=cortex-m3 -Os -Wall -fno-strict-aliasing -pedantic -ffunction-sections -fdata-sections -std=c99 -c --asm -g -o "rfc.o" $(MAKEFILE_DIR)../../../driverlib/rfc.c
+		@ echo GCC: Compile rom_crypto.c
+		@ $(COMPILER_TOOL) -mthumb -mcpu=cortex-m3 -Os -Wall -fno-strict-aliasing -pedantic -ffunction-sections -fdata-sections -std=c99 -c --asm -g -o "rom_crypto.o" $(MAKEFILE_DIR)../../../driverlib/rom_crypto.c
 		@ echo GCC: Compile setup.c
 		@ $(COMPILER_TOOL) -mthumb -mcpu=cortex-m3 -Os -Wall -fno-strict-aliasing -pedantic -ffunction-sections -fdata-sections -std=c99 -c --asm -g -o "setup.o" $(MAKEFILE_DIR)../../../driverlib/setup.c
 		@ echo GCC: Compile setup_rom.c
@@ -100,7 +102,7 @@ all :
 		@ echo GCC: Compile watchdog.c
 		@ $(COMPILER_TOOL) -mthumb -mcpu=cortex-m3 -Os -Wall -fno-strict-aliasing -pedantic -ffunction-sections -fdata-sections -std=c99 -c --asm -g -o "watchdog.o" $(MAKEFILE_DIR)../../../driverlib/watchdog.c
 		@ echo GCC: Archive driverlib.lib
-		@ $(ARCHIVER_TOOL) rcs $(MAKEFILE_DIR)driverlib.lib $(MAKEFILE_DIR)adi.o $(MAKEFILE_DIR)aon_batmon.o $(MAKEFILE_DIR)aon_event.o $(MAKEFILE_DIR)aon_ioc.o $(MAKEFILE_DIR)aon_rtc.o $(MAKEFILE_DIR)aon_wuc.o $(MAKEFILE_DIR)aux_adc.o $(MAKEFILE_DIR)aux_smph.o $(MAKEFILE_DIR)aux_tdc.o $(MAKEFILE_DIR)aux_timer.o $(MAKEFILE_DIR)aux_wuc.o $(MAKEFILE_DIR)ccfgread.o $(MAKEFILE_DIR)chipinfo.o $(MAKEFILE_DIR)cpu.o $(MAKEFILE_DIR)crypto.o $(MAKEFILE_DIR)ddi.o $(MAKEFILE_DIR)debug.o $(MAKEFILE_DIR)driverlib_release.o $(MAKEFILE_DIR)event.o $(MAKEFILE_DIR)flash.o $(MAKEFILE_DIR)gpio.o $(MAKEFILE_DIR)i2c.o $(MAKEFILE_DIR)i2s.o $(MAKEFILE_DIR)interrupt.o $(MAKEFILE_DIR)ioc.o $(MAKEFILE_DIR)osc.o $(MAKEFILE_DIR)prcm.o $(MAKEFILE_DIR)pwr_ctrl.o $(MAKEFILE_DIR)rfc.o $(MAKEFILE_DIR)setup.o $(MAKEFILE_DIR)setup_rom.o $(MAKEFILE_DIR)smph.o $(MAKEFILE_DIR)ssi.o $(MAKEFILE_DIR)sw_chacha.o $(MAKEFILE_DIR)sw_poly1305-donna.o $(MAKEFILE_DIR)systick.o $(MAKEFILE_DIR)sys_ctrl.o $(MAKEFILE_DIR)timer.o $(MAKEFILE_DIR)trng.o $(MAKEFILE_DIR)uart.o $(MAKEFILE_DIR)udma.o $(MAKEFILE_DIR)vims.o $(MAKEFILE_DIR)watchdog.o
+		@ $(ARCHIVER_TOOL) rcs $(MAKEFILE_DIR)driverlib.lib $(MAKEFILE_DIR)adi.o $(MAKEFILE_DIR)aon_batmon.o $(MAKEFILE_DIR)aon_event.o $(MAKEFILE_DIR)aon_ioc.o $(MAKEFILE_DIR)aon_rtc.o $(MAKEFILE_DIR)aon_wuc.o $(MAKEFILE_DIR)aux_adc.o $(MAKEFILE_DIR)aux_smph.o $(MAKEFILE_DIR)aux_tdc.o $(MAKEFILE_DIR)aux_timer.o $(MAKEFILE_DIR)aux_wuc.o $(MAKEFILE_DIR)ccfgread.o $(MAKEFILE_DIR)chipinfo.o $(MAKEFILE_DIR)cpu.o $(MAKEFILE_DIR)crypto.o $(MAKEFILE_DIR)ddi.o $(MAKEFILE_DIR)debug.o $(MAKEFILE_DIR)driverlib_release.o $(MAKEFILE_DIR)event.o $(MAKEFILE_DIR)flash.o $(MAKEFILE_DIR)gpio.o $(MAKEFILE_DIR)i2c.o $(MAKEFILE_DIR)i2s.o $(MAKEFILE_DIR)interrupt.o $(MAKEFILE_DIR)ioc.o $(MAKEFILE_DIR)osc.o $(MAKEFILE_DIR)prcm.o $(MAKEFILE_DIR)pwr_ctrl.o $(MAKEFILE_DIR)rfc.o $(MAKEFILE_DIR)rom_crypto.o $(MAKEFILE_DIR)setup.o $(MAKEFILE_DIR)setup_rom.o $(MAKEFILE_DIR)smph.o $(MAKEFILE_DIR)ssi.o $(MAKEFILE_DIR)sw_chacha.o $(MAKEFILE_DIR)sw_poly1305-donna.o $(MAKEFILE_DIR)systick.o $(MAKEFILE_DIR)sys_ctrl.o $(MAKEFILE_DIR)timer.o $(MAKEFILE_DIR)trng.o $(MAKEFILE_DIR)uart.o $(MAKEFILE_DIR)udma.o $(MAKEFILE_DIR)vims.o $(MAKEFILE_DIR)watchdog.o
 		@ rm -f $(MAKEFILE_DIR)*.o
 
 # Deletes previous output and temporary files

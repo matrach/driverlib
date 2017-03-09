@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_genook.h
-*  Revised:        $Date: 2016-06-08 15:35:28 +0200 (on, 08 jun 2016) $
-*  Revision:       $Revision: 17220 $
+*  Revised:        $Date: 2017-01-30 18:00:26 +0100 (ma, 30 jan 2017) $
+*  Revision:       $Revision: 17599 $
 *
-*  Description: RF core patch for CC13XX Generic OOK
+*  Description: RF core patch for CC13x0 Generic OOK
 *
 *  Copyright (c) 2015, Texas Instruments Incorporated
 *  All rights reserved.
@@ -71,13 +71,14 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageGenook[] = {
-   0x210004ad,
-   0x21000449,
-   0x2100047d,
+   0x210004bd,
+   0x2100044d,
    0x21000481,
-   0x21000511,
-   0x21000591,
-   0x21000641,
+   0x21000485,
+   0x21000521,
+   0x210005a1,
+   0x21000651,
+   0x21000679,
    0x4710b5f8,
    0x460eb5f8,
    0x25012100,
@@ -104,15 +105,18 @@ CPE_PATCH_TYPE patchImageGenook[] = {
    0x467082c8,
    0x47001c80,
    0x40086200,
-   0x210006a4,
+   0x210006c8,
    0x08080f07,
    0x4708b4f0,
+   0x4801b510,
+   0x00004700,
+   0x00000989,
    0x4603b570,
    0x29014615,
    0x2900d006,
    0x4a11d006,
    0xf7ff4628,
-   0xbd70ffbb,
+   0xbd70ffb5,
    0xe000480f,
    0x2405480f,
    0xd8034283,
@@ -124,14 +128,14 @@ CPE_PATCH_TYPE patchImageGenook[] = {
    0x4906d007,
    0x31802300,
    0xf7ff4628,
-   0xb2e0ffa5,
+   0xb2e0ff9f,
    0x4902bd70,
    0x316c4b04,
    0x0000e7f6,
    0x00005c83,
    0x2386bca0,
    0x230d8300,
-   0x21000674,
+   0x21000698,
    0x4e1ab5f8,
    0x6b714605,
    0x09cc4819,
@@ -174,7 +178,7 @@ CPE_PATCH_TYPE patchImageGenook[] = {
    0xe0004313,
    0x634b4393,
    0xf7ff491d,
-   0xbd10ff77,
+   0xbd10ff71,
    0x4d1ab538,
    0x28007f28,
    0x481ad127,
@@ -183,7 +187,7 @@ CPE_PATCH_TYPE patchImageGenook[] = {
    0x69604c12,
    0xd11e2800,
    0xf0004668,
-   0x4668f845,
+   0x4668f84f,
    0x28017800,
    0x4668d117,
    0x28107840,
@@ -218,6 +222,11 @@ CPE_PATCH_TYPE patchImageGenook[] = {
    0x00004770,
    0x2100026b,
    0x40046058,
+   0x4c03b510,
+   0xff18f7ff,
+   0x28006820,
+   0xbd10d1fa,
+   0x40041100,
    0x4801b403,
    0xbd019001,
    0x00006fa5,
@@ -235,11 +244,11 @@ CPE_PATCH_TYPE patchImageGenook[] = {
    0xe5e0e3c1,
    0x000000ff,
 };
-#define _NWORD_PATCHIMAGE_GENOOK 163
+#define _NWORD_PATCHIMAGE_GENOOK 172
 
 #define _NWORD_PATCHSYS_GENOOK 0
 
-#define _IRQ_PATCH_0 0x210005bd
+#define _IRQ_PATCH_0 0x210005cd
 
 
 #ifndef _GENOOK_SYSRAM_START
@@ -283,6 +292,7 @@ PATCH_FUN_SPEC void configureGenookPatch(void)
    pPatchTab[110] = 4;
    pPatchTab[107] = 5;
    pPatchTab[65] = 6;
+   pPatchTab[13] = 7;
 
    pIrqPatch[1] = _IRQ_PATCH_0;
 }

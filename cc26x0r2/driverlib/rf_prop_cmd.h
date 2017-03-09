@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_prop_cmd.h
-*  Revised:        2016-11-14 16:07:52 +0100 (Mon, 14 Nov 2016)
-*  Revision:       17451
+*  Revised:        2016-12-09 13:14:34 +0100 (Fri, 09 Dec 2016)
+*  Revision:       17557
 *
 *  Description:    CC26xx R2 API for Proprietary mode commands
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -528,7 +528,13 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
    } config;                            //!<        Configuration options
-   uint16_t txPower;                    //!<        Transmit power
+   uint16_t txPower;                    //!< \brief TX power setting
+                                        //!<        Bits 0--5: IB
+                                        //!<        Value to write to the PA power control field at 25 &deg;C
+                                        //!<        Bits 6--7: GC
+                                        //!<        Value to write to the gain control of the 1st stage of the PA
+                                        //!<        Bits 8--15: tempCoeff
+                                        //!<        Temperature coefficient for IB. 0: No temperature compensation
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
                                         //!<        override is used.
 };

@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       adi.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-11-17 16:39:28 +0100 (Thu, 17 Nov 2016)
+*  Revision:       47706
 *
 *  Description:    Defines and prototypes for the ADI master interface.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -830,6 +830,16 @@ ADI16SetValBit(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Mask,
         HWREG(ui32Base + ui32RegOffset) = (ui32Mask << 16) | ui32Val;
     }
 }
+
+//*****************************************************************************
+//
+// SafeHapiVoid() and SafeHapiAuxAdiSelect()
+// Common wrapper functions for the Hapi functions needing workaround for the
+// "bus arbitration" issue.
+//
+//*****************************************************************************
+void SafeHapiVoid( FPTR_VOID_VOID_T fPtr );
+void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
 
 //*****************************************************************************
 //

@@ -3,7 +3,7 @@
 *  Revised:        2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016)
 *  Revision:       47152
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

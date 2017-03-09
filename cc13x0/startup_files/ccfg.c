@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ccfg.c
-*  Revised:        $Date: 2016-09-26 11:02:06 +0200 (ma, 26 sep 2016) $
-*  Revision:       $Revision: 17337 $
+*  Revised:        $Date: 2016-12-02 11:58:56 +0100 (fr, 02 des 2016) $
+*  Revision:       $Revision: 17555 $
 *
 *  Description:    Customer Configuration for CC13xx device family (HW rev 2).
 *
@@ -52,6 +52,20 @@
 // Fields are documented in more details in hw_ccfg.h and CCFG.html in 
 // DriverLib documentation (doc_overview.html -> CPU Domain Memory Map -> CCFG).
 //
+// PLEASE NOTE:
+// It is not recommended to do modifications inside this file.
+// This file is part of the CoreSDK release and future releases may have
+// important modifications and new fields added without notice.
+// The recommended method to do customer modifications to the CCFG settings
+// is to have your own <customer_ccfg_file>.c file that defines specific
+// CCFG values to override and then includes the ccfg.c file.
+//
+// Example:
+// #define SET_CCFG_BL_CONFIG_BOOTLOADER_ENABLE  0xC5 // Enable ROM boot loader
+// #define SET_CCFG_MODE_CONF_SCLK_LF_OPTION     0x3  // LF RCOSC
+// //---- Use default values for all others ----
+// #include "<project-path>/source/ti/devices/<device>/startup_files/ccfg.c"
+// 
 //*****************************************************************************
 
 //*****************************************************************************

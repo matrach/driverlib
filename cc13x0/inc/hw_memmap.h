@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       hw_memmap_h
-*  Revised:        2016-06-24 08:39:58 +0200 (Fri, 24 Jun 2016)
-*  Revision:       46762
+*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
+*  Revision:       48345
 *
-* Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+* Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -98,6 +98,7 @@
 #ifndef CCFG_BASE
 #define CCFG_BASE               0x50003000 // CCFG
 #endif
+#define CCFG_BASE_DEFAULT       0x50003000 // CCFG
 #define SSI0_NONBUF_BASE        0x60000000 // SSI CPU nonbuf base
 #define UART0_NONBUF_BASE       0x60001000 // UART CPU nonbuf base
 #define I2C0_NONBUF_BASE        0x60002000 // I2C CPU nonbuf base

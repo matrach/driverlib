@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2016-10-20 13:13:27 +0200 (Thu, 20 Oct 2016)
-*  Revision:       47501
+*  Revised:        2016-11-25 14:53:56 +0100 (Fri, 25 Nov 2016)
+*  Revision:       47794
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -139,7 +139,11 @@ SetupTrimDevice(void)
     HWREGBITW( PRCM_BASE + PRCM_O_WARMRESET, PRCM_WARMRESET_WR_TO_PINRESET_BITN ) = 1;
 
     // Select correct CACHE mode and set correct CACHE configuration
+#if ( CCFG_BASE == CCFG_BASE_DEFAULT )
     SetupSetCacheModeAccordingToCcfgSetting();
+#else
+    NOROM_SetupSetCacheModeAccordingToCcfgSetting();
+#endif
 
     // 1. Check for powerdown
     // 2. Check for shutdown
@@ -285,7 +289,11 @@ TrimAfterColdResetWakeupFromShutDown(uint32_t ui32Fcfg1Revision)
 
     // Second part of trim done after cold reset and wakeup from shutdown:
     // -Configure XOSC.
+#if ( CCFG_BASE == CCFG_BASE_DEFAULT )
     SetupAfterColdResetWakeupFromShutDownCfg2( ui32Fcfg1Revision, ccfg_ModeConfReg );
+#else
+    NOROM_SetupAfterColdResetWakeupFromShutDownCfg2( ui32Fcfg1Revision, ccfg_ModeConfReg );
+#endif
 
     // Increased margin between digital supply voltage and VDD BOD during standby.
     // VTRIM_UDIG: signed 4 bits value to be incremented by 2 (max = 7)
@@ -317,7 +325,11 @@ TrimAfterColdResetWakeupFromShutDown(uint32_t ui32Fcfg1Revision)
     // Third part of trim done after cold reset and wakeup from shutdown:
     // -Configure HPOSC.
     // -Setup the LF clock.
+#if ( CCFG_BASE == CCFG_BASE_DEFAULT )
     SetupAfterColdResetWakeupFromShutDownCfg3( ccfg_ModeConfReg );
+#else
+    NOROM_SetupAfterColdResetWakeupFromShutDownCfg3( ccfg_ModeConfReg );
+#endif
 
     //
     // Allow AUX to power down

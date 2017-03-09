@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_ble_cmd.h
-*  Revised:        2016-11-14 16:07:52 +0100 (Mon, 14 Nov 2016)
-*  Revision:       17451
+*  Revised:        2017-02-02 16:53:58 +0100 (Thu, 02 Feb 2017)
+*  Revision:       17615
 *
 *  Description:    CC26xx/CC13xx API for Bluetooth Low Energy commands
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,7 @@
 #include "rf_common_cmd.h"
 
 typedef struct __RFC_STRUCT rfc_bleRadioOp_s rfc_bleRadioOp_t;
+typedef struct __RFC_STRUCT rfc_ble5RadioOp_s rfc_ble5RadioOp_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE_SLAVE_s rfc_CMD_BLE_SLAVE_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE_MASTER_s rfc_CMD_BLE_MASTER_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE_ADV_s rfc_CMD_BLE_ADV_t;
@@ -69,6 +70,15 @@ typedef struct __RFC_STRUCT rfc_CMD_BLE_INITIATOR_s rfc_CMD_BLE_INITIATOR_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE_GENERIC_RX_s rfc_CMD_BLE_GENERIC_RX_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE_TX_TEST_s rfc_CMD_BLE_TX_TEST_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE_ADV_PAYLOAD_s rfc_CMD_BLE_ADV_PAYLOAD_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_RADIO_SETUP_s rfc_CMD_BLE5_RADIO_SETUP_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_SLAVE_s rfc_CMD_BLE5_SLAVE_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_MASTER_s rfc_CMD_BLE5_MASTER_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_ADV_EXT_s rfc_CMD_BLE5_ADV_EXT_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_ADV_AUX_s rfc_CMD_BLE5_ADV_AUX_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_SCANNER_s rfc_CMD_BLE5_SCANNER_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_INITIATOR_s rfc_CMD_BLE5_INITIATOR_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_GENERIC_RX_s rfc_CMD_BLE5_GENERIC_RX_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_TX_TEST_s rfc_CMD_BLE5_TX_TEST_t;
 typedef struct __RFC_STRUCT rfc_bleMasterSlavePar_s rfc_bleMasterSlavePar_t;
 typedef struct __RFC_STRUCT rfc_bleSlavePar_s rfc_bleSlavePar_t;
 typedef struct __RFC_STRUCT rfc_bleMasterPar_s rfc_bleMasterPar_t;
@@ -77,14 +87,25 @@ typedef struct __RFC_STRUCT rfc_bleScannerPar_s rfc_bleScannerPar_t;
 typedef struct __RFC_STRUCT rfc_bleInitiatorPar_s rfc_bleInitiatorPar_t;
 typedef struct __RFC_STRUCT rfc_bleGenericRxPar_s rfc_bleGenericRxPar_t;
 typedef struct __RFC_STRUCT rfc_bleTxTestPar_s rfc_bleTxTestPar_t;
+typedef struct __RFC_STRUCT rfc_ble5SlavePar_s rfc_ble5SlavePar_t;
+typedef struct __RFC_STRUCT rfc_ble5MasterPar_s rfc_ble5MasterPar_t;
+typedef struct __RFC_STRUCT rfc_ble5AdvExtPar_s rfc_ble5AdvExtPar_t;
+typedef struct __RFC_STRUCT rfc_ble5AdvAuxPar_s rfc_ble5AdvAuxPar_t;
+typedef struct __RFC_STRUCT rfc_ble5AuxChRes_s rfc_ble5AuxChRes_t;
+typedef struct __RFC_STRUCT rfc_ble5ScannerPar_s rfc_ble5ScannerPar_t;
+typedef struct __RFC_STRUCT rfc_ble5InitiatorPar_s rfc_ble5InitiatorPar_t;
 typedef struct __RFC_STRUCT rfc_bleMasterSlaveOutput_s rfc_bleMasterSlaveOutput_t;
 typedef struct __RFC_STRUCT rfc_bleAdvOutput_s rfc_bleAdvOutput_t;
 typedef struct __RFC_STRUCT rfc_bleScannerOutput_s rfc_bleScannerOutput_t;
 typedef struct __RFC_STRUCT rfc_bleInitiatorOutput_s rfc_bleInitiatorOutput_t;
+typedef struct __RFC_STRUCT rfc_ble5ScanInitOutput_s rfc_ble5ScanInitOutput_t;
 typedef struct __RFC_STRUCT rfc_bleGenericRxOutput_s rfc_bleGenericRxOutput_t;
 typedef struct __RFC_STRUCT rfc_bleTxTestOutput_s rfc_bleTxTestOutput_t;
+typedef struct __RFC_STRUCT rfc_ble5ExtAdvEntry_s rfc_ble5ExtAdvEntry_t;
 typedef struct __RFC_STRUCT rfc_bleWhiteListEntry_s rfc_bleWhiteListEntry_t;
+typedef struct __RFC_STRUCT rfc_ble5AdiEntry_s rfc_ble5AdiEntry_t;
 typedef struct __RFC_STRUCT rfc_bleRxStatus_s rfc_bleRxStatus_t;
+typedef struct __RFC_STRUCT rfc_ble5RxStatus_s rfc_ble5RxStatus_t;
 
 //! \addtogroup bleRadioOp
 //! @{
@@ -119,6 +140,56 @@ struct __RFC_STRUCT rfc_bleRadioOp_s {
       uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
                                         //!<        1: Override whitening initialization with value of init
    } whitening;
+   uint8_t* pParams;                    //!<        Pointer to command specific parameter structure
+   uint8_t* pOutput;                    //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup ble5RadioOp
+//! @{
+struct __RFC_STRUCT rfc_ble5RadioOp_s {
+   uint16_t commandNo;                  //!<        The command ID number
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
    uint8_t* pParams;                    //!<        Pointer to command specific parameter structure
    uint8_t* pOutput;                    //!<        Pointer to command specific output structure
 };
@@ -550,6 +621,488 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_PAYLOAD_s {
 
 //! @}
 
+//! \addtogroup CMD_BLE5_RADIO_SETUP
+//! @{
+#define CMD_BLE5_RADIO_SETUP                                    0x1820
+//! BLE Radio Setup Command for all v5.0 PHYs
+struct __RFC_STRUCT rfc_CMD_BLE5_RADIO_SETUP_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1820
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use for non-BLE commands:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:1;                 //!< \brief Coding to use for TX if coded PHY is selected for non-BLE commands<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
+   } defaultPhy;
+   uint8_t __dummy0;
+   struct {
+      uint16_t frontEndMode:3;          //!< \brief 0x00: Differential mode<br>
+                                        //!<        0x01: Single-ended mode RFP<br>
+                                        //!<        0x02: Single-ended mode RFN<br>
+                                        //!<        0x05 Single-ended mode RFP with external frontend control on RF pins (RFN and RXTX)<br>
+                                        //!<        0x06 Single-ended mode RFN with external frontend control on RF pins (RFP and RXTX)<br>
+                                        //!<        Others: <i>Reserved</i>
+      uint16_t biasMode:1;              //!< \brief 0: Internal bias<br>
+                                        //!<        1: External bias
+      uint16_t analogCfgMode:6;         //!< \brief 0x00: Write analog configuration.<br>
+                                        //!<        Required first time after boot and when changing frequency band
+                                        //!<        or front-end configuration<br>
+                                        //!<        0x2D: Keep analog configuration.<br>
+                                        //!<        May be used after standby or when changing mode with the same frequency
+                                        //!<        band and front-end configuration<br>
+                                        //!<        Others: <i>Reserved</i>
+      uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
+                                        //!<        1: Do not power up frequency synth
+   } config;                            //!<        Configuration options
+   uint16_t txPower;                    //!<        Default transmit power
+   uint32_t* pRegOverrideCommon;        //!< \brief Pointer to a list of hardware and configuration registers to override during common
+                                        //!<        initialization. If NULL, no override is used.
+   uint32_t* pRegOverride1Mbps;         //!< \brief Pointer to a list of hardware and configuration registers to override when selecting
+                                        //!<        1 Mbps PHY mode. If NULL, no override is used.
+   uint32_t* pRegOverride2Mbps;         //!< \brief Pointer to a list of hardware and configuration registers to override when selecting
+                                        //!<        2 Mbps PHY mode. If NULL, no override is used.
+   uint32_t* pRegOverrideCoded;         //!< \brief Pointer to a list of hardware and configuration registers to override when selecting
+                                        //!<        coded PHY mode. If NULL, no override is used.
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_SLAVE
+//! @{
+#define CMD_BLE5_SLAVE                                          0x1821
+//! BLE Slave Command
+struct __RFC_STRUCT rfc_CMD_BLE5_SLAVE_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1821
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_ble5SlavePar_t *pParams;         //!<        Pointer to command specific parameter structure
+   rfc_bleMasterSlaveOutput_t *pOutput; //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_MASTER
+//! @{
+#define CMD_BLE5_MASTER                                         0x1822
+//! BLE Master Command
+struct __RFC_STRUCT rfc_CMD_BLE5_MASTER_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1822
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_ble5MasterPar_t *pParams;        //!<        Pointer to command specific parameter structure
+   rfc_bleMasterSlaveOutput_t *pOutput; //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_ADV_EXT
+//! @{
+#define CMD_BLE5_ADV_EXT                                        0x1823
+//! BLE Extended Advertiser Command
+struct __RFC_STRUCT rfc_CMD_BLE5_ADV_EXT_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1823
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_ble5AdvExtPar_t *pParams;        //!<        Pointer to command specific parameter structure
+   rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_ADV_AUX
+//! @{
+#define CMD_BLE5_ADV_AUX                                        0x1824
+//! BLE Secondary Channel Advertiser Command
+struct __RFC_STRUCT rfc_CMD_BLE5_ADV_AUX_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1824
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_ble5AdvAuxPar_t *pParams;        //!<        Pointer to command specific parameter structure
+   rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_SCANNER
+//! @{
+#define CMD_BLE5_SCANNER                                        0x1827
+//! BLE Scanner Command
+struct __RFC_STRUCT rfc_CMD_BLE5_SCANNER_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1827
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_ble5ScannerPar_t *pParams;       //!<        Pointer to command specific parameter structure
+   rfc_ble5ScanInitOutput_t *pOutput;   //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_INITIATOR
+//! @{
+#define CMD_BLE5_INITIATOR                                      0x1828
+//! BLE Initiator Command
+struct __RFC_STRUCT rfc_CMD_BLE5_INITIATOR_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1828
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_ble5InitiatorPar_t *pParams;     //!<        Pointer to command specific parameter structure
+   rfc_ble5ScanInitOutput_t *pOutput;   //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_GENERIC_RX
+//! @{
+#define CMD_BLE5_GENERIC_RX                                     0x1829
+//! BLE Generic Receiver Command
+struct __RFC_STRUCT rfc_CMD_BLE5_GENERIC_RX_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x1829
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_bleGenericRxPar_t *pParams;      //!<        Pointer to command specific parameter structure
+   rfc_bleGenericRxOutput_t *pOutput;   //!<        Pointer to command specific output structure
+};
+
+//! @}
+
+//! \addtogroup CMD_BLE5_TX_TEST
+//! @{
+#define CMD_BLE5_TX_TEST                                        0x182A
+//! BLE PHY Test Transmitter Command
+struct __RFC_STRUCT rfc_CMD_BLE5_TX_TEST_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x182A
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_bleTxTestPar_t *pParams;         //!<        Pointer to command specific parameter structure
+   rfc_bleTxTestOutput_t *pOutput;      //!<        Pointer to command specific output structure
+};
+
+//! @}
+
 //! \addtogroup bleMasterSlavePar
 //! @{
 struct __RFC_STRUCT rfc_bleMasterSlavePar_s {
@@ -719,7 +1272,10 @@ struct __RFC_STRUCT rfc_bleAdvPar_s {
       uint8_t peerAddrType:1;           //!<        Directed advertiser: The type of the peer address -- public (0) or random (1)
       uint8_t bStrictLenFilter:1;       //!< \brief 0: Accept any packet with a valid advertising packet length<br>
                                         //!<        1: Discard messages with illegal length for the given packet type
-      uint8_t :2;
+      uint8_t chSel:1;                  //!< \brief 0: Do not report support of Channel Selection Algorithm #2<br>
+                                        //!<        1: Report support of Channel Selection Algorithm #2 (patch required)
+      uint8_t privIgnMode:1;            //!< \brief 0: Filter on bPrivIgn only when white list is used (if patch is used)
+                                        //!<        1: Filter on bPrivIgn always (patch required)
       uint8_t rpaMode:1;                //!< \brief Resolvable private address mode<br>
                                         //!<        0: Normal operation<br>
                                         //!<        1: Use white list for a received RPA regardless of filter policy
@@ -853,6 +1409,8 @@ struct __RFC_STRUCT rfc_bleInitiatorPar_s {
       uint8_t peerAddrType:1;           //!<        The type of the peer address -- public (0) or random (1)
       uint8_t bStrictLenFilter:1;       //!< \brief 0: Accept any packet with a valid advertising packet length<br>
                                         //!<        1: Discard messages with illegal length for the given packet type
+      uint8_t chSel:1;                  //!< \brief 0: Do not report support of Channel Selection Algorithm #2<br>
+                                        //!<        1: Report support of Channel Selection Algorithm #2 (patch required)
    } initConfig;
    uint8_t __dummy0;
    uint8_t connectReqLen;               //!<        Size of connect request data
@@ -965,6 +1523,385 @@ struct __RFC_STRUCT rfc_bleTxTestPar_s {
 
 //! @}
 
+//! \addtogroup ble5SlavePar
+//! @{
+//! Parameter structure for BLE 5 slave (CMD_BLE5_SLAVE)
+
+struct __RFC_STRUCT rfc_ble5SlavePar_s {
+   dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
+   dataQueue_t* pTxQ;                   //!<        Pointer to transmit queue
+   struct {
+      uint8_t bAutoFlushIgnored:1;      //!<        If 1, automatically remove ignored packets from Rx queue
+      uint8_t bAutoFlushCrcErr:1;       //!<        If 1, automatically remove packets with CRC error from Rx queue
+      uint8_t bAutoFlushEmpty:1;        //!<        If 1, automatically remove empty packets from Rx queue
+      uint8_t bIncludeLenByte:1;        //!<        If 1, include the received length byte in the stored packet; otherwise discard it
+      uint8_t bIncludeCrc:1;            //!<        If 1, include the received CRC field in the stored packet; otherwise discard it
+      uint8_t bAppendRssi:1;            //!<        If 1, append an RSSI byte to the packet in the Rx queue
+      uint8_t bAppendStatus:1;          //!<        If 1, append a status word to the packet in the Rx queue
+      uint8_t bAppendTimestamp:1;       //!<        If 1, append a timestamp to the packet in the Rx queue
+   } rxConfig;                          //!<        Configuration bits for the receive queue entries
+   struct {
+      uint8_t lastRxSn:1;               //!<        The SN bit of the header of the last packet received with CRC OK
+      uint8_t lastTxSn:1;               //!<        The SN bit of the header of the last transmitted packet
+      uint8_t nextTxSn:1;               //!<        The SN bit of the header of the next packet to transmit
+      uint8_t bFirstPkt:1;              //!<        For slave: 0 if a packet has been transmitted on the connection, 1 otherwise
+      uint8_t bAutoEmpty:1;             //!<        1 if the last transmitted packet was an auto-empty packet
+      uint8_t bLlCtrlTx:1;              //!<        1 if the last transmitted packet was an LL control packet (LLID = 11)
+      uint8_t bLlCtrlAckRx:1;           //!<        1 if the last received packet was the ACK of an LL control packet
+      uint8_t bLlCtrlAckPending:1;      //!<        1 if the last successfully received packet was an LL control packet which has not yet been ACK'ed
+   } seqStat;                           //!<        Sequence number status
+   uint8_t maxNack;                     //!<        Maximum number of NACKs received before operation ends. 0: No limit
+   uint8_t maxPkt;                      //!<        Maximum number of packets transmitted in the operation before it ends. 0: No limit
+   uint32_t accessAddress;              //!<        Access address used on the connection
+   uint8_t crcInit0;                    //!<        CRC initialization value used on the connection -- least significant byte
+   uint8_t crcInit1;                    //!<        CRC initialization value used on the connection -- middle byte
+   uint8_t crcInit2;                    //!<        CRC initialization value used on the connection -- most significant byte
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } timeoutTrigger;                    //!<        Trigger that defines timeout of the first receive operation
+   ratmr_t timeoutTime;                 //!< \brief Time used together with <code>timeoutTrigger</code> that defines timeout of the first
+                                        //!<        receive operation
+   uint8_t maxRxPktLen;                 //!<        Maximum packet length currently allowed for received packets on the connection
+   uint8_t maxLenLowRate;               //!<        Maximum packet length for which using S = 8 (125 kbps) is allowed when transmitting. 0: no limit.
+   uint8_t __dummy0;
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } endTrigger;                        //!<        Trigger that causes the device to end the connection event as soon as allowed
+   ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
+                                        //!<        connection event as soon as allowed
+};
+
+//! @}
+
+//! \addtogroup ble5MasterPar
+//! @{
+//! Parameter structure for BLE 5 master (CMD_BLE5_MASTER)
+
+struct __RFC_STRUCT rfc_ble5MasterPar_s {
+   dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
+   dataQueue_t* pTxQ;                   //!<        Pointer to transmit queue
+   struct {
+      uint8_t bAutoFlushIgnored:1;      //!<        If 1, automatically remove ignored packets from Rx queue
+      uint8_t bAutoFlushCrcErr:1;       //!<        If 1, automatically remove packets with CRC error from Rx queue
+      uint8_t bAutoFlushEmpty:1;        //!<        If 1, automatically remove empty packets from Rx queue
+      uint8_t bIncludeLenByte:1;        //!<        If 1, include the received length byte in the stored packet; otherwise discard it
+      uint8_t bIncludeCrc:1;            //!<        If 1, include the received CRC field in the stored packet; otherwise discard it
+      uint8_t bAppendRssi:1;            //!<        If 1, append an RSSI byte to the packet in the Rx queue
+      uint8_t bAppendStatus:1;          //!<        If 1, append a status word to the packet in the Rx queue
+      uint8_t bAppendTimestamp:1;       //!<        If 1, append a timestamp to the packet in the Rx queue
+   } rxConfig;                          //!<        Configuration bits for the receive queue entries
+   struct {
+      uint8_t lastRxSn:1;               //!<        The SN bit of the header of the last packet received with CRC OK
+      uint8_t lastTxSn:1;               //!<        The SN bit of the header of the last transmitted packet
+      uint8_t nextTxSn:1;               //!<        The SN bit of the header of the next packet to transmit
+      uint8_t bFirstPkt:1;              //!<        For slave: 0 if a packet has been transmitted on the connection, 1 otherwise
+      uint8_t bAutoEmpty:1;             //!<        1 if the last transmitted packet was an auto-empty packet
+      uint8_t bLlCtrlTx:1;              //!<        1 if the last transmitted packet was an LL control packet (LLID = 11)
+      uint8_t bLlCtrlAckRx:1;           //!<        1 if the last received packet was the ACK of an LL control packet
+      uint8_t bLlCtrlAckPending:1;      //!<        1 if the last successfully received packet was an LL control packet which has not yet been ACK'ed
+   } seqStat;                           //!<        Sequence number status
+   uint8_t maxNack;                     //!<        Maximum number of NACKs received before operation ends. 0: No limit
+   uint8_t maxPkt;                      //!<        Maximum number of packets transmitted in the operation before it ends. 0: No limit
+   uint32_t accessAddress;              //!<        Access address used on the connection
+   uint8_t crcInit0;                    //!<        CRC initialization value used on the connection -- least significant byte
+   uint8_t crcInit1;                    //!<        CRC initialization value used on the connection -- middle byte
+   uint8_t crcInit2;                    //!<        CRC initialization value used on the connection -- most significant byte
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } endTrigger;                        //!<        Trigger that causes the device to end the connection event as soon as allowed
+   ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
+                                        //!<        connection event as soon as allowed
+   uint8_t maxRxPktLen;                 //!<        Maximum packet length currently allowed for received packets on the connection
+   uint8_t maxLenLowRate;               //!<        Maximum packet length for which using S = 8 (125 kbps) is allowed when transmitting. 0: no limit.
+};
+
+//! @}
+
+//! \addtogroup ble5AdvExtPar
+//! @{
+//! Parameter structure for extended advertiser (CMD_BLE5_ADV_EXT)
+
+struct __RFC_STRUCT rfc_ble5AdvExtPar_s {
+   struct {
+      uint8_t :2;
+      uint8_t deviceAddrType:1;         //!<        The type of the device address -- public (0) or random (1)
+   } advConfig;
+   uint8_t __dummy0;
+   uint8_t __dummy1;
+   uint8_t auxPtrTargetType;            //!< \brief Number indicating reference for auxPtrTargetTime. Takes same values as trigger types,
+                                        //!<        but only TRIG_ABSTIME and TRIG_REL_* are allowed
+   ratmr_t auxPtrTargetTime;            //!<        Time of start of packet to which auxPtr points
+   uint8_t* pAdvPkt;                    //!<        Pointer to extended advertising packet for the ADV_EXT_IND packet
+   uint16_t* pDeviceAddress;            //!< \brief Pointer (with least significant bit set to 0) to device address used for this device.
+                                        //!<        If least significant bit is 1, the address type given by
+                                        //!<        <code>advConfig.deviceAddrType</code> is inverted.
+};
+
+//! @}
+
+//! \addtogroup ble5AdvAuxPar
+//! @{
+//! Parameter structure for secondary channel advertiser (CMD_BLE5_ADV_AUX)
+
+struct __RFC_STRUCT rfc_ble5AdvAuxPar_s {
+   dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
+   struct {
+      uint8_t bAutoFlushIgnored:1;      //!<        If 1, automatically remove ignored packets from Rx queue
+      uint8_t bAutoFlushCrcErr:1;       //!<        If 1, automatically remove packets with CRC error from Rx queue
+      uint8_t bAutoFlushEmpty:1;        //!<        If 1, automatically remove empty packets from Rx queue
+      uint8_t bIncludeLenByte:1;        //!<        If 1, include the received length byte in the stored packet; otherwise discard it
+      uint8_t bIncludeCrc:1;            //!<        If 1, include the received CRC field in the stored packet; otherwise discard it
+      uint8_t bAppendRssi:1;            //!<        If 1, append an RSSI byte to the packet in the Rx queue
+      uint8_t bAppendStatus:1;          //!<        If 1, append a status word to the packet in the Rx queue
+      uint8_t bAppendTimestamp:1;       //!<        If 1, append a timestamp to the packet in the Rx queue
+   } rxConfig;                          //!<        Configuration bits for the receive queue entries
+   struct {
+      uint8_t advFilterPolicy:2;        //!< \brief Advertiser filter policy<br>
+                                        //!<        0: Process scan and connect requests from all devices<br>
+                                        //!<        1: Process connect requests from all devices and only scan requests from
+                                        //!<        devices that are in the white list<br>
+                                        //!<        2: Process scan requests from all devices and only connect requests from
+                                        //!<        devices that are in the white list<br>
+                                        //!<        3: Process scan and connect requests only from devices in the white list
+      uint8_t deviceAddrType:1;         //!<        The type of the device address -- public (0) or random (1)
+      uint8_t targetAddrType:1;         //!<        Directed secondary advertiser: The type of the target address -- public (0) or random (1)
+      uint8_t bStrictLenFilter:1;       //!< \brief 0: Accept any packet with a valid advertising packet length<br>
+                                        //!<        1: Discard messages with illegal length for the given packet type
+      uint8_t bDirected:1;              //!< \brief 0: Advertiser is undirected: pWhiteList points to a white list
+                                        //!<        1: Advertiser is directed: pWhiteList points to a single device address
+      uint8_t privIgnMode:1;            //!< \brief 0: Filter on bPrivIgn only when white list is used (if patch is used)
+                                        //!<        1: Filter on bPrivIgn always (patch required)
+      uint8_t rpaMode:1;                //!< \brief Resolvable private address mode<br>
+                                        //!<        0: Normal operation<br>
+                                        //!<        1: Use white list for a received RPA regardless of filter policy
+   } advConfig;
+   uint8_t __dummy0;
+   uint8_t auxPtrTargetType;            //!< \brief Number indicating reference for auxPtrTargetTime. Takes same values as trigger types,
+                                        //!<        but only TRIG_ABSTIME and TRIG_REL_* are allowed
+   ratmr_t auxPtrTargetTime;            //!<        Time of start of packet to which auxPtr points
+   uint8_t* pAdvPkt;                    //!<        Pointer to extended advertising packet for the ADV_AUX_IND packet
+   uint8_t* pRspPkt;                    //!< \brief Pointer to extended advertising packet for the AUX_SCAN_RSP or AUX_CONNECT_RSP packet
+                                        //!<        (may be NULL if not applicable)
+   uint16_t* pDeviceAddress;            //!< \brief Pointer (with least significant bit set to 0) to device address used for this device.
+                                        //!<        If least significant bit is 1, the address type given by
+                                        //!<        <code>advConfig.deviceAddrType</code> is inverted.
+   rfc_bleWhiteListEntry_t *pWhiteList; //!< \brief Pointer (with least significant bit set to 0)  to white list or peer address (directed
+                                        //!<        advertiser). If least significant bit is 1, the address type given by
+                                        //!<        <code>advConfig.peerAddrType</code> is inverted.
+};
+
+//! @}
+
+//! \addtogroup ble5AuxChRes
+//! @{
+struct __RFC_STRUCT rfc_ble5AuxChRes_s {
+   ratmr_t rxStartTime;                 //!<        The time needed to start RX in order to receive the packet
+   uint16_t rxListenTime;               //!<        The time needed to listen in order to receive the packet. 0: No AUX packet
+   uint8_t channelNo;                   //!<        The channel number used for secondary advertising
+   uint8_t phyMode;                     //!< \brief PHY to use on secondary channel:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        Others: <i>Reserved</i>
+};
+
+//! @}
+
+//! \addtogroup ble5ScannerPar
+//! @{
+//! Parameter structure for BLE 5 scanner (CMD_BLE5_SCANNER)
+
+struct __RFC_STRUCT rfc_ble5ScannerPar_s {
+   dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
+   struct {
+      uint8_t bAutoFlushIgnored:1;      //!<        If 1, automatically remove ignored packets from Rx queue
+      uint8_t bAutoFlushCrcErr:1;       //!<        If 1, automatically remove packets with CRC error from Rx queue
+      uint8_t bAutoFlushEmpty:1;        //!<        If 1, automatically remove empty packets from Rx queue
+      uint8_t bIncludeLenByte:1;        //!<        If 1, include the received length byte in the stored packet; otherwise discard it
+      uint8_t bIncludeCrc:1;            //!<        If 1, include the received CRC field in the stored packet; otherwise discard it
+      uint8_t bAppendRssi:1;            //!<        If 1, append an RSSI byte to the packet in the Rx queue
+      uint8_t bAppendStatus:1;          //!<        If 1, append a status word to the packet in the Rx queue
+      uint8_t bAppendTimestamp:1;       //!<        If 1, append a timestamp to the packet in the Rx queue
+   } rxConfig;                          //!<        Configuration bits for the receive queue entries
+   struct {
+      uint8_t scanFilterPolicy:1;       //!< \brief Scanning filter policy regarding advertiser address<br>
+                                        //!<        0: Accept all advertisement packets<br>
+                                        //!<        1: Accept only advertisement packets from devices where the advertiser's address
+                                        //!<        is in the White list.
+      uint8_t bActiveScan:1;            //!< \brief 0: Passive scan<br>
+                                        //!<        1: Active scan
+      uint8_t deviceAddrType:1;         //!<        The type of the device address -- public (0) or random (1)
+      uint8_t rpaFilterPolicy:1;        //!< \brief Filter policy for initA of ADV_DIRECT_IND messages<br>
+                                        //!<        0: Accept only initA that matches own address<br>
+                                        //!<        1: Also accept all resolvable private addresses
+      uint8_t bStrictLenFilter:1;       //!< \brief 0: Accept any packet with a valid advertising packet length<br>
+                                        //!<        1: Discard messages with illegal length for the given packet type
+      uint8_t bAutoWlIgnore:1;          //!< \brief 0: Do not set ignore bit in white list from radio CPU for legacy packets<br>
+                                        //!<        1: Automatically set ignore bit in white list for legacy packets
+      uint8_t bEndOnRpt:1;              //!< \brief 0: Continue scanner operation after each reporting ADV*_IND or sending SCAN_RSP<br>
+                                        //!<        1: End scanner operation after each reported ADV*_IND and potentially SCAN_RSP
+      uint8_t rpaMode:1;                //!< \brief Resolvable private address mode<br>
+                                        //!<        0: Normal operation<br>
+                                        //!<        1: Use white list for a received RPA regardless of filter policy
+   } scanConfig;
+   uint16_t randomState;                //!<        State for pseudo-random number generation used in backoff procedure
+   uint16_t backoffCount;               //!<        Parameter <i>backoffCount</i> used in backoff procedure, cf. Bluetooth spec
+   struct {
+      uint8_t logUpperLimit:4;          //!<        Binary logarithm of parameter upperLimit used in scanner backoff procedure
+      uint8_t bLastSucceeded:1;         //!< \brief 1 if the last SCAN_RSP was successfully received and <code>upperLimit</code>
+                                        //!<        not changed
+      uint8_t bLastFailed:1;            //!< \brief 1 if reception of the last SCAN_RSP failed and <code>upperLimit</code> was not
+                                        //!<        changed
+   } backoffPar;
+   struct {
+      uint8_t bCheckAdi:1;              //!< \brief 0: Do not perform ADI filtering<br>
+                                        //!<        1: Perform ADI filtering on packets where ADI is present
+      uint8_t bAutoAdiUpdate:1;         //!< \brief 0: Do not update ADI entries in radio CPU<br>
+                                        //!<        1: Automatically update ADI entry for received packets with AuxPtr
+      uint8_t bApplyDuplicateFiltering:1;//!< \brief 0: Do not apply duplicate filtering based on device address for extended advertiser packets<br>
+                                        //!<        1: Apply duplicate filtering based on device address for extended advertiser packets with no ADI field
+      uint8_t bAutoWlIgnore:1;          //!< \brief 0: Do not set ignore bit in white list from radio CPU for extended advertising packets<br>
+                                        //!<        1: Automatically set ignore bit in white list for extended advertising packets
+   } extFilterConfig;
+   uint32_t __dummy0;
+   uint16_t* pDeviceAddress;            //!< \brief Pointer (with least significant bit set to 0) to device address used for this device.
+                                        //!<        If least significant bit is 1, the address type given by
+                                        //!<        <code>scanConfig.deviceAddrType</code> is inverted.
+   rfc_bleWhiteListEntry_t *pWhiteList; //!<        Pointer to white list
+   rfc_ble5AdiEntry_t *pAdiList;        //!<        Pointer to advDataInfo list
+   uint16_t maxWaitTimeForAuxCh;        //!< \brief Maximum wait time for switching to secondary scanning withing the command. If the time
+                                        //!<        to the start of the event is greater than this, the command will end with BLE_DONE_AUX.
+                                        //!<        If it is smaller, the radio will automatically switch to the correct channel and PHY.
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } timeoutTrigger;                    //!<        Trigger that causes the device to stop receiving as soon as allowed
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } endTrigger;                        //!<        Trigger that causes the device to stop receiving as soon as allowed
+   ratmr_t timeoutTime;                 //!< \brief Time used together with <code>timeoutTrigger</code> that causes the device to stop
+                                        //!<        receiving as soon as allowed, ending with BLE_DONE_RXTIMEOUT
+   ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to stop
+                                        //!<        receiving as soon as allowed, ending with BLE_DONE_ENDED
+   ratmr_t rxStartTime;                 //!<        The time needed to start RX in order to receive the packet
+   uint16_t rxListenTime;               //!<        The time needed to listen in order to receive the packet. 0: No AUX packet
+   uint8_t channelNo;                   //!<        The channel number used for secondary advertising
+   uint8_t phyMode;                     //!< \brief PHY to use on secondary channel:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        Others: <i>Reserved</i>
+};
+
+//! @}
+
+//! \addtogroup ble5InitiatorPar
+//! @{
+//! Parameter structure for BLE 5 initiator (CMD_BLE5_INITIATOR)
+
+struct __RFC_STRUCT rfc_ble5InitiatorPar_s {
+   dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
+   struct {
+      uint8_t bAutoFlushIgnored:1;      //!<        If 1, automatically remove ignored packets from Rx queue
+      uint8_t bAutoFlushCrcErr:1;       //!<        If 1, automatically remove packets with CRC error from Rx queue
+      uint8_t bAutoFlushEmpty:1;        //!<        If 1, automatically remove empty packets from Rx queue
+      uint8_t bIncludeLenByte:1;        //!<        If 1, include the received length byte in the stored packet; otherwise discard it
+      uint8_t bIncludeCrc:1;            //!<        If 1, include the received CRC field in the stored packet; otherwise discard it
+      uint8_t bAppendRssi:1;            //!<        If 1, append an RSSI byte to the packet in the Rx queue
+      uint8_t bAppendStatus:1;          //!<        If 1, append a status word to the packet in the Rx queue
+      uint8_t bAppendTimestamp:1;       //!<        If 1, append a timestamp to the packet in the Rx queue
+   } rxConfig;                          //!<        Configuration bits for the receive queue entries
+   struct {
+      uint8_t bUseWhiteList:1;          //!< \brief Initiator filter policy<br>
+                                        //!<        0: Use specific peer address<br>
+                                        //!<        1: Use white list
+      uint8_t bDynamicWinOffset:1;      //!<        1: Use dynamic WinOffset insertion
+      uint8_t deviceAddrType:1;         //!<        The type of the device address -- public (0) or random (1)
+      uint8_t peerAddrType:1;           //!<        The type of the peer address -- public (0) or random (1)
+      uint8_t bStrictLenFilter:1;       //!< \brief 0: Accept any packet with a valid advertising packet length<br>
+                                        //!<        1: Discard messages with illegal length for the given packet type
+      uint8_t chSel:1;                  //!< \brief 0: Do not report support of Channel Selection Algorithm #2 in CONNECT_IND<br>
+                                        //!<        1: Report support of Channel Selection Algorithm #2 in CONNECT_IND (patch required)
+   } initConfig;
+   uint16_t randomState;                //!<        State for pseudo-random number generation used in backoff procedure
+   uint16_t backoffCount;               //!<        Parameter <i>backoffCount</i> used in backoff procedure, cf. Bluetooth spec
+   struct {
+      uint8_t logUpperLimit:4;          //!<        Binary logarithm of parameter upperLimit used in scanner backoff procedure
+      uint8_t bLastSucceeded:1;         //!< \brief 1 if the last SCAN_RSP was successfully received and <code>upperLimit</code>
+                                        //!<        not changed
+      uint8_t bLastFailed:1;            //!< \brief 1 if reception of the last SCAN_RSP failed and <code>upperLimit</code> was not
+                                        //!<        changed
+   } backoffPar;
+   uint8_t connectReqLen;               //!<        Size of connect request data
+   uint8_t* pConnectReqData;            //!<        Pointer to buffer containing LLData to go in the CONNECT_IND or AUX_CONNECT_REQ packet
+   uint16_t* pDeviceAddress;            //!< \brief Pointer (with least significant bit set to 0) to device address used for this device.
+                                        //!<        If least significant bit is 1, the address type given by
+                                        //!<        <code>initConfig.deviceAddrType</code> is inverted.
+   rfc_bleWhiteListEntry_t *pWhiteList; //!< \brief Pointer (with least significant bit set to 0)  to white list or peer address. If least
+                                        //!<        significant bit is 1, the address type given by <code>initConfig.peerAddrType</code>
+                                        //!<        is inverted.
+   ratmr_t connectTime;                 //!< \brief Indication of timer value of the first possible start time of the first connection event.
+                                        //!<        Set to the calculated value if a connection is made and to the next possible connection
+                                        //!<        time if not.
+   uint16_t maxWaitTimeForAuxCh;        //!< \brief Maximum wait time for switching to secondary scanning withing the command. If the time
+                                        //!<        to the start of the event is greater than this, the command will end with BLE_DONE_AUX.
+                                        //!<        If it is smaller, the radio will automatically switch to the correct channel and PHY.
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } timeoutTrigger;                    //!<        Trigger that causes the device to stop receiving as soon as allowed
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } endTrigger;                        //!<        Trigger that causes the device to stop receiving as soon as allowed
+   ratmr_t timeoutTime;                 //!< \brief Time used together with <code>timeoutTrigger</code> that causes the device to stop
+                                        //!<        receiving as soon as allowed, ending with BLE_DONE_RXTIMEOUT
+   ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to stop
+                                        //!<        receiving as soon as allowed, ending with BLE_DONE_ENDED
+   ratmr_t rxStartTime;                 //!<        The time needed to start RX in order to receive the packet
+   uint16_t rxListenTime;               //!<        The time needed to listen in order to receive the packet. 0: No AUX packet
+   uint8_t channelNo;                   //!<        The channel number used for secondary advertising
+   uint8_t phyMode;                     //!< \brief PHY to use on secondary channel:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        Others: <i>Reserved</i>
+};
+
+//! @}
+
 //! \addtogroup bleMasterSlaveOutput
 //! @{
 //! Output structure for master and slave (CMD_BLE_MASTER/CMD_BLE_SLAVE/CMD_BLE5_MASTER/CMD_BLE5_SLAVE)
@@ -1013,7 +1950,7 @@ struct __RFC_STRUCT rfc_bleAdvOutput_s {
    uint8_t nTxScanRsp;                  //!<        Number of  AUX_SCAN_RSP or SCAN_RSP packets transmitted
    uint8_t nRxScanReq;                  //!<        Number of AUX_SCAN_REQ or SCAN_REQ packets received OK and not ignored
    uint8_t nRxConnectReq;               //!<        Number of AUX_CONNECT_REQ or CONNECT_IND (CONNECT_REQ) packets received OK and not ignored
-   uint8_t __dummy0;                    //!<        <i>Reserved</i>
+   uint8_t nTxConnectRsp;               //!<        Number of  AUX_CONNECT_RSP packets transmitted
    uint16_t nRxNok;                     //!<        Number of packets received with CRC error
    uint16_t nRxIgnored;                 //!<        Number of packets received with CRC OK, but ignored
    uint8_t nRxBufFull;                  //!<        Number of packets received that did not fit in Rx queue
@@ -1061,6 +1998,28 @@ struct __RFC_STRUCT rfc_bleInitiatorOutput_s {
 
 //! @}
 
+//! \addtogroup ble5ScanInitOutput
+//! @{
+//! Output structure for BLE scanner and initiator (CMD_BLE5_SCANNER and CMD_BLE5_INITIATOR)
+
+struct __RFC_STRUCT rfc_ble5ScanInitOutput_s {
+   uint16_t nTxReq;                     //!<        Number of transmitted AUX_SCAN_REQ, SCAN_REQ, AUX_CONNECT_REQ, or CONNECT_IND packets
+   uint16_t nBackedOffReq;              //!<        Number of AUX_SCAN_REQ, SCAN_REQ, or AUX_CONNECT_REQ packets not sent due to backoff procedure
+   uint16_t nRxAdvOk;                   //!<        Number of ADV*_IND packets received with CRC OK and not ignored
+   uint16_t nRxAdvIgnored;              //!<        Number of ADV*_IND packets received with CRC OK, but ignored
+   uint16_t nRxAdvNok;                  //!<        Number of ADV*_IND packets received with CRC error
+   uint16_t nRxRspOk;                   //!<        Number of AUX_SCAN_RSP, SCAN_RSP, or AUX_CONNECT_RSP packets received with CRC OK and not ignored
+   uint16_t nRxRspIgnored;              //!<        Number of AUX_SCAN_RSP, SCAN_RSP, or AUX_CONNECT_RSP packets received with CRC OK, but ignored
+   uint16_t nRxRspNok;                  //!<        Number of AUX_SCAN_RSP, SCAN_RSP, or AUX_CONNECT_RSP packets received with CRC error
+   uint8_t nRxAdvBufFull;               //!<        Number of ADV*_IND packets received that did not fit in Rx queue
+   uint8_t nRxRspBufFull;               //!<        Number of AUX_SCAN_RSP, SCAN_RSP, or AUX_CONNECT_RSP packets received that did not fit in Rx queue
+   int8_t lastRssi;                     //!<        The RSSI of the last received packet (signed)
+   uint8_t __dummy0;
+   ratmr_t timeStamp;                   //!<        Time stamp of the last successfully received *ADV*_IND packet that was not ignored
+};
+
+//! @}
+
 //! \addtogroup bleGenericRxOutput
 //! @{
 //! Output structure for generic Rx (CMD_BLE_GENERIC_RX and CMD_BLE5_GENERIC_RX)
@@ -1086,6 +2045,46 @@ struct __RFC_STRUCT rfc_bleTxTestOutput_s {
 
 //! @}
 
+//! \addtogroup ble5ExtAdvEntry
+//! @{
+//! Common Extended Packet Entry Format
+
+struct __RFC_STRUCT rfc_ble5ExtAdvEntry_s {
+   struct {
+      uint8_t length:6;                 //!<        Extended header length
+      uint8_t advMode:2;                //!< \brief Advertiser mode as defined in BLE:<br>
+                                        //!<        0: Non-connectable, non-scannable<br>
+                                        //!<        1: Connectable, non-scannable<br>
+                                        //!<        2: Non-connectable, scannable<br>
+                                        //!<        3: <i>Reserved</i>
+   } extHdrInfo;
+   uint8_t extHdrFlags;                 //!<        Extended header flags as defined in BLE
+   struct {
+      uint8_t bSkipAdvA:1;              //!< \brief 0: AdvA is present in extended payload if configured in
+                                        //!<        <code>extHdrFlags</code><br>
+                                        //!<        1: AdvA is inserted automatically from command structure if configured in
+                                        //!<        <code>extHdrFlags</code> and is omitted from extended header
+      uint8_t bSkipTargetA:1;           //!< \brief 0: TargetA is present in extended payload if configured in
+                                        //!<        <code>extHdrFlags</code>. For response messages, the value is replaced
+                                        //!<        by the received address when sending<br>
+                                        //!<        1: TargetA is inserted automatically from command structure or received
+                                        //!<        address if configured in <code>extHdrFlags</code> and is omitted from
+                                        //!<        extended header
+      uint8_t deviceAddrType:1;         //!< \brief If <code>bSkipAdvA</code> = 0: The type of the device address in extended
+                                        //!<        header buffer -- public (0) or random (1)
+      uint8_t targetAddrType:1;         //!< \brief If <code>bSkipAdvA</code> = 0: The type of the target address in extended
+                                        //!<        header buffer -- public (0) or random (1)
+   } extHdrConfig;
+   uint8_t advDataLen;                  //!<        Size of payload buffer
+   uint8_t* pExtHeader;                 //!< \brief Pointer to buffer containing extended header. If no fields except extended
+                                        //!<        header flags, automatic advertiser address, or automatic target address are
+                                        //!<        present, pointer may be NULL.
+   uint8_t* pAdvData;                   //!< \brief Pointer to buffer containing advData. If <code>advDataLen</code> = 0,
+                                        //!<        pointer may be NULL.
+};
+
+//! @}
+
 //! \addtogroup bleWhiteListEntry
 //! @{
 //! White list entry structure
@@ -1099,11 +2098,29 @@ struct __RFC_STRUCT rfc_bleWhiteListEntry_s {
                                         //!<        field is not present, 0 otherwise. Used to mask out entries that
                                         //!<        have already been scanned and reported.
       uint8_t :1;
-      uint8_t bIrkValid:1;              //!< \brief 1 if a valid IRK exists, so that the entry is to be ignored by an initiator,
+      uint8_t bPrivIgn:1;               //!< \brief 1 if the entry is to be ignored as part of a privacy algorithm,
                                         //!<        0 otherwise
    } conf;
    uint16_t address;                    //!<        Least significant 16 bits of the address contained in the entry
    uint32_t addressHi;                  //!<        Most significant 32 bits of the address contained in the entry
+};
+
+//! @}
+
+//! \addtogroup ble5AdiEntry
+//! @{
+//! AdvDataInfo list entry structure
+
+struct __RFC_STRUCT rfc_ble5AdiEntry_s {
+   struct {
+      uint16_t advDataId:12;            //!< \brief If <code>bValid</code> = 1: Last Advertising Data ID (DID) for the
+                                        //!<        Advertising Set ID (SID) corresponding to the entry number in the array
+      uint16_t mode:2;                  //!< \brief 0: Entry is invalid (always receive packet with the given SID)<br>
+                                        //!<        1: Entry is valid (ignore packets with the given SID where DID equals
+                                        //!<        <code>advDataId</code>)<br>
+                                        //!<        2: Entry is blocked (always ignore packet with the given SID)<br>
+                                        //!<        3: <i>Reserved</i>
+   } advDataInfo;
 };
 
 //! @}
@@ -1118,6 +2135,26 @@ struct __RFC_STRUCT rfc_bleRxStatus_s {
                                         //!<        0--39; otherwise 0x3F
       uint8_t bIgnore:1;                //!<        1 if the packet is marked as ignored, 0 otherwise
       uint8_t bCrcErr:1;                //!<        1 if the packet was received with CRC error, 0 otherwise
+   } status;
+};
+
+//! @}
+
+//! \addtogroup ble5RxStatus
+//! @{
+//! Receive status field that may be appended to message in receive buffer for BLE 5.0 commands
+
+struct __RFC_STRUCT rfc_ble5RxStatus_s {
+   struct {
+      uint16_t channel:6;               //!< \brief The channel on which the packet was received, provided channel is in the range
+                                        //!<        0--39; otherwise 0x3F
+      uint16_t bIgnore:1;               //!<        1 if the packet is marked as ignored, 0 otherwise
+      uint16_t bCrcErr:1;               //!<        1 if the packet was received with CRC error, 0 otherwise
+      uint16_t phyMode:2;               //!< \brief The PHY on which the packet was received<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded, S = 8 (125 kbps)<br>
+                                        //!<        3: Coded, S = 2 (500 kbps)
    } status;
 };
 

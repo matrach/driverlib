@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       osc.c
-*  Revised:        2016-11-10 10:01:27 +0100 (Thu, 10 Nov 2016)
-*  Revision:       47656
+*  Revised:        2017-01-11 12:55:11 +0100 (Wed, 11 Jan 2017)
+*  Revision:       48205
 *
 *  Description:    Driver for setting up the system Oscillators
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -246,10 +246,11 @@ OSCHF_AttemptToSwitchToXosc( void )
    uint32_t prevLimmit25InUs;
 
 #if ( defined( ROM_OSCClockSourceGet ))
-   if ( ROM_OSCClockSourceGet( OSC_SRC_CLK_HF ) == OSC_XOSC_HF ) {
+   if ( ROM_OSCClockSourceGet( OSC_SRC_CLK_HF ) == OSC_XOSC_HF )
 #else
-   if ( OSCClockSourceGet( OSC_SRC_CLK_HF ) == OSC_XOSC_HF ) {
+   if ( OSCClockSourceGet( OSC_SRC_CLK_HF ) == OSC_XOSC_HF )
 #endif
+   {
       // Already on XOSC - nothing to do
       return ( 1 );
    }
@@ -289,10 +290,11 @@ OSCHF_SwitchToRcOscTurnOffXosc( void )
 
    // Do the switching if not already running on RCOSC_HF
 #if ( defined( ROM_OSCClockSourceGet ))
-   if ( ROM_OSCClockSourceGet( OSC_SRC_CLK_HF ) != OSC_RCOSC_HF ) {
+   if ( ROM_OSCClockSourceGet( OSC_SRC_CLK_HF ) != OSC_RCOSC_HF )
 #else
-   if ( OSCClockSourceGet( OSC_SRC_CLK_HF ) != OSC_RCOSC_HF ) {
+   if ( OSCClockSourceGet( OSC_SRC_CLK_HF ) != OSC_RCOSC_HF )
 #endif
+   {
       OSCHfSourceSwitch();
    }
 

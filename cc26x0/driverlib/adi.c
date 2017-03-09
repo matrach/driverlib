@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       adi.c
-*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
-*  Revision:       47179
+*  Revised:        2016-11-17 16:39:28 +0100 (Thu, 17 Nov 2016)
+*  Revision:       47706
 *
 *  Description:    Driver for the ADI interface
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -46,8 +46,8 @@
 //*****************************************************************************
 //
 // SafeHapiVoid() and SafeHapiAuxAdiSelect()
-// Common wrapper functions for the Hapi functions needing the "bus arbitration
-// issue" workaround.
+// Common wrapper functions for the Hapi functions needing workaround for the
+// "bus arbitration" issue.
 //
 //*****************************************************************************
 void SafeHapiVoid( FPTR_VOID_VOID_T fPtr )

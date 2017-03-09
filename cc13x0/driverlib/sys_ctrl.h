@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-01-31 10:31:33 +0100 (Tue, 31 Jan 2017)
+*  Revision:       48347
 *
 *  Description:    Defines and prototypes for the System Controller.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -103,7 +103,6 @@ extern "C"
 //
 //*****************************************************************************
 #if !defined(DOXYGEN)
-    #define SysCtrlPowerEverything          NOROM_SysCtrlPowerEverything
     #define SysCtrlSetRechargeBeforePowerDown NOROM_SysCtrlSetRechargeBeforePowerDown
     #define SysCtrlAdjustRechargeAfterPowerDown NOROM_SysCtrlAdjustRechargeAfterPowerDown
     #define SysCtrl_DCDC_VoltageConditionalControl NOROM_SysCtrl_DCDC_VoltageConditionalControl
@@ -140,22 +139,6 @@ extern "C"
 // API Functions and prototypes
 //
 //*****************************************************************************
-
-//*****************************************************************************
-//
-//! \brief Power up everything.
-//!
-//! \note The sequencing in this function is not necessarily how you would
-//! want to sequence active mode in a real application. There might be
-//! application specific prerequisites or hardware restrictions you would want
-//! to consider which deviate from this specific implementation.
-//!
-//! \note This function might be deprecated in future releases
-//!
-//! \return None
-//
-//*****************************************************************************
-extern void SysCtrlPowerEverything(void);
 
 //*****************************************************************************
 //
@@ -387,10 +370,6 @@ SysCtrlClockLossResetDisable(void)
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
     #include "../driverlib/rom.h"
-    #ifdef ROM_SysCtrlPowerEverything
-        #undef  SysCtrlPowerEverything
-        #define SysCtrlPowerEverything          ROM_SysCtrlPowerEverything
-    #endif
     #ifdef ROM_SysCtrlSetRechargeBeforePowerDown
         #undef  SysCtrlSetRechargeBeforePowerDown
         #define SysCtrlSetRechargeBeforePowerDown ROM_SysCtrlSetRechargeBeforePowerDown

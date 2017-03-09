@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       hw_fcfg1_h
-*  Revised:        2016-06-16 09:00:03 +0200 (Thu, 16 Jun 2016)
-*  Revision:       46679
+*  Revised:        2017-02-06 19:32:22 +0100 (Mon, 06 Feb 2017)
+*  Revision:       48408
 *
-* Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+* Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -1491,11 +1491,15 @@
 //
 // Package type.
 //
-// 0x0: 4x4mm
-// 0x1: 5x5mm
-// 0x2: 7x7mm
+// 0x0: 4x4mm QFN (RHB) package
+// 0x1: 5x5mm QFN (RSM) package
+// 0x2: 7x7mm QFN (RGZ) package
+// 0x3: Wafer sale package (naked die)
+// 0x4: 2.7x2.7mm WCSP (YFV)
+// 0x5: 7x7mm QFN package with Wettable Flanks
 //
-// Others values are reserved for future use.
+// Other values are reserved for future use.
+// Packages available for a specific device are shown in the device datasheet.
 #define FCFG1_USER_ID_PKG_W                                                  3
 #define FCFG1_USER_ID_PKG_M                                         0x00070000
 #define FCFG1_USER_ID_PKG_S                                                 16
@@ -2249,7 +2253,7 @@
 //
 // Trim value for RF Core.
 // Value is read by RF Core ROM FW during RF Core initialization only on
-// cc13xx.
+// cc13x0.
 #define FCFG1_CONFIG_SYNTH_RFC_MDM_DEMIQMC0_W                               16
 #define FCFG1_CONFIG_SYNTH_RFC_MDM_DEMIQMC0_M                       0x0FFFF000
 #define FCFG1_CONFIG_SYNTH_RFC_MDM_DEMIQMC0_S                               12

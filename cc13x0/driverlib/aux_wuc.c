@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       aux_wuc.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-12-08 10:34:56 +0100 (Thu, 08 Dec 2016)
+*  Revision:       47910
 *
 *  Description:    Driver for the AUX Wakeup Controller.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -273,8 +273,7 @@ AUXWUCPowerCtrl(uint32_t ui32PowerMode)
     // Power down/active.
     if(ui32PowerMode == AUX_WUC_POWER_DOWN)
     {
-        HWREG(AUX_WUC_BASE + AUX_WUC_O_PWRDWNREQ) =
-            AUX_WUC_PWRDWNREQ_REQ;
+        HWREG(AUX_WUC_BASE + AUX_WUC_O_PWRDWNREQ) = AUX_WUC_PWRDWNREQ_REQ;
         HWREG(AUX_WUC_BASE + AUX_WUC_O_MCUBUSCTL) = AUX_WUC_MCUBUSCTL_DISCONNECT_REQ;
     }
     else

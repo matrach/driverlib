@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       crypto.c
-*  Revised:        2016-10-07 09:05:32 +0200 (Fri, 07 Oct 2016)
-*  Revision:       47346
+*  Revised:        2017-02-07 11:24:37 +0100 (Tue, 07 Feb 2017)
+*  Revision:       48411
 *
 *  Description:    Driver for the Crypto module
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -82,6 +82,8 @@ uint32_t
 CRYPTOAesLoadKey(uint32_t *pui32AesKey,
                  uint32_t ui32KeyLocation)
 {
+    uint32_t returnStatus = AES_KEYSTORE_READ_ERROR;
+
     // Check the arguments.
     ASSERT((ui32KeyLocation == CRYPTO_KEY_AREA_0) |
            (ui32KeyLocation == CRYPTO_KEY_AREA_1) |
@@ -96,6 +98,9 @@ CRYPTOAesLoadKey(uint32_t *pui32AesKey,
     // from the module to the System CPU.
     IntDisable(INT_CRYPTO_RESULT_AVAIL_IRQ);
 
+    // Clear any previously written key at the keyLocation
+    HWREG(CRYPTO_BASE + CRYPTO_O_KEYWRITTENAREA) = (0x00000001 << ui32KeyLocation);
+
     // Enable internal interrupts.
     HWREG(CRYPTO_BASE + CRYPTO_O_IRQTYPE) = CRYPTO_IRQTYPE_LEVEL;
     HWREG(CRYPTO_BASE + CRYPTO_O_IRQEN) = CRYPTO_IRQEN_DMA_IN_DONE |
@@ -109,8 +114,11 @@ CRYPTOAesLoadKey(uint32_t *pui32AesKey,
                                             CRYPTO_IRQCLR_RESULT_AVAIL);
 
     // Configure key store module for 128 bit operation.
-    HWREG(CRYPTO_BASE + CRYPTO_O_KEYSIZE) &= ~CRYPTO_KEYSIZE_SIZE_M;
-    HWREG(CRYPTO_BASE + CRYPTO_O_KEYSIZE) |= KEY_STORE_SIZE_128;
+    // Do not write to the register if the correct key size is already set.
+    // Writing to this register causes all current keys to be invalidated.
+    if (HWREG(CRYPTO_BASE + CRYPTO_O_KEYSIZE) != KEY_STORE_SIZE_128) {
+        HWREG(CRYPTO_BASE + CRYPTO_O_KEYSIZE) = KEY_STORE_SIZE_128;
+    }
 
     // Enable keys to write (e.g. Key 0).
     HWREG(CRYPTO_BASE + CRYPTO_O_KEYWRITEAREA) = (0x00000001 << ui32KeyLocation);
@@ -142,15 +150,15 @@ CRYPTOAesLoadKey(uint32_t *pui32AesKey,
                                                 CRYPTO_IRQCLR_RESULT_AVAIL);
         HWREG(CRYPTO_BASE + CRYPTO_O_ALGSEL) = 0x00000000;
 
-        // Check status, if error return error code.
-        if(HWREG(CRYPTO_BASE + CRYPTO_O_KEYWRITTENAREA) != (0x00000001 << ui32KeyLocation))
+        // Check key status, return success if key valid.
+        if(HWREG(CRYPTO_BASE + CRYPTO_O_KEYWRITTENAREA) & (0x00000001 << ui32KeyLocation))
         {
-            return (AES_KEYSTORE_READ_ERROR);
+            returnStatus =  AES_SUCCESS;
         }
     }
 
-    // Return success.
-    return (AES_SUCCESS);
+    // Return status.
+    return returnStatus;
 }
 
 //*****************************************************************************

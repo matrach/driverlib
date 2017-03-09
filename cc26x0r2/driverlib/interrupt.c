@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       interrupt.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-01-16 19:01:21 +0100 (Mon, 16 Jan 2017)
+*  Revision:       48248
 *
 *  Description:    Driver for the NVIC Interrupt Controller.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -126,10 +126,12 @@ IntDefaultHandler(void)
 // address given in the corresponding location in this list.
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+// Don't document in Doxygen because this is compiler dependent.
+#elif defined(__IAR_SYSTEMS_ICC__)
 #pragma data_alignment=256
 static __no_init void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void) @ ".vtable_ram";
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 #pragma DATA_ALIGN(g_pfnRAMVectors, 256)
 #pragma DATA_SECTION(g_pfnRAMVectors, ".vtable_ram")
 void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void);
@@ -143,7 +145,7 @@ void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void) __attribute__((aligned(256)));
 
 //*****************************************************************************
 //
-//! Registers a function to be called when an interrupt occurs.
+// Registers a function to be called when an interrupt occurs.
 //
 //*****************************************************************************
 void
@@ -179,7 +181,7 @@ IntRegister(uint32_t ui32Interrupt, void (*pfnHandler)(void))
 
 //*****************************************************************************
 //
-//! Unregisters the function to be called when an interrupt occurs.
+// Unregisters the function to be called when an interrupt occurs.
 //
 //*****************************************************************************
 void
@@ -194,7 +196,7 @@ IntUnregister(uint32_t ui32Interrupt)
 
 //*****************************************************************************
 //
-//! Sets the priority grouping of the interrupt controller.
+// Sets the priority grouping of the interrupt controller.
 //
 //*****************************************************************************
 void
@@ -209,7 +211,7 @@ IntPriorityGroupingSet(uint32_t ui32Bits)
 
 //*****************************************************************************
 //
-//! Gets the priority grouping of the interrupt controller
+// Gets the priority grouping of the interrupt controller
 //
 //*****************************************************************************
 uint32_t
@@ -236,7 +238,7 @@ IntPriorityGroupingGet(void)
 
 //*****************************************************************************
 //
-//! Sets the priority of an interrupt
+// Sets the priority of an interrupt
 //
 //*****************************************************************************
 void
@@ -257,7 +259,7 @@ IntPrioritySet(uint32_t ui32Interrupt, uint8_t ui8Priority)
 
 //*****************************************************************************
 //
-//! Gets the priority of an interrupt
+// Gets the priority of an interrupt
 //
 //*****************************************************************************
 int32_t
@@ -273,7 +275,7 @@ IntPriorityGet(uint32_t ui32Interrupt)
 
 //*****************************************************************************
 //
-//! Enables an interrupt
+// Enables an interrupt
 //
 //*****************************************************************************
 void
@@ -317,7 +319,7 @@ IntEnable(uint32_t ui32Interrupt)
 
 //*****************************************************************************
 //
-//! Disables an interrupt
+// Disables an interrupt
 //
 //*****************************************************************************
 void
@@ -361,7 +363,7 @@ IntDisable(uint32_t ui32Interrupt)
 
 //*****************************************************************************
 //
-//! Pends an interrupt
+// Pends an interrupt
 //
 //*****************************************************************************
 void
@@ -400,7 +402,7 @@ IntPendSet(uint32_t ui32Interrupt)
 
 //*****************************************************************************
 //
-//! Query whether an interrupt is pending
+// Query whether an interrupt is pending
 //
 //*****************************************************************************
 bool
@@ -433,7 +435,7 @@ IntPendGet(uint32_t ui32Interrupt)
 
 //*****************************************************************************
 //
-//! Unpends an interrupt
+// Unpends an interrupt
 //
 //*****************************************************************************
 void

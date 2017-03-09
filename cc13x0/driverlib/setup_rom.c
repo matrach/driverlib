@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       setup_rom.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2016-12-08 11:38:39 +0100 (Thu, 08 Dec 2016)
+*  Revision:       47912
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -237,9 +237,9 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
 
     // Adjust the VDDR_TRIM_SLEEP value with value adjustable by customer (CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA)
     // Read and sign extend VddrSleepDelta (in range -8 to +7)
-    i32VddrSleepDelta = ((((int32_t)ccfg_ModeConfReg )
-        << ( 32 - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_W - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_S ))
-        >> ( 32 - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_W ));
+    i32VddrSleepDelta =
+        (((int32_t)( ccfg_ModeConfReg << ( 32 - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_W - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_S )))
+                                      >> ( 32 - CCFG_MODE_CONF_VDDR_TRIM_SLEEP_DELTA_W ));
     // Calculate new VDDR sleep trim
     i32VddrSleepTrim = ( i32VddrSleepTrim + i32VddrSleepDelta + 1 );
     if ( i32VddrSleepTrim >  21 ) i32VddrSleepTrim =  21;
@@ -311,7 +311,11 @@ SetupAfterColdResetWakeupFromShutDownCfg2( uint32_t ui32Fcfg1Revision, uint32_t 
     DDI32RegWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_AMPCOMPTH2, ui32Trim);
     ui32Trim = SetupGetTrimForAmpcompTh1();
     DDI32RegWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_AMPCOMPTH1, ui32Trim);
+#if ( CCFG_BASE == CCFG_BASE_DEFAULT )
     ui32Trim = SetupGetTrimForAmpcompCtrl( ui32Fcfg1Revision );
+#else
+    ui32Trim = NOROM_SetupGetTrimForAmpcompCtrl( ui32Fcfg1Revision );
+#endif
     DDI32RegWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_AMPCOMPCTL, ui32Trim);
 
     // Set trim for DDI_0_OSC_ADCDOUBLERNANOAMPCTL_ADC_SH_MODE_EN in accordance to FCFG1 setting
@@ -504,7 +508,6 @@ SetupGetTrimForAnabypassValue1( uint32_t ccfg_ModeConfReg )
     uint32_t ui32Fcfg1Value            ;
     uint32_t ui32XoscHfRow             ;
     uint32_t ui32XoscHfCol             ;
-    int32_t  i32CustomerDeltaAdjust    ;
     uint32_t ui32TrimValue             ;
 
     // Use device specific trim values located in factory configuration
@@ -520,7 +523,6 @@ SetupGetTrimForAnabypassValue1( uint32_t ccfg_ModeConfReg )
         FCFG1_CONFIG_OSC_TOP_XOSC_HF_COLUMN_Q12_M ) >>
         FCFG1_CONFIG_OSC_TOP_XOSC_HF_COLUMN_Q12_S );
 
-    i32CustomerDeltaAdjust = 0;
     if (( ccfg_ModeConfReg & CCFG_MODE_CONF_XOSC_CAP_MOD ) == 0 ) {
         // XOSC_CAP_MOD = 0 means: CAP_ARRAY_DELTA is in use -> Apply compensation
         // XOSC_CAPARRAY_DELTA is located in bit[15:8] of ccfg_ModeConfReg
@@ -528,7 +530,9 @@ SetupGetTrimForAnabypassValue1( uint32_t ccfg_ModeConfReg )
         // a define and sign extension must therefore be hardcoded.
         // ( A small test program is created verifying the code lines below:
         //   Ref.: ..\test\small_standalone_test_programs\CapArrayDeltaAdjust_test.c)
-        i32CustomerDeltaAdjust = ((int32_t)ccfg_ModeConfReg << 16 ) >> 24;
+        int32_t i32CustomerDeltaAdjust =
+            (((int32_t)( ccfg_ModeConfReg << ( 32 - CCFG_MODE_CONF_XOSC_CAPARRAY_DELTA_W - CCFG_MODE_CONF_XOSC_CAPARRAY_DELTA_S )))
+                                          >> ( 32 - CCFG_MODE_CONF_XOSC_CAPARRAY_DELTA_W ));
 
         while ( i32CustomerDeltaAdjust < 0 ) {
             ui32XoscHfCol >>= 1;                              // COL 1 step down
@@ -713,20 +717,24 @@ SetupGetTrimForAmpcompCtrl( uint32_t ui32Fcfg1Revision )
         modeConf1   = HWREG( CCFG_BASE + CCFG_O_MODE_CONF_1 );
 
         // Both fields are signed 4-bit values. This is an assumption when doing the sign extension.
-        deltaAdjust = ((int32_t)modeConf1 << ( 32 - CCFG_MODE_CONF_1_DELTA_IBIAS_OFFSET_S - 4 )) >> 28;
+        deltaAdjust =
+            (((int32_t)( modeConf1 << ( 32 - CCFG_MODE_CONF_1_DELTA_IBIAS_OFFSET_W - CCFG_MODE_CONF_1_DELTA_IBIAS_OFFSET_S )))
+                                   >> ( 32 - CCFG_MODE_CONF_1_DELTA_IBIAS_OFFSET_W ));
         deltaAdjust += (int32_t)ibiasOffset;
         if ( deltaAdjust < 0 ) {
-           deltaAdjust = 0;
+            deltaAdjust  = 0;
         }
         if ( deltaAdjust > ( DDI_0_OSC_AMPCOMPCTL_IBIAS_OFFSET_M >> DDI_0_OSC_AMPCOMPCTL_IBIAS_OFFSET_S )) {
             deltaAdjust  = ( DDI_0_OSC_AMPCOMPCTL_IBIAS_OFFSET_M >> DDI_0_OSC_AMPCOMPCTL_IBIAS_OFFSET_S );
         }
         ibiasOffset = (uint32_t)deltaAdjust;
 
-        deltaAdjust = ((int32_t)modeConf1 << ( 32 - CCFG_MODE_CONF_1_DELTA_IBIAS_INIT_S - 4 )) >> 28;
+        deltaAdjust =
+            (((int32_t)( modeConf1 << ( 32 - CCFG_MODE_CONF_1_DELTA_IBIAS_INIT_W - CCFG_MODE_CONF_1_DELTA_IBIAS_INIT_S )))
+                                   >> ( 32 - CCFG_MODE_CONF_1_DELTA_IBIAS_INIT_W ));
         deltaAdjust += (int32_t)ibiasInit;
         if ( deltaAdjust < 0 ) {
-           deltaAdjust = 0;
+            deltaAdjust  = 0;
         }
         if ( deltaAdjust > ( DDI_0_OSC_AMPCOMPCTL_IBIAS_INIT_M >> DDI_0_OSC_AMPCOMPCTL_IBIAS_INIT_S )) {
             deltaAdjust  = ( DDI_0_OSC_AMPCOMPCTL_IBIAS_INIT_M >> DDI_0_OSC_AMPCOMPCTL_IBIAS_INIT_S );

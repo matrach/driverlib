@@ -2,12 +2,12 @@
  @file      cc13x0f32.lds
  @brief     CC13x0F32 linker configuration file for GNU compiler.
 
- Revised    $Date: 2016-04-13 10:59:10 +0200 (on, 13 apr 2016) $
- Revision   $Revision: 16999 $
+ Revised    $Date: 2017-02-03 19:14:38 +0100 (fr, 03 feb 2017) $
+ Revision   $Revision: 17632 $
 
  This file is auto-generated.
 
-  Copyright (C) 2016 Texas Instruments Incorporated - http:www.ti.com/
+  Copyright (C) 2017 Texas Instruments Incorporated - http:www.ti.com/
 
 
   Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ MEMORY
 /*. Highest address of the stack. Used in startup file .*/
 _estack = ORIGIN(SRAM) + LENGTH(SRAM); /*end of SRAM .*/
 
-/*. Generate a link error if heap and stack don’t fit into RAM .*/
+/*. Generate a link error if heap and stack does not fit into RAM .*/
 _Min_Heap_Size = 0;
 _Min_Stack_Size = 0x100;
 
@@ -96,7 +96,8 @@ SECTIONS
         *(vtable)
         *(.data*)
         _edata = .;
-    } > SRAM
+    } > SRAM AT > FLASH
+    _ldata = LOADADDR(.data);
 
     .bss :
     {
@@ -110,6 +111,7 @@ SECTIONS
 
     .ccfg :
     {
+        KEEP(*(.ccfg));
     } > FLASH_CCFG
 
     /* User_heap_stack section, used to check that there is enough SRAM left */

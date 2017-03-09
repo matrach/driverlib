@@ -1,12 +1,12 @@
 /******************************************************************************
 *  Filename:       cpu.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-01-16 19:17:22 +0100 (Mon, 16 Jan 2017)
+*  Revision:       48249
 *
 *  Description:    Instruction wrappers for special CPU instructions needed by
 *                  the drivers.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -60,10 +60,16 @@
 
 //*****************************************************************************
 //
-//! Disable all external interrupts
+// Disable all external interrupts
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+uint32_t
+CPUcpsid(void)
+{
+    // This function is written in assembly. See cpu.c for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 uint32_t
 CPUcpsid(void)
 {
@@ -86,7 +92,7 @@ CPUcpsid(void)
     cpsid   i;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 uint32_t
 CPUcpsid(void)
 {
@@ -124,10 +130,16 @@ CPUcpsid(void)
 
 //*****************************************************************************
 //
-//! Get the current interrupt state
+// Get the current interrupt state
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+uint32_t
+CPUprimask(void)
+{
+    // This function is written in assembly. See cpu.c for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 uint32_t
 CPUprimask(void)
 {
@@ -148,7 +160,7 @@ CPUprimask(void)
     mrs     r0, PRIMASK;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 uint32_t
 CPUprimask(void)
 {
@@ -184,10 +196,16 @@ CPUprimask(void)
 
 //*****************************************************************************
 //
-//! Enable all external interrupts
+// Enable all external interrupts
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+uint32_t
+CPUcpsie(void)
+{
+    // This function is written in assembly. See cpu.c for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 uint32_t
 CPUcpsie(void)
 {
@@ -210,7 +228,7 @@ CPUcpsie(void)
     cpsie   i;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 uint32_t
 CPUcpsie(void)
 {
@@ -248,10 +266,16 @@ CPUcpsie(void)
 
 //*****************************************************************************
 //
-//! Get the interrupt priority disable level
+// Get the interrupt priority disable level
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+uint32_t
+CPUbasepriGet(void)
+{
+    // This function is written in assembly. See cpu.c for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 uint32_t
 CPUbasepriGet(void)
 {
@@ -272,7 +296,7 @@ CPUbasepriGet(void)
     mrs     r0, BASEPRI;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
 uint32_t
 CPUbasepriGet(void)
 {
@@ -307,10 +331,16 @@ CPUbasepriGet(void)
 #endif
 //*****************************************************************************
 //
-//! Provide a small delay
+// Provide a small delay
 //
 //*****************************************************************************
-#if defined(__IAR_SYSTEMS_ICC__)
+#if defined(DOXYGEN)
+void
+CPUdelay(uint32_t ui32Count)
+{
+    // This function is written in assembly. See cpu.c for compiler specific implementation.
+}
+#elif defined(__IAR_SYSTEMS_ICC__)
 void
 CPUdelay(uint32_t ui32Count)
 {
@@ -332,7 +362,7 @@ CPUdel
     bne     CPUdel;
     bx      lr;
 }
-#elif defined(__TI_COMPILER_VERSION__) || defined(DOXYGEN)
+#elif defined(__TI_COMPILER_VERSION__)
     // For CCS implement this function in pure assembly. This prevents the TI
     // compiler from doing funny things with the optimizer.
 

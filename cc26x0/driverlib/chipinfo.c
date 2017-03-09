@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       chipinfo.c
-*  Revised:        2016-10-20 13:13:27 +0200 (Thu, 20 Oct 2016)
-*  Revision:       47501
+*  Revised:        2017-01-06 12:37:45 +0100 (Fri, 06 Jan 2017)
+*  Revision:       48166
 *
 *  Description:    Collection of functions returning chip information.
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -83,8 +83,8 @@ ChipInfo_GetPackageType( void )
                           FCFG1_USER_ID_PKG_M ) >>
                           FCFG1_USER_ID_PKG_S ) ;
 
-   if (( packType < PACKAGE_4x4  ) ||
-       ( packType > PACKAGE_WCSP )    )
+   if (( packType < PACKAGE_4x4    ) ||
+       ( packType > PACKAGE_7x7_Q1 )    )
    {
       packType = PACKAGE_Unknown;
    }
@@ -193,14 +193,13 @@ ChipInfo_GetHwRevision( void )
    return ( hwRev );
 }
 
-
 //*****************************************************************************
 // ThisLibraryIsFor_CC26x0_HwRev22AndLater_HaltIfViolated()
 //*****************************************************************************
 void
 ThisLibraryIsFor_CC26x0_HwRev22AndLater_HaltIfViolated( void )
 {
-   if (( ! ChipInfo_ChipFamilyIs_CC26x0()    ) ||
+   if (( ! ChipInfo_ChipFamilyIs_CC26x0()   ) ||
        ( ! ChipInfo_HwRevisionIs_GTEQ_2_2() )    )
    {
       while(1)

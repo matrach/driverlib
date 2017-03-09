@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ble_priv_1_2.h
-*  Revised:        $Date: 2016-06-08 15:37:47 +0200 (on, 08 jun 2016) $
-*  Revision:       $Revision: 17221 $
+*  Revised:        $Date: 2016-12-07 13:37:33 +0100 (on, 07 des 2016) $
+*  Revision:       $Revision: 17556 $
 *
-*  Description:    RF Core patch file for CC26xx Bluetooth Low Energy with privacy 1.2 support
+*  Description:    RF Core patch file for CC26x0 Bluetooth Low Energy with privacy 1.2 support
 *
 *  Copyright (c) 2015, Texas Instruments Incorporated
 *  All rights reserved.

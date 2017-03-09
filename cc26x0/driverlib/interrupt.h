@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       interrupt.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-01-16 19:01:21 +0100 (Mon, 16 Jan 2017)
+*  Revision:       48248
 *
 *  Description:    Defines and prototypes for the NVIC Interrupt Controller
 *
-*  Copyright (c) 2015 - 2016, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -119,46 +119,6 @@ extern "C"
 // API Functions and prototypes
 //
 //*****************************************************************************
-
-//*****************************************************************************
-//
-//! \brief Enables the processor interrupt.
-//!
-//! Allows the processor to respond to interrupts. This does not affect the
-//! set of interrupts enabled in the interrupt controller; it just gates the
-//! single interrupt from the controller to the processor.
-//!
-//! \return Returns:
-//! - \c true  : Interrupts were disabled and are now enabled.
-//! - \c false : Interrupts were already enabled when the function was called.
-//
-//*****************************************************************************
-__STATIC_INLINE bool
-IntMasterEnable(void)
-{
-    // Enable processor interrupts.
-    return(CPUcpsie());
-}
-
-//*****************************************************************************
-//
-//! \brief Disables the processor interrupt.
-//!
-//! Prevents the processor from receiving interrupts. This does not affect the
-//! set of interrupts enabled in the interrupt controller; it just gates the
-//! single interrupt from the controller to the processor.
-//!
-//! \return Returns:
-//! - \c true  : Interrupts were already disabled when the function was called.
-//! - \c false : Interrupts were enabled and are now disabled.
-//
-//*****************************************************************************
-__STATIC_INLINE bool
-IntMasterDisable(void)
-{
-    // Disable processor interrupts.
-    return(CPUcpsid());
-}
 
 //*****************************************************************************
 //
@@ -376,6 +336,46 @@ extern bool IntPendGet(uint32_t ui32Interrupt);
 //
 //*****************************************************************************
 extern void IntPendClear(uint32_t ui32Interrupt);
+
+//*****************************************************************************
+//
+//! \brief Enables the processor interrupt.
+//!
+//! Allows the processor to respond to interrupts. This does not affect the
+//! set of interrupts enabled in the interrupt controller; it just gates the
+//! single interrupt from the controller to the processor.
+//!
+//! \return Returns:
+//! - \c true  : Interrupts were disabled and are now enabled.
+//! - \c false : Interrupts were already enabled when the function was called.
+//
+//*****************************************************************************
+__STATIC_INLINE bool
+IntMasterEnable(void)
+{
+    // Enable processor interrupts.
+    return(CPUcpsie());
+}
+
+//*****************************************************************************
+//
+//! \brief Disables the processor interrupt.
+//!
+//! Prevents the processor from receiving interrupts. This does not affect the
+//! set of interrupts enabled in the interrupt controller; it just gates the
+//! single interrupt from the controller to the processor.
+//!
+//! \return Returns:
+//! - \c true  : Interrupts were already disabled when the function was called.
+//! - \c false : Interrupts were enabled and are now disabled.
+//
+//*****************************************************************************
+__STATIC_INLINE bool
+IntMasterDisable(void)
+{
+    // Disable processor interrupts.
+    return(CPUcpsid());
+}
 
 //*****************************************************************************
 //

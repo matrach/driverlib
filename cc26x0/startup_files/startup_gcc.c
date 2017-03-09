@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       startup_gcc.c
-*  Revised:        $Date: 2016-09-26 11:02:06 +0200 (ma, 26 sep 2016) $
-*  Revision:       $Revision: 17337 $
+*  Revised:        $Date: 2017-02-03 19:16:24 +0100 (fr, 03 feb 2017) $
+*  Revision:       $Revision: 17634 $
 *
-*  Description:    Startup code for CC26xx PG2 device family for use with GCC.
+*  Description:    Startup code for CC26x0 rev2 device family for use with GCC.
 *
-*  Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/
+*  Copyright (C) 2017 Texas Instruments Incorporated - http://www.ti.com/
 *
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,7 @@ void TRNGIntHandler(void) WEAK_ALIAS(IntDefaultHandler);
 // the "data" and "bss" segments reside in memory.
 //
 //*****************************************************************************
-extern uint32_t _etext;
+extern uint32_t _ldata;
 extern uint32_t _data;
 extern uint32_t _edata;
 extern uint32_t _bss;
@@ -206,7 +206,8 @@ void (* const g_pfnVectors[])(void) =
 void
 ResetISR(void)
 {
-    uint32_t *pui32Src, *pui32Dest;
+    uint32_t *pSrc;
+    uint32_t *pDest;
 
     //
     // Final trim of device
@@ -214,12 +215,12 @@ ResetISR(void)
     SetupTrimDevice();
     
     //
-    // Copy the data segment initializers from flash to SRAM.
+    // Copy the data segment initializers from FLASH to SRAM.
     //
-    pui32Src = &_etext;
-    for(pui32Dest = &_data; pui32Dest < &_edata; )
+    pSrc = &_ldata;
+    for(pDest = &_data; pDest < &_edata; )
     {
-        *pui32Dest++ = *pui32Src++;
+        *pDest++ = *pSrc++;
     }
 
     //
@@ -235,10 +236,10 @@ ResetISR(void)
           "        strlt   r2, [r0], #4\n"
           "        blt     zero_loop");
 
-   //
-   // Call the application's entry point.
-   //
-   main();
+    //
+    // Call the application's entry point.
+    //
+    main();
 
     //
     // If we ever return signal Error
