@@ -309,10 +309,8 @@ typedef struct {
 ((!!(bHalfSize)) << 8) | ((!!(adiNo)) << 9) | ((uint32_t)(length) << 16) | (2U << 30))
 #define SW_ARRAY_OVERRIDE(cmd, firstfield, length) (1 | (((_POSITION_##cmd##_##firstfield)) << 2) | \
 ((uint32_t)(length) << 16) | (3U << 30))
-#define MCE_RFE_OVERRIDE(mceCfg, mceRomBank, mceMode, rfeCfg, rfeRomBank, rfeMode) \
-   (7 | ((mceCfg & 2) << 5) | ((rfeCfg & 2) << 6) |\
-    ((mceCfg & 1) << 8) | (((mceRomBank) & 0x07) << 9) | \
-    ((rfeCfg & 1) << 12) | (((rfeRomBank) & 0x07) << 13) | \
+#define MCE_RFE_OVERRIDE(bMceRam, mceRomBank, mceMode, bRfeRam, rfeRomBank, rfeMode) \
+   (7 | ((!!(bMceRam)) << 8) | (((mceRomBank) & 0x07) << 9) | ((!!(bRfeRam)) << 12) | (((rfeRomBank) & 0x07) << 13) | \
     (((mceMode) & 0x00FF) << 16) | (((rfeMode) & 0x00FF) << 24))
 #define NEW_OVERRIDE_SEGMENT(address) (((((uintptr_t)(address)) & 0x03FFFFFC) << 6) | 0x000F | \
    (((((uintptr_t)(address) >> 24) == 0x20) ? 0x01 : \

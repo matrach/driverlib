@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_ccfg_h
-*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
-*  Revision:       48345
+*  Revised:        2017-02-16 09:17:04 +0100 (Thu, 16 Feb 2017)
+*  Revision:       48471
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
@@ -351,7 +351,7 @@
 //
 // VDDS BOD level.
 // 0: VDDS BOD level is 2.0 V (necessary for maximum PA output power on
-// CC13xx).
+// CC13x0).
 // 1: VDDS BOD level is 1.8 V (or 1.7 V for external regulator mode) (default).
 #define CCFG_MODE_CONF_VDDS_BOD_LEVEL                               0x01000000
 #define CCFG_MODE_CONF_VDDS_BOD_LEVEL_BITN                                  24

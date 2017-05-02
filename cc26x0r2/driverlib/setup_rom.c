@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup_rom.c
-*  Revised:        2016-12-08 11:38:39 +0100 (Thu, 08 Dec 2016)
-*  Revision:       47912
+*  Revised:        2017-02-13 10:02:13 +0100 (Mon, 13 Feb 2017)
+*  Revision:       48439
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -351,7 +351,7 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
     switch (( ccfg_ModeConfReg & CCFG_MODE_CONF_SCLK_LF_OPTION_M ) >> CCFG_MODE_CONF_SCLK_LF_OPTION_S ) {
     case 0 : // XOSC_HF_DLF (XOSCHF/1536) -> SCLK_LF (=31250Hz)
         OSCClockSourceSet( OSC_SRC_CLK_LF, OSC_XOSC_HF );
-        SetupSetAonRtcSubSecInc( 0x8637BD );
+        SetupSetAonRtcSubSecInc( 0x8637BD ); // RTC_INCREMENT = 2^38 / frequency
         break;
     case 1 : // EXTERNAL signal -> SCLK_LF (frequency=2^38/CCFG_EXT_LF_CLK_RTC_INCREMENT)
         // Set SCLK_LF to use the same source as SCLK_HF
