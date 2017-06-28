@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ccfg.c
-*  Revised:        $Date: 2016-12-02 11:58:56 +0100 (fr, 02 des 2016) $
-*  Revision:       $Revision: 17555 $
+*  Revised:        $Date: 2017-02-09 13:34:22 +0100 (to, 09 feb 2017) $
+*  Revision:       $Revision: 17663 $
 *
 *  Description:    Customer Configuration for CC13xx device family (HW rev 2).
 *
@@ -36,6 +36,9 @@
 *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************************/
+
+#ifndef __CCFC_C__
+#define __CCFC_C__
 
 #include <stdint.h>
 #include "../inc/hw_types.h"
@@ -522,3 +525,5 @@ const ccfg_t __ccfg __attribute__((section(".ccfg"))) __attribute__((used)) =
     DEFAULT_CCFG_CCFG_PROT_95_64    , // 0x50003FF8
     DEFAULT_CCFG_CCFG_PROT_127_96   , // 0x50003FFC
 };
+
+#endif // __CCFC_C__

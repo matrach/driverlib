@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.c
-*  Revised:        2016-10-19 12:14:28 +0200 (Wed, 19 Oct 2016)
-*  Revision:       47480
+*  Revised:        2017-05-05 10:41:25 +0200 (Fri, 05 May 2017)
+*  Revision:       48919
 *
 *  Description:    Driver for the RF Core.
 *
@@ -62,12 +62,20 @@
     #define RFCCPEPatchReset                NOROM_RFCCPEPatchReset
     #undef  RFCAdi3VcoLdoVoltageMode
     #define RFCAdi3VcoLdoVoltageMode        NOROM_RFCAdi3VcoLdoVoltageMode
+    #undef  RFCOverrideUpdate
+    #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
+    #undef  RFCHWIntGetAndClear
+    #define RFCHWIntGetAndClear             NOROM_RFCHWIntGetAndClear
 #endif
 
 #define RFC_RESERVED0               0x40044108
 #define RFC_RESERVED1               0x40044114
 #define RFC_RESERVED2               0x4004410C
 #define RFC_RESERVED3               0x40044100
+
+
+
+
 
 // Position of divider value
 #define CONFIG_MISC_ADC_DIVIDER             27
@@ -226,6 +234,36 @@ void RFCAdi3VcoLdoVoltageMode(bool bEnable)
 }
 
 
+ //*****************************************************************************
+//
+// Update Overrides
+//
+//*****************************************************************************
+uint8_t RFCOverrideUpdate(rfc_radioOp_t *pOpSetup, uint32_t *pParams)
+{
+	// Function is left blank for compatibility reasons.
+	return 0;
+}
+
+
+//*****************************************************************************
+//
+// Get and clear HW interrupt flags
+//
+//*****************************************************************************
+uint32_t
+RFCHWIntGetAndClear(uint32_t ui32Mask)
+{
+    uint32_t ui32Ifg = HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) & ui32Mask;
+
+    do {
+        HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) = ~ui32Ifg;
+    } while (HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) & ui32Ifg);
+
+    return (ui32Ifg);
+}
+
+
 
 //*****************************************************************************
 //
@@ -250,6 +288,10 @@ void RFCAdi3VcoLdoVoltageMode(bool bEnable)
     #define RFCCPEPatchReset                NOROM_RFCCPEPatchReset
     #undef  RFCAdi3VcoLdoVoltageMode
     #define RFCAdi3VcoLdoVoltageMode        NOROM_RFCAdi3VcoLdoVoltageMode
+    #undef  RFCOverrideUpdate
+    #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
+    #undef  RFCHWIntGetAndClear
+    #define RFCHWIntGetAndClear             NOROM_RFCHWIntGetAndClear
 #endif
 
 // See rfc.h for implementation

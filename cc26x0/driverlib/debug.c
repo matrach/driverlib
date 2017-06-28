@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       debug.c
-*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
-*  Revision:       47179
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the Debug functionality (NB. This is a stub which
 *                  should never be included in a release).
@@ -44,9 +44,7 @@
 
 //*****************************************************************************
 //
-//!
-//! Function stub for allowing compile with DRIVERLIB_DEBUG flag asserted.
-//!
+// Function stub for allowing compile with DRIVERLIB_DEBUG flag asserted.
 //
 //*****************************************************************************
 void

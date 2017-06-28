@@ -47,11 +47,13 @@
 #define BLE_DONE_RXTIMEOUT      0x1401  ///< Timeout of first Rx of slave operation or end of scan window
 #define BLE_DONE_NOSYNC         0x1402  ///< Timeout of subsequent Rx
 #define BLE_DONE_RXERR          0x1403  ///< Operation ended because of receive error (CRC or other)
-#define BLE_DONE_CONNECT        0x1404  ///< CONNECT_REQ received or transmitted
+#define BLE_DONE_CONNECT        0x1404  ///< CONNECT_IND or AUX_CONNECT_RSP received or transmitted
 #define BLE_DONE_MAXNACK        0x1405  ///< Maximum number of retransmissions exceeded
 #define BLE_DONE_ENDED          0x1406  ///< Operation stopped after end trigger
 #define BLE_DONE_ABORT          0x1407  ///< Operation aborted by command
 #define BLE_DONE_STOPPED        0x1408  ///< Operation stopped after stop command
+#define BLE_DONE_AUX            0x1409  ///< Operation ended after following aux pointer pointing far ahead
+#define BLE_DONE_CONNECT_CHSEL0 0x140A  ///< CONNECT_IND received or transmitted; peer does not support channel selection algorithm #2
 ///@}
 /// \name Operation finished with error
 ///@{
@@ -62,7 +64,12 @@
 #define BLE_ERROR_SYNTH_PROG    0x1804  ///< Synthesizer programming failed to complete on time
 #define BLE_ERROR_RXOVF         0x1805  ///< Receiver overflowed during operation
 #define BLE_ERROR_TXUNF         0x1806  ///< Transmitter underflowed during operation
+#define BLE_ERROR_AUX           0x1807  ///< Calculated AUX pointer was too far into the future or in the past
 ///@}
 ///@}
+
+
+/// Special trigger for BLE slave command
+#define BLE_TRIG_REL_SYNC       15
 
 #endif

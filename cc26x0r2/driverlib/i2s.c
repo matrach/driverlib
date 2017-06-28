@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       i2s.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the I2S.
 *
@@ -72,7 +72,7 @@ I2SControlTable *g_pControlTable;
 
 //*****************************************************************************
 //
-//! Enables the I2S module for operation
+// Enables the I2S module for operation
 //
 //*****************************************************************************
 void
@@ -99,7 +99,7 @@ I2SEnable(uint32_t ui32Base)
 
 //*****************************************************************************
 //
-//! Configures the I2S module
+// Configures the I2S module
 //
 //*****************************************************************************
 void
@@ -119,12 +119,12 @@ I2SAudioFormatConfigure(uint32_t ui32Base, uint32_t ui32FmtCfg,
 
 //****************************************************************************
 //
-//! Setup the audio channel configuration
+// Setup the audio channel configuration
 //
 //****************************************************************************
 void
 I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
-                    uint32_t ui32Chan1Cfg, uint32_t ui32Chan2Cfg)
+                    uint32_t ui32Chan1Cfg)
 {
     uint32_t ui32InChan;
     uint32_t ui32OutChan;
@@ -134,7 +134,6 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
     ASSERT(I2SBaseValid(ui32Base));
     ASSERT(ui32Chan0Cfg & (I2S_CHAN_CFG_MASK | I2S_LINE_MASK))
     ASSERT(ui32Chan1Cfg & (I2S_CHAN_CFG_MASK | I2S_LINE_MASK))
-    ASSERT(ui32Chan2Cfg & (I2S_CHAN_CFG_MASK | I2S_LINE_MASK))
 
     ui32InChan = 0;
     ui32OutChan = 0;
@@ -143,14 +142,11 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
     HWREG(I2S0_BASE + I2S_O_AIFDIRCFG) = ((ui32Chan0Cfg << I2S_AIFDIRCFG_AD0_S)
                                          & I2S_AIFDIRCFG_AD0_M) |
                                         ((ui32Chan1Cfg << I2S_AIFDIRCFG_AD1_S)
-                                         & I2S_AIFDIRCFG_AD1_M) |
-                                        ((ui32Chan2Cfg << I2S_AIFDIRCFG_AD2_S)
-                                         & I2S_AIFDIRCFG_AD2_M);
+                                         & I2S_AIFDIRCFG_AD1_M);
 
     // Configure the valid channel mask.
     HWREG(I2S0_BASE + I2S_O_AIFWMASK0) = (ui32Chan0Cfg >> 8) & I2S_AIFWMASK0_MASK_M;
     HWREG(I2S0_BASE + I2S_O_AIFWMASK1) = (ui32Chan1Cfg >> 8) & I2S_AIFWMASK1_MASK_M;
-    HWREG(I2S0_BASE + I2S_O_AIFWMASK2) = (ui32Chan2Cfg >> 8) & I2S_AIFWMASK2_MASK_M;
 
     // Resolve and save the number of input and output channels.
     ui32ChanMask = (ui32Chan0Cfg & I2S_CHAN_CFG_MASK) >> 8;
@@ -206,39 +202,13 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
         }
     }
 
-    ui32ChanMask = (ui32Chan2Cfg & I2S_CHAN_CFG_MASK) >> 8;
-    if(ui32Chan2Cfg & I2S_LINE_INPUT)
-    {
-        while(ui32ChanMask)
-        {
-            if(ui32ChanMask & 0x1)
-            {
-                ui32InChan++;
-            }
-            // Shift down channel mask
-            ui32ChanMask >>= 1;
-        }
-    }
-    else if(ui32Chan2Cfg & I2S_LINE_OUTPUT)
-    {
-        while(ui32ChanMask)
-        {
-            if(ui32ChanMask & 0x1)
-            {
-                ui32OutChan++;
-            }
-            // Shift down channel mask
-            ui32ChanMask >>= 1;
-        }
-    }
-
     g_pControlTable->ui8InChan = (uint8_t)ui32InChan;
     g_pControlTable->ui8OutChan = (uint8_t)ui32OutChan;
 }
 
 //****************************************************************************
 //
-//! Set the input buffer pointers
+// Set the input buffer pointers
 //
 //****************************************************************************
 void
@@ -259,7 +229,7 @@ I2SBufferConfig(uint32_t ui32Base, uint32_t ui32InBufBase,
 
 //****************************************************************************
 //
-//! Set the buffer pointers
+// Set the buffer pointers
 //
 //****************************************************************************
 void
@@ -281,7 +251,7 @@ I2SPointerSet(uint32_t ui32Base, bool bInput, void * pNextPointer)
 
 //****************************************************************************
 //
-//! Update the buffer pointers
+// Update the buffer pointers
 //
 //****************************************************************************
 void
@@ -320,7 +290,7 @@ I2SPointerUpdate(uint32_t ui32Base, bool bInput)
 
 //*****************************************************************************
 //
-//! Configure the sample stamp generator
+// Configure the sample stamp generator
 //
 //*****************************************************************************
 void
@@ -350,7 +320,7 @@ I2SSampleStampConfigure(uint32_t ui32Base, bool bInput, bool bOutput)
 
 //*****************************************************************************
 //
-//! Get the current value of a sample stamp counter
+// Get the current value of a sample stamp counter
 //
 //*****************************************************************************
 uint32_t

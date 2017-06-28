@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.c
-*  Revised:        2016-11-22 11:46:16 +0100 (Tue, 22 Nov 2016)
-*  Revision:       47743
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the PRCM.
 *
@@ -137,7 +137,7 @@ static const uint32_t g_pui32DCGCRegs[] =
 
 //*****************************************************************************
 //
-//! Configure the infrastructure clock.
+// Configure the infrastructure clock.
 //
 //*****************************************************************************
 void
@@ -191,7 +191,7 @@ PRCMInfClockConfigureSet(uint32_t ui32ClkDiv, uint32_t ui32PowerMode)
 
 //*****************************************************************************
 //
-//! Use this function to get the infrastructure clock configuration
+// Use this function to get the infrastructure clock configuration
 //
 //*****************************************************************************
 uint32_t
@@ -247,7 +247,7 @@ PRCMInfClockConfigureGet(uint32_t ui32PowerMode)
 
 //*****************************************************************************
 //
-//! Configure the audio clock generation
+// Configure the audio clock generation
 //
 //*****************************************************************************
 void
@@ -317,7 +317,7 @@ PRCMAudioClockConfigSet(uint32_t ui32ClkConfig, uint32_t ui32SampleRate)
 
 //*****************************************************************************
 //
-//! Configure the audio clock generation with manual setting of clock divider.
+// Configure the audio clock generation with manual setting of clock divider.
 //
 //*****************************************************************************
 void
@@ -352,7 +352,7 @@ PRCMAudioClockConfigSetOverride(uint32_t ui32ClkConfig, uint32_t ui32MstDiv,
 
 //*****************************************************************************
 //
-//! Turn power on in power domains in the MCU domain
+// Turn power on in power domains in the MCU domain
 //
 //*****************************************************************************
 void
@@ -394,7 +394,7 @@ PRCMPowerDomainOn(uint32_t ui32Domains)
 
 //*****************************************************************************
 //
-//! Turn off a specific power domain
+// Turn off a specific power domain
 //
 //*****************************************************************************
 void
@@ -436,7 +436,7 @@ PRCMPowerDomainOff(uint32_t ui32Domains)
 
 //*****************************************************************************
 //
-//! Enables a peripheral in Run mode
+// Enables a peripheral in Run mode
 //
 //*****************************************************************************
 void
@@ -452,7 +452,7 @@ PRCMPeripheralRunEnable(uint32_t ui32Peripheral)
 
 //*****************************************************************************
 //
-//! Disables a peripheral in Run mode
+// Disables a peripheral in Run mode
 //
 //*****************************************************************************
 void
@@ -468,7 +468,7 @@ PRCMPeripheralRunDisable(uint32_t ui32Peripheral)
 
 //*****************************************************************************
 //
-//! Enables a peripheral in sleep mode
+// Enables a peripheral in sleep mode
 //
 //*****************************************************************************
 void
@@ -484,7 +484,7 @@ PRCMPeripheralSleepEnable(uint32_t ui32Peripheral)
 
 //*****************************************************************************
 //
-//! Disables a peripheral in sleep mode
+// Disables a peripheral in sleep mode
 //
 //*****************************************************************************
 void
@@ -500,7 +500,7 @@ PRCMPeripheralSleepDisable(uint32_t ui32Peripheral)
 
 //*****************************************************************************
 //
-//! Enables a peripheral in deep-sleep mode
+// Enables a peripheral in deep-sleep mode
 //
 //*****************************************************************************
 void
@@ -516,7 +516,7 @@ PRCMPeripheralDeepSleepEnable(uint32_t ui32Peripheral)
 
 //*****************************************************************************
 //
-//! Disables a peripheral in deep-sleep mode
+// Disables a peripheral in deep-sleep mode
 //
 //*****************************************************************************
 void
@@ -532,7 +532,7 @@ PRCMPeripheralDeepSleepDisable(uint32_t ui32Peripheral)
 
 //*****************************************************************************
 //
-//! Get the status for a specific power domain
+// Get the status for a specific power domain
 //
 //*****************************************************************************
 uint32_t
@@ -573,7 +573,7 @@ PRCMPowerDomainStatus(uint32_t ui32Domains)
 
 //*****************************************************************************
 //
-//! Put the processor into deep-sleep mode
+// Put the processor into deep-sleep mode
 //
 //*****************************************************************************
 void

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.c
-*  Revised:        2017-01-31 10:31:33 +0100 (Tue, 31 Jan 2017)
-*  Revision:       48347
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the System Control.
 *

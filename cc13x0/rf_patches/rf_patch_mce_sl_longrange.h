@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_sl_longrange.h
-*  Revised:        $Date: 2017-02-06 11:29:58 +0100 (ma, 06 feb 2017) $
-*  Revision:       $Revision: 17639 $
+*  Revised:        $Date: 2017-05-04 12:39:32 +0200 (to, 04 mai 2017) $
+*  Revision:       $Revision: 17776 $
 *
 *  Description: RF core patch for CC13x0 Simplelink Long range
 *
-*  Copyright (c) 2015-2016, Texas Instruments Incorporated
+*  Copyright (c) 2015-2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -39,15 +39,8 @@
 #ifndef _RF_PATCH_MCE_SL_LONGRANGE_H
 #define _RF_PATCH_MCE_SL_LONGRANGE_H
 
-#ifdef DEVICE_FAMILY
-    #undef DEVICE_FAMILY_PATH
-    #define DEVICE_FAMILY_PATH(x) <ti/devices/DEVICE_FAMILY/x>
-#else
-    #error "You must define DEVICE_FAMILY at the project level as one of cc26x0, cc26x0r2, cc13x0, etc."
-#endif
-
 #include <stdint.h>
-#include DEVICE_FAMILY_PATH(inc/hw_types.h)
+#include "../inc/hw_types.h"
 
 #ifndef MCE_PATCH_TYPE
 #define MCE_PATCH_TYPE static const uint32_t

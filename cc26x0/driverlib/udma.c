@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       udma.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the uDMA controller
 *
@@ -65,7 +65,7 @@
 
 //*****************************************************************************
 //
-//! Enables attributes of a uDMA channel
+// Enables attributes of a uDMA channel
 //
 //*****************************************************************************
 void
@@ -106,7 +106,7 @@ uDMAChannelAttributeEnable(uint32_t ui32Base, uint32_t ui32ChannelNum,
 
 //*****************************************************************************
 //
-//! Disables attributes of an uDMA channel
+// Disables attributes of an uDMA channel
 //
 //*****************************************************************************
 void
@@ -147,7 +147,7 @@ uDMAChannelAttributeDisable(uint32_t ui32Base, uint32_t ui32ChannelNum,
 
 //*****************************************************************************
 //
-//! Gets the enabled attributes of a uDMA channel
+// Gets the enabled attributes of a uDMA channel
 //
 //*****************************************************************************
 uint32_t
@@ -189,7 +189,7 @@ uDMAChannelAttributeGet(uint32_t ui32Base, uint32_t ui32ChannelNum)
 
 //*****************************************************************************
 //
-//! Sets the control parameters for a uDMA channel control structure
+// Sets the control parameters for a uDMA channel control structure
 //
 //*****************************************************************************
 void
@@ -220,7 +220,7 @@ uDMAChannelControlSet(uint32_t ui32Base, uint32_t ui32ChannelStructIndex,
 
 //*****************************************************************************
 //
-//! Sets the transfer parameters for a uDMA channel control structure
+// Sets the transfer parameters for a uDMA channel control structure
 //
 //*****************************************************************************
 void
@@ -318,7 +318,7 @@ uDMAChannelTransferSet(uint32_t ui32Base, uint32_t ui32ChannelStructIndex,
 
 //*****************************************************************************
 //
-//! Configures a uDMA channel for scatter-gather mode
+// Configures a uDMA channel for scatter-gather mode
 //
 //*****************************************************************************
 void
@@ -375,7 +375,7 @@ uDMAChannelScatterGatherSet(uint32_t ui32Base, uint32_t ui32ChannelNum,
 
 //*****************************************************************************
 //
-//! Gets the current transfer size for a uDMA channel control structure
+// Gets the current transfer size for a uDMA channel control structure
 //
 //*****************************************************************************
 uint32_t
@@ -415,7 +415,7 @@ uDMAChannelSizeGet(uint32_t ui32Base, uint32_t ui32ChannelStructIndex)
 
 //*****************************************************************************
 //
-//! Gets the transfer mode for a uDMA channel control structure
+// Gets the transfer mode for a uDMA channel control structure
 //
 //*****************************************************************************
 uint32_t

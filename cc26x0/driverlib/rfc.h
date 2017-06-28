@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.h
-*  Revised:        2016-11-14 15:20:26 +0100 (Mon, 14 Nov 2016)
-*  Revision:       47683
+*  Revised:        2017-05-03 15:46:38 +0200 (Wed, 03 May 2017)
+*  Revision:       48887
 *
 *  Description:    Defines and prototypes for the RF Core.
 *
@@ -65,6 +65,7 @@ extern "C"
 #include "../inc/hw_rfc_dbell.h"
 #include "rf_common_cmd.h"
 #include "rf_prop_cmd.h"
+#include "rf_ble_cmd.h"
 #include "../inc/hw_fcfg1.h"
 #include "../inc/hw_adi_3_refsys.h"
 #include "../inc/hw_adi.h"
@@ -75,6 +76,9 @@ typedef struct {
    uint32_t configSynth;
    uint32_t configMiscAdc;
 } rfTrim_t;
+
+// Define for RFCOverrideSearch
+#define RFC_MAX_SEARCH_DEPTH 		5
 
 //*****************************************************************************
 //
@@ -98,6 +102,8 @@ typedef struct {
     #define RFCRTrim                        NOROM_RFCRTrim
     #define RFCCPEPatchReset                NOROM_RFCCPEPatchReset
     #define RFCAdi3VcoLdoVoltageMode        NOROM_RFCAdi3VcoLdoVoltageMode
+    #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
+    #define RFCHWIntGetAndClear             NOROM_RFCHWIntGetAndClear
 #endif
 
 //*****************************************************************************
@@ -340,6 +346,28 @@ RFCAckIntClear(void)
 
 //*****************************************************************************
 //
+//! Function to search top RFC_MAX_SEARCH_DEPTH (5) overrides
+//
+//*****************************************************************************
+__STATIC_INLINE uint8_t
+RFCOverrideSearch(const uint32_t *pOverride, const uint32_t pattern, const uint32_t mask)
+{
+    uint8_t override_index;
+
+     // Search top overrides for RTRIM
+    for(override_index = 0; override_index < RFC_MAX_SEARCH_DEPTH; override_index++)
+    {
+        if((pOverride[override_index] & mask) == pattern)
+        {
+            return override_index;
+        }
+    }
+    return 0xFF;
+}
+
+
+//*****************************************************************************
+//
 //! Send command to doorbell and wait for ack
 //
 //*****************************************************************************
@@ -396,6 +424,23 @@ extern void RFCAdi3VcoLdoVoltageMode(bool bEnable);
 
 //*****************************************************************************
 //
+//! Function to update override list
+//
+//*****************************************************************************
+extern uint8_t RFCOverrideUpdate(rfc_radioOp_t *pOpSetup, uint32_t *pParams);
+
+
+//*****************************************************************************
+//
+//! Get and clear HW interrupt flags
+//
+//*****************************************************************************
+extern uint32_t RFCHWIntGetAndClear(uint32_t ui32Mask);
+
+
+
+//*****************************************************************************
+//
 // Support for DriverLib in ROM:
 // Redirect to implementation in ROM when available.
 //
@@ -433,6 +478,14 @@ extern void RFCAdi3VcoLdoVoltageMode(bool bEnable);
     #ifdef ROM_RFCAdi3VcoLdoVoltageMode
         #undef  RFCAdi3VcoLdoVoltageMode
         #define RFCAdi3VcoLdoVoltageMode        ROM_RFCAdi3VcoLdoVoltageMode
+    #endif
+    #ifdef ROM_RFCOverrideUpdate
+        #undef  RFCOverrideUpdate
+        #define RFCOverrideUpdate               ROM_RFCOverrideUpdate
+    #endif
+    #ifdef ROM_RFCHWIntGetAndClear
+        #undef  RFCHWIntGetAndClear
+        #define RFCHWIntGetAndClear             ROM_RFCHWIntGetAndClear
     #endif
 #endif
 

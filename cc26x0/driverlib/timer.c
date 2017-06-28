@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       timer.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the General Purpose Timer
 *
@@ -106,7 +106,7 @@ TimerIntNumberGet(uint32_t ui32Base)
 
 //*****************************************************************************
 //
-//! Configures the timer(s)
+// Configures the timer(s)
 //
 //*****************************************************************************
 void
@@ -154,7 +154,7 @@ TimerConfigure(uint32_t ui32Base, uint32_t ui32Config)
 
 //*****************************************************************************
 //
-//! Controls the output level
+// Controls the output level
 //
 //*****************************************************************************
 void
@@ -175,7 +175,7 @@ TimerLevelControl(uint32_t ui32Base, uint32_t ui32Timer, bool bInvert)
 
 //*****************************************************************************
 //
-//! Controls the stall handling
+// Controls the stall handling
 //
 //*****************************************************************************
 void
@@ -195,7 +195,7 @@ TimerStallControl(uint32_t ui32Base, uint32_t ui32Timer, bool bStall)
 
 //*****************************************************************************
 //
-//! Controls the wait on trigger handling
+// Controls the wait on trigger handling
 //
 //*****************************************************************************
 void
@@ -235,7 +235,7 @@ TimerWaitOnTriggerControl(uint32_t ui32Base, uint32_t ui32Timer, bool bWait)
 
 //*****************************************************************************
 //
-//! Registers an interrupt handler for the timer interrupt
+// Registers an interrupt handler for the timer interrupt
 //
 //*****************************************************************************
 void
@@ -274,7 +274,7 @@ TimerIntRegister(uint32_t ui32Base, uint32_t ui32Timer, void (*pfnHandler)(void)
 
 //*****************************************************************************
 //
-//! Unregisters an interrupt handler for the timer interrupt
+// Unregisters an interrupt handler for the timer interrupt
 //
 //*****************************************************************************
 void

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       i2s.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-20 16:29:17 +0200 (Thu, 20 Apr 2017)
+*  Revision:       48817
 *
 *  Description:    Defines and prototypes for the I2S.
 *
@@ -374,7 +374,6 @@ extern void I2SAudioFormatConfigure(uint32_t ui32Base, uint32_t ui32FmtCfg,
 //! \param ui32Base is base address of the I2S module.
 //! \param ui32Chan0Cfg defines the channel configuration for data line 0.
 //! \param ui32Chan1Cfg defines the channel configuration for data line 1.
-//! \param ui32Chan2Cfg defines the channel configuration for data line 2.
 //!
 //! \return None
 //!
@@ -382,7 +381,7 @@ extern void I2SAudioFormatConfigure(uint32_t ui32Base, uint32_t ui32FmtCfg,
 //
 //****************************************************************************
 extern void I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
-                                uint32_t ui32Chan1Cfg, uint32_t ui32Chan2Cfg);
+                                uint32_t ui32Chan1Cfg);
 
 //****************************************************************************
 //

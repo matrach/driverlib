@@ -107,6 +107,7 @@ SECTIONS
     .sysmem         :   > SRAM
     .stack          :   > SRAM (HIGH)
     .nonretenvar    :   > SRAM
+    .TI.noinit      :   > SRAM
     .gpram          :   > GPRAM
 
 #ifdef __TI_COMPILER_VERSION__

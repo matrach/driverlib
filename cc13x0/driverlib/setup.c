@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2016-11-25 14:53:56 +0100 (Fri, 25 Nov 2016)
-*  Revision:       47794
+*  Revised:        2017-05-04 22:07:49 +0200 (Thu, 04 May 2017)
+*  Revision:       48905
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -241,6 +241,8 @@ TrimAfterColdResetWakeupFromShutDownWakeupFromPowerDown( void )
 //
 //! \brief Trims to be applied when coming from SHUTDOWN (also called when
 //! coming from PIN_RESET).
+//!
+//! \param ui32Fcfg1Revision
 //!
 //! \return None
 //

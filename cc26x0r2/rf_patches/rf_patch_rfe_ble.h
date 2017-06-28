@@ -5,7 +5,7 @@
 *
 *  Description: RF core patch for CC2640R2 BLE
 *
-*  Copyright (c) 2015-2016, Texas Instruments Incorporated
+*  Copyright (c) 2015-2017, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -40,15 +40,8 @@
 #ifndef _RF_PATCH_RFE_BLE_H
 #define _RF_PATCH_RFE_BLE_H
 
-#ifdef DEVICE_FAMILY
-    #undef DEVICE_FAMILY_PATH
-    #define DEVICE_FAMILY_PATH(x) <ti/devices/DEVICE_FAMILY/x>
-#else
-    #error "You must define DEVICE_FAMILY at the project level as one of cc26x0, cc26x0r2, cc13x0, etc."
-#endif
-
 #include <stdint.h>
-#include DEVICE_FAMILY_PATH(inc/hw_types.h)
+#include "../inc/hw_types.h"
 
 #ifndef RFE_PATCH_TYPE
 #define RFE_PATCH_TYPE static const uint32_t

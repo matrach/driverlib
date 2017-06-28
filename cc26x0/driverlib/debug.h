@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       debug.h
-*  Revised:        2015-07-16 12:12:04 +0200 (Thu, 16 Jul 2015)
-*  Revision:       44151
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Macros for assisting debug of the driver library.
 *
@@ -50,8 +50,7 @@
 
 //*****************************************************************************
 //
-// Prototype for the function that is called when an invalid argument is passed
-// to an API.  This is only used when doing a DRIVERLIB_DEBUG build.
+//! Function stub for allowing compile with DRIVERLIB_DEBUG flag asserted.
 //
 //*****************************************************************************
 extern void __error__(char *pcFilename, uint32_t ui32Line);

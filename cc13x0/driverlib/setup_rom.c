@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup_rom.c
-*  Revised:        2016-12-08 11:38:39 +0100 (Thu, 08 Dec 2016)
-*  Revision:       47912
+*  Revised:        2017-05-04 22:39:45 +0200 (Thu, 04 May 2017)
+*  Revision:       48907
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -117,10 +117,7 @@
 //*****************************************************************************
 //*****************************************************************************
 //
-//! \brief Set VDDR boost mode (by setting VDDR_TRIM to FCFG1..VDDR_TRIM_HH and
-//! setting VDDS_BOD to max)
-//!
-//! \return None
+// SetupSetVddrLevel
 //
 //*****************************************************************************
 void
@@ -183,7 +180,7 @@ SetupSetVddrLevel( uint32_t ccfg_ModeConfReg )
 
 //*****************************************************************************
 //
-//! \brief First part of configuration required when waking up from shutdown.
+// SetupAfterColdResetWakeupFromShutDownCfg1
 //
 //*****************************************************************************
 void
@@ -193,7 +190,7 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
     int32_t    i32VddrSleepDelta;
 
     // Check for CC13xx boost mode
-    // The combination VDDR_EXT_LOAD=0 and VDDS_BOD_LEVEL=1 is defined to selct boost mode
+    // The combination VDDR_EXT_LOAD=0 and VDDS_BOD_LEVEL=1 is defined to select boost mode
     if ((( ccfg_ModeConfReg & CCFG_MODE_CONF_VDDR_EXT_LOAD  ) == 0 ) &&
         (( ccfg_ModeConfReg & CCFG_MODE_CONF_VDDS_BOD_LEVEL ) != 0 )    ) {
         // Set VDDS_BOD trim - using masked write {MASK8:DATA8}
@@ -274,7 +271,7 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
 
 //*****************************************************************************
 //
-//! \brief Second part of configuration required when waking up from shutdown.
+// SetupAfterColdResetWakeupFromShutDownCfg2
 //
 //*****************************************************************************
 void
@@ -379,7 +376,7 @@ SetupAfterColdResetWakeupFromShutDownCfg2( uint32_t ui32Fcfg1Revision, uint32_t 
 
 //*****************************************************************************
 //
-//! \brief Third part of configuration required when waking up from shutdown.
+// SetupAfterColdResetWakeupFromShutDownCfg3
 //
 //*****************************************************************************
 void
@@ -390,10 +387,10 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
     uint32_t   currentHfClock;
     uint32_t   ccfgExtLfClk;
 
-    // Examin the XOSC_FREQ field to select 0x1=HPOSC, 0x2=48MHz XOSC, 0x3=24MHz XOSC
+    // Examine the XOSC_FREQ field to select 0x1=HPOSC, 0x2=48MHz XOSC, 0x3=24MHz XOSC
     switch (( ccfg_ModeConfReg & CCFG_MODE_CONF_XOSC_FREQ_M ) >> CCFG_MODE_CONF_XOSC_FREQ_S ) {
     case 2 :
-        // XOSC source is a 48 MHz xtal
+        // XOSC source is a 48 MHz crystal
         // Do nothing (since this is the reset setting)
         break;
     case 1 :
@@ -430,14 +427,14 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
         }
         // Not a HPOSC chip - fall through to default
     default :
-        // XOSC source is a 24 MHz xtal (default)
+        // XOSC source is a 24 MHz crystal (default)
         // Set bit DDI_0_OSC_CTL0_XTAL_IS_24M (this is bit 31 in DDI_0_OSC_O_CTL0)
         HWREG( AUX_DDI0_OSC_BASE + DDI_O_SET + DDI_0_OSC_O_CTL0 ) = DDI_0_OSC_CTL0_XTAL_IS_24M;
         break;
     }
 
     // Set XOSC_HF in bypass mode if CCFG is configured for external TCXO
-    // Please note that it is up to the custommer to make sure that the external clock source is up and running before XOSC_HF can be used.
+    // Please note that it is up to the customer to make sure that the external clock source is up and running before XOSC_HF can be used.
     if (( HWREG( CCFG_BASE + CCFG_O_SIZE_AND_DIS_FLAGS ) & CCFG_SIZE_AND_DIS_FLAGS_DIS_TCXO ) == 0 ) {
         HWREG( AUX_DDI0_OSC_BASE + DDI_O_SET + DDI_0_OSC_O_XOSCHFCTL ) = DDI_0_OSC_XOSCHFCTL_BYPASS;
     }
@@ -452,9 +449,9 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
 
     // setup the LF clock based upon CCFG:MODE_CONF:SCLK_LF_OPTION
     switch (( ccfg_ModeConfReg & CCFG_MODE_CONF_SCLK_LF_OPTION_M ) >> CCFG_MODE_CONF_SCLK_LF_OPTION_S ) {
-    case 0 : // XOSC_HF_DLF (XOSCHF/1536) -> SCLK_LF (=31250Hz)
+    case 0 : // XOSC_HF_DLF (XOSCHF/1536) -> SCLK_LF (=31250 Hz)
         OSCClockSourceSet( OSC_SRC_CLK_LF, OSC_XOSC_HF );
-        SetupSetAonRtcSubSecInc( 0x8637BD );
+        SetupSetAonRtcSubSecInc( 0x8637BD ); // RTC_INCREMENT = 2^38 / frequency
         break;
     case 1 : // EXTERNAL signal -> SCLK_LF (frequency=2^38/CCFG_EXT_LF_CLK_RTC_INCREMENT)
         // Set SCLK_LF to use the same source as SCLK_HF
@@ -469,7 +466,7 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
         IOCPortConfigureSet(( ccfgExtLfClk & CCFG_EXT_LF_CLK_DIO_M ) >> CCFG_EXT_LF_CLK_DIO_S,
                               IOC_PORT_AON_CLK32K,
                               IOC_STD_INPUT | IOC_HYST_ENABLE );   // Route external clock to AON IOC w/hysteresis
-                                                                   // Set XOSC_LF in bypass mode to allow external 32k clock
+                                                                   // Set XOSC_LF in bypass mode to allow external 32 kHz clock
         HWREG( AUX_DDI0_OSC_BASE + DDI_O_SET + DDI_0_OSC_O_CTL0 ) = DDI_0_OSC_CTL0_XOSC_LF_DIG_BYPASS;
         // Fall through to set XOSC_LF as SCLK_LF source
     case 2 : // XOSC_LF -> SLCK_LF (32768 Hz)
@@ -499,7 +496,7 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the ANABYPASS_VALUE1 register in OSC_DIG.
+// SetupGetTrimForAnabypassValue1
 //
 //*****************************************************************************
 uint32_t
@@ -527,7 +524,7 @@ SetupGetTrimForAnabypassValue1( uint32_t ccfg_ModeConfReg )
         // XOSC_CAP_MOD = 0 means: CAP_ARRAY_DELTA is in use -> Apply compensation
         // XOSC_CAPARRAY_DELTA is located in bit[15:8] of ccfg_ModeConfReg
         // Note: HW_REV_DEPENDENT_IMPLEMENTATION. Field width is not given by
-        // a define and sign extension must therefore be hardcoded.
+        // a define and sign extension must therefore be hard coded.
         // ( A small test program is created verifying the code lines below:
         //   Ref.: ..\test\small_standalone_test_programs\CapArrayDeltaAdjust_test.c)
         int32_t i32CustomerDeltaAdjust =
@@ -568,8 +565,7 @@ SetupGetTrimForAnabypassValue1( uint32_t ccfg_ModeConfReg )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the RCOSCLF_RTUNE_TRIM and the
-//! RCOSCLF_CTUNE_TRIM bit fields in the XOSCLF_RCOSCLF_CTRL register in OSC_DIG.
+// SetupGetTrimForRcOscLfRtuneCtuneTrim
 //
 //*****************************************************************************
 uint32_t
@@ -596,8 +592,7 @@ SetupGetTrimForRcOscLfRtuneCtuneTrim( void )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the XOSC_HF_IBIASTHERM bit field in
-//! the ANABYPASS_VALUE2 register in OSC_DIG.
+// SetupGetTrimForXoscHfIbiastherm
 //
 //*****************************************************************************
 uint32_t
@@ -617,7 +612,7 @@ SetupGetTrimForXoscHfIbiastherm( void )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the AMPCOMP_TH2 register in OSC_DIG.
+// SetupGetTrimForAmpcompTh2
 //
 //*****************************************************************************
 uint32_t
@@ -652,7 +647,7 @@ SetupGetTrimForAmpcompTh2( void )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the AMPCOMP_TH1 register in OSC_DIG.
+// SetupGetTrimForAmpcompTh1
 //
 //*****************************************************************************
 uint32_t
@@ -687,7 +682,7 @@ SetupGetTrimForAmpcompTh1( void )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the AMPCOMP_CTRL register in OSC_DIG.
+// SetupGetTrimForAmpcompCtrl
 //
 //*****************************************************************************
 uint32_t
@@ -769,7 +764,7 @@ SetupGetTrimForAmpcompCtrl( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value from FCFG1 to be used as DBLR_LOOP_FILTER_RESET_VOLTAGE setting.
+// SetupGetTrimForDblrLoopFilterResetVoltage
 //
 //*****************************************************************************
 uint32_t
@@ -788,7 +783,7 @@ SetupGetTrimForDblrLoopFilterResetVoltage( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value from FCFG1 to be used as ADC_SH_MODE_EN setting.
+// SetupGetTrimForAdcShModeEn
 //
 //*****************************************************************************
 uint32_t
@@ -807,7 +802,7 @@ SetupGetTrimForAdcShModeEn( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value from FCFG1 to be used as ADC_SH_VBUF_EN setting.
+// SetupGetTrimForAdcShVbufEn
 //
 //*****************************************************************************
 uint32_t
@@ -826,7 +821,7 @@ SetupGetTrimForAdcShVbufEn( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the XOSCHFCTL register in OSC_DIG.
+// SetupGetTrimForXoscHfCtl
 //
 //*****************************************************************************
 uint32_t
@@ -858,7 +853,7 @@ SetupGetTrimForXoscHfCtl( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used as OSC_DIG:CTL1.XOSC_HF_FAST_START.
+// SetupGetTrimForXoscHfFastStart
 //
 //*****************************************************************************
 uint32_t
@@ -876,7 +871,7 @@ SetupGetTrimForXoscHfFastStart( void )
 
 //*****************************************************************************
 //
-//! \brief Returns the trim value to be used for the RADCEXTCFG register in OSC_DIG.
+// SetupGetTrimForRadcExtCfg
 //
 //*****************************************************************************
 uint32_t
@@ -908,7 +903,7 @@ SetupGetTrimForRadcExtCfg( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Returns the FCFG1 OSC_CONF_ATESTLF_RCOSCLF_IBIAS_TRIM.
+// SetupGetTrimForRcOscLfIBiasTrim
 //
 //*****************************************************************************
 uint32_t
@@ -927,8 +922,7 @@ SetupGetTrimForRcOscLfIBiasTrim( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Returns XOSCLF_REGULATOR_TRIM and XOSCLF_CMIRRWR_RATIO as one packet
-//! spanning bits [5:0] in the returned value.
+// SetupGetTrimForXoscLfRegulatorAndCmirrwrRatio
 //
 //*****************************************************************************
 uint32_t
@@ -948,9 +942,7 @@ SetupGetTrimForXoscLfRegulatorAndCmirrwrRatio( uint32_t ui32Fcfg1Revision )
 
 //*****************************************************************************
 //
-//! \brief Set correct VIMS_MODE according to CCFG setting (CACHE or GPRAM)
-//!
-//! \return None
+// SetupSetCacheModeAccordingToCcfgSetting
 //
 //*****************************************************************************
 void
@@ -995,9 +987,7 @@ SetupSetCacheModeAccordingToCcfgSetting( void )
 
 //*****************************************************************************
 //
-//! \brief Doing the tricky stuff needed to enter new RTCSUBSECINC value
-//!
-//! \return None
+// SetupSetAonRtcSubSecInc
 //
 //*****************************************************************************
 void

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup_rom.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-04 12:19:11 +0200 (Tue, 04 Apr 2017)
+*  Revision:       48771
 *
 *  Description:    Prototypes and defines for the setup API.
 *
@@ -103,6 +103,10 @@ extern "C"
 //*****************************************************************************
 //
 //! \brief First part of configuration required when waking up from shutdown.
+//!
+//! \param ccfg_ModeConfReg
+//!
+//! \return None
 //
 //*****************************************************************************
 extern void SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg );
@@ -110,6 +114,11 @@ extern void SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg
 //*****************************************************************************
 //
 //! \brief Second part of configuration required when waking up from shutdown.
+//!
+//! \param ui32Fcfg1Revision
+//! \param ccfg_ModeConfReg
+//!
+//! \return None
 //
 //*****************************************************************************
 extern void SetupAfterColdResetWakeupFromShutDownCfg2( uint32_t ui32Fcfg1Revision, uint32_t ccfg_ModeConfReg );
@@ -117,6 +126,10 @@ extern void SetupAfterColdResetWakeupFromShutDownCfg2( uint32_t ui32Fcfg1Revisio
 //*****************************************************************************
 //
 //! \brief Third part of configuration required when waking up from shutdown.
+//!
+//! \param ccfg_ModeConfReg
+//!
+//! \return None
 //
 //*****************************************************************************
 extern void SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg );
@@ -124,6 +137,10 @@ extern void SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg
 //*****************************************************************************
 //
 //! \brief Returns the trim value from FCFG1 to be used as ADC_SH_MODE_EN setting.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns the trim value from FCFG1.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForAdcShModeEn( uint32_t ui32Fcfg1Revision );
@@ -131,6 +148,10 @@ extern uint32_t SetupGetTrimForAdcShModeEn( uint32_t ui32Fcfg1Revision );
 //*****************************************************************************
 //
 //! \brief Returns the trim value from FCFG1 to be used as ADC_SH_VBUF_EN setting.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns the trim value from FCFG1.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForAdcShVbufEn( uint32_t ui32Fcfg1Revision );
@@ -138,6 +159,10 @@ extern uint32_t SetupGetTrimForAdcShVbufEn( uint32_t ui32Fcfg1Revision );
 //*****************************************************************************
 //
 //! \brief Returns the trim value to be used for the AMPCOMP_CTRL register in OSC_DIG.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForAmpcompCtrl( uint32_t ui32Fcfg1Revision );
@@ -145,6 +170,8 @@ extern uint32_t SetupGetTrimForAmpcompCtrl( uint32_t ui32Fcfg1Revision );
 //*****************************************************************************
 //
 //! \brief Returns the trim value to be used for the AMPCOMP_TH1 register in OSC_DIG.
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForAmpcompTh1( void );
@@ -152,6 +179,8 @@ extern uint32_t SetupGetTrimForAmpcompTh1( void );
 //*****************************************************************************
 //
 //! \brief Returns the trim value to be used for the AMPCOMP_TH2 register in OSC_DIG.
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForAmpcompTh2( void );
@@ -159,6 +188,10 @@ extern uint32_t SetupGetTrimForAmpcompTh2( void );
 //*****************************************************************************
 //
 //! \brief Returns the trim value to be used for the ANABYPASS_VALUE1 register in OSC_DIG.
+//!
+//! \param ccfg_ModeConfReg
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForAnabypassValue1( uint32_t ccfg_ModeConfReg );
@@ -166,6 +199,10 @@ extern uint32_t SetupGetTrimForAnabypassValue1( uint32_t ccfg_ModeConfReg );
 //*****************************************************************************
 //
 //! \brief Returns the trim value from FCFG1 to be used as DBLR_LOOP_FILTER_RESET_VOLTAGE setting.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns the trim value from FCFG1.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForDblrLoopFilterResetVoltage( uint32_t ui32Fcfg1Revision );
@@ -173,6 +210,10 @@ extern uint32_t SetupGetTrimForDblrLoopFilterResetVoltage( uint32_t ui32Fcfg1Rev
 //*****************************************************************************
 //
 //! \brief Returns the trim value to be used for the RADCEXTCFG register in OSC_DIG.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForRadcExtCfg( uint32_t ui32Fcfg1Revision );
@@ -180,6 +221,10 @@ extern uint32_t SetupGetTrimForRadcExtCfg( uint32_t ui32Fcfg1Revision );
 //*****************************************************************************
 //
 //! \brief Returns the FCFG1 OSC_CONF_ATESTLF_RCOSCLF_IBIAS_TRIM.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns the trim value from FCFG1.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForRcOscLfIBiasTrim( uint32_t ui32Fcfg1Revision );
@@ -188,6 +233,8 @@ extern uint32_t SetupGetTrimForRcOscLfIBiasTrim( uint32_t ui32Fcfg1Revision );
 //
 //! \brief Returns the trim value to be used for the RCOSCLF_RTUNE_TRIM and the
 //! RCOSCLF_CTUNE_TRIM bit fields in the XOSCLF_RCOSCLF_CTRL register in OSC_DIG.
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForRcOscLfRtuneCtuneTrim( void );
@@ -195,6 +242,10 @@ extern uint32_t SetupGetTrimForRcOscLfRtuneCtuneTrim( void );
 //*****************************************************************************
 //
 //! \brief Returns the trim value to be used for the XOSCHFCTL register in OSC_DIG.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForXoscHfCtl( uint32_t ui32Fcfg1Revision );
@@ -202,6 +253,8 @@ extern uint32_t SetupGetTrimForXoscHfCtl( uint32_t ui32Fcfg1Revision );
 //*****************************************************************************
 //
 //! \brief Returns the trim value to be used as OSC_DIG:CTL1.XOSC_HF_FAST_START.
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForXoscHfFastStart( void );
@@ -210,6 +263,8 @@ extern uint32_t SetupGetTrimForXoscHfFastStart( void );
 //
 //! \brief Returns the trim value to be used for the XOSC_HF_IBIASTHERM bit field in
 //! the ANABYPASS_VALUE2 register in OSC_DIG.
+//!
+//! \return Returns the trim value.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForXoscHfIbiastherm( void );
@@ -218,6 +273,10 @@ extern uint32_t SetupGetTrimForXoscHfIbiastherm( void );
 //
 //! \brief Returns XOSCLF_REGULATOR_TRIM and XOSCLF_CMIRRWR_RATIO as one packet
 //! spanning bits [5:0] in the returned value.
+//!
+//! \param ui32Fcfg1Revision
+//!
+//! \return Returns XOSCLF_REGULATOR_TRIM and XOSCLF_CMIRRWR_RATIO as one packet.
 //
 //*****************************************************************************
 extern uint32_t SetupGetTrimForXoscLfRegulatorAndCmirrwrRatio( uint32_t ui32Fcfg1Revision );
@@ -226,7 +285,9 @@ extern uint32_t SetupGetTrimForXoscLfRegulatorAndCmirrwrRatio( uint32_t ui32Fcfg
 //
 //! \brief Sign extend the VDDR_TRIM setting (special format ranging from -10 to +21)
 //!
-//! \return
+//! \param ui32VddrTrimVal
+//!
+//! \return Returns Sign extended VDDR_TRIM setting.
 //
 //*****************************************************************************
 __STATIC_INLINE int32_t
@@ -254,6 +315,8 @@ extern void SetupSetCacheModeAccordingToCcfgSetting( void );
 //
 //! \brief Doing the tricky stuff needed to enter new RTCSUBSECINC value
 //!
+//! \param subSecInc
+//!
 //! \return None
 //
 //*****************************************************************************
@@ -261,7 +324,10 @@ extern void SetupSetAonRtcSubSecInc( uint32_t subSecInc );
 
 //*****************************************************************************
 //
-//! \brief Set VDDR boost mode
+//! \brief Set VDDR boost mode (by setting VDDR_TRIM to FCFG1..VDDR_TRIM_HH and
+//! setting VDDS_BOD to max).
+//!
+//! \param ccfg_ModeConfReg
 //!
 //! \return None
 //

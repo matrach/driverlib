@@ -42,4 +42,4 @@
 
 
 /// Declare the current DriverLib release
-DRIVERLIB_DECLARE_RELEASE(0, 48632);
+DRIVERLIB_DECLARE_RELEASE(0, 48919);

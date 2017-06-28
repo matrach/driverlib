@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.c
-*  Revised:        2016-10-19 12:14:28 +0200 (Wed, 19 Oct 2016)
-*  Revision:       47480
+*  Revised:        2017-05-05 10:41:25 +0200 (Fri, 05 May 2017)
+*  Revision:       48919
 *
 *  Description:    Driver for the RF Core.
 *
@@ -62,12 +62,20 @@
     #define RFCCPEPatchReset                NOROM_RFCCPEPatchReset
     #undef  RFCAdi3VcoLdoVoltageMode
     #define RFCAdi3VcoLdoVoltageMode        NOROM_RFCAdi3VcoLdoVoltageMode
+    #undef  RFCOverrideUpdate
+    #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
+    #undef  RFCHWIntGetAndClear
+    #define RFCHWIntGetAndClear             NOROM_RFCHWIntGetAndClear
 #endif
 
 #define RFC_RESERVED0               0x40044108
 #define RFC_RESERVED1               0x40044114
 #define RFC_RESERVED2               0x4004410C
 #define RFC_RESERVED3               0x40044100
+
+
+
+
 
 // Position of divider value
 #define CONFIG_MISC_ADC_DIVIDER             27
@@ -421,6 +429,157 @@ void RFCAdi3VcoLdoVoltageMode(bool bEnable)
 }
 
 
+ //*****************************************************************************
+//
+// Update Overrides
+//
+//*****************************************************************************
+uint8_t RFCOverrideUpdate(rfc_radioOp_t *pOpSetup, uint32_t *pParams)
+{
+    int32_t divider;
+    uint32_t fcfg1_rtrim;
+    uint32_t *pOverride;
+    int32_t override_index;
+    uint32_t override_value;
+    uint32_t override_rtrim = 0;
+
+    // Check which setup command is used
+    switch (pOpSetup->commandNo)
+    {
+    case CMD_RADIO_SETUP:
+        divider = ((rfc_CMD_RADIO_SETUP_t *)pOpSetup)->loDivider;
+        pOverride = ((rfc_CMD_RADIO_SETUP_t *)pOpSetup)->pRegOverride;
+        break;
+    case CMD_PROP_RADIO_SETUP:
+        divider = 2;
+        pOverride = ((rfc_CMD_PROP_RADIO_SETUP_t *)pOpSetup)->pRegOverride;
+        break;
+    case CMD_PROP_RADIO_DIV_SETUP:
+        divider = ((rfc_CMD_PROP_RADIO_DIV_SETUP_t *)pOpSetup)->loDivider;
+        pOverride = ((rfc_CMD_PROP_RADIO_DIV_SETUP_t *)pOpSetup)->pRegOverride;
+        break;
+    default:
+        return 1;
+    }
+
+    if (pOverride == 0)
+    {
+        //  Did not find override, return
+        return 1;
+    }
+
+
+    // Search top 5 overrides for RTRIM
+    for(override_index = 0; override_index < 5; override_index++)
+    {
+        override_value = pOverride[override_index];
+        if((override_value & 0xFFFF) == 0x4038)
+        {
+            override_rtrim = (override_value & 0xF0000) >> 16;
+            break;
+        }
+    }
+
+    if (override_rtrim == 0)
+    {
+        //  Did not find override, return
+        return 1;
+    }
+
+    // Read trim from FCFG1
+    switch (divider)
+    {
+    case 2:
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_MISC_ADC)
+                       & FCFG1_CONFIG_MISC_ADC_MIN_ALLOWED_RTRIM_M) >> FCFG1_CONFIG_MISC_ADC_MIN_ALLOWED_RTRIM_S;
+        break;
+    case 5:
+        // Legacy
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_MISC_OTP_DATA)
+                       & FCFG1_MISC_OTP_DATA_MIN_ALLOWED_RTRIM_DIV5_M) >> FCFG1_MISC_OTP_DATA_MIN_ALLOWED_RTRIM_DIV5_S;
+        break;
+    case 6:
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_MISC_ADC_DIV6)
+                       & FCFG1_CONFIG_MISC_ADC_DIV6_MIN_ALLOWED_RTRIM_M) >> FCFG1_CONFIG_MISC_ADC_DIV6_MIN_ALLOWED_RTRIM_S;
+        break;
+    case 10:
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_MISC_ADC_DIV10)
+                       & FCFG1_CONFIG_MISC_ADC_DIV10_MIN_ALLOWED_RTRIM_M) >> FCFG1_CONFIG_MISC_ADC_DIV10_MIN_ALLOWED_RTRIM_S;
+        break;
+    case 12:
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_MISC_ADC_DIV12)
+                       & FCFG1_CONFIG_MISC_ADC_DIV12_MIN_ALLOWED_RTRIM_M) >> FCFG1_CONFIG_MISC_ADC_DIV12_MIN_ALLOWED_RTRIM_S;
+        break;
+    case 15:
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_MISC_ADC_DIV15)
+                       & FCFG1_CONFIG_MISC_ADC_DIV15_MIN_ALLOWED_RTRIM_M) >> FCFG1_CONFIG_MISC_ADC_DIV15_MIN_ALLOWED_RTRIM_S;
+        break;
+    case 30:
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_MISC_ADC_DIV30)
+                       & FCFG1_CONFIG_MISC_ADC_DIV30_MIN_ALLOWED_RTRIM_M) >> FCFG1_CONFIG_MISC_ADC_DIV30_MIN_ALLOWED_RTRIM_S;
+        break;
+    default:
+        fcfg1_rtrim = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_MISC_ADC)
+                       & FCFG1_CONFIG_MISC_ADC_MIN_ALLOWED_RTRIM_M) >> FCFG1_CONFIG_MISC_ADC_MIN_ALLOWED_RTRIM_S;
+        break;
+    }
+
+    // Check for early samples
+    if(fcfg1_rtrim == 0xF)
+    {
+        // set default
+        switch (divider)
+        {
+        case 5:
+        case 10:
+        case 15:
+        case 30:
+            pOverride[override_index] = (override_value & 0xFFF0FFFF) | (0x7 << 16);
+            break;
+        case 2:
+        case 6:
+        case 12:
+        default:
+            pOverride[override_index] = (override_value & 0xFFF0FFFF) | (0x4 << 16);
+            break;
+        }
+    }
+    else
+    {
+        // Test Override vs FCFG1 limit.
+        if(override_rtrim >= fcfg1_rtrim)
+        {
+            // Do nothing
+            ;
+        }
+        else
+        {
+            // Set override to FCFG1 limit value
+            pOverride[override_index] = (override_value & 0xFFF0FFFF) | (fcfg1_rtrim << 16);
+        }
+    }
+	return 0;
+}
+
+
+//*****************************************************************************
+//
+// Get and clear HW interrupt flags
+//
+//*****************************************************************************
+uint32_t
+RFCHWIntGetAndClear(uint32_t ui32Mask)
+{
+    uint32_t ui32Ifg = HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) & ui32Mask;
+
+    do {
+        HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) = ~ui32Ifg;
+    } while (HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) & ui32Ifg);
+
+    return (ui32Ifg);
+}
+
+
 
 //*****************************************************************************
 //
@@ -445,6 +604,10 @@ void RFCAdi3VcoLdoVoltageMode(bool bEnable)
     #define RFCCPEPatchReset                NOROM_RFCCPEPatchReset
     #undef  RFCAdi3VcoLdoVoltageMode
     #define RFCAdi3VcoLdoVoltageMode        NOROM_RFCAdi3VcoLdoVoltageMode
+    #undef  RFCOverrideUpdate
+    #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
+    #undef  RFCHWIntGetAndClear
+    #define RFCHWIntGetAndClear             NOROM_RFCHWIntGetAndClear
 #endif
 
 // See rfc.h for implementation

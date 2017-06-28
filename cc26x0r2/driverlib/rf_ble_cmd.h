@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_ble_cmd.h
-*  Revised:        2017-02-02 16:53:58 +0100 (Thu, 02 Feb 2017)
-*  Revision:       17615
+*  Revised:        2017-05-03 15:31:44 +0200 (Wed, 03 May 2017)
+*  Revision:       17775
 *
 *  Description:    CC26xx/CC13xx API for Bluetooth Low Energy commands
 *
@@ -185,7 +185,9 @@ struct __RFC_STRUCT rfc_ble5RadioOp_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -728,7 +730,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_SLAVE_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -780,7 +784,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_MASTER_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -832,7 +838,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_ADV_EXT_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -884,7 +892,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_ADV_AUX_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -936,7 +946,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_SCANNER_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -988,7 +1000,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_INITIATOR_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -1040,7 +1054,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_GENERIC_RX_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
@@ -1092,7 +1108,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_TX_TEST_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!<        Coding to use for TX if coded PHY is selected. Values TBD
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
+                                        //!<        0: S = 8 (125 kbps)<br>
+                                        //!<        1: S = 2 (500 kbps)
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).

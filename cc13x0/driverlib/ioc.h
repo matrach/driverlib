@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ioc.h
-*  Revised:        2016-11-25 14:43:39 +0100 (Fri, 25 Nov 2016)
-*  Revision:       47793
+*  Revised:        2017-05-04 16:35:28 +0200 (Thu, 04 May 2017)
+*  Revision:       48901
 *
 *  Description:    Defines and prototypes for the IO Controller.
 *
@@ -222,7 +222,7 @@ extern "C"
 
 //*****************************************************************************
 //
-// Values that can be used to set the shutdown mode of an IO
+// Defines that can be used to set the shutdown mode of an IO
 //
 //*****************************************************************************
 #define IOC_NO_WAKE_UP          0x00000000
@@ -231,7 +231,7 @@ extern "C"
 
 //*****************************************************************************
 //
-// Values that can be used to set the IO Mode of an IO
+// Defines that can be used to set the IO Mode of an IO
 //
 //*****************************************************************************
 #define IOC_IOMODE_NORMAL       0x00000000  // Normal Input/Output
@@ -249,7 +249,7 @@ extern "C"
 
 //*****************************************************************************
 //
-// Values that can be used to set the edge detection on an IO
+// Defines that can be used to set the edge detection on an IO
 //
 //*****************************************************************************
 #define IOC_NO_EDGE             0x00000000  // No edge detection
@@ -262,7 +262,7 @@ extern "C"
 
 //*****************************************************************************
 //
-// Values that be used to set pull on an IO
+// Defines that be used to set pull on an IO
 //
 //*****************************************************************************
 #define IOC_NO_IOPULL           0x00006000  // No IO pull
@@ -273,7 +273,7 @@ extern "C"
 
 //*****************************************************************************
 //
-// Values that can be used to select the drive strength of an IO
+// Defines that can be used to select the drive strength of an IO
 //
 //*****************************************************************************
 #define IOC_CURRENT_2MA         0x00000000  // 2mA drive strength
@@ -288,6 +288,7 @@ extern "C"
                                             // (2/4/8 mA @ 2.5V)
 #define IOC_STRENGTH_MIN        0x00000100  // Minimum Drive Strength
                                             // (2/4/8 mA @ 3.3V)
+
 //*****************************************************************************
 //
 // Defines for standard IO setup
@@ -382,7 +383,7 @@ extern "C"
 //!   - \ref IOC_IOMODE_OPEN_DRAIN_INV
 //!   - \ref IOC_IOMODE_OPEN_SRC_NORMAL
 //!   - \ref IOC_IOMODE_OPEN_SRC_INV
-//! - Wake up mode:
+//! - Wake-up mode (from shutdown):
 //!   - \ref IOC_NO_WAKE_UP
 //!   - \ref IOC_WAKE_ON_LOW
 //!   - \ref IOC_WAKE_ON_HIGH
@@ -404,18 +405,18 @@ extern "C"
 //! - Hysteresis mode:
 //!   - \ref IOC_HYST_ENABLE
 //!   - \ref IOC_HYST_DISABLE
-//! - Slew control mode:
+//! - Slew rate reduction mode:
 //!   - \ref IOC_SLEW_ENABLE
 //!   - \ref IOC_SLEW_DISABLE
-//! - Maximum current mode:
-//!   - \ref IOC_CURRENT_2MA
-//!   - \ref IOC_CURRENT_4MA
-//!   - \ref IOC_CURRENT_8MA
+//! - Current mode (see \ref IOCIODrvStrengthSet() for more details):
+//!   - \ref IOC_CURRENT_2MA : Low-Current mode. Min 2 mA when \ti_code{ui32DrvStrength} is set to \ref IOC_STRENGTH_AUTO.
+//!   - \ref IOC_CURRENT_4MA : High-Current mode. Min 4 mA when \ti_code{ui32DrvStrength} is set to \ref IOC_STRENGTH_AUTO.
+//!   - \ref IOC_CURRENT_8MA : Extended-Current mode. Min 8 mA for double drive strength IOs (min 4 mA for normal IOs) when \ti_code{ui32DrvStrength} is set to \ref IOC_STRENGTH_AUTO.
 //! - Drive strength mode:
-//!   - \ref IOC_STRENGTH_AUTO
-//!   - \ref IOC_STRENGTH_MAX
-//!   - \ref IOC_STRENGTH_MED
-//!   - \ref IOC_STRENGTH_MIN
+//!   - \ref IOC_STRENGTH_AUTO : Automatic drive strength based on battery voltage.
+//!   - \ref IOC_STRENGTH_MAX : Maximum drive strength, used for low supply levels. Controlled by AON IOC (see \ref AONIOCDriveStrengthSet()).
+//!   - \ref IOC_STRENGTH_MED : Medium drive strength, used for medium supply levels. Controlled by AON IOC (see \ref AONIOCDriveStrengthSet()).
+//!   - \ref IOC_STRENGTH_MIN : Minimum drive strength, used for high supply levels. Controlled by AON IOC (see \ref AONIOCDriveStrengthSet()).
 //!
 //! \return None
 //
@@ -445,15 +446,15 @@ extern uint32_t IOCPortConfigureGet(uint32_t ui32IOId);
 
 //*****************************************************************************
 //
-//! \brief Set wake-up on an IO port.
+//! \brief Set wake-up mode from shutdown on an IO port.
 //!
-//! This function is used to set the wake-up mode of an IO.
+//! This function is used to set the wake-up mode from shutdown of an IO.
 //!
 //! \param ui32IOId defines the IO to configure.
 //! - \ref IOID_0
 //! - ...
 //! - \ref IOID_31
-//! \param ui32IOShutdown enables wake-up on LOW/HIGH by this IO port.
+//! \param ui32IOShutdown enables wake-up from shutdown on LOW/HIGH by this IO port.
 //! - \ref IOC_NO_WAKE_UP
 //! - \ref IOC_WAKE_ON_LOW
 //! - \ref IOC_WAKE_ON_HIGH
@@ -489,9 +490,9 @@ extern void IOCIOModeSet(uint32_t ui32IOId, uint32_t ui32IOMode);
 
 //*****************************************************************************
 //
-//! \brief Setup interrupt detection on an IO Port.
+//! \brief Setup edge detection and interrupt generation on an IO Port.
 //!
-//! This function is used to setup the interrupt detection on an IO.
+//! This function is used to setup the edge detection and interrupt generation on an IO.
 //!
 //! \param ui32IOId defines the IO to configure.
 //! - \ref IOID_0
@@ -572,15 +573,15 @@ extern void IOCIOInputSet(uint32_t ui32IOId, uint32_t ui32Input);
 
 //*****************************************************************************
 //
-//! \brief Enable/disable the slew control on an IO port.
+//! \brief Configure slew rate on an IO port.
 //!
-//! This function is used to enable/disable slew control on an IO.
+//! This function is used to enable/disable reduced slew rate on an IO.
 //!
 //! \param ui32IOId defines the IO to configure.
 //! - \ref IOID_0
 //! - ...
 //! - \ref IOID_31
-//! \param ui32SlewEnable enables/disables the slew control on an output.
+//! \param ui32SlewEnable enables/disables reduced slew rate on an output.
 //! - \ref IOC_SLEW_ENABLE
 //! - \ref IOC_SLEW_DISABLE
 //!
@@ -613,11 +614,11 @@ extern void IOCIOSlewCtrlSet(uint32_t ui32IOId, uint32_t ui32SlewEnable);
 //! - ...
 //! - \ref IOID_31
 //! \param ui32IOCurrent selects the IO current mode.
-//! - \ref IOC_CURRENT_2MA : Low-Current mode. Min 2 mA when \ti_code{ui32DrvStrength} is set to AUTO.
-//! - \ref IOC_CURRENT_4MA : High-Current mode. Min 4 mA when \ti_code{ui32DrvStrength} is set to AUTO.
-//! - \ref IOC_CURRENT_8MA : Extended-Current mode. Min 8 mA for double drive strength IOs (min 4 mA for normal IOs) when \ti_code{ui32DrvStrength} is set to AUTO.
+//! - \ref IOC_CURRENT_2MA : Low-Current mode. Min 2 mA when \ti_code{ui32DrvStrength} is set to \ref IOC_STRENGTH_AUTO.
+//! - \ref IOC_CURRENT_4MA : High-Current mode. Min 4 mA when \ti_code{ui32DrvStrength} is set to \ref IOC_STRENGTH_AUTO.
+//! - \ref IOC_CURRENT_8MA : Extended-Current mode. Min 8 mA for double drive strength IOs (min 4 mA for normal IOs) when \ti_code{ui32DrvStrength} is set to \ref IOC_STRENGTH_AUTO.
 //! \param ui32DrvStrength sets the source for drive strength control of the IO port.
-//! - \ref IOC_STRENGTH_AUTO : Automatic drive strength, controlled by AON BATMON based on battery voltage (default).
+//! - \ref IOC_STRENGTH_AUTO : Automatic drive strength based on battery voltage.
 //! - \ref IOC_STRENGTH_MAX : Maximum drive strength, used for low supply levels. Controlled by AON IOC (see \ref AONIOCDriveStrengthSet()).
 //! - \ref IOC_STRENGTH_MED : Medium drive strength, used for medium supply levels. Controlled by AON IOC (see \ref AONIOCDriveStrengthSet()).
 //! - \ref IOC_STRENGTH_MIN : Minimum drive strength, used for high supply levels. Controlled by AON IOC (see \ref AONIOCDriveStrengthSet()).

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.c
-*  Revised:        2016-10-19 12:14:28 +0200 (Wed, 19 Oct 2016)
-*  Revision:       47480
+*  Revised:        2017-05-05 10:41:25 +0200 (Fri, 05 May 2017)
+*  Revision:       48919
 *
 *  Description:    Driver for the RF Core.
 *
@@ -62,12 +62,21 @@
     #define RFCCPEPatchReset                NOROM_RFCCPEPatchReset
     #undef  RFCAdi3VcoLdoVoltageMode
     #define RFCAdi3VcoLdoVoltageMode        NOROM_RFCAdi3VcoLdoVoltageMode
+    #undef  RFCOverrideUpdate
+    #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
+    #undef  RFCHWIntGetAndClear
+    #define RFCHWIntGetAndClear             NOROM_RFCHWIntGetAndClear
 #endif
 
+// CC13x0/CC26x0 Defines
 #define RFC_RESERVED0               0x40044108
 #define RFC_RESERVED1               0x40044114
 #define RFC_RESERVED2               0x4004410C
 #define RFC_RESERVED3               0x40044100
+
+
+
+
 
 // Position of divider value
 #define CONFIG_MISC_ADC_DIVIDER             27
@@ -94,6 +103,11 @@ static const uint16_t rfc_defaultIrqAddr[] =
    0x3e73,
    0x3ed7,
 };
+
+// Defines for RFCOverrideUpdate
+#define RFC_BLE5_OVERRIDE_PATTERN 	0x44F80002
+#define RFC_BLE5_OVERRIDE_M 		0xFFF0FFFF
+#define RFC_BLE5_OVERRIDE_S			16
 
 //*****************************************************************************
 //
@@ -227,6 +241,79 @@ void RFCAdi3VcoLdoVoltageMode(bool bEnable)
 }
 
 
+ //*****************************************************************************
+//
+// Update Overrides
+//
+//*****************************************************************************
+uint8_t RFCOverrideUpdate(rfc_radioOp_t *pOpSetup, uint32_t *pParams)
+{
+    uint32_t* overrideLists[3]; //  [0] pRegOverrideCommon;
+                                //  [1] pRegOverride1Mbps;
+                                //  [2] pRegOverride2Mbps;
+    uint32_t fcfg1_value;       //  Value pulled from FCFG1
+    uint8_t override_index;     //  Index in Override list to edit
+    uint8_t i;			//  Index used in loop
+
+    // Check which setup command is used
+    switch (pOpSetup->commandNo)
+    {
+    case CMD_BLE5_RADIO_SETUP:
+        overrideLists[0] = ((rfc_CMD_BLE5_RADIO_SETUP_t *)pOpSetup)->pRegOverrideCommon;
+        overrideLists[1] = ((rfc_CMD_BLE5_RADIO_SETUP_t *)pOpSetup)->pRegOverride1Mbps;
+        overrideLists[2] = ((rfc_CMD_BLE5_RADIO_SETUP_t *)pOpSetup)->pRegOverride2Mbps;
+        break;
+    case CMD_RADIO_SETUP:
+    case CMD_PROP_RADIO_SETUP:
+    case CMD_PROP_RADIO_DIV_SETUP:
+    default:
+        return 1;
+    }
+
+    // Read FCFG1 value
+    fcfg1_value = (HWREG(FCFG1_BASE + FCFG1_O_CONFIG_RF_FRONTEND)
+                   & FCFG1_CONFIG_RF_FRONTEND_LNA_IB_M) >> FCFG1_CONFIG_RF_FRONTEND_LNA_IB_S;
+
+    // Walk through override lists and make the change
+    for (i = 0; i < 3; i++)
+    {
+        // If list is missing simply skip
+        if (overrideLists[i] != NULL)
+        {
+            override_index = RFCOverrideSearch(overrideLists[i], RFC_BLE5_OVERRIDE_PATTERN, 0xFFFFFFFF);
+
+            // If specific override is missing in list then skip
+            if (override_index < RFC_MAX_SEARCH_DEPTH)
+            {
+                // Update override entry to FCFG1 limit value
+                (overrideLists[i])[override_index] = ((overrideLists[i])[override_index] & RFC_BLE5_OVERRIDE_M) | (fcfg1_value << RFC_BLE5_OVERRIDE_S);
+            }
+        }
+    }
+
+    // Success
+    return 0;
+}
+
+
+//*****************************************************************************
+//
+// Get and clear HW interrupt flags
+//
+//*****************************************************************************
+uint32_t
+RFCHWIntGetAndClear(uint32_t ui32Mask)
+{
+    uint32_t ui32Ifg = HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) & ui32Mask;
+
+    do {
+        HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) = ~ui32Ifg;
+    } while (HWREG(RFC_DBELL_BASE+RFC_DBELL_O_RFHWIFG) & ui32Ifg);
+
+    return (ui32Ifg);
+}
+
+
 
 //*****************************************************************************
 //
@@ -251,6 +338,10 @@ void RFCAdi3VcoLdoVoltageMode(bool bEnable)
     #define RFCCPEPatchReset                NOROM_RFCCPEPatchReset
     #undef  RFCAdi3VcoLdoVoltageMode
     #define RFCAdi3VcoLdoVoltageMode        NOROM_RFCAdi3VcoLdoVoltageMode
+    #undef  RFCOverrideUpdate
+    #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
+    #undef  RFCHWIntGetAndClear
+    #define RFCHWIntGetAndClear             NOROM_RFCHWIntGetAndClear
 #endif
 
 // See rfc.h for implementation

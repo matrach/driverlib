@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.h
-*  Revised:        2016-11-22 11:46:16 +0100 (Tue, 22 Nov 2016)
-*  Revision:       47743
+*  Revised:        2017-04-26 10:04:08 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48836
 *
 *  Description:    Defines and prototypes for the PRCM
 *
@@ -1028,7 +1028,7 @@ PRCMRfReady(void)
 //!
 //! This function places the processor into sleep mode; it does not return
 //! until the processor returns to run mode.  The peripherals that are enabled
-//! via \brief PRCMPeripheralSleepEnable() continue to operate and can wake up the
+//! via PRCMPeripheralSleepEnable() continue to operate and can wake up the
 //! processor.
 //!
 //! \return None

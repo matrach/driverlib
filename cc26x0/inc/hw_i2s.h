@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_i2s_h
-*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
-*  Revision:       48345
+*  Revised:        2017-05-04 21:56:26 +0200 (Thu, 04 May 2017)
+*  Revision:       48904
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
@@ -61,9 +61,6 @@
 // Word Selection Bit Mask for Pin 1
 #define I2S_O_AIFWMASK1                                             0x00000014
 
-// Word Selection Bit Mask for Pin 2
-#define I2S_O_AIFWMASK2                                             0x00000018
-
 // Audio Interface PWM Debug Value
 #define I2S_O_AIFPWMVALUE                                           0x0000001C
 
@@ -79,7 +76,7 @@
 // DMA Output Buffer Current Pointer
 #define I2S_O_AIFOUTPTR                                             0x0000002C
 
-// SampleStaMP Generator Control Register
+// Samplestamp Generator Control Register
 #define I2S_O_STMPCTL                                               0x00000034
 
 // Captured XOSC Counter Value, Capture Channel 0
@@ -115,13 +112,13 @@
 // Current Value of XCNT
 #define I2S_O_STMPXCNT                                              0x00000060
 
-// Captured XOSC Counter Value, Capture Channel 1
+// Internal
 #define I2S_O_STMPXCNTCAPT1                                         0x00000064
 
 // Captured WCLK Counter Value, Capture Channel 1
 #define I2S_O_STMPWCNTCAPT1                                         0x00000068
 
-// Masked Interrupt Status Register
+// Interrupt Mask Register
 #define I2S_O_IRQMASK                                               0x00000070
 
 // Raw Interrupt Status Register
@@ -156,7 +153,7 @@
 // ENUMs:
 // RESERVED                 Not supported. Will give same WCLK as 'NONE'
 //                          ('00')
-// INT                      Internal WCLK generator, from module PRCM/ClkCtrl
+// INT                      Internal WCLK generator, from module PRCM
 // EXT                      External WCLK generator, from pad
 // NONE                     None ('0')
 #define I2S_AIFWCLKSRC_WCLK_SRC_W                                            2
@@ -174,10 +171,10 @@
 //*****************************************************************************
 // Field:   [7:0] END_FRAME_IDX
 //
-// Defines the length of the Writing a non-zero value to this registerfield
-// enables and initializes AIF. Note that before doing so, all other
-// configuration must have been done, and AIFINPTR/AIFOUTPTR must have been
-// loaded.
+// Defines the length of the DMA buffer. Writing a non-zero value to this
+// register field enables and initializes AIF. Note that before doing so, all
+// other configuration must have been done, and AIFINPTRNEXT/AIFOUTPTRNEXT must
+// have been loaded.
 #define I2S_AIFDMACFG_END_FRAME_IDX_W                                        8
 #define I2S_AIFDMACFG_END_FRAME_IDX_M                               0x000000FF
 #define I2S_AIFDMACFG_END_FRAME_IDX_S                                        0
@@ -292,8 +289,8 @@
 //
 // Selects dual- or single-phase format.
 //
-// 0: Single-phase
-// 1: Dual-phase
+// 0: Single-phase: DSP format
+// 1: Dual-phase: I2S, LJF and RJF formats
 #define I2S_AIFFMTCFG_DUAL_PHASE                                    0x00000020
 #define I2S_AIFFMTCFG_DUAL_PHASE_BITN                                        5
 #define I2S_AIFFMTCFG_DUAL_PHASE_M                                  0x00000020
@@ -372,35 +369,6 @@
 
 //*****************************************************************************
 //
-// Register: I2S_O_AIFWMASK2
-//
-//*****************************************************************************
-// Field:   [7:0] MASK
-//
-// Bit-mask indicating valid channels in a frame on AD2
-//
-// In single-phase mode, each bit represents one channel, starting with LSB for
-// the first word in the frame. A frame can contain up to 8 channels.  Channels
-// that are not included in the mask will not be sampled and stored in memory,
-// and clocked out as '0'.
-//
-// In dual-phase mode, only the two LSBs are considered. For a stereo
-// configuration, set both bits. For a mono configuration, set bit 0 only. In
-// mono mode, only channel 0 will be sampled and stored to memory, and channel
-// 0 will be repeated when clocked out.
-//
-// In mono mode, only channel 0 will be sampled and stored to memory, and
-// channel 0 will be repeated in the second phase when clocked out.
-//
-// If all bits are zero, no input words will be stored to memory, and the
-// output data lines will be constant '0'. This can be utilized when PWM debug
-// output is desired without any actively used output pins.
-#define I2S_AIFWMASK2_MASK_W                                                 8
-#define I2S_AIFWMASK2_MASK_M                                        0x000000FF
-#define I2S_AIFWMASK2_MASK_S                                                 0
-
-//*****************************************************************************
-//
 // Register: I2S_O_AIFPWMVALUE
 //
 //*****************************************************************************
@@ -431,7 +399,7 @@
 // The read value equals the last written value until the currently used DMA
 // input buffer is completed, and then becomes null when the last written value
 // is transferred to the DMA controller to start on the next buffer. This event
-// is signalized by aif_dma_in_irq.
+// is signalized by IRQFLAGS.AIF_DMA_IN.
 //
 // At startup, the value must be written once before and once after configuring
 // the DMA buffer size in AIFDMACFG.
@@ -439,12 +407,6 @@
 // The next pointer must be written to this register while the DMA function
 // uses the previously written pointer. If not written in time,
 // IRQFLAGS.PTR_ERR will be raised and all input pins will be disabled.
-//
-// Note the following limitations:
-// -  Address space wrapping is not supported. That means address(last sample)
-// must be higher than address(first sample.
-// -  A DMA block cannot be aligned with the end of the address space, that
-// means a block cannot contain the address 0xFFFF.
 #define I2S_AIFINPTRNEXT_PTR_W                                              32
 #define I2S_AIFINPTRNEXT_PTR_M                                      0xFFFFFFFF
 #define I2S_AIFINPTRNEXT_PTR_S                                               0
@@ -474,7 +436,7 @@
 // The read value equals the last written value until the currently used DMA
 // output buffer is completed, and then becomes null when the last written
 // value is transferred to the DMA controller to start on the next buffer. This
-// event is signalized by aif_dma_out_irq.
+// event is signalized by IRQFLAGS.AIF_DMA_OUT.
 //
 // At startup, the value must be written once before and once after configuring
 // the DMA buffer size in AIFDMACFG. At this time, the first two samples will
@@ -483,12 +445,6 @@
 // The next pointer must be written to this register while the DMA function
 // uses the previously written pointer. If not written in time,
 // IRQFLAGS.PTR_ERR will be raised and all output pins will be disabled.
-//
-// Note the following limitations:
-// -  Address space wrapping is not supported. That means address(last sample)
-// must be higher than address(first sample.
-// -  A DMA block cannot be aligned with the end of the address space, that
-// means a block cannot contain the address 0xFFFF.
 #define I2S_AIFOUTPTRNEXT_PTR_W                                             32
 #define I2S_AIFOUTPTRNEXT_PTR_M                                     0xFFFFFFFF
 #define I2S_AIFOUTPTRNEXT_PTR_S                                              0
@@ -739,8 +695,7 @@
 //*****************************************************************************
 // Field:  [15:0] CAPT_VALUE
 //
-// Channel 1 is idle and can not be sampled from an external pulse as with
-// Channel 0 STMPXCNTCAPT0
+// Internal. Only to be used through TI provided API.
 #define I2S_STMPXCNTCAPT1_CAPT_VALUE_W                                      16
 #define I2S_STMPXCNTCAPT1_CAPT_VALUE_M                              0x0000FFFF
 #define I2S_STMPXCNTCAPT1_CAPT_VALUE_S                                       0
@@ -765,7 +720,7 @@
 //*****************************************************************************
 // Field:     [5] AIF_DMA_IN
 //
-// Defines the masks state for the interrupt  of IRQFLAGS.AIF_DMA_IN
+// IRQFLAGS.AIF_DMA_IN interrupt mask
 //
 // 0: Disable
 // 1: Enable
@@ -776,7 +731,7 @@
 
 // Field:     [4] AIF_DMA_OUT
 //
-// Defines the masks state for the interrupt of IRQFLAGS.AIF_DMA_OUT
+// IRQFLAGS.AIF_DMA_OUT interrupt mask
 //
 // 0: Disable
 // 1: Enable
@@ -787,7 +742,7 @@
 
 // Field:     [3] WCLK_TIMEOUT
 //
-// Defines the masks state for the interrupt  of IRQFLAGS.WCLK_TIMEOUT
+// IRQFLAGS.WCLK_TIMEOUT interrupt mask
 //
 // 0: Disable
 // 1: Enable
@@ -798,7 +753,7 @@
 
 // Field:     [2] BUS_ERR
 //
-// Defines the masks state for the interrupt  of IRQFLAGS.BUS_ERR
+// IRQFLAGS.BUS_ERR interrupt mask
 //
 // 0: Disable
 // 1: Enable
@@ -809,7 +764,7 @@
 
 // Field:     [1] WCLK_ERR
 //
-// Defines the masks state for the interrupt  of IRQFLAGS.WCLK_ERR
+// IRQFLAGS.WCLK_ERR interrupt mask
 //
 // 0: Disable
 // 1: Enable
@@ -820,7 +775,7 @@
 
 // Field:     [0] PTR_ERR
 //
-// Defines the masks state for the interrupt of IRQFLAGS.PTR_ERR
+// IRQFLAGS.PTR_ERR interrupt mask.
 //
 // 0: Disable
 // 1: Enable
@@ -837,7 +792,8 @@
 // Field:     [5] AIF_DMA_IN
 //
 // Set when condition for this bit field event occurs (auto cleared when input
-// pointer is updated - AIFINPTR), see description of AIFINPTR register
+// pointer is updated - AIFINPTRNEXT), see description of AIFINPTRNEXT register
+// for details.
 #define I2S_IRQFLAGS_AIF_DMA_IN                                     0x00000020
 #define I2S_IRQFLAGS_AIF_DMA_IN_BITN                                         5
 #define I2S_IRQFLAGS_AIF_DMA_IN_M                                   0x00000020
@@ -846,8 +802,8 @@
 // Field:     [4] AIF_DMA_OUT
 //
 // Set when condition for this bit field event occurs (auto cleared when output
-// pointer is updated - AIFOUTPTR), see description of AIFOUTPTR register for
-// details
+// pointer is updated - AIFOUTPTRNEXT), see description of AIFOUTPTRNEXT
+// register for details
 #define I2S_IRQFLAGS_AIF_DMA_OUT                                    0x00000010
 #define I2S_IRQFLAGS_AIF_DMA_OUT_BITN                                        4
 #define I2S_IRQFLAGS_AIF_DMA_OUT_M                                  0x00000010

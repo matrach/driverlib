@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       startup_gcc.c
-*  Revised:        $Date: 2017-02-03 19:16:24 +0100 (fr, 03 feb 2017) $
-*  Revision:       $Revision: 17634 $
+*  Revised:        $Date: 2017-05-03 09:38:30 +0200 (on, 03 mai 2017) $
+*  Revision:       $Revision: 17770 $
 *
 *  Description:    Startup code for CC26x0 rev2 device family for use with GCC.
 *
@@ -137,7 +137,8 @@ extern uint32_t _estack;
 __attribute__ ((section(".vectors"), used))
 void (* const g_pfnVectors[])(void) =
 {
-    (void (*)(void))&_estack,               //  0 The initial stack pointer 
+    (void (*)(void))((unsigned long)&_estack),
+                                            //  0 The initial stack pointer
     ResetISR,                               //  1 The reset handler
     NmiSR,                                  //  2 The NMI handler
     FaultISR,                               //  3 The hard fault handler

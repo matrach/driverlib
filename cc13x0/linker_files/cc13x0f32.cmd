@@ -2,8 +2,8 @@
 //! @file       cc13x0f32.cmd
 //! @brief      CC13x0F32 rev2 linker file for Code Composer Studio.
 //!
-//! Revised     $Date: 2017-02-03 19:14:38 +0100 (fr, 03 feb 2017) $
-//! Revision    $Revision: 17632 $
+//! Revised     $Date: 2017-03-28 15:32:09 +0200 (ti, 28 mar 2017) $
+//! Revision    $Revision: 17730 $
 //
 //  This file is auto-generated.
 //
@@ -107,6 +107,7 @@ SECTIONS
     .sysmem         :   > SRAM
     .stack          :   > SRAM (HIGH)
     .nonretenvar    :   > SRAM
+    .TI.noinit      :   > SRAM
     .gpram          :   > GPRAM
 
 #ifdef __TI_COMPILER_VERSION__

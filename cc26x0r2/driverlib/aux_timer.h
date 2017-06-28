@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_timer.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-05-03 14:53:24 +0200 (Wed, 03 May 2017)
+*  Revision:       48884
 *
 *  Description:    Defines and prototypes for the AUX Timer
 *
@@ -92,8 +92,6 @@ extern "C"
 //*****************************************************************************
 //
 // Values that can be passed to AUXTimerConfigure().
-//
-// Requires timer0 and timer1 to use same enumerations and values!
 //
 //*****************************************************************************
 #define AUX_TIMER_CFG_ONE_SHOT              (AUX_TIMER_T0CFG_RELOAD_MAN)        // One-shot timer mode
@@ -236,8 +234,9 @@ extern "C"
 //!
 //! The mode, event polarity and event source are configured by setting the
 //! \c ui32Config parameter as the bitwise OR of the various settings.
-//! I.e. (\ref AUX_TIMER_CFG_ONE_SHOT_EDGE_COUNT | \ref AUX_TIMER_CFG_RISING_EDGE |
-//!       \ref AUX_TIMER_CFG_TICK_SRC_RTC_EVENT).
+//! Example: (\ref AUX_TIMER_CFG_ONE_SHOT_EDGE_COUNT |
+//!           \ref AUX_TIMER_CFG_RISING_EDGE |
+//!           \ref AUX_TIMER_CFG_TICK_SRC_RTC_EVENT).
 //!
 //! \note When used as an edge counter the prescaler should be set to
 //! \ref AUX_TIMER_PRESCALE_DIV_1.
@@ -249,6 +248,7 @@ extern "C"
 //! \param ui32Timer is the timer to configure.
 //! - \ref AUX_TIMER_0
 //! - \ref AUX_TIMER_1
+//! - \ref AUX_TIMER_BOTH
 //! \param ui32Config is the timer configuration.
 //!
 //! \return None
@@ -375,6 +375,7 @@ AUXTimerTargetValGet(uint32_t ui32Timer)
 //! \param ui32Timer is the timer to set the prescale on.
 //! - \ref AUX_TIMER_0
 //! - \ref AUX_TIMER_1
+//! - \ref AUX_TIMER_BOTH
 //! \param ui32PrescaleDiv is the prescaler division ratio.
 //! - \ref AUX_TIMER_PRESCALE_DIV_1     : Prescale division ratio 1
 //! - \ref AUX_TIMER_PRESCALE_DIV_2     : Prescale division ratio 2

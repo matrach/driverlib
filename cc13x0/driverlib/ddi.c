@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ddi.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the DDI master interface
 *
@@ -59,7 +59,7 @@
 
 //*****************************************************************************
 //
-//! Write a 32 bit value to a register in the DDI slave.
+// Write a 32 bit value to a register in the DDI slave.
 //
 //*****************************************************************************
 void
@@ -76,7 +76,7 @@ DDI32RegWrite(uint32_t ui32Base, uint32_t ui32Reg,
 
 //*****************************************************************************
 //
-//! Write a single bit using a 16-bit maskable write
+// Write a single bit using a 16-bit maskable write
 //
 //*****************************************************************************
 void
@@ -110,7 +110,7 @@ DDI16BitWrite(uint32_t ui32Base, uint32_t ui32Reg,
 
 //*****************************************************************************
 //
-//! Write a bitfield via the DDI using 16-bit maskable write
+// Write a bitfield via the DDI using 16-bit maskable write
 //
 //*****************************************************************************
 void
@@ -144,7 +144,7 @@ DDI16BitfieldWrite(uint32_t ui32Base, uint32_t ui32Reg,
 
 //*****************************************************************************
 //
-//! Read a bit via the DDI using 16-bit READ.
+// Read a bit via the DDI using 16-bit READ.
 //
 //*****************************************************************************
 uint16_t
@@ -178,7 +178,7 @@ DDI16BitRead(uint32_t ui32Base, uint32_t ui32Reg, uint32_t ui32Mask)
 
 //*****************************************************************************
 //
-//! Read a bitfield via the DDI using 16-bit read.
+// Read a bit field via the DDI using 16-bit read.
 //
 //*****************************************************************************
 uint16_t

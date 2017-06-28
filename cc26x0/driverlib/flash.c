@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       flash.c
-*  Revised:        2016-10-26 14:29:05 +0200 (Wed, 26 Oct 2016)
-*  Revision:       47529
+*  Revised:        2017-04-26 18:34:53 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48853
 *
 *  Description:    Driver for on chip Flash.
 *
@@ -107,19 +107,19 @@ static void SetReadMode(void);
 
 //*****************************************************************************
 //
-//! Set power mode
+// Set power mode
 //
 //*****************************************************************************
 void
-FlashPowerModeSet(uint32_t ui32PowerMode, uint32_t ui32BankGracePeriode,
-                  uint32_t ui32PumpGracePeriode)
+FlashPowerModeSet(uint32_t ui32PowerMode, uint32_t ui32BankGracePeriod,
+                  uint32_t ui32PumpGracePeriod)
 {
     // Check the arguments.
     ASSERT(ui32PowerMode == FLASH_PWR_ACTIVE_MODE ||
            ui32PowerMode == FLASH_PWR_OFF_MODE    ||
            ui32PowerMode == FLASH_PWR_DEEP_STDBY_MODE);
-    ASSERT(ui32BankGracePeriode <= 0xFF);
-    ASSERT(ui32PumpGracePeriode <= 0xFFFF);
+    ASSERT(ui32BankGracePeriod <= 0xFF);
+    ASSERT(ui32PumpGracePeriod <= 0xFFFF);
 
     switch(ui32PowerMode)
     {
@@ -135,15 +135,15 @@ FlashPowerModeSet(uint32_t ui32PowerMode, uint32_t ui32BankGracePeriode,
         break;
 
     case FLASH_PWR_OFF_MODE:
-        // Set bank grace periode.
+        // Set bank grace period.
         HWREG(FLASH_BASE + FLASH_O_FBAC) =
             (HWREG(FLASH_BASE + FLASH_O_FBAC) & (~FLASH_FBAC_BAGP_M)) |
-            ((ui32BankGracePeriode << FLASH_FBAC_BAGP_S) & FLASH_FBAC_BAGP_M);
+            ((ui32BankGracePeriod << FLASH_FBAC_BAGP_S) & FLASH_FBAC_BAGP_M);
 
-        // Set pump grace periode.
+        // Set pump grace period.
         HWREG(FLASH_BASE + FLASH_O_FPAC2) =
             (HWREG(FLASH_BASE + FLASH_O_FPAC2) & (~FLASH_FPAC2_PAGP_M)) |
-            ((ui32PumpGracePeriode << FLASH_FPAC2_PAGP_S) & FLASH_FPAC2_PAGP_M);
+            ((ui32PumpGracePeriod << FLASH_FPAC2_PAGP_S) & FLASH_FPAC2_PAGP_M);
 
         // Set bank power mode to SLEEP.
         HWREG(FLASH_BASE + FLASH_O_FBFALLBACK) &= ~FLASH_FBFALLBACK_BANKPWR0_M;
@@ -153,15 +153,15 @@ FlashPowerModeSet(uint32_t ui32PowerMode, uint32_t ui32BankGracePeriode,
         break;
 
     case FLASH_PWR_DEEP_STDBY_MODE:
-        // Set bank grace periode.
+        // Set bank grace period.
         HWREG(FLASH_BASE + FLASH_O_FBAC) =
             (HWREG(FLASH_BASE + FLASH_O_FBAC) & (~FLASH_FBAC_BAGP_M)) |
-            ((ui32BankGracePeriode << FLASH_FBAC_BAGP_S) & FLASH_FBAC_BAGP_M);
+            ((ui32BankGracePeriod << FLASH_FBAC_BAGP_S) & FLASH_FBAC_BAGP_M);
 
-        // Set pump grace periode.
+        // Set pump grace period.
         HWREG(FLASH_BASE + FLASH_O_FPAC2) =
             (HWREG(FLASH_BASE + FLASH_O_FPAC2) & (~FLASH_FPAC2_PAGP_M)) |
-            ((ui32PumpGracePeriode << FLASH_FPAC2_PAGP_S) & FLASH_FPAC2_PAGP_M);
+            ((ui32PumpGracePeriod << FLASH_FPAC2_PAGP_S) & FLASH_FPAC2_PAGP_M);
 
         // Set bank power mode to DEEP STANDBY mode.
         HWREG(FLASH_BASE + FLASH_O_FBFALLBACK) =
@@ -176,7 +176,7 @@ FlashPowerModeSet(uint32_t ui32PowerMode, uint32_t ui32BankGracePeriode,
 
 //*****************************************************************************
 //
-//! Get current configured power mode
+// Get current configured power mode
 //
 //*****************************************************************************
 uint32_t
@@ -207,7 +207,7 @@ FlashPowerModeGet(void)
 
 //*****************************************************************************
 //
-//! Set sector protection
+// Set sector protection
 //
 //*****************************************************************************
 void
@@ -245,7 +245,7 @@ FlashProtectionSet(uint32_t ui32SectorAddress, uint32_t ui32ProtectMode)
 
 //*****************************************************************************
 //
-//! Get sector protection
+// Get sector protection
 //
 //*****************************************************************************
 uint32_t
@@ -286,7 +286,7 @@ FlashProtectionGet(uint32_t ui32SectorAddress)
 
 //*****************************************************************************
 //
-//! Save sector protection to make it permanent
+// Save sector protection to make it permanent
 //
 //*****************************************************************************
 uint32_t
@@ -330,7 +330,7 @@ FlashProtectionSave(uint32_t ui32SectorAddress)
 
 //*****************************************************************************
 //
-//! Erase a flash sector
+// Erase a flash sector
 //
 //*****************************************************************************
 uint32_t
@@ -348,7 +348,7 @@ FlashSectorErase(uint32_t ui32SectorAddress)
     FuncPointer = (uint32_t (*)(uint32_t)) (ROM_API_FLASH_TABLE[5]);
     ui32ErrorReturn = FuncPointer(ui32SectorAddress);
 
-    // Enable standby in flash bank since ROM function migth have disabled it
+    // Enable standby in flash bank since ROM function might have disabled it
     HWREGBITW(FLASH_BASE + FLASH_O_CFG, FLASH_CFG_DIS_STANDBY_BITN ) = 0;
 
     // Return status of operation.
@@ -359,7 +359,7 @@ FlashSectorErase(uint32_t ui32SectorAddress)
 
 //*****************************************************************************
 //
-//! Programs unprotected main bank flash sectors
+// Programs unprotected main bank flash sectors
 //
 //*****************************************************************************
 uint32_t
@@ -375,7 +375,7 @@ FlashProgram(uint8_t *pui8DataBuffer, uint32_t ui32Address, uint32_t ui32Count)
     FuncPointer = (uint32_t (*)(uint8_t *, uint32_t, uint32_t)) (ROM_API_FLASH_TABLE[6]);
     ui32ErrorReturn = FuncPointer( pui8DataBuffer, ui32Address, ui32Count);
 
-    // Enable standby in flash bank since ROM function migth have disabled it
+    // Enable standby in flash bank since ROM function might have disabled it
     HWREGBITW(FLASH_BASE + FLASH_O_CFG, FLASH_CFG_DIS_STANDBY_BITN ) = 0;
 
     // Return status of operation.
@@ -385,7 +385,7 @@ FlashProgram(uint8_t *pui8DataBuffer, uint32_t ui32Address, uint32_t ui32Count)
 
 //*****************************************************************************
 //
-//! Reads efuse data from specified row
+// Reads efuse data from specified row
 //
 //*****************************************************************************
 bool
@@ -444,7 +444,7 @@ FlashEfuseReadRow(uint32_t *pui32EfuseData, uint32_t ui32RowAddress)
 
 //*****************************************************************************
 //
-//! Disables all sectors for erase and programming on the active bank
+// Disables all sectors for erase and programming on the active bank
 //
 //*****************************************************************************
 void
@@ -640,7 +640,7 @@ MemBusWrkAroundHapiProgramFlash(uint8_t *pui8DataBuffer, uint32_t ui32Address,
     FuncPointer = (uint32_t (*)(uint8_t *, uint32_t, uint32_t)) (ui32RomAddr);
     ui32ErrorReturn = FuncPointer( pui8DataBuffer, ui32Address, ui32Count);
 
-    // Enable standby in flash bank since ROM function migth have disabled it
+    // Enable standby in flash bank since ROM function might have disabled it
     HWREGBITW(FLASH_BASE + FLASH_O_CFG, FLASH_CFG_DIS_STANDBY_BITN ) = 0;
 
     // Return status of operation.
@@ -664,7 +664,7 @@ MemBusWrkAroundHapiEraseSector(uint32_t ui32Address)
     FuncPointer = (uint32_t (*)(uint32_t)) (ui32RomAddr);
     ui32ErrorReturn = FuncPointer(ui32Address);
 
-    // Enable standby in flash bank since ROM function migth have disabled it
+    // Enable standby in flash bank since ROM function might have disabled it
     HWREGBITW(FLASH_BASE + FLASH_O_CFG, FLASH_CFG_DIS_STANDBY_BITN ) = 0;
 
     // Return status of operation.

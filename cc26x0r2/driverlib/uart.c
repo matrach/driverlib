@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       uart.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the UART.
 *
@@ -69,7 +69,7 @@
 
 //*****************************************************************************
 //
-//! Gets the FIFO level at which interrupts are generated
+// Gets the FIFO level at which interrupts are generated
 //
 //*****************************************************************************
 void
@@ -91,7 +91,7 @@ UARTFIFOLevelGet(uint32_t ui32Base, uint32_t *pui32TxLevel,
 
 //*****************************************************************************
 //
-//! Sets the configuration of a UART
+// Sets the configuration of a UART
 //
 //*****************************************************************************
 void
@@ -120,7 +120,7 @@ UARTConfigSetExpClk(uint32_t ui32Base, uint32_t ui32UARTClk,
 
 //*****************************************************************************
 //
-//! Gets the current configuration of a UART
+// Gets the current configuration of a UART
 //
 //*****************************************************************************
 void
@@ -145,7 +145,7 @@ UARTConfigGetExpClk(uint32_t ui32Base, uint32_t ui32UARTClk,
 
 //*****************************************************************************
 //
-//! Disables transmitting and receiving
+// Disables transmitting and receiving
 //
 //*****************************************************************************
 void
@@ -170,7 +170,7 @@ UARTDisable(uint32_t ui32Base)
 
 //*****************************************************************************
 //
-//! Receives a character from the specified port
+// Receives a character from the specified port
 //
 //*****************************************************************************
 int32_t
@@ -194,7 +194,7 @@ UARTCharGetNonBlocking(uint32_t ui32Base)
 
 //*****************************************************************************
 //
-//! Waits for a character from the specified port
+// Waits for a character from the specified port
 //
 //*****************************************************************************
 int32_t
@@ -214,7 +214,7 @@ UARTCharGet(uint32_t ui32Base)
 
 //*****************************************************************************
 //
-//! Sends a character to the specified port
+// Sends a character to the specified port
 //
 //*****************************************************************************
 bool
@@ -241,7 +241,7 @@ UARTCharPutNonBlocking(uint32_t ui32Base, uint8_t ui8Data)
 
 //*****************************************************************************
 //
-//! Waits to send a character from the specified port
+// Waits to send a character from the specified port
 //
 //*****************************************************************************
 void
@@ -261,7 +261,7 @@ UARTCharPut(uint32_t ui32Base, uint8_t ui8Data)
 
 //*****************************************************************************
 //
-//! Registers an interrupt handler for a UART interrupt
+// Registers an interrupt handler for a UART interrupt
 //
 //*****************************************************************************
 void
@@ -279,7 +279,7 @@ UARTIntRegister(uint32_t ui32Base, void (*pfnHandler)(void))
 
 //*****************************************************************************
 //
-//! Unregisters an interrupt handler for a UART interrupt
+// Unregisters an interrupt handler for a UART interrupt
 //
 //*****************************************************************************
 void

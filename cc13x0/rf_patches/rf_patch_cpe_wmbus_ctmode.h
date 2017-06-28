@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_wmbus_ctmode.h
-*  Revised:        $Date: 2017-01-31 16:08:08 +0100 (ti, 31 jan 2017) $
-*  Revision:       $Revision: 17603 $
+*  Revised:        $Date: 2017-03-29 12:51:17 +0200 (on, 29 mar 2017) $
+*  Revision:       $Revision: 17731 $
 *
 *  Description: RF core patch for CC13x0 WMBUS C- and T-Mode
 *

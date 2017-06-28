@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       trng.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the TRNG module
 *
@@ -53,7 +53,7 @@
 
 //*****************************************************************************
 //
-//! Configure the true random number generator
+// Configure the true random number generator
 //
 //*****************************************************************************
 void
@@ -82,7 +82,7 @@ TRNGConfigure(uint32_t ui32MinSamplesPerCycle,
 
 //*****************************************************************************
 //
-//! Get a random number from the generator
+// Get a random number from the generator
 //
 //*****************************************************************************
 uint32_t

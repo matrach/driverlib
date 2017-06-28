@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       flash.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Defines and prototypes for the Flash driver.
 *
@@ -151,7 +151,7 @@ extern "C"
 
 //*****************************************************************************
 //
-// Define for the clock frequencey input to the flash module in number of MHz
+// Define for the clock frequency input to the flash module in number of MHz
 //
 //*****************************************************************************
 #define FLASH_MODULE_CLK_FREQ  48
@@ -194,7 +194,7 @@ typedef enum
 
 //*****************************************************************************
 //
-// Defines for the bank grace periode and pump grace periode
+// Defines for the bank grace period and pump grace period
 //
 //*****************************************************************************
 #define FLASH_BAGP             0x14
@@ -287,7 +287,7 @@ FlashSizeGet(void)
 //!
 //! This function will set the specified power mode.
 //!
-//! Any access to the bank causes a reload of the specified bank grace periode
+//! Any access to the bank causes a reload of the specified bank grace period
 //! input value into the bank down counter. After the last access to the
 //! flash bank, the down counter delays from 0 to 255 prescaled HCLK clock
 //! cycles before putting the bank into one of the fallback power modes as
@@ -295,13 +295,13 @@ FlashSizeGet(void)
 //! fallback mode is not \ref FLASH_PWR_ACTIVE_MODE.
 //!
 //! Note: The prescaled clock used for the down counter is a clock divided by
-//! 16 from input HCLK. The \c ui32BankGracePeriode parameter is ignored if
+//! 16 from input HCLK. The \c ui32BankGracePeriod parameter is ignored if
 //! \c ui32PowerMode is equal to \ref FLASH_PWR_ACTIVE_MODE.
-//! Any access to flash memory causes the pump grace periode down counter to
-//! reload with value of \c ui32PumpGracePeriode. After the bank has gone to sleep,
+//! Any access to flash memory causes the pump grace period down counter to
+//! reload with value of \c ui32PumpGracePeriod. After the bank has gone to sleep,
 //! the down counter delays this number of prescaled HCLK clock cycles before
 //! entering one of the charge pump fallback power modes as determined by
-//! \c ui32PowerMode. The prescaled clock used for the pump grace periode down
+//! \c ui32PowerMode. The prescaled clock used for the pump grace period down
 //! counter is a clock divided by 16 from input HCLK. This parameter is ignored
 //! if \c ui32PowerMode is equal to \ref FLASH_PWR_ACTIVE_MODE.
 //!
@@ -314,17 +314,17 @@ FlashSizeGet(void)
 //! - \ref FLASH_PWR_ACTIVE_MODE
 //! - \ref FLASH_PWR_OFF_MODE
 //! - \ref FLASH_PWR_DEEP_STDBY_MODE
-//! \param ui32BankGracePeriode is the starting count value for the bank grace
-//! periode down counter.
-//! \param ui32PumpGracePeriode is the starting count value for the pump grace
-//! periode down counter.
+//! \param ui32BankGracePeriod is the starting count value for the bank grace
+//! period down counter.
+//! \param ui32PumpGracePeriod is the starting count value for the pump grace
+//! period down counter.
 //!
 //! \return None
 //
 //*****************************************************************************
 extern void FlashPowerModeSet(uint32_t ui32PowerMode,
-                              uint32_t ui32BankGracePeriode,
-                              uint32_t ui32PumpGracePeriode);
+                              uint32_t ui32BankGracePeriod,
+                              uint32_t ui32PumpGracePeriod);
 
 //*****************************************************************************
 //

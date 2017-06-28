@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_event.c
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 16:53:03 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48850
 *
 *  Description:    Driver for the AON Event fabric.
 *
@@ -61,7 +61,7 @@
 
 //*****************************************************************************
 //
-//! Select event source for the specified MCU wakeup programmable event
+// Select event source for the specified MCU wakeup programmable event
 //
 //*****************************************************************************
 void
@@ -104,7 +104,7 @@ AONEventMcuWakeUpSet(uint32_t ui32MCUWUEvent, uint32_t ui32EventSrc)
 
 //*****************************************************************************
 //
-//! Get event source for the specified MCU wakeup programmable event
+// Get event source for the specified MCU wakeup programmable event
 //
 //*****************************************************************************
 uint32_t
@@ -148,7 +148,7 @@ AONEventMcuWakeUpGet(uint32_t ui32MCUWUEvent)
 
 //*****************************************************************************
 //
-//! Select event source for the specified AUX wakeup programmable event
+// Select event source for the specified AUX wakeup programmable event
 //
 //*****************************************************************************
 void
@@ -185,7 +185,7 @@ AONEventAuxWakeUpSet(uint32_t ui32AUXWUEvent, uint32_t ui32EventSrc)
 
 //*****************************************************************************
 //
-//! Get event source for the specified AUX wakeup programmable event
+// Get event source for the specified AUX wakeup programmable event
 //
 //*****************************************************************************
 uint32_t
@@ -223,8 +223,8 @@ AONEventAuxWakeUpGet(uint32_t ui32AUXWUEvent)
 
 //*****************************************************************************
 //
-//! Select event source for the specified programmable event forwarded to the
-//! MCU event fabric
+// Select event source for the specified programmable event forwarded to the
+// MCU event fabric
 //
 //*****************************************************************************
 void
@@ -261,8 +261,8 @@ AONEventMcuSet(uint32_t ui32MCUEvent, uint32_t ui32EventSrc)
 
 //*****************************************************************************
 //
-//! Get source for the specified programmable event forwarded to the MCU event
-//! fabric.
+// Get source for the specified programmable event forwarded to the MCU event
+// fabric.
 //
 //*****************************************************************************
 uint32_t

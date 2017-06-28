@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_event.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-04-26 16:53:03 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48850
 *
 *  Description:    Defines and prototypes for the AON Event fabric.
 *
@@ -95,10 +95,10 @@ extern "C"
 // Note: Events are level-triggered active high
 //
 //*****************************************************************************
-// AON_EVENT_DIO0                      // Edge detect on DIO0. See hw_device.h for DIO-to-PAD mapping.
+// AON_EVENT_DIO0                      // Edge detect on DIO0. See hw_device.h
 // ...                                 // ...
-// AON_EVENT_DIO31                     // Edge detect on DIO31. See hw_device.h for DIO-to-PAD mapping.
-#define AON_EVENT_IO                32 // Edge detect on any DIO
+// AON_EVENT_DIO31                     // Edge detect on DIO31. See hw_device.h
+#define AON_EVENT_IO                32 // Edge detect on any DIO. Edge detect is enabled and configured in IOC.
                                        // Event ID 33 is reserved for future use
                                        // Event ID 34 is reserved for future use
 #define AON_EVENT_RTC_CH0           35 // RTC channel 0
@@ -135,19 +135,19 @@ extern "C"
 // by AONEventMCUWakeUpGet().
 //
 //*****************************************************************************
-#define AON_EVENT_MCU_WU0 0     // Programmable MCU wakeup event 0
-#define AON_EVENT_MCU_WU1 1     // Programmable MCU wakeup event 1
-#define AON_EVENT_MCU_WU2 2     // Programmable MCU wakeup event 2
-#define AON_EVENT_MCU_WU3 3     // Programmable MCU wakeup event 3
+#define AON_EVENT_MCU_WU0 0     // Programmable MCU wake-up event 0
+#define AON_EVENT_MCU_WU1 1     // Programmable MCU wake-up event 1
+#define AON_EVENT_MCU_WU2 2     // Programmable MCU wake-up event 2
+#define AON_EVENT_MCU_WU3 3     // Programmable MCU wake-up event 3
 
 //*****************************************************************************
 //
 // Values that can be passed to AONEventAuxWakeUpSet() and AONEventAuxWakeUpGet()
 //
 //*****************************************************************************
-#define AON_EVENT_AUX_WU0 0     // Programmable AUX wakeup event 0
-#define AON_EVENT_AUX_WU1 1     // Programmable AUX wakeup event 1
-#define AON_EVENT_AUX_WU2 2     // Programmable AUX wakeup event 2
+#define AON_EVENT_AUX_WU0 0     // Programmable AUX wake-up event 0
+#define AON_EVENT_AUX_WU1 1     // Programmable AUX wake-up event 1
+#define AON_EVENT_AUX_WU2 2     // Programmable AUX wake-up event 2
 
 //*****************************************************************************
 //
@@ -166,15 +166,15 @@ extern "C"
 
 //*****************************************************************************
 //
-//! \brief Select event source for the specified MCU wakeup programmable event.
+//! \brief Select event source for the specified MCU wake-up programmable event.
 //!
-//! The AON event fabric has a total of four programmable events that can
-//! wake-up the MCU. The events are forwarded to the wakeup controller (WUC).
+//! The AON event fabric has several programmable events that can
+//! wake up the MCU. The events are forwarded to the wake-up controller (WUC).
 //!
-//! \note The four programmable event sources are effectively OR'ed together
+//! \note The programmable event sources are effectively OR'ed together
 //!  to form a single wake-up event forwarded to the WUC.
 //!
-//! \param ui32MCUWUEvent is one of four programmable MCU wakeup event sources.
+//! \param ui32MCUWUEvent is one of the programmable MCU wake-up event sources.
 //! - \ref AON_EVENT_MCU_WU0
 //! - \ref AON_EVENT_MCU_WU1
 //! - \ref AON_EVENT_MCU_WU2
@@ -183,7 +183,7 @@ extern "C"
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2
@@ -218,23 +218,19 @@ extern void AONEventMcuWakeUpSet(uint32_t ui32MCUWUEvent,
 
 //*****************************************************************************
 //
-//! \brief Get event source for the specified MCU wakeup programmable event.
+//! \brief Get event source for the specified MCU wake-up programmable event.
 //!
-//! The AON event fabric has a total of four programmable events that can
-//! wake-up the MCU. The events are forwarded to the wakeup controller (WUC).
-//!
-//! \param ui32MCUWUEvent is one of four programmable MCU wakeup event sources.
+//! \param ui32MCUWUEvent is one of the programmable MCU wake-up event sources.
 //! - \ref AON_EVENT_MCU_WU0
 //! - \ref AON_EVENT_MCU_WU1
 //! - \ref AON_EVENT_MCU_WU2
 //! - \ref AON_EVENT_MCU_WU3
 //!
-//! \return Returns an event source for the event AON fabric, i.e. one of the
-//! following:
+//! \return Returns the event source for the event AON fabric.
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2
@@ -266,16 +262,16 @@ extern uint32_t AONEventMcuWakeUpGet(uint32_t ui32MCUWUEvent);
 
 //*****************************************************************************
 //
-//! \brief Select event source for the specified AUX wakeup programmable event.
+//! \brief Select event source for the specified AUX wake-up programmable event.
 //!
 //! The AON event fabric has a total of three programmable events that can
-//! wake-up the AUX domain. The events are forwarded to the wakeup
+//! wake-up the AUX domain. The events are forwarded to the wake-up
 //! controller (WUC).
 //!
 //! \note The three programmable event sources are effectively OR'ed together
 //!  to form a single wake-up event forwarded to the WUC.
 //!
-//! \param ui32AUXWUEvent is one of three programmable AUX wakeup event sources.
+//! \param ui32AUXWUEvent is one of three programmable AUX wake-up event sources.
 //! - \ref AON_EVENT_AUX_WU0
 //! - \ref AON_EVENT_AUX_WU1
 //! - \ref AON_EVENT_AUX_WU2
@@ -283,7 +279,7 @@ extern uint32_t AONEventMcuWakeUpGet(uint32_t ui32MCUWUEvent);
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2
@@ -318,22 +314,22 @@ extern void AONEventAuxWakeUpSet(uint32_t ui32AUXWUEvent,
 
 //*****************************************************************************
 //
-//! \brief Get event source for the specified AUX wakeup programmable event.
+//! \brief Get event source for the specified AUX wake-up programmable event.
 //!
 //! The AON event fabric has a total of three programmable events that can
-//! wake-up the AUX domain. The events are forwarded to the wakeup
+//! wake-up the AUX domain. The events are forwarded to the wake-up
 //! controller (WUC).
 //!
-//! \param ui32AUXWUEvent is one of three programmable AUX wakeup event sources.
+//! \param ui32AUXWUEvent is one of three programmable AUX wake-up event sources.
 //! - \ref AON_EVENT_AUX_WU0
 //! - \ref AON_EVENT_AUX_WU1
 //! - \ref AON_EVENT_AUX_WU2
 //!
-//! \return Returns an event source for the event AON fabric, i.e. one of the following:
+//! \return Returns the event source for the event AON fabric.
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2
@@ -382,11 +378,11 @@ extern uint32_t AONEventAuxWakeUpGet(uint32_t ui32AUXWUEvent);
 //! - \ref AON_EVENT_MCU_EVENT0
 //! - \ref AON_EVENT_MCU_EVENT1
 //! - \ref AON_EVENT_MCU_EVENT2
-//! \param ui32EventSrc is event sources for the event AON fabric.
+//! \param ui32EventSrc is an event source for the event AON fabric.
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2
@@ -432,11 +428,11 @@ extern void AONEventMcuSet(uint32_t ui32MCUEvent, uint32_t ui32EventSrc);
 //! - \ref AON_EVENT_MCU_EVENT1
 //! - \ref AON_EVENT_MCU_EVENT2
 //!
-//! \return Returns an event source for the event AON fabric, i.e. one of the following:
+//! \return Returns the event source for the event AON fabric.
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2
@@ -473,11 +469,11 @@ extern uint32_t AONEventMcuGet(uint32_t ui32MCUEvent);
 //! A programmable event can be forwarded to the AON real time clock
 //! for triggering a capture event on RTC channel 1.
 //!
-//! \param ui32EventSrc is the event sources for the event AON fabric.
+//! \param ui32EventSrc is an event source for the event AON fabric.
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2
@@ -529,11 +525,11 @@ AONEventRtcSet(uint32_t ui32EventSrc)
 //! A programmable event can be forwarded to the AON real time clock
 //! for triggering a capture event on RTC channel 1.
 //!
-//! \return Returns an event source to the event AON fabric, i.e. one of the following:
+//! \return Returns the event source to the event AON fabric.
 //! - AON_EVENT_DIO0                   : Edge detect on DIO0. See hw_device.h
 //! - ...
 //! - AON_EVENT_DIO31                  : Edge detect on DIO31. See hw_device.h
-//! - \ref AON_EVENT_IO                : Edge detect on any DIO
+//! - \ref AON_EVENT_IO                : Edge detect on any DIO. Edge detect is enabled and configured in IOC.
 //! - \ref AON_EVENT_RTC_CH0           : RTC channel 0
 //! - \ref AON_EVENT_RTC_CH1           : RTC channel 1
 //! - \ref AON_EVENT_RTC_CH2           : RTC channel 2

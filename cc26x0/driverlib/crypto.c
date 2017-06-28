@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       crypto.c
-*  Revised:        2017-02-07 11:24:37 +0100 (Tue, 07 Feb 2017)
-*  Revision:       48411
+*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
+*  Revision:       48852
 *
 *  Description:    Driver for the Crypto module
 *
@@ -75,7 +75,7 @@
 
 //*****************************************************************************
 //
-//! Write the key into the Key Ram.
+// Write the key into the Key Ram.
 //
 //*****************************************************************************
 uint32_t
@@ -163,7 +163,7 @@ CRYPTOAesLoadKey(uint32_t *pui32AesKey,
 
 //*****************************************************************************
 //
-//! Start an AES-CBC operation (encryption or decryption).
+// Start an AES-CBC operation (encryption or decryption).
 //
 //*****************************************************************************
 uint32_t
@@ -257,7 +257,7 @@ CRYPTOAesCbc(uint32_t *pui32MsgIn, uint32_t *pui32MsgOut, uint32_t ui32MsgLength
 
 //*****************************************************************************
 //
-//! Check the result of an AES CBC operation
+// Check the result of an AES CBC operation
 //
 //*****************************************************************************
 uint32_t
@@ -268,7 +268,7 @@ CRYPTOAesCbcStatus(void)
 
 //*****************************************************************************
 //
-//! Start an AES-ECB operation (encryption or decryption).
+// Start an AES-ECB operation (encryption or decryption).
 //
 //*****************************************************************************
 uint32_t
@@ -351,7 +351,7 @@ CRYPTOAesEcb(uint32_t *pui32MsgIn, uint32_t *pui32MsgOut,
 
 //*****************************************************************************
 //
-//! Check the result of an AES ECB operation
+// Check the result of an AES ECB operation
 //
 //*****************************************************************************
 uint32_t
@@ -381,7 +381,7 @@ CRYPTOAesEcbStatus(void)
 
 //*****************************************************************************
 //
-//! Start CCM operation
+// Start CCM operation
 //
 //*****************************************************************************
 uint32_t
@@ -557,7 +557,7 @@ CRYPTOCcmAuthEncrypt(bool bEncrypt, uint32_t ui32AuthLength ,
 
 //*****************************************************************************
 //
-//! Check the result of an AES CCM operation.
+// Check the result of an AES CCM operation.
 //
 //*****************************************************************************
 uint32_t
@@ -587,7 +587,7 @@ CRYPTOCcmAuthEncryptStatus(void)
 
 //*****************************************************************************
 //
-//! Get the result of an AES-CCM operation
+// Get the result of an AES-CCM operation
 //
 //*****************************************************************************
 uint32_t
@@ -627,7 +627,7 @@ CRYPTOCcmAuthEncryptResultGet(uint32_t ui32TagLength, uint32_t *pui32CcmTag)
 
 //*****************************************************************************
 //
-//! Start a CCM Decryption and Inverse Authentication operation.
+// Start a CCM Decryption and Inverse Authentication operation.
 //
 //*****************************************************************************
 uint32_t
@@ -806,7 +806,7 @@ CRYPTOCcmInvAuthDecrypt(bool bDecrypt, uint32_t ui32AuthLength,
 
 //*****************************************************************************
 //
-//! Checks CCM decrypt and Inverse Authentication result.
+// Checks CCM decrypt and Inverse Authentication result.
 //
 //*****************************************************************************
 uint32_t
@@ -836,7 +836,7 @@ CRYPTOCcmInvAuthDecryptStatus(void)
 
 //*****************************************************************************
 //
-//! Get the result of the CCM operation.
+// Get the result of the CCM operation.
 //
 //*****************************************************************************
 uint32_t
@@ -894,7 +894,7 @@ CRYPTOCcmInvAuthDecryptResultGet(uint32_t ui32AuthLength,
 
 //*****************************************************************************
 //
-//! Enable Crypto DMA operation
+// Enable Crypto DMA operation
 //
 //*****************************************************************************
 void
@@ -917,7 +917,7 @@ CRYPTODmaEnable(uint32_t ui32Channels)
 
 //*****************************************************************************
 //
-//! Disable Crypto DMA operation
+// Disable Crypto DMA operation
 //
 //*****************************************************************************
 void
