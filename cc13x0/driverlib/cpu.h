@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.h
-*  Revised:        2017-01-16 19:01:21 +0100 (Mon, 16 Jan 2017)
-*  Revision:       48248
+*  Revised:        2017-07-25 09:34:46 +0200 (Tue, 25 Jul 2017)
+*  Revision:       49395
 *
 *  Description:    Defines and prototypes for the CPU instruction wrapper
 *                  functions.
@@ -349,8 +349,12 @@ __STATIC_INLINE void __attribute__ ((naked))
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
    // Set the BASEPRI register.
-   __asm("    msr     BASEPRI, r0\n"
-         "    bx      lr\n");
+   __asm("    msr     BASEPRI, %0\n"
+         "    bx      lr\n"
+         :
+         : "r" (ui32NewBasepri)
+         :
+         );
 }
 #pragma GCC diagnostic pop
 #endif

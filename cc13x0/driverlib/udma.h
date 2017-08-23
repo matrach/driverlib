@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       udma.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
+*  Revision:       49048
 *
 *  Description:    Defines and prototypes for the uDMA controller.
 *
@@ -904,21 +904,23 @@ extern uint32_t uDMAChannelModeGet(uint32_t ui32Base,
 
 //*****************************************************************************
 //
-//! \brief Registers an interrupt handler for the uDMA controller.
+//! \brief Registers an interrupt handler for the uDMA controller in the dynamic interrupt table.
 //!
-//! This sets and enables the handler to be called when the uDMA controller
-//! generates an interrupt.
+//! \note Only use this function if you want to use the dynamic vector table (in SRAM)!
+//!
+//! This function registers a function as the interrupt handler for a specific
+//! interrupt and enables the corresponding interrupt in the interrupt controller.
 //!
 //! \note The interrupt handler for uDMA is for transfer completion when the
-//! software channel is used, and for error interrupts. The
-//! interrupts for each peripheral channel are handled through the individual
-//! peripheral interrupt handlers.
+//! software channel is used, and for error interrupts. The interrupts for each
+//! peripheral channel are handled through the individual peripheral interrupt
+//! handlers.
 //!
-//! \param ui32Base is the base address of the uDMA port.
-//! \param ui32IntChannel identifies which uDMA interrupt is to be registered.
-//! - \b INT_DMA_DONE_COMB : Register an interrupt handler to process interrupts
+//! \param ui32Base is the base address of the uDMA module.
+//! \param ui32IntChannel specifies which uDMA interrupt is to be registered.
+//! - \c INT_DMA_DONE_COMB : Register an interrupt handler to process interrupts
 //!   from the uDMA software channel.
-//! - \b INT_DMA_ERR : Register an interrupt handler to process uDMA error
+//! - \c INT_DMA_ERR : Register an interrupt handler to process uDMA error
 //!   interrupts.
 //! \param pfnHandler is a pointer to the function to be called when the
 //! interrupt is activated.
@@ -947,16 +949,16 @@ uDMAIntRegister(uint32_t ui32Base, uint32_t ui32IntChannel,
 
 //*****************************************************************************
 //
-//! \brief Unregisters an interrupt handler for the uDMA controller.
+//! \brief Unregisters an interrupt handler for the uDMA controller in the dynamic interrupt table.
 //!
 //! This function will disable and clear the handler to be called for the
 //! specified uDMA interrupt.
 //!
-//! \param ui32Base is the base address of the uDMA port.
-//! \param ui32IntChannel identifies which uDMA interrupt to unregister.
-//! - \b INT_DMA_DONE_COMB : Register an interrupt handler to process interrupts
+//! \param ui32Base is the base address of the uDMA module.
+//! \param ui32IntChannel specifies which uDMA interrupt to unregister.
+//! - \c INT_DMA_DONE_COMB : Register an interrupt handler to process interrupts
 //!   from the uDMA software channel.
-//! - \b INT_DMA_ERR : Register an interrupt handler to process uDMA error
+//! - \c INT_DMA_ERR : Register an interrupt handler to process uDMA error
 //!   interrupts.
 //!
 //! \return None

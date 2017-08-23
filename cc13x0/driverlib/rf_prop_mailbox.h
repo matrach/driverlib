@@ -3,7 +3,7 @@
 *  Revised:        $ $
 *  Revision:       $ $
 *
-*  Description:    Definitions for probrietary mode radio interface
+*  Description:    Definitions for proprietary mode radio interface
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.

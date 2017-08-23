@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       trng.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
+*  Revision:       49048
 *
 *  Description:    Defines and prototypes for the true random number gen.
 *
@@ -359,15 +359,18 @@ TRNGIntClear(uint32_t ui32IntFlags)
 
 //*****************************************************************************
 //
-//! \brief Registers an interrupt handler for a TRNG interrupt.
+//! \brief Registers an interrupt handler for a TRNG interrupt in the dynamic interrupt table.
 //!
-//! This function does the actual registering of the interrupt handler. This
-//! function enables the global interrupt in the interrupt controller; specific
-//! UART interrupts must be enabled via \ref TRNGIntEnable(). It is the interrupt
+//! \note Only use this function if you want to use the dynamic vector table (in SRAM)!
+//!
+//! This function registers a function as the interrupt handler for a specific
+//! interrupt and enables the corresponding interrupt in the interrupt controller.
+//!
+//! Specific TRNG interrupts must be enabled via \ref TRNGIntEnable(). It is the interrupt
 //! handler's responsibility to clear the interrupt source.
 //!
 //! \param pfnHandler is a pointer to the function to be called when the
-//! UART interrupt occurs.
+//! TRNG interrupt occurs.
 //!
 //! \return None
 //!
@@ -387,7 +390,7 @@ TRNGIntRegister(void (*pfnHandler)(void))
 
 //*****************************************************************************
 //
-//! \brief Unregisters an interrupt handler for a TRNG interrupt.
+//! \brief Unregisters an interrupt handler for a TRNG interrupt in the dynamic interrupt table.
 //!
 //! This function does the actual unregistering of the interrupt handler. It
 //! clears the handler to be called when a Crypto interrupt occurs. This

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_prop_cmd.h
-*  Revised:        2016-12-07 13:37:33 +0100 (Wed, 07 Dec 2016)
-*  Revision:       17556
+*  Revised:        2017-07-05 16:17:29 +0200 (Wed, 05 Jul 2017)
+*  Revision:       17839
 *
 *  Description:    CC13x0 API for Proprietary mode commands
 *
@@ -475,6 +475,11 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
       uint32_t preScale:4;              //!<        Prescaler value
       uint32_t :4;
       uint32_t rateWord:21;             //!<        Rate word
+      uint32_t decimMode:3;             //!< \brief 0: Use automatic PDIF decimation<br>
+                                        //!<        1: Force PDIF decimation to 0<br>
+                                        //!<        3: Force PDIF decimation to 1<br>
+                                        //!<        5: Force PDIF decimation to 2<br>
+                                        //!<        Others: <i>Reserved</i>
    } symbolRate;                        //!<        Symbol rate setting
    uint8_t rxBw;                        //!<        Receiver bandwidth
    struct {
@@ -570,6 +575,11 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_DIV_SETUP_s {
       uint32_t preScale:4;              //!<        Prescaler value
       uint32_t :4;
       uint32_t rateWord:21;             //!<        Rate word
+      uint32_t decimMode:3;             //!< \brief 0: Use automatic PDIF decimation<br>
+                                        //!<        1: Force PDIF decimation to 0<br>
+                                        //!<        3: Force PDIF decimation to 1<br>
+                                        //!<        5: Force PDIF decimation to 2<br>
+                                        //!<        Others: <i>Reserved</i>
    } symbolRate;                        //!<        Symbol rate setting
    uint8_t rxBw;                        //!<        Receiver bandwidth
    struct {
