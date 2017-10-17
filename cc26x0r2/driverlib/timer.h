@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       timer.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
+*  Revision:       49048
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -792,13 +792,16 @@ TimerMatchGet(uint32_t ui32Base, uint32_t ui32Timer)
 
 //*****************************************************************************
 //
-//! \brief Registers an interrupt handler for the timer interrupt.
+//! \brief Registers an interrupt handler for the timer interrupt in the dynamic interrupt table.
 //!
-//! This function registers the handler to be called when a timer interrupt
-//! occurs. In addition, this function enables the global interrupt in the
-//! interrupt controller; specific timer interrupts must be enabled via
-//! \ref TimerIntEnable(). It is the interrupt handler's responsibility to clear
-//! the interrupt source via \ref TimerIntClear().
+//! \note Only use this function if you want to use the dynamic vector table (in SRAM)!
+//!
+//! This function registers a function as the interrupt handler for a specific
+//! interrupt and enables the corresponding interrupt in the interrupt controller.
+//!
+//! Specific timer interrupts must be enabled via \ref TimerIntEnable(). It is the
+//! interrupt handler's responsibility to clear the interrupt source via
+//! \ref TimerIntClear().
 //!
 //! \param ui32Base is the base address of the timer module.
 //! \param ui32Timer specifies the timer(s); must be one of:
@@ -819,7 +822,7 @@ extern void TimerIntRegister(uint32_t ui32Base, uint32_t ui32Timer,
 
 //*****************************************************************************
 //
-//! \brief Unregisters an interrupt handler for the timer interrupt.
+//! \brief Unregisters an interrupt handler for the timer interrupt in the dynamic interrupt table.
 //!
 //! This function unregisters the handler to be called when a timer interrupt
 //! occurs. This function also masks off the interrupt in the interrupt

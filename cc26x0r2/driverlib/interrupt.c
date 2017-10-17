@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       interrupt.c
-*  Revised:        2017-01-16 19:01:21 +0100 (Mon, 16 Jan 2017)
-*  Revision:       48248
+*  Revised:        2017-05-19 11:31:39 +0200 (Fri, 19 May 2017)
+*  Revision:       49017
 *
 *  Description:    Driver for the NVIC Interrupt Controller.
 *
@@ -118,16 +118,17 @@ IntDefaultHandler(void)
 
 //*****************************************************************************
 //
-// The processor vector table.
-//
-// This contains a list of the handlers for the various interrupt sources in
-// the system. The layout of this list is defined by the hardware; assertion
-// of an interrupt causes the processor to start executing directly at the
-// address given in the corresponding location in this list.
+//! \brief Global pointer to the (dynamic) interrupt vector table when placed in SRAM.
+//!
+//! Interrupt vector table is placed at "vtable_ram" defined in the linker file
+//! provided by Texas Instruments. By default, this is at the beginning of SRAM.
+//!
+//! \note See \ti_code{interrupt.c} for compiler specific implementation!
 //
 //*****************************************************************************
 #if defined(DOXYGEN)
-// Don't document in Doxygen because this is compiler dependent.
+// Dummy void pointer used as placeholder to generate Doxygen documentation.
+void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void);
 #elif defined(__IAR_SYSTEMS_ICC__)
 #pragma data_alignment=256
 static __no_init void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void) @ ".vtable_ram";

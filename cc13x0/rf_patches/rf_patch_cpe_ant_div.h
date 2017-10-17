@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ant_div.h
-*  Revised:        $Date$
-*  Revision:       $Revision$
+*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
+*  Revision:       $Revision: 17889 $
 *
 *  Description: RF core patch for CC13x0 Generic FSK antenna diversity
 *
@@ -70,7 +70,7 @@ extern "C"
 #endif
 
 
-CPE_PATCH_TYPE patchImageAnt_div[] = {
+CPE_PATCH_TYPE patchImageAntDiv[] = {
    0x210004bd,
    0x2100044d,
    0x21000481,
@@ -266,20 +266,20 @@ CPE_PATCH_TYPE patchImageAnt_div[] = {
 #define _ANT_DIV_IRQPATCH_OFFSET 0x03BC
 #define _ANT_DIV_PATCH_VEC_OFFSET 0x041C
 
-PATCH_FUN_SPEC void enterAnt_divCpePatch(void)
+PATCH_FUN_SPEC void enterAntDivCpePatch(void)
 {
    uint32_t *pPatchVec = (uint32_t *) (_ANT_DIV_CPERAM_START + _ANT_DIV_PATCH_VEC_OFFSET);
 
 #if (_NWORD_PATCHIMAGE_ANT_DIV > 0)
-   memcpy(pPatchVec, patchImageAnt_div, sizeof(patchImageAnt_div));
+   memcpy(pPatchVec, patchImageAntDiv, sizeof(patchImageAntDiv));
 #endif
 }
 
-PATCH_FUN_SPEC void enterAnt_divSysPatch(void)
+PATCH_FUN_SPEC void enterAntDivSysPatch(void)
 {
 }
 
-PATCH_FUN_SPEC void configureAnt_divPatch(void)
+PATCH_FUN_SPEC void configureAntDivPatch(void)
 {
    uint8_t *pPatchTab = (uint8_t *) (_ANT_DIV_CPERAM_START + _ANT_DIV_PATCH_TAB_OFFSET);
    uint32_t *pIrqPatch = (uint32_t *) (_ANT_DIV_CPERAM_START + _ANT_DIV_IRQPATCH_OFFSET);
@@ -297,22 +297,22 @@ PATCH_FUN_SPEC void configureAnt_divPatch(void)
    pIrqPatch[1] = _IRQ_PATCH_0;
 }
 
-PATCH_FUN_SPEC void applyAnt_divPatch(void)
+PATCH_FUN_SPEC void applyAntDivPatch(void)
 {
-   enterAnt_divSysPatch();
-   enterAnt_divCpePatch();
-   configureAnt_divPatch();
+   enterAntDivSysPatch();
+   enterAntDivCpePatch();
+   configureAntDivPatch();
 }
 
-PATCH_FUN_SPEC void refreshAnt_divPatch(void)
+PATCH_FUN_SPEC void refreshAntDivPatch(void)
 {
-   enterAnt_divCpePatch();
-   configureAnt_divPatch();
+   enterAntDivCpePatch();
+   configureAntDivPatch();
 }
 
 PATCH_FUN_SPEC void rf_patch_cpe_ant_div(void)
 {
-   applyAnt_divPatch();
+   applyAntDivPatch();
 }
 
 #undef _IRQ_PATCH_0

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_wb_dsss.h
-*  Revised:        $Date$
-*  Revision:       $Revision$
+*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
+*  Revision:       $Revision: 17889 $
 *
 *  Description: RF core patch for CC13x0 Wideband DSSS
 *
@@ -70,7 +70,7 @@ extern "C"
 #endif
 
 
-CPE_PATCH_TYPE patchImageWb_dsss[] = {
+CPE_PATCH_TYPE patchImageWbDsss[] = {
    0x210004bd,
    0x2100044d,
    0x21000481,
@@ -266,20 +266,20 @@ CPE_PATCH_TYPE patchImageWb_dsss[] = {
 #define _WB_DSSS_IRQPATCH_OFFSET 0x03BC
 #define _WB_DSSS_PATCH_VEC_OFFSET 0x041C
 
-PATCH_FUN_SPEC void enterWb_dsssCpePatch(void)
+PATCH_FUN_SPEC void enterWbDsssCpePatch(void)
 {
    uint32_t *pPatchVec = (uint32_t *) (_WB_DSSS_CPERAM_START + _WB_DSSS_PATCH_VEC_OFFSET);
 
 #if (_NWORD_PATCHIMAGE_WB_DSSS > 0)
-   memcpy(pPatchVec, patchImageWb_dsss, sizeof(patchImageWb_dsss));
+   memcpy(pPatchVec, patchImageWbDsss, sizeof(patchImageWbDsss));
 #endif
 }
 
-PATCH_FUN_SPEC void enterWb_dsssSysPatch(void)
+PATCH_FUN_SPEC void enterWbDsssSysPatch(void)
 {
 }
 
-PATCH_FUN_SPEC void configureWb_dsssPatch(void)
+PATCH_FUN_SPEC void configureWbDsssPatch(void)
 {
    uint8_t *pPatchTab = (uint8_t *) (_WB_DSSS_CPERAM_START + _WB_DSSS_PATCH_TAB_OFFSET);
    uint32_t *pIrqPatch = (uint32_t *) (_WB_DSSS_CPERAM_START + _WB_DSSS_IRQPATCH_OFFSET);
@@ -297,22 +297,22 @@ PATCH_FUN_SPEC void configureWb_dsssPatch(void)
    pIrqPatch[1] = _IRQ_PATCH_0;
 }
 
-PATCH_FUN_SPEC void applyWb_dsssPatch(void)
+PATCH_FUN_SPEC void applyWbDsssPatch(void)
 {
-   enterWb_dsssSysPatch();
-   enterWb_dsssCpePatch();
-   configureWb_dsssPatch();
+   enterWbDsssSysPatch();
+   enterWbDsssCpePatch();
+   configureWbDsssPatch();
 }
 
-PATCH_FUN_SPEC void refreshWb_dsssPatch(void)
+PATCH_FUN_SPEC void refreshWbDsssPatch(void)
 {
-   enterWb_dsssCpePatch();
-   configureWb_dsssPatch();
+   enterWbDsssCpePatch();
+   configureWbDsssPatch();
 }
 
 PATCH_FUN_SPEC void rf_patch_cpe_wb_dsss(void)
 {
-   applyWb_dsssPatch();
+   applyWbDsssPatch();
 }
 
 #undef _IRQ_PATCH_0

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       wdt.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
+*  Revision:       49048
 *
 *  Description:    Defines and prototypes for the Watchdog Timer.
 *
@@ -298,11 +298,14 @@ WatchdogValueGet(void)
 
 //*****************************************************************************
 //
-//! \brief Registers an interrupt handler for the watchdog timer interrupt.
+//! \brief Registers an interrupt handler for the watchdog timer interrupt in the dynamic interrupt table.
 //!
-//! This function does the actual registering of the interrupt handler. This
-//! function also enables the global interrupt in the interrupt controller; the
-//! watchdog timer interrupt must be enabled via \ref WatchdogIntEnable(). It is the
+//! \note Only use this function if you want to use the dynamic vector table (in SRAM)!
+//!
+//! This function registers a function as the interrupt handler for a specific
+//! interrupt and enables the corresponding interrupt in the interrupt controller.
+//!
+//! The watchdog timer interrupt must be enabled via \ref WatchdogIntEnable(). It is the
 //! interrupt handler's responsibility to clear the interrupt source via
 //! \ref WatchdogIntClear().
 //!
@@ -331,7 +334,7 @@ WatchdogIntRegister(void (*pfnHandler)(void))
 
 //*****************************************************************************
 //
-//! \brief Unregisters an interrupt handler for the watchdog timer interrupt.
+//! \brief Unregisters an interrupt handler for the watchdog timer interrupt in the dynamic interrupt table.
 //!
 //! This function does the actual unregistering of the interrupt handler. This
 //! function clears the handler to be called when a watchdog timer interrupt

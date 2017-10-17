@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       systick.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
+*  Revision:       49048
 *
 *  Description:    Prototypes for the SysTick driver.
 *
@@ -117,9 +117,12 @@ SysTickDisable(void)
 
 //*****************************************************************************
 //
-//! \brief Registers an interrupt handler for the SysTick interrupt.
+//! \brief Registers an interrupt handler for the SysTick interrupt in the dynamic interrupt table.
 //!
-//! This sets the handler to be called when a SysTick interrupt occurs.
+//! \note Only use this function if you want to use the dynamic vector table (in SRAM)!
+//!
+//! This function registers a function as the interrupt handler for a specific
+//! interrupt and enables the corresponding interrupt in the interrupt controller.
 //!
 //! \param pfnHandler is a pointer to the function to be called when the
 //! SysTick interrupt occurs.
@@ -142,7 +145,7 @@ SysTickIntRegister(void (*pfnHandler)(void))
 
 //*****************************************************************************
 //
-//! \brief Unregisters the interrupt handler for the SysTick interrupt.
+//! \brief Unregisters the interrupt handler for the SysTick interrupt in the dynamic interrupt table.
 //!
 //! This function will clear the handler to be called when a SysTick interrupt
 //! occurs.

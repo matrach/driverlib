@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_event_h
-*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
-*  Revision:       48345
+*  Revised:        2017-05-06 20:38:09 +0200 (Sat, 06 May 2017)
+*  Revision:       48921
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
@@ -325,7 +325,7 @@
 // Output Selection for I2S Subscriber 0
 #define EVENT_O_I2SSTMPSEL0                                         0x00000900
 
-// Output Selection for FRZ Subscriber 0
+// Output Selection for FRZ Subscriber
 #define EVENT_O_FRZSEL0                                             0x00000A00
 
 // Set or Clear Software Events
@@ -500,7 +500,7 @@
 //
 // Read only selection value
 // ENUMs:
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 #define EVENT_CPUIRQSEL10_EV_W                                               7
 #define EVENT_CPUIRQSEL10_EV_M                                      0x0000007F
@@ -817,6 +817,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -840,8 +843,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPB
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV5               RFC RAT event 5, configured by RFC_RAT:RATEV.OEVT5
-// RFC_IN_EV4               RFC RAT event 4, configured by RFC_RAT:RATEV.OEVT4
 // CRYPTO_DMA_DONE_IRQ      CRYPTO DMA input done event, the correspondingg
 //                          flag is CRYPTO:IRQSTAT.DMA_IN_DONE. Controlled
 //                          by CRYPTO:IRQEN.DMA_IN_DONE
@@ -872,8 +873,6 @@
 #define EVENT_CPUIRQSEL30_EV_AUX_TDC_DONE                           0x0000006C
 #define EVENT_CPUIRQSEL30_EV_AUX_COMPB                              0x0000006B
 #define EVENT_CPUIRQSEL30_EV_AUX_AON_WU_EV                          0x00000069
-#define EVENT_CPUIRQSEL30_EV_RFC_IN_EV5                             0x00000060
-#define EVENT_CPUIRQSEL30_EV_RFC_IN_EV4                             0x0000005F
 #define EVENT_CPUIRQSEL30_EV_CRYPTO_DMA_DONE_IRQ                    0x0000005E
 #define EVENT_CPUIRQSEL30_EV_DMA_CH18_DONE                          0x00000016
 #define EVENT_CPUIRQSEL30_EV_DMA_CH0_DONE                           0x00000014
@@ -1075,6 +1074,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AUX_ADC_IRQ              AUX ADC interrupt event, corresponds to
@@ -1111,7 +1113,7 @@
 //                          UDMA0:REQDONE
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -1163,6 +1165,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -1191,8 +1196,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV5               RFC RAT event 5, configured by RFC_RAT:RATEV.OEVT5
-// RFC_IN_EV4               RFC RAT event 4, configured by RFC_RAT:RATEV.OEVT4
 // PORT_EVENT1              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT1 wil be routed here.
@@ -1209,7 +1212,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -1223,7 +1226,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -1255,8 +1258,6 @@
 #define EVENT_GPT0ACAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT0ACAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT0ACAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT0ACAPTSEL_EV_RFC_IN_EV5                            0x00000060
-#define EVENT_GPT0ACAPTSEL_EV_RFC_IN_EV4                            0x0000005F
 #define EVENT_GPT0ACAPTSEL_EV_PORT_EVENT1                           0x00000056
 #define EVENT_GPT0ACAPTSEL_EV_PORT_EVENT0                           0x00000055
 #define EVENT_GPT0ACAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -1289,6 +1290,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -1317,8 +1321,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV5               RFC RAT event 5, configured by RFC_RAT:RATEV.OEVT5
-// RFC_IN_EV4               RFC RAT event 4, configured by RFC_RAT:RATEV.OEVT4
 // PORT_EVENT1              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT1 wil be routed here.
@@ -1335,7 +1337,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -1349,7 +1351,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -1381,8 +1383,6 @@
 #define EVENT_GPT0BCAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT0BCAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT0BCAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT0BCAPTSEL_EV_RFC_IN_EV5                            0x00000060
-#define EVENT_GPT0BCAPTSEL_EV_RFC_IN_EV4                            0x0000005F
 #define EVENT_GPT0BCAPTSEL_EV_PORT_EVENT1                           0x00000056
 #define EVENT_GPT0BCAPTSEL_EV_PORT_EVENT0                           0x00000055
 #define EVENT_GPT0BCAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -1415,6 +1415,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -1443,8 +1446,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV5               RFC RAT event 5, configured by RFC_RAT:RATEV.OEVT5
-// RFC_IN_EV4               RFC RAT event 4, configured by RFC_RAT:RATEV.OEVT4
 // PORT_EVENT3              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT3 wil be routed here.
@@ -1461,7 +1462,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -1475,7 +1476,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -1507,8 +1508,6 @@
 #define EVENT_GPT1ACAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT1ACAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT1ACAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT1ACAPTSEL_EV_RFC_IN_EV5                            0x00000060
-#define EVENT_GPT1ACAPTSEL_EV_RFC_IN_EV4                            0x0000005F
 #define EVENT_GPT1ACAPTSEL_EV_PORT_EVENT3                           0x00000058
 #define EVENT_GPT1ACAPTSEL_EV_PORT_EVENT2                           0x00000057
 #define EVENT_GPT1ACAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -1541,6 +1540,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -1569,8 +1571,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV5               RFC RAT event 5, configured by RFC_RAT:RATEV.OEVT5
-// RFC_IN_EV4               RFC RAT event 4, configured by RFC_RAT:RATEV.OEVT4
 // PORT_EVENT3              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT3 wil be routed here.
@@ -1587,7 +1587,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -1601,7 +1601,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -1633,8 +1633,6 @@
 #define EVENT_GPT1BCAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT1BCAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT1BCAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT1BCAPTSEL_EV_RFC_IN_EV5                            0x00000060
-#define EVENT_GPT1BCAPTSEL_EV_RFC_IN_EV4                            0x0000005F
 #define EVENT_GPT1BCAPTSEL_EV_PORT_EVENT3                           0x00000058
 #define EVENT_GPT1BCAPTSEL_EV_PORT_EVENT2                           0x00000057
 #define EVENT_GPT1BCAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -1667,6 +1665,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -1695,8 +1696,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV7               RFC RAT event 7, configured by RFC_RAT:RATEV.OEVT7
-// RFC_IN_EV6               RFC RAT event 6, configured by RFC_RAT:RATEV.OEVT6
 // PORT_EVENT5              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT4 wil be routed here.
@@ -1713,7 +1712,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -1727,7 +1726,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -1759,8 +1758,6 @@
 #define EVENT_GPT2ACAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT2ACAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT2ACAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT2ACAPTSEL_EV_RFC_IN_EV7                            0x00000062
-#define EVENT_GPT2ACAPTSEL_EV_RFC_IN_EV6                            0x00000061
 #define EVENT_GPT2ACAPTSEL_EV_PORT_EVENT5                           0x0000005A
 #define EVENT_GPT2ACAPTSEL_EV_PORT_EVENT4                           0x00000059
 #define EVENT_GPT2ACAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -1793,6 +1790,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -1821,8 +1821,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV7               RFC RAT event 7, configured by RFC_RAT:RATEV.OEVT7
-// RFC_IN_EV6               RFC RAT event 6, configured by RFC_RAT:RATEV.OEVT6
 // PORT_EVENT5              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT4 wil be routed here.
@@ -1839,7 +1837,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -1853,7 +1851,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -1885,8 +1883,6 @@
 #define EVENT_GPT2BCAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT2BCAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT2BCAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT2BCAPTSEL_EV_RFC_IN_EV7                            0x00000062
-#define EVENT_GPT2BCAPTSEL_EV_RFC_IN_EV6                            0x00000061
 #define EVENT_GPT2BCAPTSEL_EV_PORT_EVENT5                           0x0000005A
 #define EVENT_GPT2BCAPTSEL_EV_PORT_EVENT4                           0x00000059
 #define EVENT_GPT2BCAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -2100,7 +2096,8 @@
 //
 // Read only selection value
 // ENUMs:
-// AUX_SW_DMABREQ           AUX observation loopback
+// AUX_SW_DMABREQ           DMA sofware trigger from AUX, triggered by
+//                          AUX_EVCTL:DMASWREQ.START
 #define EVENT_UDMACH8SSEL_EV_W                                               7
 #define EVENT_UDMACH8SSEL_EV_M                                      0x0000007F
 #define EVENT_UDMACH8SSEL_EV_S                                               0
@@ -2115,7 +2112,8 @@
 //
 // Read only selection value
 // ENUMs:
-// AUX_SW_DMABREQ           AUX observation loopback
+// AUX_SW_DMABREQ           DMA sofware trigger from AUX, triggered by
+//                          AUX_EVCTL:DMASWREQ.START
 #define EVENT_UDMACH8BSEL_EV_W                                               7
 #define EVENT_UDMACH8BSEL_EV_M                                      0x0000007F
 #define EVENT_UDMACH8BSEL_EV_S                                               0
@@ -2129,6 +2127,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2164,6 +2165,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2197,6 +2201,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2232,6 +2239,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2265,6 +2275,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2300,6 +2313,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2333,6 +2349,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2368,6 +2387,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT3B_DMABREQ            GPT3B DMA trigger event. Configured by GPT3:DMAEV
@@ -2418,6 +2440,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // CPU_HALTED               CPU halted
@@ -2427,7 +2452,8 @@
 //                          AUX_EVCTL:DMACTL
 // AUX_DMASREQ              DMA single request event from AUX, configured by
 //                          AUX_EVCTL:DMACTL
-// AUX_SW_DMABREQ           AUX observation loopback
+// AUX_SW_DMABREQ           DMA sofware trigger from AUX, triggered by
+//                          AUX_EVCTL:DMASWREQ.START
 // AUX_ADC_IRQ              AUX ADC interrupt event, corresponds to
 //                          AUX_EVCTL:EVTOMCUFLAGS.ADC_IRQ. Status flags
 //                          are found here AUX_EVCTL:EVTOMCUFLAGS
@@ -2459,10 +2485,6 @@
 // SWEV0                    Software event 0, triggered by SWEV.SWEV0
 // WDT_NMI                  Watchdog non maskable interrupt event, controlled
 //                          by WDT:CTL.INTTYPE
-// RFC_IN_EV7               RFC RAT event 7, configured by RFC_RAT:RATEV.OEVT7
-// RFC_IN_EV6               RFC RAT event 6, configured by RFC_RAT:RATEV.OEVT6
-// RFC_IN_EV5               RFC RAT event 5, configured by RFC_RAT:RATEV.OEVT5
-// RFC_IN_EV4               RFC RAT event 4, configured by RFC_RAT:RATEV.OEVT4
 // CRYPTO_DMA_DONE_IRQ      CRYPTO DMA input done event, the correspondingg
 //                          flag is CRYPTO:IRQSTAT.DMA_IN_DONE. Controlled
 //                          by CRYPTO:IRQEN.DMA_IN_DONE
@@ -2539,7 +2561,7 @@
 // DMA_ERR                  DMA bus error, corresponds to UDMA0:ERROR.STATUS
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -2560,7 +2582,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -2627,10 +2649,6 @@
 #define EVENT_UDMACH14BSEL_EV_SWEV1                                 0x00000065
 #define EVENT_UDMACH14BSEL_EV_SWEV0                                 0x00000064
 #define EVENT_UDMACH14BSEL_EV_WDT_NMI                               0x00000063
-#define EVENT_UDMACH14BSEL_EV_RFC_IN_EV7                            0x00000062
-#define EVENT_UDMACH14BSEL_EV_RFC_IN_EV6                            0x00000061
-#define EVENT_UDMACH14BSEL_EV_RFC_IN_EV5                            0x00000060
-#define EVENT_UDMACH14BSEL_EV_RFC_IN_EV4                            0x0000005F
 #define EVENT_UDMACH14BSEL_EV_CRYPTO_DMA_DONE_IRQ                   0x0000005E
 #define EVENT_UDMACH14BSEL_EV_CRYPTO_RESULT_AVAIL_IRQ               0x0000005D
 #define EVENT_UDMACH14BSEL_EV_PORT_EVENT7                           0x0000005C
@@ -2910,6 +2928,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -2938,8 +2959,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV7               RFC RAT event 7, configured by RFC_RAT:RATEV.OEVT7
-// RFC_IN_EV6               RFC RAT event 6, configured by RFC_RAT:RATEV.OEVT6
 // PORT_EVENT7              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT7 wil be routed here.
@@ -2956,7 +2975,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -2970,7 +2989,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -3001,8 +3020,6 @@
 #define EVENT_GPT3ACAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT3ACAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT3ACAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT3ACAPTSEL_EV_RFC_IN_EV7                            0x00000062
-#define EVENT_GPT3ACAPTSEL_EV_RFC_IN_EV6                            0x00000061
 #define EVENT_GPT3ACAPTSEL_EV_PORT_EVENT7                           0x0000005C
 #define EVENT_GPT3ACAPTSEL_EV_PORT_EVENT6                           0x0000005B
 #define EVENT_GPT3ACAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -3034,6 +3051,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // AON_RTC_UPD              RTC periodic event controlled by
@@ -3062,8 +3082,6 @@
 //                          AUX_EVCTL:EVTOMCUFLAGS.AUX_COMPA
 // AUX_AON_WU_EV            AON wakeup event, corresponds flags are here
 //                          AUX_EVCTL:EVTOMCUFLAGS.AON_WU_EV
-// RFC_IN_EV7               RFC RAT event 7, configured by RFC_RAT:RATEV.OEVT7
-// RFC_IN_EV6               RFC RAT event 6, configured by RFC_RAT:RATEV.OEVT6
 // PORT_EVENT7              Port capture event from IOC, configured by
 //                          IOC:IOCFGn.PORT_ID. Events on ports configured
 //                          with ENUM PORT_EVENT7 wil be routed here.
@@ -3080,7 +3098,7 @@
 // GPT0A_CMP                GPT0A compare event. Configured by GPT0:TAMR.TCACT
 // UART0_COMB               UART0 combined interrupt, interrupt flags are
 //                          found here UART0:MIS
-// SSI1_COMB                SSI0 combined interrupt, interrupt flags are found
+// SSI1_COMB                SSI1 combined interrupt, interrupt flags are found
 //                          here SSI1:MIS
 // SSI0_COMB                SSI0 combined interrupt, interrupt flags are found
 //                          here SSI0:MIS
@@ -3094,7 +3112,7 @@
 //                          RFC_DBELL:RFCPEIFG. Only interrupts selected
 //                          with CPE0 in RFC_DBELL:RFCPEIFG can trigger a
 //                          RFC_CPE_0 event
-// RFC_HW_COMB              Combined RCF hardware interrupt, corresponding
+// RFC_HW_COMB              Combined RFC hardware interrupt, corresponding
 //                          flag is here RFC_DBELL:RFHWIFG
 // RFC_CMD_ACK              RFC Doorbell Command Acknowledgement Interrupt,
 //                          equvialent to RFC_DBELL:RFACKIFG.ACKFLAG
@@ -3125,8 +3143,6 @@
 #define EVENT_GPT3BCAPTSEL_EV_AUX_COMPB                             0x0000006B
 #define EVENT_GPT3BCAPTSEL_EV_AUX_COMPA                             0x0000006A
 #define EVENT_GPT3BCAPTSEL_EV_AUX_AON_WU_EV                         0x00000069
-#define EVENT_GPT3BCAPTSEL_EV_RFC_IN_EV7                            0x00000062
-#define EVENT_GPT3BCAPTSEL_EV_RFC_IN_EV6                            0x00000061
 #define EVENT_GPT3BCAPTSEL_EV_PORT_EVENT7                           0x0000005C
 #define EVENT_GPT3BCAPTSEL_EV_PORT_EVENT6                           0x0000005B
 #define EVENT_GPT3BCAPTSEL_EV_GPT3B_CMP                             0x00000044
@@ -3158,6 +3174,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // GPT1B                    GPT1B interrupt event, controlled by GPT1:TBMR
@@ -3207,21 +3226,16 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
-// RFC_IN_EV7               RFC RAT event 7, configured by RFC_RAT:RATEV.OEVT7
-// RFC_IN_EV6               RFC RAT event 6, configured by RFC_RAT:RATEV.OEVT6
-// RFC_IN_EV5               RFC RAT event 5, configured by RFC_RAT:RATEV.OEVT5
-// RFC_IN_EV4               RFC RAT event 4, configured by RFC_RAT:RATEV.OEVT4
 // NONE                     Always inactive
 #define EVENT_I2SSTMPSEL0_EV_W                                               7
 #define EVENT_I2SSTMPSEL0_EV_M                                      0x0000007F
 #define EVENT_I2SSTMPSEL0_EV_S                                               0
 #define EVENT_I2SSTMPSEL0_EV_ALWAYS_ACTIVE                          0x00000079
-#define EVENT_I2SSTMPSEL0_EV_RFC_IN_EV7                             0x00000062
-#define EVENT_I2SSTMPSEL0_EV_RFC_IN_EV6                             0x00000061
-#define EVENT_I2SSTMPSEL0_EV_RFC_IN_EV5                             0x00000060
-#define EVENT_I2SSTMPSEL0_EV_RFC_IN_EV4                             0x0000005F
 #define EVENT_I2SSTMPSEL0_EV_NONE                                   0x00000000
 
 //*****************************************************************************
@@ -3232,6 +3246,9 @@
 // Field:   [6:0] EV
 //
 // Read/write selection value
+//
+// Writing any other value than values defined by a ENUM may result in
+// undefined behavior.
 // ENUMs:
 // ALWAYS_ACTIVE            Always asserted
 // CPU_HALTED               CPU halted

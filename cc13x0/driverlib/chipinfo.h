@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2017-06-26 09:51:05 +0200 (Mon, 26 Jun 2017)
-*  Revision:       49228
+*  Revised:        2017-08-30 11:09:05 +0200 (Wed, 30 Aug 2017)
+*  Revision:       49664
 *
 *  Description:    Collection of functions returning chip information.
 *
@@ -313,7 +313,7 @@ ChipInfo_GetMinorHwRev( void )
 //! How to decode the USER_ID filed is described in the Technical Reference Manual (TRM)
 //!
 //! \return
-//! Returns the the 32 bits USER_ID field
+//! Returns the 32 bits USER_ID field
 //
 //*****************************************************************************
 __STATIC_INLINE uint32_t
@@ -362,12 +362,12 @@ extern ChipType_t ChipInfo_GetChipType( void );
 //
 //*****************************************************************************
 typedef enum {
-   FAMILY_Unknown               = -1, //!< -1 means that the chip's family member is unknown.
-   FAMILY_CC26x0                =  0, //!<  0 means that the chip is a CC26x0 family member.
-   FAMILY_CC13x0                =  1, //!<  1 means that the chip is a CC13x0 family member.
-   FAMILY_CC26x1                =  2, //!<  2 means that the chip is a CC26x1 family member.
-   FAMILY_CC26x0R2              =  3, //!<  3 means that the chip is a CC26x0R2 family (new ROM contents).
-   FAMILY_CC13x2_13x4_26x2_26x4 =  4  //!<  4 means that the chip is a CC13x2, CC13x4, CC26x2, CC26x4 family member.
+   FAMILY_Unknown          = -1, //!< -1 means that the chip's family member is unknown.
+   FAMILY_CC26x0           =  0, //!<  0 means that the chip is a CC26x0 family member.
+   FAMILY_CC13x0           =  1, //!<  1 means that the chip is a CC13x0 family member.
+   FAMILY_CC26x1           =  2, //!<  2 means that the chip is a CC26x1 family member.
+   FAMILY_CC26x0R2         =  3, //!<  3 means that the chip is a CC26x0R2 family (new ROM contents).
+   FAMILY_CC13x2_CC26x2    =  4  //!<  4 means that the chip is a CC13x2, CC26x2 family member.
 } ChipFamily_t;
 
 //*****************************************************************************
@@ -379,6 +379,26 @@ typedef enum {
 //
 //*****************************************************************************
 extern ChipFamily_t ChipInfo_GetChipFamily( void );
+
+//*****************************************************************************
+//
+// Options for the define THIS_DRIVERLIB_BUILD
+//
+//*****************************************************************************
+#define DRIVERLIB_BUILD_CC26X0        0 //!< 0 is the driverlib build ID for the cc26x0 driverlib.
+#define DRIVERLIB_BUILD_CC13X0        1 //!< 1 is the driverlib build ID for the cc13x0 driverlib.
+#define DRIVERLIB_BUILD_CC26X1        2 //!< 2 is the driverlib build ID for the cc26x1 driverlib.
+#define DRIVERLIB_BUILD_CC26X0R2      3 //!< 3 is the driverlib build ID for the cc26x0r2 driverlib.
+#define DRIVERLIB_BUILD_CC13X2_CC26X2 4 //!< 4 is the driverlib build ID for the cc13x2_cc26x2 driverlib.
+
+//*****************************************************************************
+//
+//! \brief Define THIS_DRIVERLIB_BUILD, identifying current driverlib build ID.
+//!
+//! This driverlib build identifier can be useful for compile time checking/optimization (supporting C preprocessor expressions).
+//
+//*****************************************************************************
+#define THIS_DRIVERLIB_BUILD   DRIVERLIB_BUILD_CC13X0
 
 //*****************************************************************************
 //
@@ -438,16 +458,16 @@ ChipInfo_ChipFamilyIs_CC26x1( void )
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC13x2, CC13x4, CC26x2, CC26x4 family.
+//! \brief Returns true if this chip is member of the CC13x2, CC26x2 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC13x2, CC13x4, CC26x2, CC26x4 family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC13x2, CC26x2 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIs_CC13x2_13x4_26x2_26x4( void )
+ChipInfo_ChipFamilyIs_CC13x2_CC26x2( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x2_13x4_26x2_26x4 );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x2_CC26x2 );
 }
 
 //*****************************************************************************

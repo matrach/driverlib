@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_prop_cmd.h
-*  Revised:        2016-12-09 13:14:34 +0100 (Fri, 09 Dec 2016)
-*  Revision:       17557
+*  Revised:        2017-07-05 16:17:29 +0200 (Wed, 05 Jul 2017)
+*  Revision:       17839
 *
-*  Description:    CC26xx R2 API for Proprietary mode commands
+*  Description:    CC2640R2F API for Proprietary mode commands
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -475,6 +475,9 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
       uint32_t preScale:4;              //!<        Prescaler value
       uint32_t :4;
       uint32_t rateWord:21;             //!<        Rate word
+      uint32_t bPdifDecim:1;            //!< \brief 0: Use automatic value for PDIF decimation<br>
+                                        //!<        1: Set PDIF decimation from <code>pdifDecim</code> field
+      uint32_t pdifDecim:2;             //!<        If <code>bPdifDecim</code> = 1: PDIF decimation value (0, 1, or 2)
    } symbolRate;                        //!<        Symbol rate setting
    uint8_t rxBw;                        //!<        Receiver bandwidth
    struct {

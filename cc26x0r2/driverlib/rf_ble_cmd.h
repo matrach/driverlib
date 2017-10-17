@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_ble_cmd.h
-*  Revised:        2017-05-03 15:31:44 +0200 (Wed, 03 May 2017)
-*  Revision:       17775
+*  Revised:        2017-08-22 20:28:29 +0200 (Tue, 22 Aug 2017)
+*  Revision:       17884
 *
-*  Description:    CC26xx/CC13xx API for Bluetooth Low Energy commands
+*  Description:    CC2640R2F API for Bluetooth Low Energy commands
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -2087,7 +2087,7 @@ struct __RFC_STRUCT rfc_ble5ExtAdvEntry_s {
                                         //!<        by the received address when sending<br>
                                         //!<        1: TargetA is inserted automatically from command structure or received
                                         //!<        address if configured in <code>extHdrFlags</code> and is omitted from
-                                        //!<        extended header
+                                        //!<        extended header. Not supported with CMD_BLE5_ADV_EXT.
       uint8_t deviceAddrType:1;         //!< \brief If <code>bSkipAdvA</code> = 0: The type of the device address in extended
                                         //!<        header buffer -- public (0) or random (1)
       uint8_t targetAddrType:1;         //!< \brief If <code>bSkipAdvA</code> = 0: The type of the target address in extended

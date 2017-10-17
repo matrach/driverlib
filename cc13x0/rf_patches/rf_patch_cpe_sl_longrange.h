@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_sl_longrange.h
-*  Revised:        $Date$
-*  Revision:       $Revision$
+*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
+*  Revision:       $Revision: 17889 $
 *
 *  Description: RF core patch for CC13x0 SimpleLink Long Range
 *
@@ -70,7 +70,7 @@ extern "C"
 #endif
 
 
-CPE_PATCH_TYPE patchImageSl_longrange[] = {
+CPE_PATCH_TYPE patchImageSlLongrange[] = {
    0x210004bd,
    0x2100044d,
    0x21000481,
@@ -266,20 +266,20 @@ CPE_PATCH_TYPE patchImageSl_longrange[] = {
 #define _SL_LONGRANGE_IRQPATCH_OFFSET 0x03BC
 #define _SL_LONGRANGE_PATCH_VEC_OFFSET 0x041C
 
-PATCH_FUN_SPEC void enterSl_longrangeCpePatch(void)
+PATCH_FUN_SPEC void enterSlLongrangeCpePatch(void)
 {
    uint32_t *pPatchVec = (uint32_t *) (_SL_LONGRANGE_CPERAM_START + _SL_LONGRANGE_PATCH_VEC_OFFSET);
 
 #if (_NWORD_PATCHIMAGE_SL_LONGRANGE > 0)
-   memcpy(pPatchVec, patchImageSl_longrange, sizeof(patchImageSl_longrange));
+   memcpy(pPatchVec, patchImageSlLongrange, sizeof(patchImageSlLongrange));
 #endif
 }
 
-PATCH_FUN_SPEC void enterSl_longrangeSysPatch(void)
+PATCH_FUN_SPEC void enterSlLongrangeSysPatch(void)
 {
 }
 
-PATCH_FUN_SPEC void configureSl_longrangePatch(void)
+PATCH_FUN_SPEC void configureSlLongrangePatch(void)
 {
    uint8_t *pPatchTab = (uint8_t *) (_SL_LONGRANGE_CPERAM_START + _SL_LONGRANGE_PATCH_TAB_OFFSET);
    uint32_t *pIrqPatch = (uint32_t *) (_SL_LONGRANGE_CPERAM_START + _SL_LONGRANGE_IRQPATCH_OFFSET);
@@ -297,22 +297,22 @@ PATCH_FUN_SPEC void configureSl_longrangePatch(void)
    pIrqPatch[1] = _IRQ_PATCH_0;
 }
 
-PATCH_FUN_SPEC void applySl_longrangePatch(void)
+PATCH_FUN_SPEC void applySlLongrangePatch(void)
 {
-   enterSl_longrangeSysPatch();
-   enterSl_longrangeCpePatch();
-   configureSl_longrangePatch();
+   enterSlLongrangeSysPatch();
+   enterSlLongrangeCpePatch();
+   configureSlLongrangePatch();
 }
 
-PATCH_FUN_SPEC void refreshSl_longrangePatch(void)
+PATCH_FUN_SPEC void refreshSlLongrangePatch(void)
 {
-   enterSl_longrangeCpePatch();
-   configureSl_longrangePatch();
+   enterSlLongrangeCpePatch();
+   configureSlLongrangePatch();
 }
 
 PATCH_FUN_SPEC void rf_patch_cpe_sl_longrange(void)
 {
-   applySl_longrangePatch();
+   applySlLongrangePatch();
 }
 
 #undef _IRQ_PATCH_0

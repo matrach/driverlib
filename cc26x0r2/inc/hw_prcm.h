@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_prcm_h
-*  Revised:        2017-01-31 09:37:48 +0100 (Tue, 31 Jan 2017)
-*  Revision:       48345
+*  Revised:        2017-05-06 20:38:09 +0200 (Sat, 06 May 2017)
+*  Revision:       48921
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
@@ -426,8 +426,9 @@
 //*****************************************************************************
 // Field:   [1:0] CLK_EN
 //
+//
 // 00: Disable clock
-// 01: Disable clock when SYSBUS clock is disabled
+// 01: Disable clock when system CPU is in DeepSleep
 // 11: Enable clock
 //
 // For changes to take effect, CLKLOADCTL.LOAD needs to be written

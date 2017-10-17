@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_wmbus_smode.h
-*  Revised:        $Date$
-*  Revision:       $Revision$
+*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
+*  Revision:       $Revision: 17889 $
 *
 *  Description: RF core patch for CC13x0 WMBUS S-Mode
 *
@@ -70,7 +70,7 @@ extern "C"
 #endif
 
 
-CPE_PATCH_TYPE patchImageWmbus_smode[] = {
+CPE_PATCH_TYPE patchImageWmbusSmode[] = {
    0x210004bd,
    0x2100044d,
    0x21000481,
@@ -266,20 +266,20 @@ CPE_PATCH_TYPE patchImageWmbus_smode[] = {
 #define _WMBUS_SMODE_IRQPATCH_OFFSET 0x03BC
 #define _WMBUS_SMODE_PATCH_VEC_OFFSET 0x041C
 
-PATCH_FUN_SPEC void enterWmbus_smodeCpePatch(void)
+PATCH_FUN_SPEC void enterWmbusSmodeCpePatch(void)
 {
    uint32_t *pPatchVec = (uint32_t *) (_WMBUS_SMODE_CPERAM_START + _WMBUS_SMODE_PATCH_VEC_OFFSET);
 
 #if (_NWORD_PATCHIMAGE_WMBUS_SMODE > 0)
-   memcpy(pPatchVec, patchImageWmbus_smode, sizeof(patchImageWmbus_smode));
+   memcpy(pPatchVec, patchImageWmbusSmode, sizeof(patchImageWmbusSmode));
 #endif
 }
 
-PATCH_FUN_SPEC void enterWmbus_smodeSysPatch(void)
+PATCH_FUN_SPEC void enterWmbusSmodeSysPatch(void)
 {
 }
 
-PATCH_FUN_SPEC void configureWmbus_smodePatch(void)
+PATCH_FUN_SPEC void configureWmbusSmodePatch(void)
 {
    uint8_t *pPatchTab = (uint8_t *) (_WMBUS_SMODE_CPERAM_START + _WMBUS_SMODE_PATCH_TAB_OFFSET);
    uint32_t *pIrqPatch = (uint32_t *) (_WMBUS_SMODE_CPERAM_START + _WMBUS_SMODE_IRQPATCH_OFFSET);
@@ -297,22 +297,22 @@ PATCH_FUN_SPEC void configureWmbus_smodePatch(void)
    pIrqPatch[1] = _IRQ_PATCH_0;
 }
 
-PATCH_FUN_SPEC void applyWmbus_smodePatch(void)
+PATCH_FUN_SPEC void applyWmbusSmodePatch(void)
 {
-   enterWmbus_smodeSysPatch();
-   enterWmbus_smodeCpePatch();
-   configureWmbus_smodePatch();
+   enterWmbusSmodeSysPatch();
+   enterWmbusSmodeCpePatch();
+   configureWmbusSmodePatch();
 }
 
-PATCH_FUN_SPEC void refreshWmbus_smodePatch(void)
+PATCH_FUN_SPEC void refreshWmbusSmodePatch(void)
 {
-   enterWmbus_smodeCpePatch();
-   configureWmbus_smodePatch();
+   enterWmbusSmodeCpePatch();
+   configureWmbusSmodePatch();
 }
 
 PATCH_FUN_SPEC void rf_patch_cpe_wmbus_smode(void)
 {
-   applyWmbus_smodePatch();
+   applyWmbusSmodePatch();
 }
 
 #undef _IRQ_PATCH_0

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       i2s.c
-*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
-*  Revision:       48852
+*  Revised:        2017-05-08 12:18:04 +0200 (Mon, 08 May 2017)
+*  Revision:       48924
 *
 *  Description:    Driver for the I2S.
 *
@@ -139,10 +139,9 @@ I2SChannelConfigure(uint32_t ui32Base, uint32_t ui32Chan0Cfg,
     ui32OutChan = 0;
 
     // Configure input/output channels.
-    HWREG(I2S0_BASE + I2S_O_AIFDIRCFG) = ((ui32Chan0Cfg << I2S_AIFDIRCFG_AD0_S)
-                                         & I2S_AIFDIRCFG_AD0_M) |
-                                        ((ui32Chan1Cfg << I2S_AIFDIRCFG_AD1_S)
-                                         & I2S_AIFDIRCFG_AD1_M);
+    HWREG(I2S0_BASE + I2S_O_AIFDIRCFG) = (
+        (( ui32Chan0Cfg << I2S_AIFDIRCFG_AD0_S) & I2S_AIFDIRCFG_AD0_M ) |
+        (( ui32Chan1Cfg << I2S_AIFDIRCFG_AD1_S) & I2S_AIFDIRCFG_AD1_M )   );
 
     // Configure the valid channel mask.
     HWREG(I2S0_BASE + I2S_O_AIFWMASK0) = (ui32Chan0Cfg >> 8) & I2S_AIFWMASK0_MASK_M;

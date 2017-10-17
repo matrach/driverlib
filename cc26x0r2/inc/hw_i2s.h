@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_i2s_h
-*  Revised:        2017-03-21 12:16:25 +0100 (Tue, 21 Mar 2017)
-*  Revision:       48667
+*  Revised:        2017-05-06 20:38:09 +0200 (Sat, 06 May 2017)
+*  Revision:       48921
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
@@ -112,7 +112,7 @@
 // Current Value of XCNT
 #define I2S_O_STMPXCNT                                              0x00000060
 
-// Captured XOSC Counter Value, Capture Channel 1
+// Internal
 #define I2S_O_STMPXCNTCAPT1                                         0x00000064
 
 // Captured WCLK Counter Value, Capture Channel 1
@@ -171,10 +171,10 @@
 //*****************************************************************************
 // Field:   [7:0] END_FRAME_IDX
 //
-// Defines the length of the Writing a non-zero value to this register field
-// enables and initializes AIF. Note that before doing so, all other
-// configuration must have been done, and AIFINPTRNEXT/AIFOUTPTRNEXT must have
-// been loaded.
+// Defines the length of the DMA buffer. Writing a non-zero value to this
+// register field enables and initializes AIF. Note that before doing so, all
+// other configuration must have been done, and AIFINPTRNEXT/AIFOUTPTRNEXT must
+// have been loaded.
 #define I2S_AIFDMACFG_END_FRAME_IDX_W                                        8
 #define I2S_AIFDMACFG_END_FRAME_IDX_M                               0x000000FF
 #define I2S_AIFDMACFG_END_FRAME_IDX_S                                        0
@@ -184,6 +184,22 @@
 // Register: I2S_O_AIFDIRCFG
 //
 //*****************************************************************************
+// Field:   [9:8] AD2
+//
+// Configures the AD2 audio data pin usage
+//
+// 0x3: Reserved
+// ENUMs:
+// OUT                      Output mode
+// IN                       Input mode
+// DIS                      Not in use (disabled)
+#define I2S_AIFDIRCFG_AD2_W                                                  2
+#define I2S_AIFDIRCFG_AD2_M                                         0x00000300
+#define I2S_AIFDIRCFG_AD2_S                                                  8
+#define I2S_AIFDIRCFG_AD2_OUT                                       0x00000200
+#define I2S_AIFDIRCFG_AD2_IN                                        0x00000100
+#define I2S_AIFDIRCFG_AD2_DIS                                       0x00000000
+
 // Field:   [5:4] AD1
 //
 // Configures the AD1 audio data pin usage:
@@ -679,8 +695,7 @@
 //*****************************************************************************
 // Field:  [15:0] CAPT_VALUE
 //
-// Channel 1 is idle and can not be sampled from an external pulse as with
-// Channel 0 STMPXCNTCAPT0
+// Internal. Only to be used through TI provided API.
 #define I2S_STMPXCNTCAPT1_CAPT_VALUE_W                                      16
 #define I2S_STMPXCNTCAPT1_CAPT_VALUE_M                              0x0000FFFF
 #define I2S_STMPXCNTCAPT1_CAPT_VALUE_S                                       0

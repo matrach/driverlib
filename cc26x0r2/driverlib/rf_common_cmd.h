@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_common_cmd.h
-*  Revised:        2016-11-30 17:17:07 +0100 (Wed, 30 Nov 2016)
-*  Revision:       17538
+*  Revised:        2017-07-05 16:17:29 +0200 (Wed, 05 Jul 2017)
+*  Revision:       17839
 *
-*  Description:    CC26xx API for common/generic commands
+*  Description:    CC2640R2F API for common/generic commands
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.

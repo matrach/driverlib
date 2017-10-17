@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ssi.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
+*  Revision:       49048
 *
 *  Description:    Defines and macros for the SSI.
 *
@@ -412,11 +412,14 @@ SSIStatus(uint32_t ui32Base)
 
 //*****************************************************************************
 //
-//! \brief Registers an interrupt handler for the synchronous serial port.
+//! \brief Registers an interrupt handler for the Synchronous Serial Interface in the dynamic interrupt table.
 //!
-//! This sets the handler to be called when an SSI interrupt
-//! occurs. This will enable the global interrupt in the interrupt controller;
-//! specific SSI interrupts must be enabled via \ref SSIIntEnable(). If necessary,
+//! \note Only use this function if you want to use the dynamic vector table (in SRAM)!
+//!
+//! This function registers a function as the interrupt handler for a specific
+//! interrupt and enables the corresponding interrupt in the interrupt controller.
+//!
+//! Specific SSI interrupts must be enabled via \ref SSIIntEnable(). If necessary,
 //! it is the interrupt handler's responsibility to clear the interrupt source
 //! via \ref SSIIntClear().
 //!
@@ -434,7 +437,7 @@ extern void SSIIntRegister(uint32_t ui32Base, void (*pfnHandler)(void));
 
 //*****************************************************************************
 //
-//! \brief Unregisters an interrupt handler for the synchronous serial port.
+//! \brief Unregisters an interrupt handler for the Synchronous Serial Interface in the dynamic interrupt table.
 //!
 //! This function will clear the handler to be called when a SSI
 //! interrupt occurs. This will also mask off the interrupt in the interrupt

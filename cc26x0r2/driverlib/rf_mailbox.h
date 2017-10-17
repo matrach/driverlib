@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_mailbox.h
-*  Revised:        $ $
-*  Revision:       $ $
+*  Revised:        2017-08-28 10:10:48 +0200 (Mon, 28 Aug 2017)
+*  Revision:       17894
 *
 *  Description:    Definitions for interface between system and radio CPU
 *
@@ -50,7 +50,6 @@
 #define RF_MODE_IEEE_15_4        0x02
 #define RF_MODE_PROPRIETARY_2_4  0x03
 #define RF_MODE_PROPRIETARY      RF_MODE_PROPRIETARY_2_4
-#define RF_MODE_MULTIPLE         0x05
 ///@}
 
 
