@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.c
-*  Revised:        2017-07-19 09:27:07 +0200 (Wed, 19 Jul 2017)
-*  Revision:       49355
+*  Revised:        2017-09-01 10:21:01 +0200 (Fri, 01 Sep 2017)
+*  Revision:       49677
 *
 *  Description:    Driver for setting up the system Oscillators
 *
@@ -42,6 +42,7 @@
 #include "aon_batmon.h"
 #include "aon_rtc.h"
 #include "osc.h"
+#include "setup_rom.h"
 
 //*****************************************************************************
 //
@@ -68,6 +69,8 @@
     #define OSCHF_DebugGetExpectedAverageCrystalAmplitude NOROM_OSCHF_DebugGetExpectedAverageCrystalAmplitude
     #undef  OSC_HPOSCRelativeFrequencyOffsetGet
     #define OSC_HPOSCRelativeFrequencyOffsetGet NOROM_OSC_HPOSCRelativeFrequencyOffsetGet
+    #undef  OSC_AdjustXoscHfCapArray
+    #define OSC_AdjustXoscHfCapArray        NOROM_OSC_AdjustXoscHfCapArray
     #undef  OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
     #define OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert NOROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
 #endif
@@ -300,6 +303,24 @@ OSCHF_SwitchToRcOscTurnOffXosc( void )
 
    oscHfGlobals.timeXoscOff_CV  = AONRTCCurrentCompareValueGet();
    oscHfGlobals.tempXoscOff     = AONBatMonTemperatureGetDegC();
+}
+
+//*****************************************************************************
+//
+// Adjust the XOSC HF cap array relative to the factory setting
+//
+//*****************************************************************************
+void
+OSC_AdjustXoscHfCapArray( int32_t capArrDelta )
+{
+   // read the MODE_CONF register in CCFG
+   uint32_t ccfg_ModeConfReg = HWREG( CCFG_BASE + CCFG_O_MODE_CONF );
+   // Clear CAP_MODE and the CAPARRAY_DELATA field
+   ccfg_ModeConfReg &= ~( CCFG_MODE_CONF_XOSC_CAPARRAY_DELTA_M | CCFG_MODE_CONF_XOSC_CAP_MOD_M );
+   // Insert new delta value
+   ccfg_ModeConfReg |= ((((uint32_t)capArrDelta) << CCFG_MODE_CONF_XOSC_CAPARRAY_DELTA_S ) & CCFG_MODE_CONF_XOSC_CAPARRAY_DELTA_M );
+   // Update the HW register with the new delta value
+   DDI32RegWrite(AUX_DDI0_OSC_BASE, DDI_0_OSC_O_ANABYPASSVAL1, SetupGetTrimForAnabypassValue1( ccfg_ModeConfReg ));
 }
 
 //*****************************************************************************

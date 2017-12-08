@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ioc.h
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        2017-11-02 14:16:14 +0100 (Thu, 02 Nov 2017)
+*  Revision:       50156
 *
 *  Description:    Defines and prototypes for the IO Controller.
 *
@@ -449,6 +449,8 @@ extern uint32_t IOCPortConfigureGet(uint32_t ui32IOId);
 //! \brief Set wake-up mode from shutdown on an IO port.
 //!
 //! This function is used to set the wake-up mode from shutdown of an IO.
+//!
+//! IO must be configured as input in order for wakeup to work. See \ref IOCIOInputSet().
 //!
 //! \param ui32IOId defines the IO to configure.
 //! - \ref IOID_0

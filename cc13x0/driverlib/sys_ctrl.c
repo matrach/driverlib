@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.c
-*  Revised:        2017-08-02 14:52:20 +0200 (Wed, 02 Aug 2017)
-*  Revision:       49471
+*  Revised:        2017-11-07 11:56:04 +0100 (Tue, 07 Nov 2017)
+*  Revision:       50203
 *
 *  Description:    Driver for the System Control.
 *
@@ -41,8 +41,8 @@
 #include "../inc/hw_ccfg.h"
 // Driverlib headers
 #include "aon_batmon.h"
-#include "sys_ctrl.h"
 #include "setup_rom.h"
+#include "sys_ctrl.h"
 
 
 //*****************************************************************************
@@ -320,7 +320,7 @@ SysCtrlAdjustRechargeAfterPowerDown( uint32_t vddrRechargeMargin )
       AON_WUC_RECHARGESTAT_MAX_USED_PER_S ;
 
    if ( longestRechargePeriod != 0 ) {
-      //--- Spec. changed (originaly point 1) ---
+      //--- Spec. changed (originally point 1) ---
       curTemp = AONBatMonTemperatureGetDegC();
       if ( curTemp < powerQualGlobals.pdTemp ) {
          if ( curTemp < -128 ) {
@@ -424,11 +424,11 @@ SysCtrl_DCDC_VoltageConditionalControl( void )
 uint32_t
 SysCtrlResetSourceGet( void )
 {
-   if ( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) & AON_SYSCTL_RESETCTL_WU_FROM_SD_M ) {
+   uint32_t aonSysctlResetCtl = HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL );
+
+   if ( aonSysctlResetCtl & AON_SYSCTL_RESETCTL_WU_FROM_SD_M ) {
       return ( RSTSRC_WAKEUP_FROM_SHUTDOWN );
    } else {
-      return (( HWREG( AON_SYSCTL_BASE + AON_SYSCTL_O_RESETCTL ) &
-                AON_SYSCTL_RESETCTL_RESET_SRC_M ) >>
-                AON_SYSCTL_RESETCTL_RESET_SRC_S ) ;
+      return (( aonSysctlResetCtl & AON_SYSCTL_RESETCTL_RESET_SRC_M ) >> AON_SYSCTL_RESETCTL_RESET_SRC_S ) ;
    }
 }

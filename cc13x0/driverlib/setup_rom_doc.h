@@ -1,9 +1,7 @@
 /******************************************************************************
-*  Filename:       debug.h
-*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
-*  Revision:       48852
-*
-*  Description:    Macros for assisting debug of the driver library.
+*  Filename:       setup_rom_doc.h
+*  Revised:        2017-06-05 12:13:49 +0200 (ma, 05 jun 2017)
+*  Revision:       49096
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -35,50 +33,12 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************************/
-
-//*****************************************************************************
-//
-//! \addtogroup system_control_group
+//! \addtogroup setup_rom_api
 //! @{
-//! \addtogroup debug_api
-//! @{
-//
-//*****************************************************************************
-
-#ifndef __DEBUG_H__
-#define __DEBUG_H__
-
-//*****************************************************************************
-//
-//! Function stub for allowing compile with DRIVERLIB_DEBUG flag asserted.
-//
-//*****************************************************************************
-extern void __error__(char *pcFilename, uint32_t ui32Line);
-
-//*****************************************************************************
-//
-// The ASSERT macro, which does the actual assertion checking. Typically, this
-// will be for procedure arguments.
-//
-//*****************************************************************************
-#ifdef DRIVERLIB_DEBUG
-#define ASSERT(expr) {                                      \
-                         if(!(expr))                        \
-                         {                                  \
-                             __error__(__FILE__, __LINE__); \
-                         }                                  \
-                     }
-
-#else
-#define ASSERT(expr)
-#endif
-
-#endif // __DEBUG_H__
-
-//*****************************************************************************
-//
-//! Close the Doxygen group.
+//!
+//! This module contains functions from the Setup API which are likely to be in ROM.
+//!
+//! \note Do not use functions from this module directly! This module is only to be used by
+//! SetupTrimDevice().
+//!
 //! @}
-//! @}
-//
-//*****************************************************************************

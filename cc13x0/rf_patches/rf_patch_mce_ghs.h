@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_ghs.h
-*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
-*  Revision:       $Revision: 17889 $
+*  Revised:        $Date: 2017-11-03 15:06:37 +0100 (fr, 03 nov 2017) $
+*  Revision:       $Revision: 18032 $
 *
-*  Description: RF core patch for CC13x0 Generic FSK at 1.5Mbps
+*  Description: RF core patch for CC13x0 Generic 4FSK up to 1.5Mbps
 *
 *  Copyright (c) 2015-2017, Texas Instruments Incorporated
 *  All rights reserved.

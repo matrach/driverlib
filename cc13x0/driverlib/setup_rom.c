@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup_rom.c
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        2017-11-02 11:31:15 +0100 (Thu, 02 Nov 2017)
+*  Revision:       50143
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -54,12 +54,6 @@
 #include "osc.h"
 #include "sys_ctrl.h"
 #include "setup_rom.h"
-// ##### INCLUDE IN ROM BEGIN #####
-// We need intrinsic functions for IAR (if used in source code)
-#ifdef __IAR_SYSTEMS_ICC__
-#include <intrinsics.h>
-#endif
-// ##### INCLUDE IN ROM END #####
 
 //*****************************************************************************
 //
@@ -128,22 +122,13 @@ SetupSetVddrLevel( uint32_t ccfg_ModeConfReg )
    int32_t  currentTrim       ;
    int32_t  deltaTrim         ;
 
-//   if ( ccfg_ModeConfReg & CCFG_MODE_CONF_VDDS_BOD_LEVEL ) {
-      //
-      // VDDS_BOD_LEVEL = 1 means that boost mode is selected
-      // - Step up VDDR_TRIM to FCFG1..VDDR_TRIM_HH
-      newTrimRaw = (( HWREG( FCFG1_BASE + FCFG1_O_VOLT_TRIM ) &
-         FCFG1_VOLT_TRIM_VDDR_TRIM_HH_M ) >>
-         FCFG1_VOLT_TRIM_VDDR_TRIM_HH_S ) ;
-//   } else {
-//      //
-//      // VDDS_BOD_LEVEL = 0
-//      // - Step up VDDR_TRIM to FCFG1..VDDR_TRIM_H
-//      //
-//      newTrimRaw = (( HWREG( FCFG1_BASE + FCFG1_O_VOLT_TRIM ) &
-//         FCFG1_VOLT_TRIM_VDDR_TRIM_H_M ) >>
-//         FCFG1_VOLT_TRIM_VDDR_TRIM_H_S ) ;
-//   }
+   //
+   // VDDS_BOD_LEVEL = 1 means that boost mode is selected
+   // - Step up VDDR_TRIM to FCFG1..VDDR_TRIM_HH
+   newTrimRaw = (( HWREG( FCFG1_BASE + FCFG1_O_VOLT_TRIM ) &
+      FCFG1_VOLT_TRIM_VDDR_TRIM_HH_M ) >>
+      FCFG1_VOLT_TRIM_VDDR_TRIM_HH_S ) ;
+
    targetTrim  = SetupSignExtendVddrTrimValue( newTrimRaw );
    currentTrim = SetupSignExtendVddrTrimValue((
       HWREGB( ADI3_BASE + ADI_3_REFSYS_O_DCDCCTL0 ) &
@@ -198,24 +183,12 @@ SetupAfterColdResetWakeupFromShutDownCfg1( uint32_t ccfg_ModeConfReg )
         // - Needs a positive transition on BOD_BG_TRIM_EN (bit[7] of REFSYSCTL3) to
         //   latch new VDDS BOD. Set to 0 first to guarantee a positive transition.
         HWREGB( ADI3_BASE + ADI_O_CLR + ADI_3_REFSYS_O_REFSYSCTL3 ) = ADI_3_REFSYS_REFSYSCTL3_BOD_BG_TRIM_EN;
-//        if ( ccfg_ModeConfReg & CCFG_MODE_CONF_VDDS_BOD_LEVEL ) {
-            //
-            // VDDS_BOD_LEVEL = 1 means that boost mode is selected
-            // - Max out the VDDS_BOD trim (=VDDS_BOD_POS_31)
-            HWREGH( ADI3_BASE + ADI_O_MASK8B + ( ADI_3_REFSYS_O_REFSYSCTL1 * 2 )) =
-                ( ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_M << 8 ) |
-                ( ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_POS_31 ) ;
-//        } else {
-//            //
-//            // VDDS_BOD_LEVEL = 0
-//            // - Set VDDS_BOD to FCFG1..TRIMBOD_H
-//            //
-//            HWREGH( ADI3_BASE + ADI_O_MASK8B + ( ADI_3_REFSYS_O_REFSYSCTL1 * 2 )) =
-//                ( ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_M << 8 ) |
-//                ((( HWREG( FCFG1_BASE + FCFG1_O_VOLT_TRIM ) &
-//                    FCFG1_VOLT_TRIM_TRIMBOD_H_M ) >>
-//                    FCFG1_VOLT_TRIM_TRIMBOD_H_S ) << ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_S );
-//        }
+        //
+        // VDDS_BOD_LEVEL = 1 means that boost mode is selected
+        // - Max out the VDDS_BOD trim (=VDDS_BOD_POS_31)
+        HWREGH( ADI3_BASE + ADI_O_MASK8B + ( ADI_3_REFSYS_O_REFSYSCTL1 * 2 )) =
+            ( ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_M << 8 ) |
+            ( ADI_3_REFSYS_REFSYSCTL1_TRIM_VDDS_BOD_POS_31 ) ;
         HWREGB( ADI3_BASE + ADI_O_SET + ADI_3_REFSYS_O_REFSYSCTL3 ) = ADI_3_REFSYS_REFSYSCTL3_BOD_BG_TRIM_EN;
 
         SetupSetVddrLevel( ccfg_ModeConfReg );
@@ -483,12 +456,6 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
       FCFG1_SOC_ADC_REF_TRIM_AND_OFFSET_EXT_SOC_ADC_REF_VOLTAGE_TRIM_TEMP1_S ) <<
       ADI_4_AUX_ADCREF1_VTRIM_S ) &
       ADI_4_AUX_ADCREF1_VTRIM_M );
-
-    // Set ADI_4_AUX:ADC0.SMPL_CYCLE_EXP to it's default minimum value (=3)
-    // (Note: Using MASK8B requires that the bits to be modified must be within the same
-    //        byte boundary which is the case for the ADI_4_AUX_ADC0_SMPL_CYCLE_EXP field)
-    HWREGH( AUX_ADI4_BASE + ADI_O_MASK8B + ( ADI_4_AUX_O_ADC0 * 2 )) =
-      ( ADI_4_AUX_ADC0_SMPL_CYCLE_EXP_M << 8 ) | ( 3 << ADI_4_AUX_ADC0_SMPL_CYCLE_EXP_S );
 
     // Sync with AON
     SysCtrlAonSync();

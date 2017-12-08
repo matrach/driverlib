@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_event.h
-*  Revised:        2017-06-21 11:05:14 +0200 (Wed, 21 Jun 2017)
-*  Revision:       49178
+*  Revised:        2017-08-09 16:56:05 +0200 (Wed, 09 Aug 2017)
+*  Revision:       49506
 *
 *  Description:    Defines and prototypes for the AON Event fabric.
 *
@@ -168,11 +168,10 @@ extern "C"
 //
 //! \brief Select event source for the specified MCU wake-up programmable event.
 //!
-//! The AON event fabric has several programmable events that can
-//! wake up the MCU. The events are forwarded to the wake-up controller (WUC).
+//! The AON event fabric has several programmable events that can wake up the MCU.
 //!
 //! \note The programmable event sources are effectively OR'ed together
-//!  to form a single wake-up event forwarded to the WUC.
+//!  to form a single wake-up event.
 //!
 //! \param ui32MCUWUEvent is one of the programmable MCU wake-up event sources.
 //! - \ref AON_EVENT_MCU_WU0
@@ -265,11 +264,10 @@ extern uint32_t AONEventMcuWakeUpGet(uint32_t ui32MCUWUEvent);
 //! \brief Select event source for the specified AUX wake-up programmable event.
 //!
 //! The AON event fabric has a total of three programmable events that can
-//! wake-up the AUX domain. The events are forwarded to the wake-up
-//! controller (WUC).
+//! wake-up the AUX domain.
 //!
 //! \note The three programmable event sources are effectively OR'ed together
-//!  to form a single wake-up event forwarded to the WUC.
+//!  to form a single wake-up event.
 //!
 //! \param ui32AUXWUEvent is one of three programmable AUX wake-up event sources.
 //! - \ref AON_EVENT_AUX_WU0
@@ -317,8 +315,7 @@ extern void AONEventAuxWakeUpSet(uint32_t ui32AUXWUEvent,
 //! \brief Get event source for the specified AUX wake-up programmable event.
 //!
 //! The AON event fabric has a total of three programmable events that can
-//! wake-up the AUX domain. The events are forwarded to the wake-up
-//! controller (WUC).
+//! wake-up the AUX domain.
 //!
 //! \param ui32AUXWUEvent is one of three programmable AUX wake-up event sources.
 //! - \ref AON_EVENT_AUX_WU0

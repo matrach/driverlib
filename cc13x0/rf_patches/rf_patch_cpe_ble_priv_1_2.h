@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ble_priv_1_2.h
-*  Revised:        $Date: 2016-06-08 15:35:28 +0200 (Wed, 08 Jun 2016) $
+*  Revised:        $Date: 2016-06-08 15:35:28 +0200 (on, 08 jun 2016) $
 *  Revision:       $Revision: 17220 $
 *
 *  Description:    RF Core patch file for CC1350 Bluetooth Low Energy with privacy 1.2 support

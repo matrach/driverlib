@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_prop_mailbox.h
-*  Revised:        2017-08-28 10:10:48 +0200 (Mon, 28 Aug 2017)
-*  Revision:       17894
+*  Revised:        2017-11-03 15:06:37 +0100 (Fri, 03 Nov 2017)
+*  Revision:       18032
 *
 *  Description:    Definitions for proprietary mode radio interface
 *

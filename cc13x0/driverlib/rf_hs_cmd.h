@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_hs_cmd.h
-*  Revised:        2017-07-05 16:17:29 +0200 (Wed, 05 Jul 2017)
-*  Revision:       17839
+*  Revised:        2017-11-10 10:42:47 +0100 (Fri, 10 Nov 2017)
+*  Revision:       18052
 *
 *  Description:    CC13x0 API for high-speed mode commands
 *
@@ -40,10 +40,16 @@
 #define __HS_CMD_H
 
 #ifndef __RFC_STRUCT
-#ifdef __GNUC__
-#define __RFC_STRUCT __attribute__ ((aligned (4)))
-#else
 #define __RFC_STRUCT
+#endif
+
+#ifndef __RFC_STRUCT_ATTR
+#if defined(__GNUC__)
+#define __RFC_STRUCT_ATTR __attribute__ ((aligned (4)))
+#elif defined(__TI_ARM__)
+#define __RFC_STRUCT_ATTR __attribute__ ((__packed__,aligned (4)))
+#else
+#define __RFC_STRUCT_ATTR
 #endif
 #endif
 
@@ -97,7 +103,7 @@ struct __RFC_STRUCT rfc_CMD_HS_TX_s {
    } pktConf;
    uint8_t __dummy0;
    dataQueue_t* pQueue;                 //!<        Pointer to Tx queue
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -162,7 +168,7 @@ struct __RFC_STRUCT rfc_CMD_HS_RX_s {
    ratmr_t endTime;                     //!<        Time used together with <code>endTrigger</code> for ending the operation
    dataQueue_t* pQueue;                 //!<        Pointer to receive queue
    rfc_hsRxOutput_t *pOutput;           //!<        Pointer to output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -177,7 +183,7 @@ struct __RFC_STRUCT rfc_hsRxOutput_s {
    uint8_t nRxBufFull;                  //!<        Number of packets that have been received and discarded due to lack of buffer space
    int8_t lastRssi;                     //!<        RSSI of last received packet
    ratmr_t timeStamp;                   //!<        Time stamp of last received packet
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -195,7 +201,7 @@ struct __RFC_STRUCT rfc_hsRxStatus_s {
                                         //!<        2: Received address 0x0000<br>
                                         //!<        3: Received address 0xFFFF
    } status;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 

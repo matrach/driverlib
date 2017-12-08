@@ -2,8 +2,8 @@
  @file      cc13x0f128.lds
  @brief     CC13x0F128 linker configuration file for GNU compiler.
 
- Revised    $Date: 2017-02-03 19:14:38 +0100 (Fri, 03 Feb 2017) $
- Revision   $Revision: 17632 $
+ Revised    $Date: 2017-08-07 11:44:47 +0200 (ma, 07 aug 2017) $
+ Revision   $Revision: 17870 $
 
  This file is auto-generated.
 
@@ -88,6 +88,14 @@ SECTIONS
     .ARM.extab :
     {
         *(.ARM.extab* .gnu.linkonce.armextab.*)
+    } > FLASH
+
+    .init_array :
+    {
+        _init_array = .;
+        KEEP(*(SORT(.init_array.*)))
+        KEEP(*(.init_array*))
+        _einit_array = .;
     } > FLASH
 
     .data :

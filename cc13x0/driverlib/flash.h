@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       flash.h
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        2017-11-02 16:09:32 +0100 (Thu, 02 Nov 2017)
+*  Revision:       50166
 *
 *  Description:    Defines and prototypes for the Flash driver.
 *
@@ -655,9 +655,10 @@ FlashIntClear(uint32_t ui32IntFlags)
 //! must have valid values at all times. These values affect the configuration
 //! of the device during boot.
 //!
-//! \note Please note that code can not execute in flash while any part of the flash
-//! is being programmed or erased. This function must only be executed from ROM
-//! or SRAM.
+//! \warning Please note that code can not execute in flash while any part of the flash
+//! is being programmed or erased. The application must disable interrupts that have
+//! interrupt routines in flash. This function calls a ROM function which handles the
+//! actual program operation.
 //!
 //! \param ui32SectorAddress is the starting address in flash of the sector to be
 //! erased.
@@ -673,22 +674,30 @@ extern uint32_t FlashSectorErase(uint32_t ui32SectorAddress);
 
 //*****************************************************************************
 //
-//! \brief Programs unprotected main bank flash sectors.
+//! \brief Programs unprotected flash sectors in the main bank.
 //!
-//! This function will program a sequence of bytes into the on-chip flash.
+//! This function programs a sequence of bytes into the on-chip flash.
 //! Programming each location consists of the result of an AND operation
 //! of the new data and the existing data; in other words bits that contain
 //! 1 can remain 1 or be changed to 0, but bits that are 0 cannot be changed
-//! to 1.  Therefore, a byte can be programmed multiple times as long as these
+//! to 1. Therefore, a byte can be programmed multiple times as long as these
 //! rules are followed; if a program operation attempts to change a 0 bit to
 //! a 1 bit, that bit will not have its value changed.
 //!
-//! This function will not return until the data has been programmed or an
-//! programming error has occurred.
+//! This function does not return until the data has been programmed or a
+//! programming error occurs.
 //!
-//! \note Please note that code can not execute in flash while any part of the flash
-//! is being programmed or erased. This function must only be executed from ROM
-//! or SRAM.
+//! \note It is recommended to disable cache and line buffer before programming the
+//! flash. Cache and line buffer are not automatically updated if a flash program
+//! causes a mismatch between new flash content and old content in cache and
+//! line buffer. Remember to enable cache and line buffer when the program
+//! operation completes. See \ref VIMSModeSafeSet(), \ref VIMSLineBufDisable(),
+//! and \ref VIMSLineBufEnable() for more information.
+//!
+//! \warning Please note that code can not execute in flash while any part of the flash
+//! is being programmed or erased. The application must disable interrupts that have
+//! interrupt routines in flash. This function calls a ROM function which handles the
+//! actual program operation.
 //!
 //! The \c pui8DataBuffer pointer can not point to flash.
 //!

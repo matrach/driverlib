@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_prcm_h
-*  Revised:        2017-05-04 21:56:26 +0200 (Thu, 04 May 2017)
-*  Revision:       48904
+*  Revised:        2017-09-14 10:33:07 +0200 (Thu, 14 Sep 2017)
+*  Revision:       49733
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
@@ -1017,7 +1017,7 @@
 // Field:     [0] EN
 //
 //
-// 0: MCLK, BCLK and **WCLK** will be static low
+// 0: MCLK, BCLK and WCLK will be static low
 // 1: Enables the generation of  MCLK, BCLK and WCLK
 //
 // For changes to take effect, CLKLOADCTL.LOAD needs to be written

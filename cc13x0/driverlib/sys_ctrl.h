@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.h
-*  Revised:        2017-08-02 14:52:20 +0200 (Wed, 02 Aug 2017)
-*  Revision:       49471
+*  Revised:        2017-11-07 11:56:04 +0100 (Tue, 07 Nov 2017)
+*  Revision:       50203
 *
 *  Description:    Defines and prototypes for the System Controller.
 *
@@ -207,7 +207,6 @@ SysCtrlAonUpdate(void)
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC);
 }
 
-
 //*****************************************************************************
 //
 //! \brief Set Recharge values before entering Power Down.
@@ -233,8 +232,7 @@ SysCtrlAonUpdate(void)
 //*****************************************************************************
 extern void SysCtrlSetRechargeBeforePowerDown( uint32_t xoscPowerMode );
 
-
-///*****************************************************************************
+//*****************************************************************************
 //
 //! \brief Adjust Recharge calculations to be used next.
 //!
@@ -258,7 +256,6 @@ extern void SysCtrlSetRechargeBeforePowerDown( uint32_t xoscPowerMode );
 //*****************************************************************************
 extern void SysCtrlAdjustRechargeAfterPowerDown( uint32_t vddrRechargeMargin );
 
-
 //*****************************************************************************
 //
 //! \brief Turns DCDC on or off depending of what is considered to be optimal usage.
@@ -276,26 +273,37 @@ extern void SysCtrlAdjustRechargeAfterPowerDown( uint32_t vddrRechargeMargin );
 //*****************************************************************************
 extern void SysCtrl_DCDC_VoltageConditionalControl( void );
 
-
 //*****************************************************************************
 // \name Return values from calling SysCtrlResetSourceGet()
 //@{
 //*****************************************************************************
-#define RSTSRC_PWR_ON               (( AON_SYSCTL_RESETCTL_RESET_SRC_PWR_ON    ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
-#define RSTSRC_PIN_RESET            (( AON_SYSCTL_RESETCTL_RESET_SRC_PIN_RESET ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
-#define RSTSRC_VDDS_LOSS            (( AON_SYSCTL_RESETCTL_RESET_SRC_VDDS_LOSS ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
-#define RSTSRC_VDDR_LOSS            (( AON_SYSCTL_RESETCTL_RESET_SRC_VDDR_LOSS ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
-#define RSTSRC_CLK_LOSS             (( AON_SYSCTL_RESETCTL_RESET_SRC_CLK_LOSS  ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
-#define RSTSRC_SYSRESET             (( AON_SYSCTL_RESETCTL_RESET_SRC_SYSRESET  ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
-#define RSTSRC_WARMRESET            (( AON_SYSCTL_RESETCTL_RESET_SRC_WARMRESET ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
-#define RSTSRC_WAKEUP_FROM_SHUTDOWN ((( AON_SYSCTL_RESETCTL_RESET_SRC_M        ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S )) + 1 )
+#define RSTSRC_PWR_ON                 (( AON_SYSCTL_RESETCTL_RESET_SRC_PWR_ON    ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
+#define RSTSRC_PIN_RESET              (( AON_SYSCTL_RESETCTL_RESET_SRC_PIN_RESET ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
+#define RSTSRC_VDDS_LOSS              (( AON_SYSCTL_RESETCTL_RESET_SRC_VDDS_LOSS ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
+#define RSTSRC_VDDR_LOSS              (( AON_SYSCTL_RESETCTL_RESET_SRC_VDDR_LOSS ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
+#define RSTSRC_CLK_LOSS               (( AON_SYSCTL_RESETCTL_RESET_SRC_CLK_LOSS  ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
+#define RSTSRC_SYSRESET               (( AON_SYSCTL_RESETCTL_RESET_SRC_SYSRESET  ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
+#define RSTSRC_WARMRESET              (( AON_SYSCTL_RESETCTL_RESET_SRC_WARMRESET ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S ))
+#define RSTSRC_WAKEUP_FROM_SHUTDOWN  ((( AON_SYSCTL_RESETCTL_RESET_SRC_M         ) >> ( AON_SYSCTL_RESETCTL_RESET_SRC_S )) + 1 )
 //@}
 
 //*****************************************************************************
 //
-//! \brief Returns last reset source (including "wakeup from shutdown").
+//! \brief Returns the reset source (including "wakeup from shutdown").
 //!
-//! \return Returns one of the RSTSRC_ defines.
+//! In case of \ref RSTSRC_WAKEUP_FROM_SHUTDOWN the application is
+//! responsible for unlatching the outputs (disable pad sleep).
+//! See \ref PowerCtrlPadSleepDisable() for more information.
+//!
+//! \return Returns the reset source.
+//! - \ref RSTSRC_PWR_ON
+//! - \ref RSTSRC_PIN_RESET
+//! - \ref RSTSRC_VDDS_LOSS
+//! - \ref RSTSRC_VDDR_LOSS
+//! - \ref RSTSRC_CLK_LOSS
+//! - \ref RSTSRC_SYSRESET
+//! - \ref RSTSRC_WARMRESET
+//! - \ref RSTSRC_WAKEUP_FROM_SHUTDOWN
 //
 //*****************************************************************************
 extern uint32_t SysCtrlResetSourceGet( void );

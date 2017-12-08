@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       gpio.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2017-08-16 15:13:43 +0200 (Wed, 16 Aug 2017)
+*  Revision:       49593
 *
 *  Description:    Defines and prototypes for the GPIO.
 *
@@ -172,7 +172,7 @@ GPIO_readDio( uint32_t dioNumber )
 //
 //! \brief Reads the input value for the specified DIOs.
 //!
-//! This function returns the the input value for multiple DIOs.
+//! This function returns the input value for multiple DIOs.
 //! The value returned is not shifted and hence matches the corresponding dioMask bits.
 //!
 //! \param dioMask is the bit-mask representation of the DIOs to read.

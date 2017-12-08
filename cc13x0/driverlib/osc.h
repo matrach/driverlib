@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.h
-*  Revised:        2017-07-19 09:17:50 +0200 (Wed, 19 Jul 2017)
-*  Revision:       49354
+*  Revised:        2017-09-01 10:21:01 +0200 (Fri, 01 Sep 2017)
+*  Revision:       49677
 *
 *  Description:    Defines and prototypes for the system oscillator control.
 *
@@ -93,6 +93,7 @@ extern "C"
     #define OSCHF_DebugGetCrystalAmplitude  NOROM_OSCHF_DebugGetCrystalAmplitude
     #define OSCHF_DebugGetExpectedAverageCrystalAmplitude NOROM_OSCHF_DebugGetExpectedAverageCrystalAmplitude
     #define OSC_HPOSCRelativeFrequencyOffsetGet NOROM_OSC_HPOSCRelativeFrequencyOffsetGet
+    #define OSC_AdjustXoscHfCapArray        NOROM_OSC_AdjustXoscHfCapArray
     #define OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert NOROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
 #endif
 
@@ -441,6 +442,24 @@ extern int32_t OSC_HPOSCRelativeFrequencyOffsetGet( int32_t tempDegC );
 
 //*****************************************************************************
 //
+//! \brief Adjust the XOSC HF cap array relative to the factory setting
+//!
+//! The cap array factory setting (FCFG) can be converted to a number in the range 0 - 63.
+//! Both this function and the customer configuration (CCFG) setting can apply a delta to the FCFG setting.
+//! The CCFG setting is automatically applied at boot time (See ../startup_files/ccfg.c).
+//! Calling this function will discard the CCFG setting and adjust relative to the FCFG setting.
+//!
+//! \note Adjusted value will not take effect before XOSC_HF is stopped and restarted
+//!
+//! \param capArrDelta specifies number of step to adjust the cap array relative to the factory setting.
+//!
+//! \return None
+//
+//*****************************************************************************
+extern void OSC_AdjustXoscHfCapArray( int32_t capArrDelta );
+
+//*****************************************************************************
+//
 //! \brief Converts the relative frequency offset of HPOSC to the RF Core parameter format.
 //!
 //! The HPOSC (High Precision Oscillator) clock is used by the RF Core.
@@ -510,6 +529,10 @@ extern int16_t OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert( int32_t HP
     #ifdef ROM_OSC_HPOSCRelativeFrequencyOffsetGet
         #undef  OSC_HPOSCRelativeFrequencyOffsetGet
         #define OSC_HPOSCRelativeFrequencyOffsetGet ROM_OSC_HPOSCRelativeFrequencyOffsetGet
+    #endif
+    #ifdef ROM_OSC_AdjustXoscHfCapArray
+        #undef  OSC_AdjustXoscHfCapArray
+        #define OSC_AdjustXoscHfCapArray        ROM_OSC_AdjustXoscHfCapArray
     #endif
     #ifdef ROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
         #undef  OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert

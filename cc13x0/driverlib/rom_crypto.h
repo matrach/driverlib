@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rom_crypto.h
-*  Revised:        2017-02-02 12:00:37 +0100 (Thu, 02 Feb 2017)
-*  Revision:       48367
+*  Revised:        2017-08-16 15:13:43 +0200 (Wed, 16 Aug 2017)
+*  Revision:       49593
 *
 *  Description:    This header file is the API to the AES, ECC and SHA256
 *                  functions built into ROM on the CC26xx.
@@ -323,7 +323,7 @@ typedef struct
 
 //*****************************************************************************
 /*!
- * \brief Perform SHA256 on the the input data.
+ * \brief Perform SHA256 on the input data.
  *
  * The input and output buffer can point to the same memory.
  * This is the equivalent of calling \ref SHA256_initialize(),

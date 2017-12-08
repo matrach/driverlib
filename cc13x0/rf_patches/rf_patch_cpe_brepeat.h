@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_brepeat.h
-*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
+*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (to, 24 aug 2017) $
 *  Revision:       $Revision: 17889 $
 *
 *  Description: RF core patch for CC13x0 for 1.2kbps and 2.4kbps Generic FSK
