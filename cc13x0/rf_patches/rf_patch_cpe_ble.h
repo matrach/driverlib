@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ble.h
-*  Revised:        $Date: 2016-06-08 15:35:28 +0200 (on, 08 jun 2016) $
-*  Revision:       $Revision: 17220 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description:    RF Core patch file for CC1350 Bluetooth Low Energy
 *
@@ -166,9 +166,9 @@ CPE_PATCH_TYPE patchImageBle[] = {
 
 PATCH_FUN_SPEC void enterBleCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_BLE > 0)
    uint32_t *pPatchVec = (uint32_t *) (_BLE_CPERAM_START + _BLE_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_BLE > 0)
    memcpy(pPatchVec, patchImageBle, sizeof(patchImageBle));
 #endif
 }

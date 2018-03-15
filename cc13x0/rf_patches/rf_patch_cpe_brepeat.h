@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_brepeat.h
-*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (to, 24 aug 2017) $
-*  Revision:       $Revision: 17889 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description: RF core patch for CC13x0 for 1.2kbps and 2.4kbps Generic FSK
 *
@@ -268,9 +268,9 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
 
 PATCH_FUN_SPEC void enterBrepeatCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_BREPEAT > 0)
    uint32_t *pPatchVec = (uint32_t *) (_BREPEAT_CPERAM_START + _BREPEAT_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_BREPEAT > 0)
    memcpy(pPatchVec, patchImageBrepeat, sizeof(patchImageBrepeat));
 #endif
 }

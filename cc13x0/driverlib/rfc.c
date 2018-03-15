@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.c
-*  Revised:        2017-10-30 17:13:44 +0100 (Mon, 30 Oct 2017)
-*  Revision:       50111
+*  Revised:        2018-01-30 17:42:58 +0100 (Tue, 30 Jan 2018)
+*  Revision:       51371
 *
 *  Description:    Driver for the RF Core.
 *
@@ -55,6 +55,8 @@
     #define RFCSynthPowerDown               NOROM_RFCSynthPowerDown
     #undef  RFCCpePatchReset
     #define RFCCpePatchReset                NOROM_RFCCpePatchReset
+    #undef  RFCOverrideSearch
+    #define RFCOverrideSearch               NOROM_RFCOverrideSearch
     #undef  RFCOverrideUpdate
     #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
     #undef  RFCHwIntGetAndClear
@@ -188,12 +190,13 @@ void RFCCpePatchReset(void)
     }
 }
 
+
 //*****************************************************************************
 //
-// Function to search top of the override list for the provided pattern within the search depth
+// Function to search an override list for the provided pattern within the search depth.
 //
 //*****************************************************************************
-static uint8_t
+uint8_t
 RFCOverrideSearch(const uint32_t *pOverride, const uint32_t pattern, const uint32_t mask, const uint8_t searchDepth)
 {
     // Search from start of the override list, to look for first override entry that matches search pattern
@@ -211,6 +214,7 @@ RFCOverrideSearch(const uint32_t *pOverride, const uint32_t pattern, const uint3
     // Return with an invalid index
     return 0xFF;
 }
+
 
 //*****************************************************************************
 //
@@ -507,6 +511,8 @@ void RFCAdi3VcoLdoVoltageMode(bool bEnable)
     #define RFCSynthPowerDown               NOROM_RFCSynthPowerDown
     #undef  RFCCpePatchReset
     #define RFCCpePatchReset                NOROM_RFCCpePatchReset
+    #undef  RFCOverrideSearch
+    #define RFCOverrideSearch               NOROM_RFCOverrideSearch
     #undef  RFCOverrideUpdate
     #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
     #undef  RFCHwIntGetAndClear

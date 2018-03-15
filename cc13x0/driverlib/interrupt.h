@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       interrupt.h
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        2017-11-14 15:26:03 +0100 (Tue, 14 Nov 2017)
+*  Revision:       50272
 *
 *  Description:    Defines and prototypes for the NVIC Interrupt Controller
 *
@@ -358,9 +358,12 @@ extern int32_t IntPriorityGet(uint32_t ui32Interrupt);
 
 //*****************************************************************************
 //
-//! \brief Enables an interrupt.
+//! \brief Enables an interrupt or system exception.
 //!
 //! This function enables the specified interrupt in the interrupt controller.
+//!
+//! \note If a fault condition occurs while the corresponding system exception
+//! is disabled, the fault is treated as a Hard Fault.
 //!
 //! \param ui32Interrupt specifies the index in the vector table to enable.
 //! - System exceptions:
@@ -413,7 +416,7 @@ extern void IntEnable(uint32_t ui32Interrupt);
 
 //*****************************************************************************
 //
-//! \brief Disables an interrupt.
+//! \brief Disables an interrupt or system exception.
 //!
 //! This function disables the specified interrupt in the interrupt controller.
 //!

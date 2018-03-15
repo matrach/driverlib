@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2017-08-16 17:39:07 +0200 (Wed, 16 Aug 2017)
-*  Revision:       49596
+*  Revised:        2017-11-13 12:03:30 +0100 (Mon, 13 Nov 2017)
+*  Revision:       50234
 *
 *  Description:    Collection of functions returning chip information.
 *
@@ -339,11 +339,11 @@ typedef enum {
    CHIP_TYPE_CUSTOM_1      =  7, //!<  7 means that this is a CUSTOM_1 chip.
    CHIP_TYPE_CC2640R2      =  8, //!<  8 means that this is a CC2640R2 chip.
    CHIP_TYPE_CC2642        =  9, //!<  9 means that this is a CC2642 chip.
-   CHIP_TYPE_CC2644        =  10,//!< 10 means that this is a CC2644 chip.
+   CHIP_TYPE_unused        =  10,//!< 10 unused value
    CHIP_TYPE_CC2652        =  11,//!< 11 means that this is a CC2652 chip.
    CHIP_TYPE_CC1312        =  12,//!< 12 means that this is a CC1312 chip.
    CHIP_TYPE_CC1352        =  13,//!< 13 means that this is a CC1352 chip.
-   CHIP_TYPE_CC1354        =  14 //!< 14 means that this is a CC1354 chip.
+   CHIP_TYPE_CC1352P       =  14 //!< 14 means that this is a CC1352P chip.
 } ChipType_t;
 
 //*****************************************************************************

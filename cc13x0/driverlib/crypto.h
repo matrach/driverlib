@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       crypto.h
-*  Revised:        2017-08-16 15:13:43 +0200 (Wed, 16 Aug 2017)
-*  Revision:       49593
+*  Revised:        2018-01-12 18:46:31 +0100 (Fri, 12 Jan 2018)
+*  Revision:       51161
 *
 *  Description:    AES header file.
 *
@@ -234,8 +234,8 @@ extern uint32_t CRYPTOAesLoadKey(uint32_t *pui32AesKey,
 //
 //! \brief Start an AES-CBC operation (encryption or decryption).
 //!
-//! The function starts an AES CBC mode encypt or decrypt operation.
-//! End operation can be deteced by enabling interrupt or by polling
+//! The function starts an AES CBC mode encrypt or decrypt operation.
+//! End operation can be detected by enabling interrupt or by polling
 //! CRYPTOAesCbcStatus(). Result of operation is returned by CRYPTOAesCbcStatus().
 //!
 //! \param pui32MsgIn is a pointer to the input data.

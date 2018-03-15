@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ghs.h
-*  Revised:        $Date: 2017-11-03 15:06:37 +0100 (fr, 03 nov 2017) $
-*  Revision:       $Revision: 18032 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description: RF core patch for CC13x0 Generic 4FSK up to 1.5Mbps
 *
@@ -268,9 +268,9 @@ CPE_PATCH_TYPE patchImageGhs[] = {
 
 PATCH_FUN_SPEC void enterGhsCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_GHS > 0)
    uint32_t *pPatchVec = (uint32_t *) (_GHS_CPERAM_START + _GHS_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_GHS > 0)
    memcpy(pPatchVec, patchImageGhs, sizeof(patchImageGhs));
 #endif
 }

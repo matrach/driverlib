@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_wmbus_ctmode.h
-*  Revised:        $Date: 2017-08-22 20:28:29 +0200 (ti, 22 aug 2017) $
-*  Revision:       $Revision: 17884 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description: RF core patch for CC13x0 WMBUS C- and T-Mode
 *
@@ -268,9 +268,9 @@ CPE_PATCH_TYPE patchImageWmbusCtmode[] = {
 
 PATCH_FUN_SPEC void enterWmbusCtmodeCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_WMBUS_CTMODE > 0)
    uint32_t *pPatchVec = (uint32_t *) (_WMBUS_CTMODE_CPERAM_START + _WMBUS_CTMODE_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_WMBUS_CTMODE > 0)
    memcpy(pPatchVec, patchImageWmbusCtmode, sizeof(patchImageWmbusCtmode));
 #endif
 }

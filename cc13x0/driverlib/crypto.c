@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       crypto.c
-*  Revised:        2017-04-26 18:27:45 +0200 (Wed, 26 Apr 2017)
-*  Revision:       48852
+*  Revised:        2017-12-20 16:40:03 +0100 (Wed, 20 Dec 2017)
+*  Revision:       50869
 *
 *  Description:    Driver for the Crypto module
 *
@@ -138,7 +138,11 @@ CRYPTOAesLoadKey(uint32_t *pui32AesKey,
     {
         CPUdelay(1);
     }
-    while(!(HWREG(CRYPTO_BASE + CRYPTO_O_IRQSTAT) & 0x00000001));
+    while(!(HWREG(CRYPTO_BASE + CRYPTO_O_IRQSTAT) &
+            (CRYPTO_IRQSTAT_DMA_BUS_ERR_M |
+             CRYPTO_IRQSTAT_KEY_ST_WR_ERR_M |
+             CRYPTO_IRQSTAT_DMA_IN_DONE |
+             CRYPTO_IRQSTAT_RESULT_AVAIL_M)));
 
     // Check for errors in DMA and key store.
     if((HWREG(CRYPTO_BASE + CRYPTO_O_IRQSTAT) &

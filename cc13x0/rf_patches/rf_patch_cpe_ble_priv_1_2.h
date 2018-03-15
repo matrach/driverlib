@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ble_priv_1_2.h
-*  Revised:        $Date: 2016-06-08 15:35:28 +0200 (on, 08 jun 2016) $
-*  Revision:       $Revision: 17220 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description:    RF Core patch file for CC1350 Bluetooth Low Energy with privacy 1.2 support
 *
@@ -260,9 +260,9 @@ CPE_PATCH_TYPE patchImageBlePriv12[] = {
 
 PATCH_FUN_SPEC void enterBlePriv12CpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_BLE_PRIV_1_2 > 0)
    uint32_t *pPatchVec = (uint32_t *) (_BLE_PRIV_1_2_CPERAM_START + _BLE_PRIV_1_2_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_BLE_PRIV_1_2 > 0)
    memcpy(pPatchVec, patchImageBlePriv12, sizeof(patchImageBlePriv12));
 #endif
 }

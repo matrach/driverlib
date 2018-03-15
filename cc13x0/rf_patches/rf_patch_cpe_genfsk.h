@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_genfsk.h
-*  Revised:        $Date: 2017-01-30 18:00:26 +0100 (ma, 30 jan 2017) $
-*  Revision:       $Revision: 17599 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description:    RF Core patch file for CC13x0 generic FSK
 *
@@ -268,9 +268,9 @@ CPE_PATCH_TYPE patchImageGenfsk[] = {
 
 PATCH_FUN_SPEC void enterGenfskCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_GENFSK > 0)
    uint32_t *pPatchVec = (uint32_t *) (_GENFSK_CPERAM_START + _GENFSK_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_GENFSK > 0)
    memcpy(pPatchVec, patchImageGenfsk, sizeof(patchImageGenfsk));
 #endif
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.h
-*  Revised:        2017-10-25 12:45:39 +0200 (Wed, 25 Oct 2017)
-*  Revision:       50049
+*  Revised:        2018-01-30 17:42:58 +0100 (Tue, 30 Jan 2018)
+*  Revision:       51371
 *
 *  Description:    Defines and prototypes for the RF Core.
 *
@@ -99,6 +99,7 @@ typedef struct {
     #define RFCDoorbellSendTo               NOROM_RFCDoorbellSendTo
     #define RFCSynthPowerDown               NOROM_RFCSynthPowerDown
     #define RFCCpePatchReset                NOROM_RFCCpePatchReset
+    #define RFCOverrideSearch               NOROM_RFCOverrideSearch
     #define RFCOverrideUpdate               NOROM_RFCOverrideUpdate
     #define RFCHwIntGetAndClear             NOROM_RFCHwIntGetAndClear
     #define RFCRfTrimRead                   NOROM_RFCRfTrimRead
@@ -349,6 +350,14 @@ extern void RFCCpePatchReset(void);
 
 //*****************************************************************************
 //
+// Function to search an override list for the provided pattern within the search depth.
+//
+//*****************************************************************************
+extern uint8_t RFCOverrideSearch(const uint32_t *pOverride, const uint32_t pattern, const uint32_t mask, const uint8_t searchDepth);
+
+
+//*****************************************************************************
+//
 //! Function to update override list
 //
 //*****************************************************************************
@@ -417,6 +426,10 @@ extern void RFCAdi3VcoLdoVoltageMode(bool bEnable);
     #ifdef ROM_RFCCpePatchReset
         #undef  RFCCpePatchReset
         #define RFCCpePatchReset                ROM_RFCCpePatchReset
+    #endif
+    #ifdef ROM_RFCOverrideSearch
+        #undef  RFCOverrideSearch
+        #define RFCOverrideSearch               ROM_RFCOverrideSearch
     #endif
     #ifdef ROM_RFCOverrideUpdate
         #undef  RFCOverrideUpdate

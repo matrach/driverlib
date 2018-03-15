@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_genook.h
-*  Revised:        $Date: 2017-01-30 18:00:26 +0100 (ma, 30 jan 2017) $
-*  Revision:       $Revision: 17599 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description: RF core patch for CC13x0 Generic OOK
 *
@@ -268,9 +268,9 @@ CPE_PATCH_TYPE patchImageGenook[] = {
 
 PATCH_FUN_SPEC void enterGenookCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_GENOOK > 0)
    uint32_t *pPatchVec = (uint32_t *) (_GENOOK_CPERAM_START + _GENOOK_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_GENOOK > 0)
    memcpy(pPatchVec, patchImageGenook, sizeof(patchImageGenook));
 #endif
 }

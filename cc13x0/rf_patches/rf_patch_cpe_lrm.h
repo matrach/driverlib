@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_lrm.h
-*  Revised:        $Date: 2017-01-30 18:00:26 +0100 (ma, 30 jan 2017) $
-*  Revision:       $Revision: 17599 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description: RF core patch for CC13x0 Legacy Long Range Mode
 *
@@ -268,9 +268,9 @@ CPE_PATCH_TYPE patchImageLrm[] = {
 
 PATCH_FUN_SPEC void enterLrmCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_LRM > 0)
    uint32_t *pPatchVec = (uint32_t *) (_LRM_CPERAM_START + _LRM_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_LRM > 0)
    memcpy(pPatchVec, patchImageLrm, sizeof(patchImageLrm));
 #endif
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_sl_longrange.h
-*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (to, 24 aug 2017) $
-*  Revision:       $Revision: 17889 $
+*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
+*  Revision:       $Revision: 18170 $
 *
 *  Description: RF core patch for CC13x0 SimpleLink Long Range
 *
@@ -268,9 +268,9 @@ CPE_PATCH_TYPE patchImageSlLongrange[] = {
 
 PATCH_FUN_SPEC void enterSlLongrangeCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_SL_LONGRANGE > 0)
    uint32_t *pPatchVec = (uint32_t *) (_SL_LONGRANGE_CPERAM_START + _SL_LONGRANGE_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_SL_LONGRANGE > 0)
    memcpy(pPatchVec, patchImageSlLongrange, sizeof(patchImageSlLongrange));
 #endif
 }
