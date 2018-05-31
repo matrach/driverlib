@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2017-11-13 12:03:30 +0100 (Mon, 13 Nov 2017)
-*  Revision:       50234
+*  Revised:        2018-05-01 11:59:00 +0200 (Tue, 01 May 2018)
+*  Revision:       51944
 *
 *  Description:    Collection of functions returning chip information.
 *
@@ -143,10 +143,10 @@ ChipInfo_SupportsIEEE_802_15_4( void )
 
 //*****************************************************************************
 //
-//! \brief Returns true if the chip supports propriatary protocols.
+//! \brief Returns true if the chip supports proprietary protocols.
 //!
 //! \return
-//! Returns \c true if supporting propriatary protocols, \c false otherwise.
+//! Returns \c true if supporting proprietary protocols, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
@@ -478,7 +478,7 @@ ChipInfo_ChipFamilyIs_CC13x2_CC26x2( void )
 typedef enum {
    HWREV_Unknown     = -1, //!< -1 means that the chip's HW revision is unknown.
    HWREV_1_0         = 10, //!< 10 means that the chip's HW revision is 1.0
-   HWREV_1_1         = 11, //!< 10 means that the chip's HW revision is 1.0
+   HWREV_1_1         = 11, //!< 11 means that the chip's HW revision is 1.1
    HWREV_2_0         = 20, //!< 20 means that the chip's HW revision is 2.0
    HWREV_2_1         = 21, //!< 21 means that the chip's HW revision is 2.1
    HWREV_2_2         = 22, //!< 22 means that the chip's HW revision is 2.2

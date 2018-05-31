@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.c
-*  Revised:        2017-08-21 13:20:52 +0200 (Mon, 21 Aug 2017)
-*  Revision:       49618
+*  Revised:        2018-05-08 10:04:01 +0200 (Tue, 08 May 2018)
+*  Revision:       51972
 *
 *  Description:    Instruction wrappers for special CPU instructions needed by
 *                  the drivers.
@@ -381,13 +381,14 @@ __asm("    .sect \".text:NOROM_CPUdelay\"\n"
       "    bne.n NOROM_CPUdelay\n"
       "    bx lr\n");
 #else
+// GCC
 void __attribute__((naked))
 CPUdelay(uint32_t ui32Count)
 {
     // Loop the specified number of times
-    __asm volatile ("    subs    %0, #1\n"
-                    "    bne     NOROM_CPUdelay\n"
-                    "    bx      lr\n"
+    __asm volatile ("%=:  subs  %0, #1\n"
+                    "     bne   %=b\n"
+                    "     bx    lr\n"
                     : /* No output */
                     : "r" (ui32Count)
                    );

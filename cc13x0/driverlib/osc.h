@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.h
-*  Revised:        2017-09-01 10:21:01 +0200 (Fri, 01 Sep 2017)
-*  Revision:       49677
+*  Revised:        2018-04-18 15:47:09 +0200 (Wed, 18 Apr 2018)
+*  Revision:       51907
 *
 *  Description:    Defines and prototypes for the system oscillator control.
 *
@@ -478,6 +478,8 @@ extern void OSC_AdjustXoscHfCapArray( int32_t capArrDelta );
 //! -   F_nom is the nominal oscillator frequency, assumed to be 48.000 MHz.
 //! -   F_HPOSC is the current HPOSC frequency.
 //! -   RfCoreRelFreqOffset is the relative frequency offset in the "RF Core" format (the value returned).
+//!
+//! \param HPOSC_RelFreqOffset is the relative frequency offset parameter d returned from \ref OSC_HPOSCRelativeFrequencyOffsetGet()
 //!
 //! \return Returns the relative frequency offset in RF Core format.
 //!

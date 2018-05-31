@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_brepeat.h
-*  Revised:        $Date: 2018-01-15 06:15:14 +0100 (ma, 15 jan 2018) $
-*  Revision:       $Revision: 18170 $
+*  Revised:        $Date: 2018-05-07 15:02:01 +0200 (ma, 07 mai 2018) $
+*  Revision:       $Revision: 18438 $
 *
 *  Description: RF core patch for CC13x0 for 1.2kbps and 2.4kbps Generic FSK
 *
@@ -71,14 +71,17 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageBrepeat[] = {
-   0x210004bd,
-   0x2100044d,
-   0x21000481,
-   0x21000485,
-   0x21000521,
-   0x210005a1,
-   0x21000651,
-   0x21000679,
+   0x2100053d,
+   0x21000459,
+   0x2100048d,
+   0x21000491,
+   0x210004b9,
+   0x21000621,
+   0x210006d1,
+   0x210006f9,
+   0x210004ed,
+   0x2100073b,
+   0x2100075d,
    0x4710b5f8,
    0x460eb5f8,
    0x25012100,
@@ -105,18 +108,47 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x467082c8,
    0x47001c80,
    0x40086200,
-   0x210006c8,
+   0x210007c8,
    0x08080f07,
+   0xf872f000,
+   0x0a0a9905,
+   0xd1092a6c,
+   0x61782008,
+   0x1c406920,
+   0x310a6038,
+   0x91056120,
+   0x61782000,
+   0x0000bdf8,
    0x4708b4f0,
    0x4801b510,
    0x00004700,
    0x00000989,
+   0xf810f000,
+   0x2950b2e1,
+   0x2804d00b,
+   0x2806d001,
+   0x4906d107,
+   0x07c97809,
+   0x7821d103,
+   0xd4000709,
+   0xbdfe2002,
+   0x4902b5fe,
+   0x00004708,
+   0x210000c8,
+   0x0000ccf1,
+   0x4605b5ff,
+   0x4c03b085,
+   0xb5ff4720,
+   0x01deb085,
+   0x47204c01,
+   0x00003ff7,
+   0x000041cb,
    0x4603b570,
    0x29014615,
    0x2900d006,
    0x4a11d006,
    0xf7ff4628,
-   0xbd70ffb5,
+   0xbd70ff7b,
    0xe000480f,
    0x2405480f,
    0xd8034283,
@@ -128,14 +160,14 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x4906d007,
    0x31802300,
    0xf7ff4628,
-   0xb2e0ff9f,
+   0xb2e0ff65,
    0x4902bd70,
    0x316c4b04,
    0x0000e7f6,
    0x00005c83,
    0x2386bca0,
    0x230d8300,
-   0x21000698,
+   0x21000798,
    0x4e1ab5f8,
    0x6b714605,
    0x09cc4819,
@@ -178,7 +210,7 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0xe0004313,
    0x634b4393,
    0xf7ff491d,
-   0xbd10ff71,
+   0xbd10ff49,
    0x4d1ab538,
    0x28007f28,
    0x481ad127,
@@ -187,7 +219,7 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x69604c12,
    0xd11e2800,
    0xf0004668,
-   0x4668f84f,
+   0x4668f88f,
    0x28017800,
    0x4668d117,
    0x28107840,
@@ -223,10 +255,42 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x2100026b,
    0x40046058,
    0x4c03b510,
-   0xff18f7ff,
+   0xfef0f7ff,
    0x28006820,
    0xbd10d1fa,
    0x40041100,
+   0x2041b510,
+   0x00c0490e,
+   0x490e4788,
+   0x6b884602,
+   0x24906b49,
+   0x04c1014b,
+   0x430b0ec9,
+   0x4363490a,
+   0x43597d49,
+   0x689b4b09,
+   0xfef9f7ff,
+   0xb510bd10,
+   0xfef0f7ff,
+   0xd1010004,
+   0xffe2f7ff,
+   0xbd104620,
+   0x00003c7d,
+   0x40045080,
+   0x21000280,
+   0x40044000,
+   0x8801b510,
+   0x0f93050a,
+   0xd1034a08,
+   0x0d890589,
+   0xd0012911,
+   0xbd104790,
+   0x46044790,
+   0xd1032801,
+   0xf7ffb672,
+   0xb662ffc5,
+   0xbd104620,
+   0x00002645,
    0x4801b403,
    0xbd019001,
    0x00006fa5,
@@ -244,11 +308,11 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0xe5e0e3c1,
    0x000000ff,
 };
-#define _NWORD_PATCHIMAGE_BREPEAT 172
+#define _NWORD_PATCHIMAGE_BREPEAT 236
 
 #define _NWORD_PATCHSYS_BREPEAT 0
 
-#define _IRQ_PATCH_0 0x210005cd
+#define _IRQ_PATCH_0 0x2100064d
 
 
 #ifndef _BREPEAT_SYSRAM_START
@@ -281,6 +345,7 @@ PATCH_FUN_SPEC void enterBrepeatSysPatch(void)
 
 PATCH_FUN_SPEC void configureBrepeatPatch(void)
 {
+   uint8_t *pParserPatchTab = (uint8_t *) (_BREPEAT_CPERAM_START + _BREPEAT_PARSER_PATCH_TAB_OFFSET);
    uint8_t *pPatchTab = (uint8_t *) (_BREPEAT_CPERAM_START + _BREPEAT_PATCH_TAB_OFFSET);
    uint32_t *pIrqPatch = (uint32_t *) (_BREPEAT_CPERAM_START + _BREPEAT_IRQPATCH_OFFSET);
 
@@ -293,6 +358,9 @@ PATCH_FUN_SPEC void configureBrepeatPatch(void)
    pPatchTab[107] = 5;
    pPatchTab[65] = 6;
    pPatchTab[13] = 7;
+   pPatchTab[45] = 8;
+   pPatchTab[48] = 9;
+   pParserPatchTab[0] = 10;
 
    pIrqPatch[1] = _IRQ_PATCH_0;
 }
