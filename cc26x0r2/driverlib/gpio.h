@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       gpio.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        2018-05-02 11:11:40 +0200 (Wed, 02 May 2018)
+*  Revision:       51951
 *
 *  Description:    Defines and prototypes for the GPIO.
 *
@@ -82,13 +82,22 @@ dioNumberLegal( uint32_t dioNumber )
             FCFG1_IOCONF_GPIO_CNT_M ) >>
             FCFG1_IOCONF_GPIO_CNT_S ) ;
 
-    // Special handling of CC13xx 7x7, where IO_CNT = 30 and legal range is 1..30
+    // CC13x2 + CC26x2
+    if ( ChipInfo_ChipFamilyIs_CC13x2_CC26x2() )
+    {
+        return ( (dioNumber >= (31 - ioCount)) && (dioNumber < 31) )
+    }
+    // Special handling of CC13x0 7x7, where IO_CNT = 30 and legal range is 1..30
     // for all other chips legal range is 0..(dioNumber-1)
-    if (( ioCount == 30 ) && ChipInfo_ChipFamilyIsCC13xx() ) {
+    else if (( ioCount == 30 ) && ChipInfo_ChipFamilyIs_CC13x0() )
+    {
         return (( dioNumber > 0 ) && ( dioNumber <= ioCount ));
-    } else {
+    }
+    else
+    {
         return ( dioNumber < ioCount );
     }
+
 }
 #endif
 
@@ -172,7 +181,7 @@ GPIO_readDio( uint32_t dioNumber )
 //
 //! \brief Reads the input value for the specified DIOs.
 //!
-//! This function returns the the input value for multiple DIOs.
+//! This function returns the input value for multiple DIOs.
 //! The value returned is not shifted and hence matches the corresponding dioMask bits.
 //!
 //! \param dioMask is the bit-mask representation of the DIOs to read.
@@ -550,7 +559,7 @@ GPIO_getEventDio( uint32_t dioNumber )
 //! - ...
 //! - \ref GPIO_DIO_31_MASK
 //!
-//! \return Returns a bit vector with the current event status correspondig to the specified DIOs.
+//! \return Returns a bit vector with the current event status corresponding to the specified DIOs.
 //! - 0 : Corresponding DIO has no triggered event.
 //! - 1 : Corresponding DIO has a triggered event.
 //!

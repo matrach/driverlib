@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2017-08-30 11:09:05 +0200 (Wed, 30 Aug 2017)
-*  Revision:       49664
+*  Revised:        2018-05-01 11:59:00 +0200 (Tue, 01 May 2018)
+*  Revision:       51944
 *
 *  Description:    Collection of functions returning chip information.
 *
@@ -143,10 +143,10 @@ ChipInfo_SupportsIEEE_802_15_4( void )
 
 //*****************************************************************************
 //
-//! \brief Returns true if the chip supports propriatary protocols.
+//! \brief Returns true if the chip supports proprietary protocols.
 //!
 //! \return
-//! Returns \c true if supporting propriatary protocols, \c false otherwise.
+//! Returns \c true if supporting proprietary protocols, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
@@ -339,11 +339,11 @@ typedef enum {
    CHIP_TYPE_CUSTOM_1      =  7, //!<  7 means that this is a CUSTOM_1 chip.
    CHIP_TYPE_CC2640R2      =  8, //!<  8 means that this is a CC2640R2 chip.
    CHIP_TYPE_CC2642        =  9, //!<  9 means that this is a CC2642 chip.
-   CHIP_TYPE_CC2644        =  10,//!< 10 means that this is a CC2644 chip.
+   CHIP_TYPE_unused        =  10,//!< 10 unused value
    CHIP_TYPE_CC2652        =  11,//!< 11 means that this is a CC2652 chip.
    CHIP_TYPE_CC1312        =  12,//!< 12 means that this is a CC1312 chip.
    CHIP_TYPE_CC1352        =  13,//!< 13 means that this is a CC1352 chip.
-   CHIP_TYPE_CC1354        =  14 //!< 14 means that this is a CC1354 chip.
+   CHIP_TYPE_CC1352P       =  14 //!< 14 means that this is a CC1352P chip.
 } ChipType_t;
 
 //*****************************************************************************
@@ -478,7 +478,7 @@ ChipInfo_ChipFamilyIs_CC13x2_CC26x2( void )
 typedef enum {
    HWREV_Unknown     = -1, //!< -1 means that the chip's HW revision is unknown.
    HWREV_1_0         = 10, //!< 10 means that the chip's HW revision is 1.0
-   HWREV_1_1         = 11, //!< 10 means that the chip's HW revision is 1.0
+   HWREV_1_1         = 11, //!< 11 means that the chip's HW revision is 1.1
    HWREV_2_0         = 20, //!< 20 means that the chip's HW revision is 2.0
    HWREV_2_1         = 21, //!< 21 means that the chip's HW revision is 2.1
    HWREV_2_2         = 22, //!< 22 means that the chip's HW revision is 2.2

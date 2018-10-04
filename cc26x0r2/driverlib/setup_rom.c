@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup_rom.c
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        2017-11-02 11:31:15 +0100 (Thu, 02 Nov 2017)
+*  Revision:       50143
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -54,12 +54,6 @@
 #include "osc.h"
 #include "sys_ctrl.h"
 #include "setup_rom.h"
-// ##### INCLUDE IN ROM BEGIN #####
-// We need intrinsic functions for IAR (if used in source code)
-#ifdef __IAR_SYSTEMS_ICC__
-#include <intrinsics.h>
-#endif
-// ##### INCLUDE IN ROM END #####
 
 //*****************************************************************************
 //
@@ -383,12 +377,6 @@ SetupAfterColdResetWakeupFromShutDownCfg3( uint32_t ccfg_ModeConfReg )
       FCFG1_SOC_ADC_REF_TRIM_AND_OFFSET_EXT_SOC_ADC_REF_VOLTAGE_TRIM_TEMP1_S ) <<
       ADI_4_AUX_ADCREF1_VTRIM_S ) &
       ADI_4_AUX_ADCREF1_VTRIM_M );
-
-    // Set ADI_4_AUX:ADC0.SMPL_CYCLE_EXP to it's default minimum value (=3)
-    // (Note: Using MASK8B requires that the bits to be modified must be within the same
-    //        byte boundary which is the case for the ADI_4_AUX_ADC0_SMPL_CYCLE_EXP field)
-    HWREGH( AUX_ADI4_BASE + ADI_O_MASK8B + ( ADI_4_AUX_O_ADC0 * 2 )) =
-      ( ADI_4_AUX_ADC0_SMPL_CYCLE_EXP_M << 8 ) | ( 3 << ADI_4_AUX_ADC0_SMPL_CYCLE_EXP_S );
 
     // Sync with AON
     SysCtrlAonSync();

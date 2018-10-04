@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aon_event_doc.h
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        2017-08-09 16:56:05 +0200 (Wed, 09 Aug 2017)
+*  Revision:       49506
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -42,11 +42,10 @@
 //! to the AON event fabric. For more information on MCU event fabric, see [MCU event API](@ref event_api).
 //!
 //! The AON event fabric is a configurable combinatorial router between AON event sources and event
-//! subscribers in both AON and MCU domains. The AON event fabric has three main event subscribers: AON WUC,
-//! AON RTC, and MCU event fabric. The API to control the AON event fabric configuration can be grouped based
-//! on the event subscriber to configure:
+//! subscribers in both AON and MCU domains. The API to control the AON event fabric configuration
+//! can be grouped based on the event subscriber to configure:
 //!
-//! - AON WUC receives two programmable event lines from AON event fabric. One for MCU wake-up events and one for AUX wake-up events. For more information, see [AON WUC API](@ref aonwuc_api).
+//! - Wake-up events.
 //!   - MCU wake-up event
 //!     - @ref AONEventMcuWakeUpSet()
 //!     - @ref AONEventMcuWakeUpGet()

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_ble_cmd.h
-*  Revised:        2017-08-22 20:28:29 +0200 (Tue, 22 Aug 2017)
-*  Revision:       17884
+*  Revised:        2017-11-10 10:42:47 +0100 (Fri, 10 Nov 2017)
+*  Revision:       18052
 *
 *  Description:    CC2640R2F API for Bluetooth Low Energy commands
 *
@@ -40,10 +40,16 @@
 #define __BLE_CMD_H
 
 #ifndef __RFC_STRUCT
-#ifdef __GNUC__
-#define __RFC_STRUCT __attribute__ ((aligned (4)))
-#else
 #define __RFC_STRUCT
+#endif
+
+#ifndef __RFC_STRUCT_ATTR
+#if defined(__GNUC__)
+#define __RFC_STRUCT_ATTR __attribute__ ((aligned (4)))
+#elif defined(__TI_ARM__)
+#define __RFC_STRUCT_ATTR __attribute__ ((__packed__,aligned (4)))
+#else
+#define __RFC_STRUCT_ATTR
 #endif
 #endif
 
@@ -79,6 +85,10 @@ typedef struct __RFC_STRUCT rfc_CMD_BLE5_SCANNER_s rfc_CMD_BLE5_SCANNER_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE5_INITIATOR_s rfc_CMD_BLE5_INITIATOR_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE5_GENERIC_RX_s rfc_CMD_BLE5_GENERIC_RX_t;
 typedef struct __RFC_STRUCT rfc_CMD_BLE5_TX_TEST_s rfc_CMD_BLE5_TX_TEST_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_ADV_s rfc_CMD_BLE5_ADV_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_ADV_DIR_s rfc_CMD_BLE5_ADV_DIR_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_ADV_NC_s rfc_CMD_BLE5_ADV_NC_t;
+typedef struct __RFC_STRUCT rfc_CMD_BLE5_ADV_SCAN_s rfc_CMD_BLE5_ADV_SCAN_t;
 typedef struct __RFC_STRUCT rfc_bleMasterSlavePar_s rfc_bleMasterSlavePar_t;
 typedef struct __RFC_STRUCT rfc_bleSlavePar_s rfc_bleSlavePar_t;
 typedef struct __RFC_STRUCT rfc_bleMasterPar_s rfc_bleMasterPar_t;
@@ -129,7 +139,7 @@ struct __RFC_STRUCT rfc_bleRadioOp_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -142,7 +152,7 @@ struct __RFC_STRUCT rfc_bleRadioOp_s {
    } whitening;
    uint8_t* pParams;                    //!<        Pointer to command specific parameter structure
    uint8_t* pOutput;                    //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -168,7 +178,7 @@ struct __RFC_STRUCT rfc_ble5RadioOp_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -185,16 +195,15 @@ struct __RFC_STRUCT rfc_ble5RadioOp_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    uint8_t* pParams;                    //!<        Pointer to command specific parameter structure
    uint8_t* pOutput;                    //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -222,7 +231,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_SLAVE_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -235,7 +244,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_SLAVE_s {
    } whitening;
    rfc_bleSlavePar_t *pParams;          //!<        Pointer to command specific parameter structure
    rfc_bleMasterSlaveOutput_t *pOutput; //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -263,7 +272,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_MASTER_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -276,7 +285,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_MASTER_s {
    } whitening;
    rfc_bleMasterPar_t *pParams;         //!<        Pointer to command specific parameter structure
    rfc_bleMasterSlaveOutput_t *pOutput; //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -304,7 +313,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -317,7 +326,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_s {
    } whitening;
    rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
    rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -345,7 +354,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_DIR_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -358,7 +367,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_DIR_s {
    } whitening;
    rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
    rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -386,7 +395,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_NC_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -399,7 +408,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_NC_s {
    } whitening;
    rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
    rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -427,7 +436,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_SCAN_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -440,7 +449,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_SCAN_s {
    } whitening;
    rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
    rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -468,7 +477,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_SCANNER_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -481,7 +490,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_SCANNER_s {
    } whitening;
    rfc_bleScannerPar_t *pParams;        //!<        Pointer to command specific parameter structure
    rfc_bleScannerOutput_t *pOutput;     //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -509,7 +518,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_INITIATOR_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -522,7 +531,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_INITIATOR_s {
    } whitening;
    rfc_bleInitiatorPar_t *pParams;      //!<        Pointer to command specific parameter structure
    rfc_bleInitiatorOutput_t *pOutput;   //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -550,7 +559,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_GENERIC_RX_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -563,7 +572,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_GENERIC_RX_s {
    } whitening;
    rfc_bleGenericRxPar_t *pParams;      //!<        Pointer to command specific parameter structure
    rfc_bleGenericRxOutput_t *pOutput;   //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -591,7 +600,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_TX_TEST_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -604,7 +613,7 @@ struct __RFC_STRUCT rfc_CMD_BLE_TX_TEST_s {
    } whitening;
    rfc_bleTxTestPar_t *pParams;         //!<        Pointer to command specific parameter structure
    rfc_bleTxTestOutput_t *pOutput;      //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -619,14 +628,14 @@ struct __RFC_STRUCT rfc_CMD_BLE_ADV_PAYLOAD_s {
    uint8_t newLen;                      //!<        Length of the new payload
    uint8_t* pNewData;                   //!<        Pointer to the buffer containing the new data
    rfc_bleAdvPar_t *pParams;            //!<        Pointer to the parameter structure to update
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_RADIO_SETUP
 //! @{
 #define CMD_BLE5_RADIO_SETUP                                    0x1820
-//! BLE Radio Setup Command for all v5.0 PHYs
+//! Bluetooth 5 Radio Setup Command for all PHYs
 struct __RFC_STRUCT rfc_CMD_BLE5_RADIO_SETUP_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1820
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -685,14 +694,14 @@ struct __RFC_STRUCT rfc_CMD_BLE5_RADIO_SETUP_s {
                                         //!<        2 Mbps PHY mode. If NULL, no override is used.
    uint32_t* pRegOverrideCoded;         //!< \brief Pointer to a list of hardware and configuration registers to override when selecting
                                         //!<        coded PHY mode. If NULL, no override is used.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_SLAVE
 //! @{
 #define CMD_BLE5_SLAVE                                          0x1821
-//! BLE Slave Command
+//! Bluetooth 5 Slave Command
 struct __RFC_STRUCT rfc_CMD_BLE5_SLAVE_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1821
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -713,7 +722,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_SLAVE_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -730,23 +739,22 @@ struct __RFC_STRUCT rfc_CMD_BLE5_SLAVE_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_ble5SlavePar_t *pParams;         //!<        Pointer to command specific parameter structure
    rfc_bleMasterSlaveOutput_t *pOutput; //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_MASTER
 //! @{
 #define CMD_BLE5_MASTER                                         0x1822
-//! BLE Master Command
+//! Bluetooth 5 Master Command
 struct __RFC_STRUCT rfc_CMD_BLE5_MASTER_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1822
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -767,7 +775,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_MASTER_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -784,23 +792,22 @@ struct __RFC_STRUCT rfc_CMD_BLE5_MASTER_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_ble5MasterPar_t *pParams;        //!<        Pointer to command specific parameter structure
    rfc_bleMasterSlaveOutput_t *pOutput; //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_ADV_EXT
 //! @{
 #define CMD_BLE5_ADV_EXT                                        0x1823
-//! BLE Extended Advertiser Command
+//! Bluetooth 5 Extended Advertiser Command
 struct __RFC_STRUCT rfc_CMD_BLE5_ADV_EXT_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1823
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -821,7 +828,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_ADV_EXT_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -838,23 +845,22 @@ struct __RFC_STRUCT rfc_CMD_BLE5_ADV_EXT_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_ble5AdvExtPar_t *pParams;        //!<        Pointer to command specific parameter structure
    rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_ADV_AUX
 //! @{
 #define CMD_BLE5_ADV_AUX                                        0x1824
-//! BLE Secondary Channel Advertiser Command
+//! Bluetooth 5 Secondary Channel Advertiser Command
 struct __RFC_STRUCT rfc_CMD_BLE5_ADV_AUX_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1824
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -875,7 +881,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_ADV_AUX_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -892,23 +898,22 @@ struct __RFC_STRUCT rfc_CMD_BLE5_ADV_AUX_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_ble5AdvAuxPar_t *pParams;        //!<        Pointer to command specific parameter structure
    rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_SCANNER
 //! @{
 #define CMD_BLE5_SCANNER                                        0x1827
-//! BLE Scanner Command
+//! Bluetooth 5 Scanner Command
 struct __RFC_STRUCT rfc_CMD_BLE5_SCANNER_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1827
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -929,7 +934,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_SCANNER_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -946,23 +951,22 @@ struct __RFC_STRUCT rfc_CMD_BLE5_SCANNER_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_ble5ScannerPar_t *pParams;       //!<        Pointer to command specific parameter structure
    rfc_ble5ScanInitOutput_t *pOutput;   //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_INITIATOR
 //! @{
 #define CMD_BLE5_INITIATOR                                      0x1828
-//! BLE Initiator Command
+//! Bluetooth 5 Initiator Command
 struct __RFC_STRUCT rfc_CMD_BLE5_INITIATOR_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1828
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -983,7 +987,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_INITIATOR_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -1000,23 +1004,22 @@ struct __RFC_STRUCT rfc_CMD_BLE5_INITIATOR_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_ble5InitiatorPar_t *pParams;     //!<        Pointer to command specific parameter structure
    rfc_ble5ScanInitOutput_t *pOutput;   //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_GENERIC_RX
 //! @{
 #define CMD_BLE5_GENERIC_RX                                     0x1829
-//! BLE Generic Receiver Command
+//! Bluetooth 5 Generic Receiver Command
 struct __RFC_STRUCT rfc_CMD_BLE5_GENERIC_RX_s {
    uint16_t commandNo;                  //!<        The command ID number 0x1829
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -1037,7 +1040,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_GENERIC_RX_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -1054,23 +1057,22 @@ struct __RFC_STRUCT rfc_CMD_BLE5_GENERIC_RX_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_bleGenericRxPar_t *pParams;      //!<        Pointer to command specific parameter structure
    rfc_bleGenericRxOutput_t *pOutput;   //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup CMD_BLE5_TX_TEST
 //! @{
 #define CMD_BLE5_TX_TEST                                        0x182A
-//! BLE PHY Test Transmitter Command
+//! Bluetooth 5 PHY Test Transmitter Command
 struct __RFC_STRUCT rfc_CMD_BLE5_TX_TEST_s {
    uint16_t commandNo;                  //!<        The command ID number 0x182A
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
@@ -1091,7 +1093,7 @@ struct __RFC_STRUCT rfc_CMD_BLE5_TX_TEST_s {
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
    uint8_t channel;                     //!< \brief Channel to use<br>
-                                        //!<        0--39: BLE advertising/data channel number<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
                                         //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
                                         //!<        255: Use existing frequency<br>
                                         //!<        Others: <i>Reserved</i>
@@ -1108,16 +1110,227 @@ struct __RFC_STRUCT rfc_CMD_BLE5_TX_TEST_s {
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        3: <i>Reserved</i>
-      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.<br>
-                                        //!<        0: S = 8 (125 kbps)<br>
-                                        //!<        1: S = 2 (500 kbps)
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
    } phyMode;
    uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
    uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
                                         //!<        0x0000: Use default TX power.
    rfc_bleTxTestPar_t *pParams;         //!<        Pointer to command specific parameter structure
    rfc_bleTxTestOutput_t *pOutput;      //!<        Pointer to command specific output structure
-};
+} __RFC_STRUCT_ATTR;
+
+//! @}
+
+//! \addtogroup CMD_BLE5_ADV
+//! @{
+#define CMD_BLE5_ADV                                            0x182B
+//! Bluetooth 5 Connectable Undirected Advertiser Command
+struct __RFC_STRUCT rfc_CMD_BLE5_ADV_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x182B
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
+   rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
+} __RFC_STRUCT_ATTR;
+
+//! @}
+
+//! \addtogroup CMD_BLE5_ADV_DIR
+//! @{
+#define CMD_BLE5_ADV_DIR                                        0x182C
+//! Bluetooth 5 Connectable Directed Advertiser Command
+struct __RFC_STRUCT rfc_CMD_BLE5_ADV_DIR_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x182C
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
+   rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
+} __RFC_STRUCT_ATTR;
+
+//! @}
+
+//! \addtogroup CMD_BLE5_ADV_NC
+//! @{
+#define CMD_BLE5_ADV_NC                                         0x182D
+//! Bluetooth 5 Non-Connectable Advertiser Command
+struct __RFC_STRUCT rfc_CMD_BLE5_ADV_NC_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x182D
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
+   rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
+} __RFC_STRUCT_ATTR;
+
+//! @}
+
+//! \addtogroup CMD_BLE5_ADV_SCAN
+//! @{
+#define CMD_BLE5_ADV_SCAN                                       0x182E
+//! Bluetooth 5 Scannable Undirected Advertiser Command
+struct __RFC_STRUCT rfc_CMD_BLE5_ADV_SCAN_s {
+   uint16_t commandNo;                  //!<        The command ID number 0x182E
+   uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
+                                        //!<        updated by the radio CPU during operation and may be read by the
+                                        //!<        system CPU at any time.
+   rfc_radioOp_t *pNextOp;              //!<        Pointer to the next operation to run after this operation is done
+   ratmr_t startTime;                   //!<        Absolute or relative start time (depending on the value of <code>startTrigger</code>)
+   struct {
+      uint8_t triggerType:4;            //!<        The type of trigger
+      uint8_t bEnaCmd:1;                //!< \brief 0: No alternative trigger command<br>
+                                        //!<        1: CMD_TRIGGER can be used as an alternative trigger
+      uint8_t triggerNo:2;              //!<        The trigger number of the CMD_TRIGGER command that triggers this action
+      uint8_t pastTrig:1;               //!< \brief 0: A trigger in the past is never triggered, or for start of commands, give an error<br>
+                                        //!<        1: A trigger in the past is triggered as soon as possible
+   } startTrigger;                      //!<        Identification of the trigger that starts the operation
+   struct {
+      uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
+      uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
+   } condition;
+   uint8_t channel;                     //!< \brief Channel to use<br>
+                                        //!<        0--39: BLE advertising/data channel index<br>
+                                        //!<        60--207: Custom frequency; (2300 + <code>channel</code>) MHz<br>
+                                        //!<        255: Use existing frequency<br>
+                                        //!<        Others: <i>Reserved</i>
+   struct {
+      uint8_t init:7;                   //!< \brief If <code>bOverride</code> = 1 or custom frequency is used:<br>
+                                        //!<        0: Do not use whitening<br>
+                                        //!<        Other value: Initialization for 7-bit LFSR whitener
+      uint8_t bOverride:1;              //!< \brief 0: Use default whitening for BLE advertising/data channels<br>
+                                        //!<        1: Override whitening initialization with value of init
+   } whitening;
+   struct {
+      uint8_t mainMode:2;               //!< \brief PHY to use:<br>
+                                        //!<        0: 1 Mbps<br>
+                                        //!<        1: 2 Mbps<br>
+                                        //!<        2: Coded<br>
+                                        //!<        3: <i>Reserved</i>
+      uint8_t coding:6;                 //!< \brief Coding to use for TX if coded PHY is selected.
+                                        //!<        See the Technical Reference Manual for details.
+   } phyMode;
+   uint8_t rangeDelay;                  //!<        Number of RAT ticks to add to the listening time after T_IFS
+   uint16_t txPower;                    //!< \brief Transmit power to use (overrides the one given in radio setup).
+                                        //!<        0x0000: Use default TX power.
+   rfc_bleAdvPar_t *pParams;            //!<        Pointer to command specific parameter structure
+   rfc_bleAdvOutput_t *pOutput;         //!<        Pointer to command specific output structure
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1152,7 +1365,7 @@ struct __RFC_STRUCT rfc_bleMasterSlavePar_s {
    uint8_t crcInit0;                    //!<        CRC initialization value used on the connection -- least significant byte
    uint8_t crcInit1;                    //!<        CRC initialization value used on the connection -- middle byte
    uint8_t crcInit2;                    //!<        CRC initialization value used on the connection -- most significant byte
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1211,7 +1424,7 @@ struct __RFC_STRUCT rfc_bleSlavePar_s {
    } endTrigger;                        //!<        Trigger that causes the device to end the connection event as soon as allowed
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
                                         //!<        connection event as soon as allowed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1258,13 +1471,13 @@ struct __RFC_STRUCT rfc_bleMasterPar_s {
    } endTrigger;                        //!<        Trigger that causes the device to end the connection event as soon as allowed
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
                                         //!<        connection event as soon as allowed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup bleAdvPar
 //! @{
-//! Parameter structure for legacy advertiser (CMD_BLE_ADV*)
+//! Parameter structure for legacy advertiser (CMD_BLE_ADV* and CMD_BLE5_ADV*)
 
 struct __RFC_STRUCT rfc_bleAdvPar_s {
    dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
@@ -1320,7 +1533,7 @@ struct __RFC_STRUCT rfc_bleAdvPar_s {
    } endTrigger;                        //!<        Trigger that causes the device to end the advertiser event as soon as allowed
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
                                         //!<        advertiser event as soon as allowed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1397,7 +1610,7 @@ struct __RFC_STRUCT rfc_bleScannerPar_s {
                                         //!<        receiving as soon as allowed, ending with BLE_DONE_RXTIMEOUT
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to stop
                                         //!<        receiving as soon as allowed, ending with BLE_DONE_ENDED
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1463,7 +1676,7 @@ struct __RFC_STRUCT rfc_bleInitiatorPar_s {
                                         //!<        receiving as soon as allowed, ending with BLE_DONE_RXTIMEOUT
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to stop
                                         //!<        receiving as soon as allowed, ending with BLE_DONE_ENDED
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1500,7 +1713,7 @@ struct __RFC_STRUCT rfc_bleGenericRxPar_s {
    } endTrigger;                        //!<        Trigger that causes the device to end the Rx operation
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
                                         //!<        Rx operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1537,13 +1750,13 @@ struct __RFC_STRUCT rfc_bleTxTestPar_s {
    } endTrigger;                        //!<        Trigger that causes the device to end the Test Tx operation
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
                                         //!<        Test Tx operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup ble5SlavePar
 //! @{
-//! Parameter structure for BLE 5 slave (CMD_BLE5_SLAVE)
+//! Parameter structure for Bluetooth 5 slave (CMD_BLE5_SLAVE)
 
 struct __RFC_STRUCT rfc_ble5SlavePar_s {
    dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
@@ -1597,13 +1810,13 @@ struct __RFC_STRUCT rfc_ble5SlavePar_s {
    } endTrigger;                        //!<        Trigger that causes the device to end the connection event as soon as allowed
    ratmr_t endTime;                     //!< \brief Time used together with <code>endTrigger</code> that causes the device to end the
                                         //!<        connection event as soon as allowed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup ble5MasterPar
 //! @{
-//! Parameter structure for BLE 5 master (CMD_BLE5_MASTER)
+//! Parameter structure for Bluetooth 5 master (CMD_BLE5_MASTER)
 
 struct __RFC_STRUCT rfc_ble5MasterPar_s {
    dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
@@ -1646,7 +1859,7 @@ struct __RFC_STRUCT rfc_ble5MasterPar_s {
                                         //!<        connection event as soon as allowed
    uint8_t maxRxPktLen;                 //!<        Maximum packet length currently allowed for received packets on the connection
    uint8_t maxLenLowRate;               //!<        Maximum packet length for which using S = 8 (125 kbps) is allowed when transmitting. 0: no limit.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1668,7 +1881,7 @@ struct __RFC_STRUCT rfc_ble5AdvExtPar_s {
    uint16_t* pDeviceAddress;            //!< \brief Pointer (with least significant bit set to 0) to device address used for this device.
                                         //!<        If least significant bit is 1, the address type given by
                                         //!<        <code>advConfig.deviceAddrType</code> is inverted.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1721,7 +1934,7 @@ struct __RFC_STRUCT rfc_ble5AdvAuxPar_s {
    rfc_bleWhiteListEntry_t *pWhiteList; //!< \brief Pointer (with least significant bit set to 0)  to white list or peer address (directed
                                         //!<        advertiser). If least significant bit is 1, the address type given by
                                         //!<        <code>advConfig.peerAddrType</code> is inverted.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1730,19 +1943,19 @@ struct __RFC_STRUCT rfc_ble5AdvAuxPar_s {
 struct __RFC_STRUCT rfc_ble5AuxChRes_s {
    ratmr_t rxStartTime;                 //!<        The time needed to start RX in order to receive the packet
    uint16_t rxListenTime;               //!<        The time needed to listen in order to receive the packet. 0: No AUX packet
-   uint8_t channelNo;                   //!<        The channel number used for secondary advertising
+   uint8_t channelNo;                   //!<        The channel index used for secondary advertising
    uint8_t phyMode;                     //!< \brief PHY to use on secondary channel:<br>
                                         //!<        0: 1 Mbps<br>
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        Others: <i>Reserved</i>
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup ble5ScannerPar
 //! @{
-//! Parameter structure for BLE 5 scanner (CMD_BLE5_SCANNER)
+//! Parameter structure for Bluetooth 5 scanner (CMD_BLE5_SCANNER)
 
 struct __RFC_STRUCT rfc_ble5ScannerPar_s {
    dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
@@ -1827,19 +2040,19 @@ struct __RFC_STRUCT rfc_ble5ScannerPar_s {
                                         //!<        receiving as soon as allowed, ending with BLE_DONE_ENDED
    ratmr_t rxStartTime;                 //!<        The time needed to start RX in order to receive the packet
    uint16_t rxListenTime;               //!<        The time needed to listen in order to receive the packet. 0: No AUX packet
-   uint8_t channelNo;                   //!<        The channel number used for secondary advertising
+   uint8_t channelNo;                   //!<        The channel index used for secondary advertising
    uint8_t phyMode;                     //!< \brief PHY to use on secondary channel:<br>
                                         //!<        0: 1 Mbps<br>
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        Others: <i>Reserved</i>
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup ble5InitiatorPar
 //! @{
-//! Parameter structure for BLE 5 initiator (CMD_BLE5_INITIATOR)
+//! Parameter structure for Bluetooth 5 initiator (CMD_BLE5_INITIATOR)
 
 struct __RFC_STRUCT rfc_ble5InitiatorPar_s {
    dataQueue_t* pRxQ;                   //!<        Pointer to receive queue
@@ -1910,13 +2123,13 @@ struct __RFC_STRUCT rfc_ble5InitiatorPar_s {
                                         //!<        receiving as soon as allowed, ending with BLE_DONE_ENDED
    ratmr_t rxStartTime;                 //!<        The time needed to start RX in order to receive the packet
    uint16_t rxListenTime;               //!<        The time needed to listen in order to receive the packet. 0: No AUX packet
-   uint8_t channelNo;                   //!<        The channel number used for secondary advertising
+   uint8_t channelNo;                   //!<        The channel index used for secondary advertising
    uint8_t phyMode;                     //!< \brief PHY to use on secondary channel:<br>
                                         //!<        0: 1 Mbps<br>
                                         //!<        1: 2 Mbps<br>
                                         //!<        2: Coded<br>
                                         //!<        Others: <i>Reserved</i>
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1955,7 +2168,7 @@ struct __RFC_STRUCT rfc_bleMasterSlaveOutput_s {
                                         //!<        0 otherwise
    } pktStatus;                         //!<        Status of received packets
    ratmr_t timeStamp;                   //!<        Slave operation: Time stamp of first received packet
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1974,7 +2187,7 @@ struct __RFC_STRUCT rfc_bleAdvOutput_s {
    uint8_t nRxBufFull;                  //!<        Number of packets received that did not fit in Rx queue
    int8_t lastRssi;                     //!<        The RSSI of the last received packet (signed)
    ratmr_t timeStamp;                   //!<        Time stamp of the last received packet
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -1996,7 +2209,7 @@ struct __RFC_STRUCT rfc_bleScannerOutput_s {
    int8_t lastRssi;                     //!<        The RSSI of the last received packet (signed)
    uint8_t __dummy0;
    ratmr_t timeStamp;                   //!<        Time stamp of the last successfully received ADV*_IND packet that was not ignored
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2012,7 +2225,7 @@ struct __RFC_STRUCT rfc_bleInitiatorOutput_s {
    uint8_t nRxAdvBufFull;               //!<        Number of ADV*_IND packets received that did not fit in Rx queue
    int8_t lastRssi;                     //!<        The RSSI of the last received packet (signed)
    ratmr_t timeStamp;                   //!<        Time stamp of the received ADV*_IND packet that caused transmission of CONNECT_IND (CONNECT_REQ)
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2034,7 +2247,7 @@ struct __RFC_STRUCT rfc_ble5ScanInitOutput_s {
    int8_t lastRssi;                     //!<        The RSSI of the last received packet (signed)
    uint8_t __dummy0;
    ratmr_t timeStamp;                   //!<        Time stamp of the last successfully received *ADV*_IND packet that was not ignored
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2049,7 +2262,7 @@ struct __RFC_STRUCT rfc_bleGenericRxOutput_s {
    int8_t lastRssi;                     //!<        The RSSI of the last received packet (signed)
    uint8_t __dummy0;
    ratmr_t timeStamp;                   //!<        Time stamp of the last received packet
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2059,7 +2272,7 @@ struct __RFC_STRUCT rfc_bleGenericRxOutput_s {
 
 struct __RFC_STRUCT rfc_bleTxTestOutput_s {
    uint16_t nTx;                        //!<        Number of packets transmitted
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2099,7 +2312,7 @@ struct __RFC_STRUCT rfc_ble5ExtAdvEntry_s {
                                         //!<        present, pointer may be NULL.
    uint8_t* pAdvData;                   //!< \brief Pointer to buffer containing advData. If <code>advDataLen</code> = 0,
                                         //!<        pointer may be NULL.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2121,7 +2334,7 @@ struct __RFC_STRUCT rfc_bleWhiteListEntry_s {
    } conf;
    uint16_t address;                    //!<        Least significant 16 bits of the address contained in the entry
    uint32_t addressHi;                  //!<        Most significant 32 bits of the address contained in the entry
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2139,7 +2352,7 @@ struct __RFC_STRUCT rfc_ble5AdiEntry_s {
                                         //!<        2: Entry is blocked (always ignore packet with the given SID)<br>
                                         //!<        3: <i>Reserved</i>
    } advDataInfo;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -2154,13 +2367,13 @@ struct __RFC_STRUCT rfc_bleRxStatus_s {
       uint8_t bIgnore:1;                //!<        1 if the packet is marked as ignored, 0 otherwise
       uint8_t bCrcErr:1;                //!<        1 if the packet was received with CRC error, 0 otherwise
    } status;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
 //! \addtogroup ble5RxStatus
 //! @{
-//! Receive status field that may be appended to message in receive buffer for BLE 5.0 commands
+//! Receive status field that may be appended to message in receive buffer for Bluetooth 5 commands
 
 struct __RFC_STRUCT rfc_ble5RxStatus_s {
    struct {
@@ -2174,7 +2387,7 @@ struct __RFC_STRUCT rfc_ble5RxStatus_s {
                                         //!<        2: Coded, S = 8 (125 kbps)<br>
                                         //!<        3: Coded, S = 2 (500 kbps)
    } status;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 

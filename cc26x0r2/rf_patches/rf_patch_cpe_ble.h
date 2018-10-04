@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ble.h
-*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
-*  Revision:       $Revision: 17889 $
+*  Revised:        $Date: 2018-05-07 15:02:01 +0200 (ma, 07 mai 2018) $
+*  Revision:       $Revision: 18438 $
 *
 *  Description: RF core patch for Bluetooth 4.2 support in CC2640R2F
 *
-*  Copyright (c) 2015-2017, Texas Instruments Incorporated
+*  Copyright (c) 2015-2018, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -70,11 +70,15 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageBle[] = {
-   0x210004a9,
-   0x210004d1,
+   0x210004b9,
+   0x210004e1,
+   0x210004f5,
    0x4801b510,
    0x00004700,
    0x000009d5,
+   0x01c0b570,
+   0x47204c00,
+   0x000046d5,
    0x4c18b5f8,
    0x46254818,
    0x7b2f3560,
@@ -103,14 +107,32 @@ CPE_PATCH_TYPE patchImageBle[] = {
    0x21000144,
    0x0000a767,
    0x0000df80,
-   0x2100045d,
+   0x2100046d,
    0x4c03b510,
-   0xffbcf7ff,
+   0xffb6f7ff,
    0x28006820,
    0xbd10d1fa,
    0x40041100,
+   0x480db510,
+   0x6b406b84,
+   0x04e00141,
+   0x43010ec0,
+   0x4b0ab672,
+   0xb2826818,
+   0x43101558,
+   0x48086018,
+   0x601a6880,
+   0x4a07b662,
+   0x22907953,
+   0x07224353,
+   0xf7ff0f12,
+   0xbd10ff9b,
+   0x40045080,
+   0x40040000,
+   0x40044000,
+   0x21000280,
 };
-#define _NWORD_PATCHIMAGE_BLE 39
+#define _NWORD_PATCHIMAGE_BLE 61
 
 #define _NWORD_PATCHSYS_BLE 0
 
@@ -133,9 +155,9 @@ CPE_PATCH_TYPE patchImageBle[] = {
 
 PATCH_FUN_SPEC void enterBleCpePatch(void)
 {
+#if (_NWORD_PATCHIMAGE_BLE > 0)
    uint32_t *pPatchVec = (uint32_t *) (_BLE_CPERAM_START + _BLE_PATCH_VEC_OFFSET);
 
-#if (_NWORD_PATCHIMAGE_BLE > 0)
    memcpy(pPatchVec, patchImageBle, sizeof(patchImageBle));
 #endif
 }
@@ -151,6 +173,7 @@ PATCH_FUN_SPEC void configureBlePatch(void)
 
    pPatchTab[1] = 0;
    pPatchTab[28] = 1;
+   pPatchTab[64] = 2;
 }
 
 PATCH_FUN_SPEC void applyBlePatch(void)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_rfe_ble.h
-*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (Thu, 24 Aug 2017) $
+*  Revised:        $Date: 2017-08-24 11:43:33 +0200 (to, 24 aug 2017) $
 *  Revision:       $Revision: 17889 $
 *
 *  Description: RF core patch for Bluetooth 4.2 support in CC2640R2F (improved AGC receiver blocking performance)

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ccfg.c
-*  Revised:        $Date: 2017-07-31 14:52:44 +0200 (Mon, 31 Jul 2017) $
-*  Revision:       $Revision: 17856 $
+*  Revised:        $Date: 2017-08-08 15:34:36 +0200 (ti, 08 aug 2017) $
+*  Revision:       $Revision: 17873 $
 *
 *  Description:    Customer Configuration for CC26x0 device family (HW rev 2).
 *
@@ -59,9 +59,10 @@
 // It is not recommended to do modifications inside the ccfg.c file.
 // This file is part of the CoreSDK release and future releases may have
 // important modifications and new fields added without notice.
-// The recommended method to modify the CCFG settings is to have your
-// own <customer_ccfg>.c file that defines the specific CCFG values to be
-// overridden and finally including ccfg.c from the <customer_ccfg>.c file.
+// The recommended method to modify the CCFG settings is to have a separate
+// <customer_ccfg>.c file that defines the specific CCFG values to be
+// overridden and then include the TI provided ccfg.c at the very end,
+// giving default values for non-overriden settings.
 //
 // Example:
 // #define SET_CCFG_BL_CONFIG_BOOTLOADER_ENABLE  0xC5 // Enable ROM boot loader

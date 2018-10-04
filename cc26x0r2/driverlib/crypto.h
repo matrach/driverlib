@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       crypto.h
-*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
-*  Revision:       49048
+*  Revised:        2018-01-12 18:46:31 +0100 (Fri, 12 Jan 2018)
+*  Revision:       51161
 *
 *  Description:    AES header file.
 *
@@ -234,8 +234,8 @@ extern uint32_t CRYPTOAesLoadKey(uint32_t *pui32AesKey,
 //
 //! \brief Start an AES-CBC operation (encryption or decryption).
 //!
-//! The function starts an AES CBC mode encypt or decrypt operation.
-//! End operation can be deteced by enabling interrupt or by polling
+//! The function starts an AES CBC mode encrypt or decrypt operation.
+//! End operation can be detected by enabling interrupt or by polling
 //! CRYPTOAesCbcStatus(). Result of operation is returned by CRYPTOAesCbcStatus().
 //!
 //! \param pui32MsgIn is a pointer to the input data.
@@ -386,7 +386,7 @@ CRYPTOAesCbcFinish(void)
 //! location in which the key is stored.
 //!
 //! \param bEncrypt determines whether to run encryption or not.
-//! \param ui32AuthLength is the the length of the authentication field -
+//! \param ui32AuthLength is the length of the authentication field -
 //! 0, 2, 4, 6, 8, 10, 12, 14 or 16 octets.
 //! \param pui32Nonce is a pointer to 13-byte or 12-byte Nonce (Number used once).
 //! \param pui32PlainText is a pointer to the octet string input message.
@@ -467,7 +467,7 @@ extern uint32_t CRYPTOCcmAuthEncryptResultGet(uint32_t ui32TagLength,
 //! location in which the key is stored.
 //!
 //! \param bDecrypt determines whether to run decryption or not.
-//! \param ui32AuthLength is the the length of the authentication field -
+//! \param ui32AuthLength is the length of the authentication field -
 //! 0, 2, 4, 6, 8, 10, 12, 14 or 16 octets.
 //! \param pui32Nonce is a pointer to 13-byte or 12-byte Nonce (Number used once).
 //! \param pui32CipherText is a pointer to the octet string encrypted message.
@@ -520,7 +520,7 @@ extern uint32_t CRYPTOCcmInvAuthDecryptStatus(void);
 //
 //! \brief Get the result of the CCM operation.
 //!
-//! \param ui32AuthLength is the the length of the authentication field -
+//! \param ui32AuthLength is the length of the authentication field -
 //! 0, 2, 4, 6, 8, 10, 12, 14 or 16 octets.
 //! \param pui32CipherText is a pointer to the octet string encrypted message.
 //! \param ui32CipherTextLength is the length of the encrypted message.

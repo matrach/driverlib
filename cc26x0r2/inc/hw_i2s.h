@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_i2s_h
-*  Revised:        2017-05-06 20:38:09 +0200 (Sat, 06 May 2017)
-*  Revision:       48921
+*  Revised:        2017-11-02 10:21:28 +0100 (Thu, 02 Nov 2017)
+*  Revision:       50141
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.
@@ -115,7 +115,7 @@
 // Internal
 #define I2S_O_STMPXCNTCAPT1                                         0x00000064
 
-// Captured WCLK Counter Value, Capture Channel 1
+// Internal
 #define I2S_O_STMPWCNTCAPT1                                         0x00000068
 
 // Interrupt Mask Register
@@ -184,22 +184,6 @@
 // Register: I2S_O_AIFDIRCFG
 //
 //*****************************************************************************
-// Field:   [9:8] AD2
-//
-// Configures the AD2 audio data pin usage
-//
-// 0x3: Reserved
-// ENUMs:
-// OUT                      Output mode
-// IN                       Input mode
-// DIS                      Not in use (disabled)
-#define I2S_AIFDIRCFG_AD2_W                                                  2
-#define I2S_AIFDIRCFG_AD2_M                                         0x00000300
-#define I2S_AIFDIRCFG_AD2_S                                                  8
-#define I2S_AIFDIRCFG_AD2_OUT                                       0x00000200
-#define I2S_AIFDIRCFG_AD2_IN                                        0x00000100
-#define I2S_AIFDIRCFG_AD2_DIS                                       0x00000000
-
 // Field:   [5:4] AD1
 //
 // Configures the AD1 audio data pin usage:
@@ -242,7 +226,7 @@
 // The number of BCLK periods between a WCLK edge and MSB of the first word in
 // a phase:
 //
-// 0x00: LJF format
+// 0x00: LJF and DSP format
 // 0x01: I2S and DSP format
 // 0x02: RJF format
 // ...
@@ -707,8 +691,7 @@
 //*****************************************************************************
 // Field:  [15:0] CAPT_VALUE
 //
-// Channel 1 is idle and can not be sampled from an external event as with
-// Channel 0 STMPWCNTCAPT0
+// Internal. Only to be used through TI provided API.
 #define I2S_STMPWCNTCAPT1_CAPT_VALUE_W                                      16
 #define I2S_STMPWCNTCAPT1_CAPT_VALUE_M                              0x0000FFFF
 #define I2S_STMPWCNTCAPT1_CAPT_VALUE_S                                       0

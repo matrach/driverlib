@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.h
-*  Revised:        2017-07-28 15:52:43 +0200 (Fri, 28 Jul 2017)
-*  Revision:       49450
+*  Revised:        2017-12-11 16:44:38 +0100 (Mon, 11 Dec 2017)
+*  Revision:       50602
 *
 *  Description:    Defines and prototypes for the PRCM
 *
@@ -533,11 +533,11 @@ extern void PRCMAudioClockConfigSetOverride(uint32_t ui32ClkConfig, uint32_t ui3
 //! - \ref PRCMDomainEnable()
 //! - \ref PRCMDomainDisable()
 //! - \ref PRCMPeripheralRunEnable()
-//! - \ref PRCMPeripheralRunEnable()
+//! - \ref PRCMPeripheralRunDisable()
 //! - \ref PRCMPeripheralSleepEnable()
-//! - \ref PRCMPeripheralSleepEnable()
+//! - \ref PRCMPeripheralSleepDisable()
 //! - \ref PRCMPeripheralDeepSleepEnable()
-//! - \ref PRCMPeripheralDeepSleepEnable()
+//! - \ref PRCMPeripheralDeepSleepDisable()
 //!
 //! \return None
 //!

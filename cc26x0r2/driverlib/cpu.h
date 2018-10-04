@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.h
-*  Revised:        2017-07-25 09:34:46 +0200 (Tue, 25 Jul 2017)
-*  Revision:       49395
+*  Revised:        2017-08-21 13:20:52 +0200 (Mon, 21 Aug 2017)
+*  Revision:       49618
 *
 *  Description:    Defines and prototypes for the CPU instruction wrapper
 *                  functions.
@@ -135,7 +135,7 @@ extern uint32_t CPUcpsie(void);
 //
 //! \brief Get the interrupt priority disable level.
 //!
-//! Use this function to get the the level of priority that will disable
+//! Use this function to get the level of priority that will disable
 //! interrupts with a lower priority level.
 //!
 //! \return Returns the value of the \b BASEPRI register.
@@ -145,13 +145,31 @@ extern uint32_t CPUbasepriGet(void);
 
 //*****************************************************************************
 //
-//! \brief Provide a small delay.
+//! \brief Provide a small delay using a simple loop counter.
 //!
 //! This function provides means for generating a constant length delay. It
 //! is written in assembly to keep the delay consistent across tool chains,
 //! avoiding the need to tune the delay based on the tool chain in use.
 //!
-//! The loop takes 3 cycles/loop.
+//! \note It is not recommended using this function for long delays.
+//!
+//! Notice that interrupts can affect the delay if not manually disabled in advance.
+//!
+//! The delay depends on where code resides and the path for code fetching:
+//! - Code in flash, cache enabled, prefetch enabled  : 4 cycles per loop (Default)
+//! - Code in flash, cache enabled, prefetch disabled : 5 cycles per loop
+//! - Code in flash, cache disabled                   : 7 cycles per loop
+//! - Code in SRAM                                    : 6 cycles per loop
+//! - Code in GPRAM                                   : 3 cycles per loop
+//!
+//! \note If using an RTOS, consider using RTOS provided delay functions because
+//! these will not block task scheduling and will potentially save power.
+//!
+//! Calculate delay count based on the wanted delay in microseconds (us):
+//! - ui32Count = [delay in us] * [CPU clock in MHz] / [cycles per loop]
+//!
+//! Example: 250 us delay with code in flash and with cache and prefetch enabled:
+//! - ui32Count = 250 * 48 / 4 = 3000
 //!
 //! \param ui32Count is the number of delay loop iterations to perform.
 //!
@@ -203,7 +221,7 @@ __STATIC_INLINE void __attribute__((always_inline))
 CPUwfi(void)
 {
     // Wait for the next interrupt.
-    __asm("    wfi\n");
+    __asm volatile ("    wfi\n");
 }
 #endif
 
@@ -250,7 +268,7 @@ __STATIC_INLINE void __attribute__((always_inline))
 CPUwfe(void)
 {
     // Wait for the next event.
-    __asm("    wfe\n");
+    __asm volatile ("    wfe\n");
 }
 #endif
 
@@ -297,7 +315,7 @@ __STATIC_INLINE void __attribute__((always_inline))
 CPUsev(void)
 {
     // Send event.
-    __asm("    sev\n");
+    __asm volatile ("    sev\n");
 }
 #endif
 
@@ -348,13 +366,12 @@ CPUbasepriSet(uint32_t ui32NewBasepri)
 __STATIC_INLINE void __attribute__ ((naked))
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
-   // Set the BASEPRI register.
-   __asm("    msr     BASEPRI, %0\n"
-         "    bx      lr\n"
-         :
-         : "r" (ui32NewBasepri)
-         :
-         );
+    // Set the BASEPRI register.
+    __asm volatile ("    msr     BASEPRI, %0\n"
+                    "    bx      lr\n"
+                    : /* No output */
+                    : "r" (ui32NewBasepri)
+                   );
 }
 #pragma GCC diagnostic pop
 #endif

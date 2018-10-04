@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_prop_cmd.h
-*  Revised:        2017-07-05 16:17:29 +0200 (Wed, 05 Jul 2017)
-*  Revision:       17839
+*  Revised:        2017-11-10 10:42:47 +0100 (Fri, 10 Nov 2017)
+*  Revision:       18052
 *
 *  Description:    CC2640R2F API for Proprietary mode commands
 *
@@ -40,10 +40,16 @@
 #define __PROP_CMD_H
 
 #ifndef __RFC_STRUCT
-#ifdef __GNUC__
-#define __RFC_STRUCT __attribute__ ((aligned (4)))
-#else
 #define __RFC_STRUCT
+#endif
+
+#ifndef __RFC_STRUCT_ATTR
+#if defined(__GNUC__)
+#define __RFC_STRUCT_ATTR __attribute__ ((aligned (4)))
+#elif defined(__TI_ARM__)
+#define __RFC_STRUCT_ATTR __attribute__ ((__packed__,aligned (4)))
+#else
+#define __RFC_STRUCT_ATTR
 #endif
 #endif
 
@@ -109,7 +115,7 @@ struct __RFC_STRUCT rfc_carrierSense_s {
                                         //!<        1: A trigger in the past is triggered as soon as possible
    } csEndTrigger;                      //!<        Trigger classifier for ending the carrier sense
    ratmr_t csEndTime;                   //!<        Time used together with <code>csEndTrigger</code> for ending the operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -148,7 +154,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_TX_s {
    uint8_t pktLen;                      //!<        Packet length
    uint32_t syncWord;                   //!<        Sync word to transmit
    uint8_t* pPkt;                       //!<        Pointer to packet
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -220,7 +226,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_s {
    ratmr_t endTime;                     //!<        Time used together with <code>endTrigger</code> for ending the operation
    dataQueue_t* pQueue;                 //!<        Pointer to receive queue
    uint8_t* pOutput;                    //!<        Pointer to output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -284,7 +290,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_TX_ADV_s {
                                         //!<        this trigger is observed.
    uint32_t syncWord;                   //!<        Sync word to transmit
    uint8_t* pPkt;                       //!<        Pointer to packet, or TX queue for unlimited length
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -370,7 +376,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_ADV_s {
    uint8_t* pAddr;                      //!<        Pointer to address list
    dataQueue_t* pQueue;                 //!<        Pointer to receive queue
    uint8_t* pOutput;                    //!<        Pointer to output structure
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -438,7 +444,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_CS_s {
                                         //!<        1: A trigger in the past is triggered as soon as possible
    } csEndTrigger;                      //!<        Trigger classifier for ending the carrier sense
    ratmr_t csEndTime;                   //!<        Time used together with <code>csEndTrigger</code> for ending the operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -475,9 +481,11 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
       uint32_t preScale:4;              //!<        Prescaler value
       uint32_t :4;
       uint32_t rateWord:21;             //!<        Rate word
-      uint32_t bPdifDecim:1;            //!< \brief 0: Use automatic value for PDIF decimation<br>
-                                        //!<        1: Set PDIF decimation from <code>pdifDecim</code> field
-      uint32_t pdifDecim:2;             //!<        If <code>bPdifDecim</code> = 1: PDIF decimation value (0, 1, or 2)
+      uint32_t decimMode:3;             //!< \brief 0: Use automatic PDIF decimation<br>
+                                        //!<        1: Force PDIF decimation to 0<br>
+                                        //!<        3: Force PDIF decimation to 1<br>
+                                        //!<        5: Force PDIF decimation to 2<br>
+                                        //!<        Others: <i>Reserved</i>
    } symbolRate;                        //!<        Symbol rate setting
    uint8_t rxBw;                        //!<        Receiver bandwidth
    struct {
@@ -540,7 +548,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
                                         //!<        Temperature coefficient for IB. 0: No temperature compensation
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
                                         //!<        override is used.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -550,7 +558,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
 //! Define only for compatibility with CC13XX family. Command will result in error if sent.
 struct __RFC_STRUCT rfc_CMD_PROP_RADIO_DIV_SETUP_s {
    uint8_t dummy0;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -559,8 +567,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_DIV_SETUP_s {
 #define CMD_PROP_RX_SNIFF                                       0x3808
 //! Proprietary Mode Receive Command with Sniff Mode
 struct __RFC_STRUCT rfc_CMD_PROP_RX_SNIFF_s {
-   uint16_t commandNo;                  //!< \brief Proprietary Mode Receive Command
-                                        //!<        The command ID number 0x3808
+   uint16_t commandNo;                  //!<        The command ID number 0x3808
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
                                         //!<        updated by the radio CPU during operation and may be read by the
                                         //!<        system CPU at any time.
@@ -657,7 +664,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_SNIFF_s {
                                         //!<        1: A trigger in the past is triggered as soon as possible
    } csEndTrigger;                      //!<        Trigger classifier for ending the carrier sense
    ratmr_t csEndTime;                   //!<        Time used together with <code>csEndTrigger</code> for ending the operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -666,8 +673,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_SNIFF_s {
 #define CMD_PROP_RX_ADV_SNIFF                                   0x3809
 //! Proprietary Mode Advanced Receive Command with Sniff Mode
 struct __RFC_STRUCT rfc_CMD_PROP_RX_ADV_SNIFF_s {
-   uint16_t commandNo;                  //!< \brief Proprietary Mode Advanced Receive Command
-                                        //!<        The command ID number 0x3809
+   uint16_t commandNo;                  //!<        The command ID number 0x3809
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
                                         //!<        updated by the radio CPU during operation and may be read by the
                                         //!<        system CPU at any time.
@@ -778,7 +784,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_ADV_SNIFF_s {
                                         //!<        1: A trigger in the past is triggered as soon as possible
    } csEndTrigger;                      //!<        Trigger classifier for ending the carrier sense
    ratmr_t csEndTime;                   //!<        Time used together with <code>csEndTrigger</code> for ending the operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -789,7 +795,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_RX_ADV_SNIFF_s {
 struct __RFC_STRUCT rfc_CMD_PROP_SET_LEN_s {
    uint16_t commandNo;                  //!<        The command ID number 0x3401
    uint16_t rxLen;                      //!<        Payload length to use
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -799,7 +805,7 @@ struct __RFC_STRUCT rfc_CMD_PROP_SET_LEN_s {
 //! Restart Packet  Command
 struct __RFC_STRUCT rfc_CMD_PROP_RESTART_RX_s {
    uint16_t commandNo;                  //!<        The command ID number 0x3402
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -815,7 +821,7 @@ struct __RFC_STRUCT rfc_propRxOutput_s {
    uint8_t nRxBufFull;                  //!<        Number of packets that have been received and discarded due to lack of buffer space
    int8_t lastRssi;                     //!<        RSSI of last received packet
    ratmr_t timeStamp;                   //!<        Time stamp of last received packet
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -832,7 +838,7 @@ struct __RFC_STRUCT rfc_propRxStatus_s {
                                         //!<        2: Packet received correctly, but can be ignored<br>
                                         //!<        3: Packet reception was aborted
    } status;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 

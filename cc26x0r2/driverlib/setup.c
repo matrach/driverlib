@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2017-08-30 11:09:05 +0200 (Wed, 30 Aug 2017)
-*  Revision:       49664
+*  Revised:        2018-04-05 13:46:03 +0200 (Thu, 05 Apr 2018)
+*  Revision:       51853
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -57,12 +57,6 @@
 #include "chipinfo.h"
 #include "setup.h"
 #include "setup_rom.h"
-// ##### INCLUDE IN ROM BEGIN #####
-// We need intrinsic functions for IAR (if used in source code)
-#ifdef __IAR_SYSTEMS_ICC__
-#include <intrinsics.h>
-#endif
-// ##### INCLUDE IN ROM END #####
 
 //*****************************************************************************
 //

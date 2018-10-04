@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       watchdog_doc.h
-*  Revised:        2016-03-30 13:03:59 +0200 (Wed, 30 Mar 2016)
-*  Revision:       45971
+*  Revised:        2018-02-09 15:45:36 +0100 (Fri, 09 Feb 2018)
+*  Revision:       51470
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -37,31 +37,54 @@
 //! @{
 //! \section sec_wdt Introduction
 //!
-//! The watchdog timer (WDT) is used to regain control when the system has failed due to unexpected
-//! software behavior. The WDT can generate a non-maskable interrupt (NMI), a regular interrupt, or a
-//! reset if the software fails to reload the watchdog before it times out.
+//! The Watchdog Timer (WDT) allows the application to regain control if the system stalls due to
+//! unexpected software behavior. The WDT can generate a normal interrupt or a non-maskable interrupt
+//! on the first time-out and a system reset on the following time-out if the application fails to
+//! restart the WDT.
 //!
 //! WDT has the following features:
-//! - 32-bit down counter with a programmable load register.
-//! - Programmable interrupt generation logic with interrupt masking and optional NMI function.
+//! - 32-bit down counter with a configurable load register.
+//! - Configurable interrupt generation logic with interrupt masking and optional NMI function.
 //! - Optional reset generation.
 //! - Register protection from runaway software (lock).
 //! - User-enabled stalling when the system CPU asserts the CPU Halt flag during debug.
 //!
-//! After the first time-out event, the 32-bit counter is re-loaded with the value of the Load register,
-//! and the timer resumes counting down from that value.
-//! If the timer counts down to its zero state again before the first time-out interrupt is cleared,
-//! and the reset signal has been enabled, the WDT asserts its reset signal to the system. If the interrupt
-//! is cleared before the 32-bit counter reaches its second time-out, the 32-bit counter is loaded with the
-//! value in the Load register, and counting resumes from that value.
+//! The WDT runs at system HF clock divided by 32; however, when in powerdown it runs at
+//! LF clock (32 kHz) - if the LF clock to the MCU domain is enabled.
 //!
-//! If Load register is written with a new value while the WDT counter is counting, then the counter is
-//! loaded with the new value and continues counting.
-//! Writing to the Load register does not clear an active interrupt. An interrupt must be explicitly cleared
-//! by clearing the interrupt.
+//! If application does not restart the WDT, using \ref WatchdogIntClear(), before a time-out:
+//! - At the first time-out the WDT asserts the interrupt, reloads the 32-bit counter with the load
+//!   value, and resumes counting down from that value.
+//! - If the WDT counts down to zero again before the application clears the interrupt, and the
+//!   reset signal has been enabled, the WDT asserts its reset signal to the system.
 //!
-//! The WDT counter runs at system HF clock divided by 32; however, when in powerdown it runs at
-//! LF clock (32 kHz) - if the LF clock to the MCU domain has been enabled.
+//! \note By default, a "warm reset" triggers a pin reset and thus reboots the device.
+//!
+//! A reset caused by the WDT can be detected as a "warm reset" using \ref SysCtrlResetSourceGet().
+//! However, it is not possible to detect which of the warm reset sources that caused the reset.
+//!
+//! Typical use case:
+//! - Use \ref WatchdogIntTypeSet() to select either standard interrupt or non-maskable interrupt on
+//!   first time-out.
+//!   - The application must implement an interrupt handler for the selected interrupt type. If
+//!     application uses the \e static vector table (see startup_<compiler>.c) the interrupt
+//!     handlers for standard interrupt and non-maskable interrupt are named WatchdogIntHandler()
+//!     and NmiSR() respectively. For more information about \e static and \e dynamic vector table,
+//!     see \ref sec_interrupt_table.
+//! - Use \ref WatchdogResetEnable() to enable reset on second time-out.
+//! - Use \ref WatchdogReloadSet() to set (re)load value of the counter.
+//! - Use \ref WatchdogEnable() to start the WDT counter. The WDT counts down from the load value.
+//! - Use \ref WatchdogLock() to lock WDT configuration to prevent unintended re-configuration.
+//! - Application must use \ref WatchdogIntClear() to restart the counter before WDT times out.
+//! - If application does not restart the counter before it reaches zero (times out) the WDT asserts
+//!   the selected type of interrupt, reloads the counter, and starts counting down again.
+//!   - The interrupt handler triggered by the first time-out can be used to log debug information
+//!     or try to enter a safe "pre-reset" state in order to have a more graceful reset when the WDT
+//!     times out the second time.
+//!   - It is \b not recommended that the WDT interrupt handler clears the WDT interrupt and thus
+//!     reloads the WDT counter. This means that the WDT interrupt handler never returns.
+//! - If the application does not clear the WDT interrupt and the WDT times out when the interrupt
+//!   is still asserted then WDT triggers a reset (if enabled).
 //!
 //! \section sec_wdt_api API
 //!

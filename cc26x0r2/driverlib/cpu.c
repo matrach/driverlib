@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.c
-*  Revised:        2017-01-16 19:17:22 +0100 (Mon, 16 Jan 2017)
-*  Revision:       48249
+*  Revised:        2018-05-08 10:04:01 +0200 (Tue, 08 May 2018)
+*  Revision:       51972
 *
 *  Description:    Instruction wrappers for special CPU instructions needed by
 *                  the drivers.
@@ -115,10 +115,11 @@ CPUcpsid(void)
     uint32_t ui32Ret;
 
     // Read PRIMASK and disable interrupts
-    __asm("    mrs     r0, PRIMASK\n"
-          "    cpsid   i\n"
-          "    bx      lr\n"
-      : "=r"(ui32Ret));
+    __asm volatile ("    mrs     %0, PRIMASK\n"
+                    "    cpsid   i\n"
+                    "    bx      lr\n"
+                    : "=r"(ui32Ret)
+                   );
 
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
@@ -182,9 +183,10 @@ CPUprimask(void)
     uint32_t ui32Ret;
 
     // Read PRIMASK
-    __asm("    mrs     r0, PRIMASK\n"
-          "    bx      lr\n"
-      : "=r"(ui32Ret));
+    __asm volatile ("    mrs     %0, PRIMASK\n"
+                    "    bx      lr\n"
+                    : "=r"(ui32Ret)
+                   );
 
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
@@ -251,10 +253,11 @@ CPUcpsie(void)
     uint32_t ui32Ret;
 
     // Read PRIMASK and enable interrupts.
-    __asm("    mrs     r0, PRIMASK\n"
-          "    cpsie   i\n"
-          "    bx      lr\n"
-      : "=r"(ui32Ret));
+    __asm volatile ("    mrs     %0, PRIMASK\n"
+                    "    cpsie   i\n"
+                    "    bx      lr\n"
+                    : "=r"(ui32Ret)
+                   );
 
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
@@ -318,9 +321,10 @@ CPUbasepriGet(void)
     uint32_t ui32Ret;
 
     // Read BASEPRI.
-    __asm("    mrs     r0, BASEPRI\n"
-          "    bx      lr\n"
-      : "=r"(ui32Ret));
+    __asm volatile ("    mrs     %0, BASEPRI\n"
+                    "    bx      lr\n"
+                    : "=r"(ui32Ret)
+                   );
 
     // The return is handled in the inline assembly, but the compiler will
     // still complain if there is not an explicit return here (despite the fact
@@ -344,7 +348,7 @@ CPUdelay(uint32_t ui32Count)
 void
 CPUdelay(uint32_t ui32Count)
 {
-    // Delay the specified number of times (3 cycles pr. loop)
+    // Loop the specified number of times
     __asm("CPUdelay:\n"
           "    subs    r0, #1\n"
           "    bne.n   CPUdelay\n"
@@ -366,7 +370,7 @@ CPUdel
     // For CCS implement this function in pure assembly. This prevents the TI
     // compiler from doing funny things with the optimizer.
 
-    // Delay the specified number of times (3 cycles pr. loop)
+    // Loop the specified number of times
 __asm("    .sect \".text:NOROM_CPUdelay\"\n"
       "    .clink\n"
       "    .thumbfunc NOROM_CPUdelay\n"
@@ -377,12 +381,16 @@ __asm("    .sect \".text:NOROM_CPUdelay\"\n"
       "    bne.n NOROM_CPUdelay\n"
       "    bx lr\n");
 #else
+// GCC
 void __attribute__((naked))
 CPUdelay(uint32_t ui32Count)
 {
-    // Delay the specified number of times (3 cycles pr. loop)
-    __asm("    subs    r0, #1\n"
-          "    bne     NOROM_CPUdelay\n"
-          "    bx      lr");
+    // Loop the specified number of times
+    __asm volatile ("%=:  subs  %0, #1\n"
+                    "     bne   %=b\n"
+                    "     bx    lr\n"
+                    : /* No output */
+                    : "r" (ui32Count)
+                   );
 }
 #endif

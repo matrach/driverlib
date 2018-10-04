@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.c
-*  Revised:        2017-08-30 11:09:05 +0200 (Wed, 30 Aug 2017)
-*  Revision:       49664
+*  Revised:        2018-01-29 18:45:34 +0100 (Mon, 29 Jan 2018)
+*  Revision:       51355
 *
 *  Description:    Collection of functions returning chip information.
 *
@@ -135,7 +135,7 @@ ChipInfo_GetChipType( void )
    if ( chipFam == FAMILY_CC26x0R2 ) {
       switch ( fcfg1Protocol ) {
       case 0x9 :
-         chipType = CHIP_TYPE_CC2640R2    ;
+         chipType = CHIP_TYPE_CC2640R2       ;
          break;
       }
    }

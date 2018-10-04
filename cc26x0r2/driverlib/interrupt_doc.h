@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       interrupt_doc.h
-*  Revised:        2017-05-23 15:04:30 +0200 (Tue, 23 May 2017)
-*  Revision:       49052
+*  Revised:        2017-11-14 15:26:03 +0100 (Tue, 14 Nov 2017)
+*  Revision:       50272
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -49,7 +49,7 @@
 //!
 //! \section sec_interrupt_api API
 //!
-//! Each interrupt can be individually enabled and disabled through:
+//! Interrupts and system exceptions must be individually enabled and disabled through:
 //! - \ref IntEnable()
 //! - \ref IntDisable()
 //!

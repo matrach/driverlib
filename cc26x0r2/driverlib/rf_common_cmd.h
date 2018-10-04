@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_common_cmd.h
-*  Revised:        2017-07-05 16:17:29 +0200 (Wed, 05 Jul 2017)
-*  Revision:       17839
+*  Revised:        2017-11-10 10:42:47 +0100 (Fri, 10 Nov 2017)
+*  Revision:       18052
 *
 *  Description:    CC2640R2F API for common/generic commands
 *
@@ -40,10 +40,16 @@
 #define __COMMON_CMD_H
 
 #ifndef __RFC_STRUCT
-#ifdef __GNUC__
-#define __RFC_STRUCT __attribute__ ((aligned (4)))
-#else
 #define __RFC_STRUCT
+#endif
+
+#ifndef __RFC_STRUCT_ATTR
+#if defined(__GNUC__)
+#define __RFC_STRUCT_ATTR __attribute__ ((aligned (4)))
+#elif defined(__TI_ARM__)
+#define __RFC_STRUCT_ATTR __attribute__ ((__packed__,aligned (4)))
+#else
+#define __RFC_STRUCT_ATTR
 #endif
 #endif
 
@@ -101,7 +107,7 @@ typedef struct __RFC_STRUCT rfc_CMD_BUS_REQUEST_s rfc_CMD_BUS_REQUEST_t;
 //! @{
 struct __RFC_STRUCT rfc_command_s {
    uint16_t commandNo;                  //!<        The command ID number
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -128,7 +134,7 @@ struct __RFC_STRUCT rfc_radioOp_s {
       uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -155,7 +161,7 @@ struct __RFC_STRUCT rfc_CMD_NOP_s {
       uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -218,7 +224,7 @@ struct __RFC_STRUCT rfc_CMD_RADIO_SETUP_s {
                                         //!<        Temperature coefficient for IB. 0: No temperature compensation
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
                                         //!<        override is used.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -257,7 +263,7 @@ struct __RFC_STRUCT rfc_CMD_FS_s {
    uint8_t __dummy1;                    //!<        <i>Reserved</i>
    uint8_t __dummy2;                    //!<        <i>Reserved</i>
    uint16_t __dummy3;                   //!<        <i>Reserved</i>
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -284,7 +290,7 @@ struct __RFC_STRUCT rfc_CMD_FS_OFF_s {
       uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -329,7 +335,7 @@ struct __RFC_STRUCT rfc_CMD_RX_TEST_s {
    } endTrigger;                        //!<        Trigger classifier for ending the operation
    uint32_t syncWord;                   //!<        Sync word to use for receiver
    ratmr_t endTime;                     //!<        Time to end the operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -379,7 +385,7 @@ struct __RFC_STRUCT rfc_CMD_TX_TEST_s {
    } endTrigger;                        //!<        Trigger classifier for ending the operation
    uint32_t syncWord;                   //!<        Sync word to use for transmitter
    ratmr_t endTime;                     //!<        Time to end the operation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -409,7 +415,7 @@ struct __RFC_STRUCT rfc_CMD_SYNC_STOP_RAT_s {
    uint16_t __dummy0;
    ratmr_t rat0;                        //!< \brief The returned RAT timer value corresponding to the value the RAT would have had when the
                                         //!<        RTC was zero
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -439,7 +445,7 @@ struct __RFC_STRUCT rfc_CMD_SYNC_START_RAT_s {
    uint16_t __dummy0;
    ratmr_t rat0;                        //!< \brief The desired RAT timer value corresponding to the value the RAT would have had when the
                                         //!<        RTC was zero. This parameter is returned by CMD_SYNC_STOP_RAT
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -468,7 +474,7 @@ struct __RFC_STRUCT rfc_CMD_COUNT_s {
    } condition;
    uint16_t counter;                    //!< \brief Counter. On start, the radio CPU decrements the value, and the end status of the operation
                                         //!<        differs if the result is zero
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -497,7 +503,7 @@ struct __RFC_STRUCT rfc_CMD_FS_POWERUP_s {
    } condition;
    uint16_t __dummy0;
    uint32_t* pRegOverride;              //!<        Pointer to a list of hardware and configuration registers to override. If NULL, no override is used.
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -524,7 +530,7 @@ struct __RFC_STRUCT rfc_CMD_FS_POWERDOWN_s {
       uint8_t rule:4;                   //!<        Condition for running next command: Rule for how to proceed
       uint8_t nSkip:4;                  //!<        Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...
    } condition;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -554,7 +560,7 @@ struct __RFC_STRUCT rfc_CMD_SCH_IMM_s {
    uint16_t __dummy0;
    uint32_t cmdrVal;                    //!<        Value as would be written to CMDR
    uint32_t cmdstaVal;                  //!<        Value as would be returned in CMDSTA
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -584,7 +590,7 @@ struct __RFC_STRUCT rfc_CMD_COUNT_BRANCH_s {
    uint16_t counter;                    //!< \brief Counter. On start, the radio CPU decrements the value, and the end status of the operation
                                         //!<        differs if the result is zero
    rfc_radioOp_t *pNextOpIfOk;          //!<        Pointer to next operation if counter did not expire
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -631,7 +637,7 @@ struct __RFC_STRUCT rfc_CMD_PATTERN_CHECK_s {
    uint8_t* pValue;                     //!<        Pointer to read from, or offset from last RX entry if <code>patternOpt.bRxVal</code> == 1
    uint32_t mask;                       //!<        Bit mask to apply before comparison
    uint32_t compareVal;                 //!<        Value to compare to
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -641,7 +647,7 @@ struct __RFC_STRUCT rfc_CMD_PATTERN_CHECK_s {
 //! Abort Running Radio Operation Command
 struct __RFC_STRUCT rfc_CMD_ABORT_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0401
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -651,7 +657,7 @@ struct __RFC_STRUCT rfc_CMD_ABORT_s {
 //! Stop Running Radio Operation Command Gracefully
 struct __RFC_STRUCT rfc_CMD_STOP_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0402
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -661,7 +667,7 @@ struct __RFC_STRUCT rfc_CMD_STOP_s {
 //! Read RSSI Command
 struct __RFC_STRUCT rfc_CMD_GET_RSSI_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0403
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -673,7 +679,7 @@ struct __RFC_STRUCT rfc_CMD_UPDATE_RADIO_SETUP_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0001
    uint16_t __dummy0;
    uint32_t* pRegOverride;              //!<        Pointer to a list of hardware and configuration registers to override
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -684,7 +690,7 @@ struct __RFC_STRUCT rfc_CMD_UPDATE_RADIO_SETUP_s {
 struct __RFC_STRUCT rfc_CMD_TRIGGER_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0404
    uint8_t triggerNo;                   //!<        Command trigger number
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -698,7 +704,7 @@ struct __RFC_STRUCT rfc_CMD_GET_FW_INFO_s {
    uint16_t startOffset;                //!<        The start of free RAM
    uint16_t freeRamSz;                  //!<        The size of free RAM
    uint16_t availRatCh;                 //!<        Bitmap of available RAT channels
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -708,7 +714,7 @@ struct __RFC_STRUCT rfc_CMD_GET_FW_INFO_s {
 //! Asynchronously Start Radio Timer Command
 struct __RFC_STRUCT rfc_CMD_START_RAT_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0405
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -718,7 +724,7 @@ struct __RFC_STRUCT rfc_CMD_START_RAT_s {
 //! Respond with Command ACK Only
 struct __RFC_STRUCT rfc_CMD_PING_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0406
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -730,7 +736,7 @@ struct __RFC_STRUCT rfc_CMD_READ_RFREG_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0601
    uint16_t address;                    //!<        The offset from the start of the RF core HW register bank (0x40040000)
    uint32_t value;                      //!<        Returned value of the register
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -743,7 +749,7 @@ struct __RFC_STRUCT rfc_CMD_ADD_DATA_ENTRY_s {
    uint16_t __dummy0;
    dataQueue_t* pQueue;                 //!<        Pointer to the queue structure to which the entry will be added
    uint8_t* pEntry;                     //!<        Pointer to the entry
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -756,7 +762,7 @@ struct __RFC_STRUCT rfc_CMD_REMOVE_DATA_ENTRY_s {
    uint16_t __dummy0;
    dataQueue_t* pQueue;                 //!<        Pointer to the queue structure from which the entry will be removed
    uint8_t* pEntry;                     //!<        Pointer to the entry that was removed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -769,7 +775,7 @@ struct __RFC_STRUCT rfc_CMD_FLUSH_QUEUE_s {
    uint16_t __dummy0;
    dataQueue_t* pQueue;                 //!<        Pointer to the queue structure to be flushed
    uint8_t* pFirstEntry;                //!<        Pointer to the first entry that was removed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -781,7 +787,7 @@ struct __RFC_STRUCT rfc_CMD_CLEAR_RX_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0008
    uint16_t __dummy0;
    dataQueue_t* pQueue;                 //!<        Pointer to the queue structure to be cleared
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -794,7 +800,7 @@ struct __RFC_STRUCT rfc_CMD_REMOVE_PENDING_ENTRIES_s {
    uint16_t __dummy0;
    dataQueue_t* pQueue;                 //!<        Pointer to the queue structure to be flushed
    uint8_t* pFirstEntry;                //!<        Pointer to the first entry that was removed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -807,7 +813,7 @@ struct __RFC_STRUCT rfc_CMD_SET_RAT_CMP_s {
    uint8_t ratCh;                       //!<        The radio timer channel number
    uint8_t __dummy0;
    ratmr_t compareTime;                 //!<        The time at which the compare occurs
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -829,7 +835,7 @@ struct __RFC_STRUCT rfc_CMD_SET_RAT_CPT_s {
                                         //!<        2: Capture on both edges<br>
                                         //!<        3: <i>Reserved</i>
    } config;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -840,7 +846,7 @@ struct __RFC_STRUCT rfc_CMD_SET_RAT_CPT_s {
 struct __RFC_STRUCT rfc_CMD_DISABLE_RAT_CH_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0408
    uint8_t ratCh;                       //!<        The radio timer channel number
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -862,7 +868,7 @@ struct __RFC_STRUCT rfc_CMD_SET_RAT_OUTPUT_s {
                                         //!<        Others: <i>Reserved</i>
       uint16_t ratCh:4;                 //!<        The radio timer channel number
    } config;
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -873,7 +879,7 @@ struct __RFC_STRUCT rfc_CMD_SET_RAT_OUTPUT_s {
 struct __RFC_STRUCT rfc_CMD_ARM_RAT_CH_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0409
    uint8_t ratCh;                       //!<        The radio timer channel number
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -884,7 +890,7 @@ struct __RFC_STRUCT rfc_CMD_ARM_RAT_CH_s {
 struct __RFC_STRUCT rfc_CMD_DISARM_RAT_CH_s {
    uint16_t commandNo;                  //!<        The command ID number 0x040A
    uint8_t ratCh;                       //!<        The radio timer channel number
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -901,7 +907,7 @@ struct __RFC_STRUCT rfc_CMD_SET_TX_POWER_s {
                                         //!<        Value to write to the gain control of the 1st stage of the PA
                                         //!<        Bits 8--15: tempCoeff
                                         //!<        Temperature coefficient for IB. 0: No temperature compensation
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -917,7 +923,7 @@ struct __RFC_STRUCT rfc_CMD_UPDATE_FS_s {
    uint16_t __dummy3;
    uint16_t frequency;                  //!<        The frequency in MHz to tune to
    uint16_t fractFreq;                  //!<        Fractional part of the frequency to tune to
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -929,7 +935,7 @@ struct __RFC_STRUCT rfc_CMD_MODIFY_FS_s {
    uint16_t commandNo;                  //!<        The command ID number 0x0013
    uint16_t frequency;                  //!<        The frequency in MHz to tune to
    uint16_t fractFreq;                  //!<        Fractional part of the frequency to tune to
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 
@@ -941,7 +947,7 @@ struct __RFC_STRUCT rfc_CMD_BUS_REQUEST_s {
    uint16_t commandNo;                  //!<        The command ID number 0x040E
    uint8_t bSysBusNeeded;               //!< \brief 0: System bus may sleep<br>
                                         //!<        1: System bus access needed
-};
+} __RFC_STRUCT_ATTR;
 
 //! @}
 

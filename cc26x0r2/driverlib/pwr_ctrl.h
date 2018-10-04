@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       pwr_ctrl.h
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        2017-11-02 15:41:14 +0100 (Thu, 02 Nov 2017)
+*  Revision:       50165
 *
 *  Description:    Defines and prototypes for the System Power Control.
 *
@@ -197,7 +197,9 @@ PowerCtrlSourceGet(void)
 //
 //! \brief OBSOLETE: Get the last known reset source of the system.
 //!
-//! Recommend using function \ref SysCtrlResetSourceGet() instead of this one.
+//! \deprecated This function will be removed in a future release.
+//! Use \ref SysCtrlResetSourceGet() instead.
+//!
 //! This function returns reset source but does not cover if waking up from shutdown.
 //! This function can be seen as a subset of function \ref SysCtrlResetSourceGet()
 //! and will be removed in a future release.
@@ -227,45 +229,35 @@ PowerCtrlResetSourceGet(void)
 
 //*****************************************************************************
 //
-//! \brief Close the latches in the AON IOC interface and in padring.
-//!
-//! Use this function to unfreeze the current value retained on the IOs driven
-//! by the device. This is required if it is desired to maintain the level of
-//! any IO driven when going through a shutdown/powerdown cycle.
+//! \brief Enables pad sleep in order to latch device outputs before shutdown.
 //!
 //! \return None
 //!
-//! \sa \ref PowerCtrlIOFreezeDisable()
+//! \sa \ref PowerCtrlPadSleepDisable()
 //
 //*****************************************************************************
 __STATIC_INLINE void
-PowerCtrlIOFreezeEnable(void)
+PowerCtrlPadSleepEnable(void)
 {
-    // Close the IO latches at AON_IOC level and in the padring.
-    AONIOCFreezeEnable();
     HWREG(AON_SYSCTL_BASE + AON_SYSCTL_O_SLEEPCTL) = 0;
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC);
 }
 
 //*****************************************************************************
 //
-//! Open the latches in the AON IOC interface and in padring.
+//! \brief Disables pad sleep in order to unlatch device outputs after wakeup from shutdown.
 //!
-//! Use this function to unfreeze the latches that retained on the IOs driven
-//! by the device. This function should not be called before the application
-//! has reinitialized the IO configuration that will drive the IOs to the
-//! desired level.
+//! This function must be called by the application after the device wakes up
+//! from shutdown.
 //!
 //! \return None
 //!
-//! \sa \ref PowerCtrlIOFreezeEnable()
+//! \sa \ref PowerCtrlPadSleepEnable()
 //
 //*****************************************************************************
 __STATIC_INLINE void
-PowerCtrlIOFreezeDisable(void)
+PowerCtrlPadSleepDisable(void)
 {
-    // Open the IO latches at AON_IOC level and in the padring
-    AONIOCFreezeDisable();
     HWREG(AON_SYSCTL_BASE + AON_SYSCTL_O_SLEEPCTL) = 1;
     HWREG(AON_RTC_BASE + AON_RTC_O_SYNC);
 }
