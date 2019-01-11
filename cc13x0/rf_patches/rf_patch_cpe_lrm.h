@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_lrm.h
-*  Revised:        $Date: 2018-08-17 09:32:37 +0200 (fr, 17 aug 2018) $
-*  Revision:       $Revision: 18621 $
+*  Revised:        $Date: 2018-11-02 11:52:02 +0100 (fr, 02 nov 2018) $
+*  Revision:       $Revision: 18756 $
 *
 *  Description: RF core patch for CC13x0 Legacy Long Range Mode
 *
@@ -71,17 +71,18 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageLrm[] = {
-   0x21000565,
-   0x21000459,
-   0x2100048d,
+   0x21000569,
+   0x2100045d,
    0x21000491,
-   0x210004b9,
-   0x21000649,
-   0x210006f9,
-   0x21000721,
-   0x210004ed,
-   0x21000763,
-   0x21000785,
+   0x21000495,
+   0x210004bd,
+   0x2100064d,
+   0x210006fd,
+   0x21000725,
+   0x2100052b,
+   0x210004f1,
+   0x21000767,
+   0x21000789,
    0x4710b5f8,
    0x460eb5f8,
    0x25012100,
@@ -108,7 +109,7 @@ CPE_PATCH_TYPE patchImageLrm[] = {
    0x467082c8,
    0x47001c80,
    0x40086200,
-   0x210007f0,
+   0x210007f4,
    0x08080f07,
    0xf886f000,
    0x0a0a9905,
@@ -177,7 +178,7 @@ CPE_PATCH_TYPE patchImageLrm[] = {
    0x00005c83,
    0x2386bca0,
    0x230d8300,
-   0x210007c0,
+   0x210007c4,
    0x4e1ab5f8,
    0x6b714605,
    0x09cc4819,
@@ -318,11 +319,11 @@ CPE_PATCH_TYPE patchImageLrm[] = {
    0xe5e0e3c1,
    0x000000ff,
 };
-#define _NWORD_PATCHIMAGE_LRM 246
+#define _NWORD_PATCHIMAGE_LRM 247
 
 #define _NWORD_PATCHSYS_LRM 0
 
-#define _IRQ_PATCH_0 0x21000675
+#define _IRQ_PATCH_0 0x21000679
 
 
 #ifndef _LRM_SYSRAM_START
@@ -368,9 +369,10 @@ PATCH_FUN_SPEC void configureLrmPatch(void)
    pPatchTab[107] = 5;
    pPatchTab[65] = 6;
    pPatchTab[13] = 7;
-   pPatchTab[45] = 8;
-   pPatchTab[48] = 9;
-   pParserPatchTab[0] = 10;
+   pPatchTab[43] = 8;
+   pPatchTab[45] = 9;
+   pPatchTab[48] = 10;
+   pParserPatchTab[0] = 11;
 
    pIrqPatch[1] = _IRQ_PATCH_0;
 }

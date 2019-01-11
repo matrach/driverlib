@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2018-06-26 13:51:40 +0200 (Tue, 26 Jun 2018)
-*  Revision:       52217
+*  Revised:        2018-11-06 15:08:57 +0100 (Tue, 06 Nov 2018)
+*  Revision:       53239
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
