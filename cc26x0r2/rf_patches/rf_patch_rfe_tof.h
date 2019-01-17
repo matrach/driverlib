@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_rfe_tof.h
-*  Revised:        $Date: 2018-05-14 22:40:22 +0200 (ma, 14 mai 2018) $
-*  Revision:       $Revision: 18459 $
+*  Revised:        $Date: 2018-11-02 11:52:02 +0100 (fr, 02 nov 2018) $
+*  Revision:       $Revision: 18756 $
 *
 *  Description: RF core patch for supporting time-of-flight radio measurements in CC2640R2F
 *
@@ -59,7 +59,7 @@
 #define RFE_PATCH_MODE 0
 #endif
 
-RFE_PATCH_TYPE patchTofRfe[423] = { 
+RFE_PATCH_TYPE patchTofRfe[424] = { 
    0x00006168,
    0x004535aa,
    0x0421a355,
@@ -283,7 +283,8 @@ RFE_PATCH_TYPE patchTofRfe[423] = {
    0x100106f0,
    0x14103110,
    0x619c9200,
-   0x64d3b060,
+   0xcff0b060,
+   0x64d36749,
    0xb0e164c0,
    0xb054b050,
    0x8212b064,
@@ -291,36 +292,36 @@ RFE_PATCH_TYPE patchTofRfe[423] = {
    0x648b3942,
    0x7100b0e1,
    0x22008040,
-   0xb06445f0,
+   0xb06445f2,
    0x225280f2,
-   0x222245e2,
-   0x223245d9,
-   0x653345e0,
-   0x653361cb,
-   0xb06465f3,
+   0x222245e4,
+   0x223245db,
+   0x653345e2,
+   0x653361cd,
+   0xb06465f5,
    0x225080f0,
-   0x61cb45e2,
-   0x61cb652e,
+   0x61cd45e4,
+   0x61cd652e,
    0xb064a054,
    0xb060a050,
    0xb062a052,
    0xb063a053,
    0x64c964ff,
-   0x6747cff0,
+   0x6749cfe0,
    0x619c720e,
-   0x6747cfe0,
-   0xc80061e2,
+   0x6749cfd0,
+   0xc80061e4,
    0x81599160,
    0x8091b050,
-   0x46642241,
+   0x46662241,
    0x31828212,
    0x39423982,
    0x8212648b,
    0x102f06f2,
    0x142f311f,
    0x22d68216,
-   0xc1404609,
-   0xc500620a,
+   0xc140460b,
+   0xc500620c,
    0x6f0d1420,
    0x10de396d,
    0x044ec3f4,
@@ -338,7 +339,7 @@ RFE_PATCH_TYPE patchTofRfe[423] = {
    0x31101001,
    0x81511410,
    0x140c1410,
-   0x469e22c6,
+   0x46a022c6,
    0x39408230,
    0x100206f0,
    0x3001c011,
@@ -348,24 +349,24 @@ RFE_PATCH_TYPE patchTofRfe[423] = {
    0xb0039191,
    0xb063b013,
    0x8041b053,
-   0x46952201,
+   0x46972201,
    0x91c481b4,
    0x1cb581d5,
-   0x18954e4d,
+   0x18954e4f,
    0x80f09165,
-   0x423f2240,
-   0x913d6262,
+   0x42412240,
+   0x913d6264,
    0x913eb110,
    0x80e0b110,
-   0x46572200,
-   0x425722e6,
+   0x46592200,
+   0x425922e6,
    0x1895b0e0,
    0x920f9165,
    0x14f98159,
    0x225080f0,
-   0x22404695,
-   0x632a4662,
-   0x6747cfd0,
+   0x22404697,
+   0x632c4664,
+   0x6749cfc0,
    0xa052b063,
    0xc0f28230,
    0x10020420,
@@ -379,18 +380,18 @@ RFE_PATCH_TYPE patchTofRfe[423] = {
    0xb064b053,
    0x7100b054,
    0x22018041,
-   0xb0634695,
+   0xb0634697,
    0x80f0b064,
-   0x42952220,
+   0x42972220,
    0x91c181b1,
    0x189181d1,
    0xb0319161,
-   0x6702627b,
+   0x6704627d,
    0x8159a0e0,
    0x14598205,
    0x7100c080,
-   0x6a91b063,
-   0xb0e6623f,
+   0x6a93b063,
+   0xb0e66241,
    0xa053a052,
    0x81628201,
    0x3d823182,
@@ -415,73 +416,73 @@ RFE_PATCH_TYPE patchTofRfe[423] = {
    0x7100b053,
    0xb062a053,
    0x8041b052,
-   0x46952201,
+   0x46972201,
    0x91c481a4,
    0x81b481d5,
-   0x4ed41cb5,
+   0x4ed61cb5,
    0x91651895,
    0x224080f0,
-   0x626242c5,
+   0x626442c7,
    0x91c481b4,
    0x104081d4,
    0x91601890,
    0x1c751845,
-   0x80f04ee1,
-   0x42c52240,
-   0x913d6262,
+   0x80f04ee3,
+   0x42c72240,
+   0x913d6264,
    0x913eb110,
    0x80e0b110,
-   0x46eb2200,
-   0x42eb22e6,
+   0x46ed2200,
+   0x42ed22e6,
    0x9165b0e0,
    0x8159920f,
    0x80f014f9,
-   0x45f32250,
-   0x46622240,
-   0x67026309,
+   0x45f52250,
+   0x46642240,
+   0x6704630b,
    0x8159a0e0,
    0x14598205,
    0x7100c140,
-   0x6afbb062,
-   0x80a262c5,
+   0x6afdb062,
+   0x80a262c7,
    0x619c648b,
    0x39428212,
    0x608b06f2,
    0x7100b050,
    0x8240619c,
    0x22018041,
-   0x81a44695,
+   0x81a44697,
    0x81d591c4,
    0x91651895,
    0x224180f1,
-   0x6b0a4662,
+   0x6b0c4664,
    0x31818161,
-   0xdfc03d81,
-   0x674792f1,
+   0xdfb03d81,
+   0x674992f1,
    0x22018041,
-   0x81a44695,
+   0x81a44697,
    0x81d591c4,
-   0x4af51cc5,
+   0x4af71cc5,
    0x91651895,
    0x224080f0,
-   0x62624316,
-   0x6747cfb0,
+   0x62644318,
+   0x6749cfa0,
    0x80418240,
-   0x46952201,
+   0x46972201,
    0x91c481b4,
    0x189581d5,
    0x80f19165,
-   0x46622241,
-   0x80416b2d,
-   0x46952201,
+   0x46642241,
+   0x80416b2f,
+   0x46972201,
    0x91c481b4,
    0x1cc581d5,
-   0x18954a8b,
+   0x18954a8d,
    0x80f09165,
-   0x43392240,
-   0x92e06262,
+   0x433b2240,
+   0x92e06264,
    0x220082d0,
-   0xb2c04748,
+   0xb2c0474a,
    0x00007000
 };
 
@@ -489,14 +490,14 @@ PATCH_FUN_SPEC void rf_patch_rfe_tof(void)
 {
 #ifdef __PATCH_NO_UNROLLING
    uint32_t i;
-   for (i = 0; i < 423; i++) {
+   for (i = 0; i < 424; i++) {
       HWREG(RFC_RFERAM_BASE + 4 * i) = patchTofRfe[i];
    }
 #else
    const uint32_t *pS = patchTofRfe;
    volatile unsigned long *pD = &HWREG(RFC_RFERAM_BASE);
    uint32_t t1, t2, t3, t4, t5, t6, t7, t8;
-   uint32_t nIterations = 52;
+   uint32_t nIterations = 53;
 
    do {
       t1 = *pS++;
@@ -516,21 +517,6 @@ PATCH_FUN_SPEC void rf_patch_rfe_tof(void)
       *pD++ = t7;
       *pD++ = t8;
    } while (--nIterations);
-
-   t1 = *pS++;
-   t2 = *pS++;
-   t3 = *pS++;
-   t4 = *pS++;
-   t5 = *pS++;
-   t6 = *pS++;
-   t7 = *pS++;
-   *pD++ = t1;
-   *pD++ = t2;
-   *pD++ = t3;
-   *pD++ = t4;
-   *pD++ = t5;
-   *pD++ = t6;
-   *pD++ = t7;
 #endif
 }
 
