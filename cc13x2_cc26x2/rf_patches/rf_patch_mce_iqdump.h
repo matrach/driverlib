@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_iqdump.h
-*  Revised:        $Date: 2018-09-12 14:09:54 +0200 (on, 12 sep 2018) $
-*  Revision:       $Revision: 18688 $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (to, 31 jan 2019) $
+*  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for IQ-dump support in CC13x2 PG2.1 and CC26x2 PG2.1
 *
-*  Copyright (c) 2015-2017, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

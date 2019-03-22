@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.c
-*  Revised:        2018-11-16 17:03:41 +0100 (Fri, 16 Nov 2018)
-*  Revision:       53370
+*  Revised:        2019-02-14 09:35:31 +0100 (Thu, 14 Feb 2019)
+*  Revision:       54539
 *
 *  Description:    Driver for setting up the system Oscillators
 *
@@ -77,6 +77,8 @@
     #define OSC_AdjustXoscHfCapArray        NOROM_OSC_AdjustXoscHfCapArray
     #undef  OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
     #define OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert NOROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
+    #undef  OSC_HPOSCRtcCompensate
+    #define OSC_HPOSCRtcCompensate          NOROM_OSC_HPOSCRtcCompensate
 #endif
 
 //*****************************************************************************
@@ -529,6 +531,41 @@ OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert( int32_t HPOSC_RelFreqOffs
    int32_t rfCoreFreqOffset = -HPOSC_RelFreqOffset + (( HPOSC_RelFreqOffset * HPOSC_RelFreqOffset ) >> 22 );
 
    return ( rfCoreFreqOffset );
+}
+
+//*****************************************************************************
+//
+// Compensate the RTC increment based on the relative frequency offset of HPOSC
+//
+//*****************************************************************************
+void
+OSC_HPOSCRtcCompensate( int32_t relFreqOffset )
+{
+    uint32_t rtcSubSecInc;
+    uint32_t lfClkFrequency;
+    uint32_t hfFreq;
+    int64_t  calcFactor;
+
+    // Calculate SCLK_HF frequency, defined as:
+    // hfFreq = 48000000 * (1 + relFreqOffset/(2^22))
+    if( relFreqOffset >= 0 )
+    {
+        calcFactor = ( ( 48000000 * (int64_t)relFreqOffset ) + 0x200000 ) / 0x400000;
+    }
+    else
+    {
+        calcFactor = ( ( 48000000 * (int64_t)relFreqOffset ) - 0x200000 ) / 0x400000;
+    }
+    hfFreq = 48000000 + calcFactor;
+
+    // Calculate SCLK_LF frequency, defined as SCLK_LF_FREQ = SCLK_HF_FREQ / 1536
+    lfClkFrequency = ( hfFreq + 768 ) / 1536;
+
+    // Calculate SUBSECINC, defined as: SUBSECINC = 2^38 / SCLK_LF_FREQ
+    rtcSubSecInc = 0x4000000000 / lfClkFrequency;
+
+    /* Update SUBSECINC value */
+    SetupSetAonRtcSubSecInc(rtcSubSecInc);
 }
 
 //*****************************************************************************

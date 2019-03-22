@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.h
-*  Revised:        2018-12-03 13:42:13 +0100 (Mon, 03 Dec 2018)
-*  Revision:       53646
+*  Revised:        2019-02-14 09:35:31 +0100 (Thu, 14 Feb 2019)
+*  Revision:       54539
 *
 *  Description:    Defines and prototypes for the system oscillator control.
 *
@@ -99,6 +99,7 @@ extern "C"
     #define OSC_HPOSCRelativeFrequencyOffsetGet NOROM_OSC_HPOSCRelativeFrequencyOffsetGet
     #define OSC_AdjustXoscHfCapArray        NOROM_OSC_AdjustXoscHfCapArray
     #define OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert NOROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
+    #define OSC_HPOSCRtcCompensate          NOROM_OSC_HPOSCRtcCompensate
 #endif
 
 //*****************************************************************************
@@ -362,6 +363,35 @@ OSC_IsHPOSCEnabled(void)
 
 //*****************************************************************************
 //
+//! \brief Identifies if HPOSC is enabled and that SCLK_LF is derived from XOSC_HF.
+//!
+//! This function checks if the device supports HPOSC and that HPOSC is selected
+//! as HF oscillator for use when the radio is active and also that SCLK_LF is
+//! derived from XOSC_HF.
+//!
+//! \return Returns status of HPOSC and SCLK_LF configuration:
+//! - \c true  : HPOSC is enabled and SCLK_LF is derived from XOSC_HF.
+//! - \c false : Either HPOSC not enabled or SCLK_LF is not derived from XOSC_HF.
+//
+//*****************************************************************************
+__STATIC_INLINE bool
+OSC_IsHPOSCEnabledWithHfDerivedLfClock(void)
+{
+    bool enabled = false;
+
+    // Check configuration by reading lower half of the 32-bit CTL0 register
+    uint16_t regVal = HWREGH(AUX_DDI0_OSC_BASE + DDI_0_OSC_O_CTL0);
+    if( ( ( regVal & DDI_0_OSC_CTL0_SCLK_LF_SRC_SEL_M ) == DDI_0_OSC_CTL0_SCLK_LF_SRC_SEL_XOSCHFDLF ) &&
+        ( ( regVal & DDI_0_OSC_CTL0_HPOSC_MODE_EN_M   ) == DDI_0_OSC_CTL0_HPOSC_MODE_EN             )   )
+    {
+            enabled = true;
+    }
+
+    return (enabled);
+}
+
+//*****************************************************************************
+//
 //! \brief Returns maximum startup time (in microseconds) of XOSC_HF.
 //!
 //! The startup time depends on several factors. This function calculates the
@@ -579,6 +609,43 @@ extern int16_t OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert( int32_t HP
 
 //*****************************************************************************
 //
+//! \brief Compensate the RTC increment based on the relative frequency offset of HPOSC
+//!
+//! The HPOSC (High Precision Oscillator) frequency will vary slightly with chip temperature.
+//! This variation forces the RTC increment to be compensated if SCLK_LF is configured
+//! to be derived from the HF clock of HPOSC.
+//! This function must only be called if SCLK_LF is configured to be derived from
+//! the HF clock of HPOSC. The status of this configuration can be determined
+//! by calling the \ref OSC_IsHPOSCEnabledWithHfDerivedLfClock() function.
+//!
+//! This function first calculates the HPOSC frequency, defined as:
+//! <pre>
+//!     F_HPOSC = F_nom * (1 + d/(2^22))
+//! </pre>
+//! where
+//! -   F_HPOSC is the current HPOSC frequency.
+//! -   F_nom is the nominal oscillator frequency, assumed to be 48.000 MHz.
+//! -   d is the relative frequency offset given by the input argument relFreqOffset.
+//! Then the SCLK_LF frequency is calculated, defined as:
+//! <pre>
+//!     F_SCLK_LF = F_HPOSC / 1536
+//! </pre>
+//! Then the RTC increment SUBSECINC is calculated, defined as;
+//! <pre>
+//!     SUBSECINC = (2^38) / F_SCLK_LF
+//! </pre>
+//! Finally the RTC module is updated with the calculated SUBSECINC value.
+//!
+//! \param relFreqOffset is the relative frequency offset parameter d returned from \ref OSC_HPOSCRelativeFrequencyOffsetGet()
+//!
+//! \return None
+//!
+//
+//*****************************************************************************
+extern void OSC_HPOSCRtcCompensate( int32_t relFreqOffset );
+
+//*****************************************************************************
+//
 // Support for DriverLib in ROM:
 // Redirect to implementation in ROM when available.
 //
@@ -636,6 +703,10 @@ extern int16_t OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert( int32_t HP
     #ifdef ROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
         #undef  OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
         #define OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert ROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
+    #endif
+    #ifdef ROM_OSC_HPOSCRtcCompensate
+        #undef  OSC_HPOSCRtcCompensate
+        #define OSC_HPOSCRtcCompensate          ROM_OSC_HPOSCRtcCompensate
     #endif
 #endif
 

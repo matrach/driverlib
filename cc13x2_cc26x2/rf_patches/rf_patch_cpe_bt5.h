@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_bt5.h
-*  Revised:        $Date: 2018-11-02 16:23:01 +0100 (fr, 02 nov 2018) $
-*  Revision:       $Revision: 18757 $
+*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
+*  Revision:       $Revision: 18889 $
 *
 *  Description: RF core patch for Bluetooth 5 support ("BLE" and "BLE5" API command sets) in CC13x2 and CC26x2
 *
-*  Copyright (c) 2015-2018, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -70,8 +70,9 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageBt5[] = {
-   0x21004055,
-   0x21004081,
+   0x21004059,
+   0x210040a5,
+   0x21004085,
    0x79654c07,
    0xf809f000,
    0x40697961,
@@ -83,6 +84,14 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x21000380,
    0x40041108,
    0x0000592d,
+   0x21014805,
+   0x438a6802,
+   0x6b836002,
+   0x6383438b,
+   0x6002430a,
+   0x47004801,
+   0x40046000,
+   0x00005b3f,
    0x490cb510,
    0x4a0c4788,
    0x5e512106,
@@ -99,9 +108,9 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x000065a9,
    0x21000380,
 };
-#define _NWORD_PATCHIMAGE_BT5 28
+#define _NWORD_PATCHIMAGE_BT5 37
 
-#define _NWORD_PATCHCPEHD 0
+#define _NWORD_PATCHCPEHD_BT5 0
 
 #define _NWORD_PATCHSYS_BT5 0
 
@@ -139,7 +148,7 @@ PATCH_FUN_SPEC void enterBt5CpePatch(void)
 
 PATCH_FUN_SPEC void enterBt5CpeHdPatch(void)
 {
-#if (_NWORD_PATCHCPEHD > 0)
+#if (_NWORD_PATCHCPEHD_BT5 > 0)
    uint32_t *pPatchCpeHd = (uint32_t *) (_BT5_CPERAM_START + _BT5_PATCH_CPEHD_OFFSET);
 
    memcpy(pPatchCpeHd, patchCpeHd, sizeof(patchCpeHd));
@@ -157,6 +166,7 @@ PATCH_FUN_SPEC void configureBt5Patch(void)
 
    pPatchTab[76] = 0;
    pPatchTab[91] = 1;
+   pPatchTab[79] = 2;
 }
 
 PATCH_FUN_SPEC void applyBt5Patch(void)

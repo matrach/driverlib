@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_multi_protocol.h
-*  Revised:        $Date: 2018-11-02 16:23:01 +0100 (fr, 02 nov 2018) $
-*  Revision:       $Revision: 18757 $
+*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
+*  Revision:       $Revision: 18889 $
 *
 *  Description: RF core patch for multi-protocol support (all available API command sets) in CC13x2 and CC26x2
 *
-*  Copyright (c) 2015-2018, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -70,10 +70,11 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageMultiProtocol[] = {
-   0x2100405d,
-   0x210040c7,
-   0x21004089,
-   0x210040e9,
+   0x21004061,
+   0x210040cb,
+   0x2100408d,
+   0x2100410d,
+   0x210040ed,
    0x79654c07,
    0xf809f000,
    0x40697961,
@@ -109,6 +110,14 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0xe000e200,
    0x00031641,
    0x00031b23,
+   0x21014805,
+   0x438a6802,
+   0x6b836002,
+   0x6383438b,
+   0x6002430a,
+   0x47004801,
+   0x40046000,
+   0x00005b3f,
    0x490cb510,
    0x4a0c4788,
    0x5e512106,
@@ -125,9 +134,9 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0x000065a9,
    0x21000380,
 };
-#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL 54
+#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL 63
 
-#define _NWORD_PATCHCPEHD 0
+#define _NWORD_PATCHCPEHD_MULTI_PROTOCOL 0
 
 #define _NWORD_PATCHSYS_MULTI_PROTOCOL 0
 
@@ -165,7 +174,7 @@ PATCH_FUN_SPEC void enterMultiProtocolCpePatch(void)
 
 PATCH_FUN_SPEC void enterMultiProtocolCpeHdPatch(void)
 {
-#if (_NWORD_PATCHCPEHD > 0)
+#if (_NWORD_PATCHCPEHD_MULTI_PROTOCOL > 0)
    uint32_t *pPatchCpeHd = (uint32_t *) (_MULTI_PROTOCOL_CPERAM_START + _MULTI_PROTOCOL_PATCH_CPEHD_OFFSET);
 
    memcpy(pPatchCpeHd, patchCpeHd, sizeof(patchCpeHd));
@@ -185,6 +194,7 @@ PATCH_FUN_SPEC void configureMultiProtocolPatch(void)
    pPatchTab[62] = 1;
    pPatchTab[64] = 2;
    pPatchTab[91] = 3;
+   pPatchTab[79] = 4;
 }
 
 PATCH_FUN_SPEC void applyMultiProtocolPatch(void)

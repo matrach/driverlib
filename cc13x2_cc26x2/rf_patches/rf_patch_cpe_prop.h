@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_prop.h
-*  Revised:        $Date: 2018-08-15 16:46:18 +0200 (on, 15 aug 2018) $
-*  Revision:       $Revision: 18619 $
+*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
+*  Revision:       $Revision: 18889 $
 *
 *  Description: RF core patch for proprietary radio support ("PROP" API command set) in CC13x2 and CC26x2
 *
-*  Copyright (c) 2015-2018, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,7 @@ CPE_PATCH_TYPE patchImageProp[] = {
 };
 #define _NWORD_PATCHIMAGE_PROP 38
 
-#define _NWORD_PATCHCPEHD 0
+#define _NWORD_PATCHCPEHD_PROP 0
 
 #define _NWORD_PATCHSYS_PROP 0
 
@@ -149,7 +149,7 @@ PATCH_FUN_SPEC void enterPropCpePatch(void)
 
 PATCH_FUN_SPEC void enterPropCpeHdPatch(void)
 {
-#if (_NWORD_PATCHCPEHD > 0)
+#if (_NWORD_PATCHCPEHD_PROP > 0)
    uint32_t *pPatchCpeHd = (uint32_t *) (_PROP_CPERAM_START + _PROP_PATCH_CPEHD_OFFSET);
 
    memcpy(pPatchCpeHd, patchCpeHd, sizeof(patchCpeHd));
