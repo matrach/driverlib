@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_bt5.h
-*  Revised:        $Date: 2018-05-07 15:02:01 +0200 (ma, 07 mai 2018) $
-*  Revision:       $Revision: 18438 $
+*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
+*  Revision:       $Revision: 18889 $
 *
 *  Description: RF core patch for Bluetooth 5 support in CC2640R2F
 *
-*  Copyright (c) 2015-2018, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -70,14 +70,15 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageBt5[] = {
-   0x21000515,
-   0x210006cb,
-   0x21000723,
-   0x21000475,
-   0x21000481,
-   0x21000499,
-   0x21000809,
-   0x2100081d,
+   0x21000539,
+   0x210006ef,
+   0x21000747,
+   0x21000479,
+   0x21000485,
+   0x2100049d,
+   0x2100082d,
+   0x21000841,
+   0x210004cd,
    0x461db570,
    0x47204c00,
    0x0000b287,
@@ -102,6 +103,14 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x01c0b570,
    0x47204c00,
    0x000046d5,
+   0x21014805,
+   0x438a6802,
+   0x6b836002,
+   0x6383438b,
+   0x6002430a,
+   0x47004801,
+   0x40046000,
+   0x000051a5,
    0x4cb7b5f8,
    0x462548b7,
    0x7b2f3560,
@@ -276,7 +285,7 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0xd0102b02,
    0x2302e010,
    0x4638402a,
-   0xfe72f7ff,
+   0xfe62f7ff,
    0xda072800,
    0x1ab900c2,
    0x7e493920,
@@ -284,7 +293,7 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x2000d100,
    0x4302bdf8,
    0x46384303,
-   0xfe62f7ff,
+   0xfe52f7ff,
    0x0000bdf8,
    0x21000144,
    0x0000a767,
@@ -302,16 +311,16 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x0000ad53,
    0x00002020,
    0x0000df80,
-   0x210004c9,
+   0x210004ed,
+   0x210006af,
    0x2100068b,
-   0x21000667,
-   0x2100063b,
-   0x210005e9,
-   0x210005c3,
-   0x21000583,
-   0x21000531,
+   0x2100065f,
+   0x2100060d,
+   0x210005e7,
+   0x210005a7,
+   0x21000555,
    0x4c03b510,
-   0xfe50f7ff,
+   0xfe40f7ff,
    0x28006820,
    0xbd10d1fa,
    0x40041100,
@@ -328,13 +337,13 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x22907953,
    0x07224353,
    0xf7ff0f12,
-   0xbd10fe35,
+   0xbd10fe25,
    0x40045080,
    0x40040000,
    0x40044000,
    0x21000280,
 };
-#define _NWORD_PATCHIMAGE_BT5 263
+#define _NWORD_PATCHIMAGE_BT5 272
 
 #define _NWORD_PATCHSYS_BT5 0
 
@@ -382,6 +391,7 @@ PATCH_FUN_SPEC void configureBt5Patch(void)
    pPatchTab[22] = 5;
    pPatchTab[28] = 6;
    pPatchTab[64] = 7;
+   pPatchTab[72] = 8;
 }
 
 PATCH_FUN_SPEC void applyBt5Patch(void)

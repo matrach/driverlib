@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_aoa_aod.h
-*  Revised:        $Date: 2018-05-07 15:02:01 +0200 (ma, 07 mai 2018) $
-*  Revision:       $Revision: 18438 $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (to, 31 jan 2019) $
+*  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for Bluetooth 4.2 support and proprietary angle of arrival/angle of departure measurements in CC2640R2F
 *
-*  Copyright (c) 2015-2017, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_rfe_genfsk.h
-*  Revised:        $Date: 2018-04-23 13:50:59 +0200 (ma, 23 apr 2018) $
-*  Revision:       $Revision: 18402 $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (to, 31 jan 2019) $
+*  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for Generic FSK support in CC2640R2F
 *
-*  Copyright (c) 2015-2017, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

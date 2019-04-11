@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_prop.h
-*  Revised:        $Date: 2018-04-23 13:50:59 +0200 (ma, 23 apr 2018) $
-*  Revision:       $Revision: 18402 $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (to, 31 jan 2019) $
+*  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for proprietary radio support ("PROP" API command set) in CC2640R2F
 *
-*  Copyright (c) 2015-2018, Texas Instruments Incorporated
+*  Copyright (c) 2015-2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
