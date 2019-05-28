@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_multi_protocol_rtls.h
-*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
-*  Revision:       $Revision: 18889 $
+*  Revised:        $Date: 2019-03-28 10:53:59 +0100 (to, 28 mar 2019) $
+*  Revision:       $Revision: 18936 $
 *
 *  Description: RF core patch for multi-protocol support (all available API command sets) with RTLS components in CC13x2 and CC26x2
 *
@@ -70,16 +70,20 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
-   0x21004631,
-   0x21004683,
-   0x21004075,
-   0x2100486f,
-   0x210040ad,
-   0x21004117,
-   0x210040d9,
-   0x2100492d,
-   0x21004139,
-   0x21005349,
+   0x2100468d,
+   0x210046df,
+   0x21004085,
+   0x210048cb,
+   0x210040bd,
+   0x21004127,
+   0x210040e9,
+   0x21004989,
+   0x21004149,
+   0x21004169,
+   0x21004175,
+   0x21004181,
+   0x21004a01,
+   0x210053e5,
    0x68084908,
    0x43902221,
    0x48076008,
@@ -137,9 +141,28 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x47004801,
    0x40046000,
    0x00005b3f,
+   0xfc2cf000,
+   0x47004800,
+   0x00007f57,
+   0xfc2cf000,
+   0x47004800,
+   0x0000881b,
+   0x0a9b9b03,
+   0x2b834d08,
+   0x4c08d10a,
+   0x069b8923,
+   0xb407d506,
+   0xf805f000,
+   0xd0002800,
+   0xbc073542,
+   0xb5704728,
+   0x47004802,
+   0x00020b1f,
+   0x21000160,
+   0x000209eb,
    0x4803b510,
    0x30106800,
-   0xfe72f000,
+   0xfe92f000,
    0x47084901,
    0x21000108,
    0x000095e3,
@@ -451,7 +474,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x71083140,
    0xd01c2831,
    0x4603dc08,
-   0xfec0f000,
+   0xfee0f000,
    0x0e13190a,
    0x0e0e150e,
    0x0e1d1b0e,
@@ -559,7 +582,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0xe7dd011b,
    0x494f4849,
    0xf7ff3040,
-   0x2e02fc48,
+   0x2e02fc22,
    0x78aadd06,
    0x98004639,
    0xf85cf000,
@@ -589,7 +612,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x2100d5fc,
    0x29021c49,
    0x4930dbfc,
-   0xfc0bf7ff,
+   0xfbe5f7ff,
    0x481ee7dc,
    0x4601b510,
    0x460a3160,
@@ -604,7 +627,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0xd8092b12,
    0x1e5b7d43,
    0xe0067543,
-   0xfbfcf7ff,
+   0xfbd6f7ff,
    0xd0002800,
    0xbd102001,
    0x76d12100,
@@ -624,12 +647,12 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x21000160,
    0x00020f47,
    0x00025500,
-   0x2100461d,
-   0x21004517,
-   0x21004489,
-   0x2100442f,
-   0x2100437d,
-   0x21004171,
+   0x21004679,
+   0x21004573,
+   0x210044e5,
+   0x2100448b,
+   0x210043d9,
+   0x210041cd,
    0x21000000,
    0x40045040,
    0x40042100,
@@ -653,6 +676,22 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x0000bd10,
    0x000065a9,
    0x21000380,
+   0x490c6b80,
+   0x0f000700,
+   0x47707148,
+   0x490a4a09,
+   0x79502318,
+   0x7e4956cb,
+   0x428118c0,
+   0x4608dd01,
+   0x280fe002,
+   0x200fdd00,
+   0x090989d1,
+   0x43010109,
+   0x477081d1,
+   0x210002e0,
+   0x21000088,
+   0x47702000,
    0x2500b570,
    0x614548ff,
    0xf000207d,
@@ -913,7 +952,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x40041100,
    0x40046000,
    0x40045040,
-   0x210053e8,
+   0x21005484,
    0x40043000,
    0x40045300,
    0x400451c0,
@@ -1180,7 +1219,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0xe054e028,
    0x40043000,
    0x40046000,
-   0x210053e8,
+   0x21005484,
    0x0000aaaa,
    0x08180532,
    0x40044040,
@@ -1280,7 +1319,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x0000e5ef,
    0x40041100,
    0x04030003,
-   0x210053e8,
+   0x21005484,
    0x40046040,
    0x400451c0,
    0x40045080,
@@ -1294,7 +1333,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x00004770,
    0x00006801,
    0x21000108,
-   0x21004159,
+   0x210041b5,
    0x4801b403,
    0xbd019001,
    0x00003cc3,
@@ -1332,7 +1371,7 @@ CPE_PATCH_TYPE patchImageMultiProtocolRtls[] = {
    0x00000000,
    0x00000000,
 };
-#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL_RTLS 1261
+#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL_RTLS 1300
 
 CPE_PATCH_TYPE patchCpeHd[] = {
    0x00000000,
@@ -1400,7 +1439,11 @@ PATCH_FUN_SPEC void configureMultiProtocolRtlsPatch(void)
    pPatchTab[64] = 6;
    pPatchTab[91] = 7;
    pPatchTab[79] = 8;
-   pPatchTab[168] = 9;
+   pPatchTab[140] = 9;
+   pPatchTab[150] = 10;
+   pPatchTab[13] = 11;
+   pPatchTab[31] = 12;
+   pPatchTab[168] = 13;
 }
 
 PATCH_FUN_SPEC void applyMultiProtocolRtlsPatch(void)

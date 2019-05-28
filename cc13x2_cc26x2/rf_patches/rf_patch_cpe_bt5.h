@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_bt5.h
-*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
-*  Revision:       $Revision: 18889 $
+*  Revised:        $Date: 2019-03-28 10:53:59 +0100 (to, 28 mar 2019) $
+*  Revision:       $Revision: 18936 $
 *
 *  Description: RF core patch for Bluetooth 5 support ("BLE" and "BLE5" API command sets) in CC13x2 and CC26x2
 *
@@ -70,9 +70,13 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageBt5[] = {
-   0x21004059,
-   0x210040a5,
-   0x21004085,
+   0x21004069,
+   0x21004101,
+   0x21004095,
+   0x210040b5,
+   0x210040c1,
+   0x210040cd,
+   0x21004179,
    0x79654c07,
    0xf809f000,
    0x40697961,
@@ -92,6 +96,25 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x47004801,
    0x40046000,
    0x00005b3f,
+   0xf842f000,
+   0x47004800,
+   0x00007f57,
+   0xf842f000,
+   0x47004800,
+   0x0000881b,
+   0x0a9b9b03,
+   0x2b834d08,
+   0x4c08d10a,
+   0x069b8923,
+   0xb407d506,
+   0xf805f000,
+   0xd0002800,
+   0xbc073542,
+   0xb5704728,
+   0x47004802,
+   0x00020b1f,
+   0x21000160,
+   0x000209eb,
    0x490cb510,
    0x4a0c4788,
    0x5e512106,
@@ -107,8 +130,24 @@ CPE_PATCH_TYPE patchImageBt5[] = {
    0x0000bd10,
    0x000065a9,
    0x21000380,
+   0x490c6b80,
+   0x0f000700,
+   0x47707148,
+   0x490a4a09,
+   0x79502318,
+   0x7e4956cb,
+   0x428118c0,
+   0x4608dd01,
+   0x280fe002,
+   0x200fdd00,
+   0x090989d1,
+   0x43010109,
+   0x477081d1,
+   0x210002e0,
+   0x21000088,
+   0x47702000,
 };
-#define _NWORD_PATCHIMAGE_BT5 37
+#define _NWORD_PATCHIMAGE_BT5 76
 
 #define _NWORD_PATCHCPEHD_BT5 0
 
@@ -167,6 +206,10 @@ PATCH_FUN_SPEC void configureBt5Patch(void)
    pPatchTab[76] = 0;
    pPatchTab[91] = 1;
    pPatchTab[79] = 2;
+   pPatchTab[140] = 3;
+   pPatchTab[150] = 4;
+   pPatchTab[13] = 5;
+   pPatchTab[31] = 6;
 }
 
 PATCH_FUN_SPEC void applyBt5Patch(void)

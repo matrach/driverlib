@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_multi_protocol.h
-*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
-*  Revision:       $Revision: 18889 $
+*  Revised:        $Date: 2019-03-28 10:53:59 +0100 (to, 28 mar 2019) $
+*  Revision:       $Revision: 18936 $
 *
 *  Description: RF core patch for multi-protocol support (all available API command sets) in CC13x2 and CC26x2
 *
@@ -70,11 +70,15 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageMultiProtocol[] = {
-   0x21004061,
-   0x210040cb,
-   0x2100408d,
-   0x2100410d,
-   0x210040ed,
+   0x21004071,
+   0x210040db,
+   0x2100409d,
+   0x21004169,
+   0x210040fd,
+   0x2100411d,
+   0x21004129,
+   0x21004135,
+   0x210041e1,
    0x79654c07,
    0xf809f000,
    0x40697961,
@@ -118,6 +122,25 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0x47004801,
    0x40046000,
    0x00005b3f,
+   0xf842f000,
+   0x47004800,
+   0x00007f57,
+   0xf842f000,
+   0x47004800,
+   0x0000881b,
+   0x0a9b9b03,
+   0x2b834d08,
+   0x4c08d10a,
+   0x069b8923,
+   0xb407d506,
+   0xf805f000,
+   0xd0002800,
+   0xbc073542,
+   0xb5704728,
+   0x47004802,
+   0x00020b1f,
+   0x21000160,
+   0x000209eb,
    0x490cb510,
    0x4a0c4788,
    0x5e512106,
@@ -133,8 +156,24 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0x0000bd10,
    0x000065a9,
    0x21000380,
+   0x490c6b80,
+   0x0f000700,
+   0x47707148,
+   0x490a4a09,
+   0x79502318,
+   0x7e4956cb,
+   0x428118c0,
+   0x4608dd01,
+   0x280fe002,
+   0x200fdd00,
+   0x090989d1,
+   0x43010109,
+   0x477081d1,
+   0x210002e0,
+   0x21000088,
+   0x47702000,
 };
-#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL 63
+#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL 102
 
 #define _NWORD_PATCHCPEHD_MULTI_PROTOCOL 0
 
@@ -195,6 +234,10 @@ PATCH_FUN_SPEC void configureMultiProtocolPatch(void)
    pPatchTab[64] = 2;
    pPatchTab[91] = 3;
    pPatchTab[79] = 4;
+   pPatchTab[140] = 5;
+   pPatchTab[150] = 6;
+   pPatchTab[13] = 7;
+   pPatchTab[31] = 8;
 }
 
 PATCH_FUN_SPEC void applyMultiProtocolPatch(void)

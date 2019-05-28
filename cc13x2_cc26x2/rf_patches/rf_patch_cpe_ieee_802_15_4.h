@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ieee_802_15_4.h
-*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
-*  Revision:       $Revision: 18889 $
+*  Revised:        $Date: 2019-03-28 10:53:59 +0100 (to, 28 mar 2019) $
+*  Revision:       $Revision: 18936 $
 *
 *  Description: RF core patch for IEEE 802.15.4-2006 support ("IEEE" API command set) in CC13x2 and CC26x2
 *
@@ -70,7 +70,9 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageIeee802154[] = {
-   0x21004051,
+   0x21004059,
+   0x21004085,
+   0x21004091,
    0x79654c07,
    0xf809f000,
    0x40697961,
@@ -82,8 +84,29 @@ CPE_PATCH_TYPE patchImageIeee802154[] = {
    0x21000380,
    0x40041108,
    0x0000592d,
+   0xf80af000,
+   0x47004800,
+   0x00007f57,
+   0xf80af000,
+   0x47004800,
+   0x0000881b,
+   0x490c6b80,
+   0x0f000700,
+   0x47707148,
+   0x490a4a09,
+   0x79502318,
+   0x7e4956cb,
+   0x428118c0,
+   0x4608dd01,
+   0x280fe002,
+   0x200fdd00,
+   0x090989d1,
+   0x43010109,
+   0x477081d1,
+   0x210002e0,
+   0x21000088,
 };
-#define _NWORD_PATCHIMAGE_IEEE_802_15_4 12
+#define _NWORD_PATCHIMAGE_IEEE_802_15_4 35
 
 #define _NWORD_PATCHCPEHD_IEEE_802_15_4 0
 
@@ -140,6 +163,8 @@ PATCH_FUN_SPEC void configureIeee802154Patch(void)
 
 
    pPatchTab[76] = 0;
+   pPatchTab[140] = 1;
+   pPatchTab[150] = 2;
 }
 
 PATCH_FUN_SPEC void applyIeee802154Patch(void)
