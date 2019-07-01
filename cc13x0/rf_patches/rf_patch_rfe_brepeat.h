@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_rfe_brepeat.h
-*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (to, 31 jan 2019) $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Do, 31 Jan 2019) $
 *  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for CC13x0 for 1.2kbps and 2.4kbps Generic FSK

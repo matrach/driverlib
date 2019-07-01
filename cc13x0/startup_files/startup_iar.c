@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       startup_iar.c
-*  Revised:        $Date: 2017-02-03 19:16:31 +0100 (fr, 03 feb 2017) $
+*  Revised:        $Date: 2017-02-03 19:16:31 +0100 (Fr, 03 Feb 2017) $
 *  Revision:       $Revision: 17635 $
 *
 *  Description:    Startup code for CC13x0 rev2 device family for use with IAR.
