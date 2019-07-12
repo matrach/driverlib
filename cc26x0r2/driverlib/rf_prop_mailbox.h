@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_prop_mailbox.h
-*  Revised:        2017-08-28 10:10:48 +0200 (Mon, 28 Aug 2017)
-*  Revision:       17894
+*  Revised:        2019-06-04 14:00:59 +0200 (Tue, 04 Jun 2019)
+*  Revision:       19079
 *
-*  Description:    Definitions for probrietary mode radio interface
+*  Description:    Definitions for proprietary mode radio interface
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.

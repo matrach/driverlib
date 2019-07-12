@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ble_cte_ms_rxtx.h
-*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (to, 31 jan 2019) $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Do, 31 Jan 2019) $
 *  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for Bluetooth 5.1 style locationing support with CTE aware receiver for master and slave

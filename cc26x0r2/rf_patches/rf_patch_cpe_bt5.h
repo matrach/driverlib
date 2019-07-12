@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_bt5.h
-*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (on, 27 feb 2019) $
+*  Revised:        $Date: 2019-02-27 16:13:01 +0100 (Mi, 27 Feb 2019) $
 *  Revision:       $Revision: 18889 $
 *
 *  Description: RF core patch for Bluetooth 5 support in CC2640R2F

@@ -1,10 +1,9 @@
 /******************************************************************************
-*  Filename:       driverlib_release.c
-*  Revised:        $Date: 2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016) $
-*  Revision:       $Revision: 47152 $
+*  Filename:       rf_hs_mailbox.h
+*  Revised:        2019-06-05 10:54:28 +0200 (Wed, 05 Jun 2019)
+*  Revision:       19081
 *
-*  Description:    Provides macros for ensuring that a specfic release of
-*                  DriverLib is used.
+*  Description:     Definitions for high-speed mode radio interface
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.
@@ -36,10 +35,31 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************************/
-#include "../driverlib/driverlib_release.h"
 
+#ifndef _HS_MAILBOX_H
+#define _HS_MAILBOX_H
 
+/// \name Radio operation status
+///@{
+/// \name Operation finished normally
+///@{
+#define HS_DONE_OK            0x3440  ///< Operation ended normally
+#define HS_DONE_RXTIMEOUT     0x3441  ///< Operation stopped after end trigger while waiting for sync
+#define HS_DONE_RXERR         0x3442  ///< Operation ended after CRC error
+#define HS_DONE_TXBUF         0x3443  ///< Tx queue was empty at start of operation
+#define HS_DONE_ENDED         0x3444  ///< Operation stopped after end trigger during reception
+#define HS_DONE_STOPPED       0x3445  ///< Operation stopped after stop command
+#define HS_DONE_ABORT         0x3446  ///< Operation aborted by abort command
+///@}
+/// \name Operation finished with error
+///@{
+#define HS_ERROR_PAR          0x3840  ///< Illegal parameter
+#define HS_ERROR_RXBUF        0x3841  ///< No available Rx buffer at the start of a packet
+#define HS_ERROR_NO_SETUP     0x3842  ///< Radio was not set up in a compatible mode
+#define HS_ERROR_NO_FS        0x3843  ///< Synth was not programmed when running Rx or Tx
+#define HS_ERROR_RXOVF        0x3844  ///< Rx overflow observed during operation
+#define HS_ERROR_TXUNF        0x3845  ///< Tx underflow observed during operation
+///@}
+///@}
 
-
-/// Declare the current DriverLib release
-DRIVERLIB_DECLARE_RELEASE(0, 55724);
+#endif

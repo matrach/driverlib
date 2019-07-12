@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.h
-*  Revised:        2018-08-08 14:03:25 +0200 (Wed, 08 Aug 2018)
-*  Revision:       52338
+*  Revised:        2019-05-08 15:00:08 +0200 (Wed, 08 May 2019)
+*  Revision:       55675
 *
 *  Description:    Defines and prototypes for the RF Core.
 *
