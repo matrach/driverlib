@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.h
-*  Revised:        2018-08-08 14:03:25 +0200 (Wed, 08 Aug 2018)
-*  Revision:       52338
+*  Revised:        2019-05-08 15:00:08 +0200 (Wed, 08 May 2019)
+*  Revision:       55675
 *
 *  Description:    Defines and prototypes for the RF Core.
 *
@@ -80,9 +80,9 @@ typedef struct {
 
 // Definition of maximum search depth used by the RFCOverrideUpdate function
 #define RFC_MAX_SEARCH_DEPTH     5
-#define RFC_PA_TYPE_ADDRESS		 0x21000345
+#define RFC_PA_TYPE_ADDRESS		 0x21000385
 #define RFC_PA_TYPE_MASK 		 0x04
-#define RFC_PA_GAIN_ADDRESS		 0x2100034C
+#define RFC_PA_GAIN_ADDRESS		 0x21000398
 #define RFC_PA_GAIN_MASK		 0x003FFFFF
 #define RFC_FE_MODE_ESCAPE_VALUE 0xFF
 #define RFC_FE_OVERRIDE_ADDRESS  0x0703

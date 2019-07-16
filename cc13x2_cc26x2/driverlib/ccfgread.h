@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ccfgread.h
-*  Revised:        2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016)
-*  Revision:       47152
+*  Revised:        2019-04-09 14:03:09 +0200 (Tue, 09 Apr 2019)
+*  Revision:       55610
 *
 *  Description:    API for reading CCFG.
 *
@@ -146,6 +146,7 @@ CCFGRead_SCLK_LF_OPTION( void )
 #define CCFGREAD_XOSC_FREQ_24M   ( CCFG_MODE_CONF_XOSC_FREQ_24M   >> CCFG_MODE_CONF_XOSC_FREQ_S )
 #define CCFGREAD_XOSC_FREQ_48M   ( CCFG_MODE_CONF_XOSC_FREQ_48M   >> CCFG_MODE_CONF_XOSC_FREQ_S )
 #define CCFGREAD_XOSC_FREQ_HPOSC ( CCFG_MODE_CONF_XOSC_FREQ_HPOSC >> CCFG_MODE_CONF_XOSC_FREQ_S )
+#define CCFGREAD_XOSC_FREQ_TCXO  ( CCFG_MODE_CONF_XOSC_FREQ_TCXO  >> CCFG_MODE_CONF_XOSC_FREQ_S )
 
 //*****************************************************************************
 //
@@ -156,6 +157,7 @@ CCFGRead_SCLK_LF_OPTION( void )
 //! - \ref CCFGREAD_XOSC_FREQ_24M
 //! - \ref CCFGREAD_XOSC_FREQ_48M
 //! - \ref CCFGREAD_XOSC_FREQ_HPOSC
+//! - \ref CCFGREAD_XOSC_FREQ_TCXO
 //!
 //
 //*****************************************************************************
@@ -165,6 +167,38 @@ CCFGRead_XOSC_FREQ( void )
     return (( HWREG( CCFG_BASE + CCFG_O_MODE_CONF ) &
         CCFG_MODE_CONF_XOSC_FREQ_M ) >>
         CCFG_MODE_CONF_XOSC_FREQ_S ) ;
+}
+
+//*****************************************************************************
+//
+//! \brief Read TCXO_MAX_START setting from CCFG.
+//!
+//! \return Returns the value of the CCFG_MODE_CONF_1_TCXO_MAX_START field.
+//!
+//
+//*****************************************************************************
+__STATIC_INLINE uint32_t
+CCFGRead_TCXO_MAX_START( void )
+{
+    return (( HWREG( CCFG_BASE + CCFG_O_MODE_CONF_1 ) &
+        CCFG_MODE_CONF_1_TCXO_MAX_START_M ) >>
+        CCFG_MODE_CONF_1_TCXO_MAX_START_S ) ;
+}
+
+//*****************************************************************************
+//
+//! \brief Read TCXO_TYPE setting from CCFG.
+//!
+//! \return Returns the value of the CCFG_MODE_CONF_1_TCXO_TYPE field.
+//!
+//
+//*****************************************************************************
+__STATIC_INLINE uint32_t
+CCFGRead_TCXO_TYPE( void )
+{
+    return (( HWREG( CCFG_BASE + CCFG_O_MODE_CONF_1 ) &
+        CCFG_MODE_CONF_1_TCXO_TYPE_M ) >>
+        CCFG_MODE_CONF_1_TCXO_TYPE_S ) ;
 }
 
 //*****************************************************************************

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_prop.h
-*  Revised:        $Date: 2019-03-28 10:53:59 +0100 (to, 28 mar 2019) $
-*  Revision:       $Revision: 18936 $
+*  Revised:        $Date: 2019-04-29 17:29:16 +0200 (ma, 29 apr 2019) $
+*  Revision:       $Revision: 19024 $
 *
 *  Description: RF core patch for proprietary radio support ("PROP" API command set) in CC13x2 and CC26x2
 *
@@ -70,11 +70,13 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageProp[] = {
-   0x21004061,
-   0x210040cb,
-   0x2100408d,
-   0x210040ed,
-   0x210040f9,
+   0x21004069,
+   0x210040d3,
+   0x21004095,
+   0x210040f5,
+   0x21004101,
+   0x2100410d,
+   0x21004125,
    0x79654c07,
    0xf809f000,
    0x40697961,
@@ -110,12 +112,24 @@ CPE_PATCH_TYPE patchImageProp[] = {
    0xe000e200,
    0x00031641,
    0x00031b23,
-   0xf80af000,
+   0xf822f000,
    0x47004800,
    0x00007f57,
-   0xf80af000,
+   0xf822f000,
    0x47004800,
    0x0000881b,
+   0x781a4b09,
+   0x43a22408,
+   0xd0002800,
+   0x701a4322,
+   0x47104a00,
+   0x00008e83,
+   0x78084903,
+   0xd4010700,
+   0x47004802,
+   0x00004770,
+   0x21000380,
+   0x00007e5f,
    0x490c6b80,
    0x0f000700,
    0x47707148,
@@ -132,7 +146,7 @@ CPE_PATCH_TYPE patchImageProp[] = {
    0x210002e0,
    0x21000088,
 };
-#define _NWORD_PATCHIMAGE_PROP 61
+#define _NWORD_PATCHIMAGE_PROP 75
 
 #define _NWORD_PATCHCPEHD_PROP 0
 
@@ -193,6 +207,8 @@ PATCH_FUN_SPEC void configurePropPatch(void)
    pPatchTab[64] = 2;
    pPatchTab[140] = 3;
    pPatchTab[150] = 4;
+   pPatchTab[152] = 5;
+   pPatchTab[151] = 6;
 }
 
 PATCH_FUN_SPEC void applyPropPatch(void)

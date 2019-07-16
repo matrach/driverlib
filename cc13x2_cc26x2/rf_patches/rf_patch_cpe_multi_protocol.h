@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_multi_protocol.h
-*  Revised:        $Date: 2019-03-28 10:53:59 +0100 (to, 28 mar 2019) $
-*  Revision:       $Revision: 18936 $
+*  Revised:        $Date: 2019-04-29 17:29:16 +0200 (ma, 29 apr 2019) $
+*  Revision:       $Revision: 19024 $
 *
 *  Description: RF core patch for multi-protocol support (all available API command sets) in CC13x2 and CC26x2
 *
@@ -70,15 +70,17 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageMultiProtocol[] = {
-   0x21004071,
-   0x210040db,
-   0x2100409d,
-   0x21004169,
-   0x210040fd,
-   0x2100411d,
-   0x21004129,
-   0x21004135,
-   0x210041e1,
+   0x21004079,
+   0x210040e3,
+   0x210040a5,
+   0x21004185,
+   0x210041c1,
+   0x21004109,
+   0x21004115,
+   0x21004121,
+   0x2100424d,
+   0x21004155,
+   0x2100416d,
    0x79654c07,
    0xf809f000,
    0x40697961,
@@ -114,18 +116,11 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0xe000e200,
    0x00031641,
    0x00031b23,
-   0x21014805,
-   0x438a6802,
-   0x6b836002,
-   0x6383438b,
-   0x6002430a,
-   0x47004801,
-   0x40046000,
-   0x00005b3f,
-   0xf842f000,
+   0x4700b570,
+   0xf882f000,
    0x47004800,
    0x00007f57,
-   0xf842f000,
+   0xf882f000,
    0x47004800,
    0x0000881b,
    0x0a9b9b03,
@@ -141,6 +136,18 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0x00020b1f,
    0x21000160,
    0x000209eb,
+   0x781a4b09,
+   0x43a22408,
+   0xd0002800,
+   0x701a4322,
+   0x47104a00,
+   0x00008e83,
+   0x78084903,
+   0xd4010700,
+   0x47004802,
+   0x00004770,
+   0x21000380,
+   0x00007e5f,
    0x490cb510,
    0x4a0c4788,
    0x5e512106,
@@ -156,6 +163,26 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0x0000bd10,
    0x000065a9,
    0x21000380,
+   0x4810b510,
+   0x481088c1,
+   0xd0182905,
+   0x68214c0f,
+   0x0052084a,
+   0x6ba26022,
+   0x00520852,
+   0x602163a2,
+   0xff90f7ff,
+   0x07006ba0,
+   0x2001d408,
+   0x60606020,
+   0x1c402000,
+   0xdbfc280c,
+   0x62202014,
+   0xf7ffbd10,
+   0xbd10ff81,
+   0x21000380,
+   0x00005b3f,
+   0x40046000,
    0x490c6b80,
    0x0f000700,
    0x47707148,
@@ -173,7 +200,7 @@ CPE_PATCH_TYPE patchImageMultiProtocol[] = {
    0x21000088,
    0x47702000,
 };
-#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL 102
+#define _NWORD_PATCHIMAGE_MULTI_PROTOCOL 129
 
 #define _NWORD_PATCHCPEHD_MULTI_PROTOCOL 0
 
@@ -238,6 +265,8 @@ PATCH_FUN_SPEC void configureMultiProtocolPatch(void)
    pPatchTab[150] = 6;
    pPatchTab[13] = 7;
    pPatchTab[31] = 8;
+   pPatchTab[152] = 9;
+   pPatchTab[151] = 10;
 }
 
 PATCH_FUN_SPEC void applyMultiProtocolPatch(void)
