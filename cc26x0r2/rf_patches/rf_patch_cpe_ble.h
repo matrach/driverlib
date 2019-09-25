@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_ble.h
-*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Do, 31 Jan 2019) $
-*  Revision:       $Revision: 18842 $
+*  Revised:        $Date: 2019-08-23 12:24:13 +0200 (Fr, 23 Aug 2019) $
+*  Revision:       $Revision: 19131 $
 *
 *  Description: RF core patch for Bluetooth 4.2 support in CC2640R2F
 *
