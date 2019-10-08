@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rfc.h
-*  Revised:        2019-05-08 15:00:08 +0200 (Wed, 08 May 2019)
-*  Revision:       55675
+*  Revised:        2018-08-08 14:03:25 +0200 (Wed, 08 Aug 2018)
+*  Revision:       52338
 *
 *  Description:    Defines and prototypes for the RF Core.
 *
@@ -59,13 +59,14 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "../inc/hw_types.h"
-#include "../inc/hw_memmap.h"
-#include "../inc/hw_rfc_pwr.h"
-#include "../inc/hw_rfc_dbell.h"
-#include "../inc/hw_fcfg1.h"
-#include "../inc/hw_adi_3_refsys.h"
-#include "../inc/hw_adi.h"
+#include <ti/devices/DeviceFamily.h>
+#include DeviceFamily_constructPath(inc/hw_types.h)
+#include DeviceFamily_constructPath(inc/hw_memmap.h)
+#include DeviceFamily_constructPath(inc/hw_rfc_pwr.h)
+#include DeviceFamily_constructPath(inc/hw_rfc_dbell.h)
+#include DeviceFamily_constructPath(inc/hw_fcfg1.h)
+#include DeviceFamily_constructPath(inc/hw_adi_3_refsys.h)
+#include DeviceFamily_constructPath(inc/hw_adi.h)
 #include "rf_common_cmd.h"
 #include "rf_prop_cmd.h"
 #include "rf_ble_cmd.h"
@@ -411,7 +412,7 @@ extern uint32_t RFCAnaDivTxOverride(uint8_t loDivider, uint8_t frontEndMode);
 //
 //*****************************************************************************
 #if !defined(DRIVERLIB_NOROM) && !defined(DOXYGEN)
-    #include "../driverlib/rom.h"
+    #include DeviceFamily_constructPath(driverlib/rom.h)
     #ifdef ROM_RFCCpeIntGetAndClear
         #undef  RFCCpeIntGetAndClear
         #define RFCCpeIntGetAndClear            ROM_RFCCpeIntGetAndClear

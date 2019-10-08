@@ -1,11 +1,9 @@
 /******************************************************************************
 *  Filename:       rf_common_cmd.h
-*  Revised:        2018-11-02 11:52:02 +0100 (Fri, 02 Nov 2018)
-*  Revision:       18756
 *
 *  Description:    CC13x2/CC26x2 API for common/generic commands
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2019, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -112,7 +110,7 @@ typedef struct __RFC_STRUCT rfc_CMD_SET_CMD_START_IRQ_s rfc_CMD_SET_CMD_START_IR
 //! \addtogroup command
 //! @{
 struct __RFC_STRUCT rfc_command_s {
-   uint16_t commandNo;                  //!<        The command ID number
+   uint16_t commandNo;                  //!<        The command ID number 
 } __RFC_STRUCT_ATTR;
 
 //! @}
@@ -122,7 +120,7 @@ struct __RFC_STRUCT rfc_command_s {
 //! Common definition for radio operation commands
 
 struct __RFC_STRUCT rfc_radioOp_s {
-   uint16_t commandNo;                  //!<        The command ID number
+   uint16_t commandNo;                  //!<        The command ID number 
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
                                         //!<        updated by the radio CPU during operation and may be read by the
                                         //!<        system CPU at any time.
@@ -676,7 +674,7 @@ struct __RFC_STRUCT rfc_CMD_PATTERN_CHECK_s {
 //! @{
 //! Radio Setup Command for Pre-Defined Schemes with PA Switching Fields
 struct __RFC_STRUCT rfc_CMD_RADIO_SETUP_PA_s {
-   uint16_t commandNo;                  //!<        The command ID number
+   uint16_t commandNo;                  //!<        The command ID number 
    uint16_t status;                     //!< \brief An integer telling the status of the command. This value is
                                         //!<        updated by the radio CPU during operation and may be read by the
                                         //!<        system CPU at any time.
