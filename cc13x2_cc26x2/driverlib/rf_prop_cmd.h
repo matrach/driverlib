@@ -543,6 +543,9 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_s {
                                         //!<        Others: <i>Reserved</i>
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
+      uint16_t :1;
+      uint16_t bSynthNarrowBand:1;      //!< \brief 0: Normal synth mode<br>
+                                        //!<        1: Narrow-band synth mode
    } config;                            //!<        Configuration options
    uint16_t txPower;                    //!<        Transmit power
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
@@ -646,6 +649,9 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_DIV_SETUP_s {
                                         //!<        Others: <i>Reserved</i>
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
+      uint16_t :1;
+      uint16_t bSynthNarrowBand:1;      //!< \brief 0: Normal synth mode<br>
+                                        //!<        1: Narrow-band synth mode
    } config;                            //!<        Configuration options
    uint16_t txPower;                    //!<        Transmit power
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
@@ -982,6 +988,9 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_SETUP_PA_s {
                                         //!<        Others: <i>Reserved</i>
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
+      uint16_t :1;
+      uint16_t bSynthNarrowBand:1;      //!< \brief 0: Normal synth mode<br>
+                                        //!<        1: Narrow-band synth mode
    } config;                            //!<        Configuration options
    uint16_t txPower;                    //!<        Transmit power
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
@@ -1088,6 +1097,9 @@ struct __RFC_STRUCT rfc_CMD_PROP_RADIO_DIV_SETUP_PA_s {
                                         //!<        Others: <i>Reserved</i>
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
+      uint16_t :1;
+      uint16_t bSynthNarrowBand:1;      //!< \brief 0: Normal synth mode<br>
+                                        //!<        1: Narrow-band synth mode
    } config;                            //!<        Configuration options
    uint16_t txPower;                    //!<        Transmit power
    uint32_t* pRegOverride;              //!< \brief Pointer to a list of hardware and configuration registers to override. If NULL, no
