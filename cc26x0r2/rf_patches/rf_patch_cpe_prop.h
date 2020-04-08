@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_prop.h
-*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Do, 31 Jan 2019) $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Thu, 31 Jan 2019) $
 *  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for proprietary radio support ("PROP" API command set) in CC2640R2F

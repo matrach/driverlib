@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_rfe_tof.h
-*  Revised:        $Date: 2019-04-29 17:29:16 +0200 (Mo, 29 Apr 2019) $
+*  Revised:        $Date: 2019-04-29 17:29:16 +0200 (Mon, 29 Apr 2019) $
 *  Revision:       $Revision: 19024 $
 *
 *  Description: RF core patch for supporting time-of-flight radio measurements in CC2640R2F

@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_ble_cte.h
-*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Do, 31 Jan 2019) $
+*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Thu, 31 Jan 2019) $
 *  Revision:       $Revision: 18842 $
 *
 *  Description: RF core patch for Bluetooth 5.1 style locationing

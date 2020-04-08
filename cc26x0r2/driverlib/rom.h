@@ -462,10 +462,6 @@ extern void SafeHapiAuxAdiSelect( FPTR_VOID_UINT8_T fPtr, uint8_t ut8Signal );
     ((uint32_t (*)(bool bDecrypt, uint32_t ui32AuthLength, uint32_t *pui32Nonce, uint32_t *pui32CipherText, uint32_t ui32CipherTextLength, uint32_t *pui32Header, uint32_t ui32HeaderLength, uint32_t ui32KeyLocation, uint32_t ui32FieldLength, bool bIntEnable)) \
     ROM_API_CRYPTO_TABLE[6])
 
-#define ROM_CRYPTOCcmInvAuthDecryptResultGet \
-    ((uint32_t (*)(uint32_t ui32AuthLength, uint32_t *pui32CipherText, uint32_t ui32CipherTextLength, uint32_t *pui32CcmTag)) \
-    ROM_API_CRYPTO_TABLE[7])
-
 #define ROM_CRYPTOCcmInvAuthDecryptStatus \
     ((uint32_t (*)(void)) \
     ROM_API_CRYPTO_TABLE[8])
