@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,8 @@ const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js")
 // Other dependencies
 const DeviceInfo = Common.getScript("device_info.js");
 const OverrideHandler = Common.getScript("override_handler.js");
-const TargetHandler = Common.getScript("target_handler.js");
 const ParHandler = Common.getScript("parameter_handler.js");
+const RfDesign = Common.getScript("rfdesign");
 
 // Utility functions
 const int2hex = Common.int2hex;
@@ -69,7 +69,8 @@ const TxPowerCache = {
 
 // Exported functions
 exports = {
-    get: get
+    get: get,
+    getUpdatedRfCommands: getUpdatedRfCommands
 };
 
 
@@ -83,10 +84,29 @@ exports = {
  */
 function get(phyGroup, phyName) {
     if (!(phyName in cmdHandlerCache)) {
-        cmdHandlerCache[phyName] = create(phyGroup, phyName);
+        cmdHandlerCache[phyName] = create(phyGroup, phyName, true);
     }
 
     return cmdHandlerCache[phyName];
+}
+
+/*!
+ *  ======== getUpdatedRfCommands ========
+ *  Create a new PHY setting and update with data from the instance.
+ *  This leaves the original PHY setting unchanged.
+ *
+ *  @param inst - inst from which update data are fetched
+ */
+function getUpdatedRfCommands(inst) {
+    const phyName = Common.getPhyType(inst);
+    const cmdHandler = cmdHandlerCache[phyName];
+    const phyGroup = cmdHandler.getPhyGroup();
+
+    // Update a duplicate instance
+    const cmdHandlerClone = create(phyGroup, phyName, false);
+    cmdHandlerClone.updateRfCommands(inst);
+
+    return cmdHandlerClone;
 }
 
 /*!
@@ -95,16 +115,17 @@ function get(phyGroup, phyName) {
  *
  *  @param phyGroup - ble, prop, ieee_154
  *  @param phyName - short name for the corresponding PHY layer
+ *  @param first - first time execution
  */
-function create(phyGroup, phyName) {
+function create(phyGroup, phyName, first) {
     const PhyName = phyName;
     const PhyGroup = phyGroup;
-    const settingsInfo = _.find(DeviceInfo.getSettingMap(phyGroup), s => s.name === phyName);
+    const settingsInfo = _.find(DeviceInfo.getSettingMap(phyGroup), (s) => s.name === phyName);
     const SettingFileName = settingsInfo.file;
     const Config = system.getScript(DeviceInfo.getSyscfgParams(phyGroup));
     const SettingPath = DeviceInfo.getSettingPath(phyGroup);
 
-    // Command buffer for this instance
+    // Command buffers
     const CmdBuf = {};
 
     // Names of commands used by setting
@@ -120,15 +141,16 @@ function create(phyGroup, phyName) {
     const CmdDef = system.getScript(DeviceInfo.getRfCommandDef(phyGroup));
 
     // RF command mapping (converted from SmartRF Studio)
-    const tmp = system.getScript(DeviceInfo.getCmdMapping(phyGroup));
+    let tmp = system.getScript(DeviceInfo.getCmdMapping(phyGroup));
     const ParamMap = addParameterMapping(tmp);
 
     // Commands used by this RF setting, subset of CmdDef (converted from SmartRF Studio)
-    const Setting = system.getScript(SettingPath + SettingFileName).setting;
+    tmp = system.getScript(SettingPath + SettingFileName).setting;
+    const Setting = _.cloneDeep(tmp);
 
     // True if txPower configurable for 2.4 GHz band is used (only for 2.4GHz proprietary settings)
     const FreqBand = getFrequencyBand();
-    const UseTxPower2400 = PhyGroup === Common.PHY_PROP && Common.HAS_2_4G_PROP && FreqBand === 2400;
+    const UseTxPower2400 = PhyGroup === Common.PHY_PROP && Common.HAS_24G_PROP && FreqBand === 2400;
 
     // Commands contained in the setting
     addUsedCommands();
@@ -139,17 +161,13 @@ function create(phyGroup, phyName) {
     // Add commands that are not used by the setting
     addUnusedCommands();
 
-    // Cache for TX power values
-    TargetHandler.init(PhyGroup);
-
-    // Add front-end settings (device dependent)
-    addFrontEndSettings();
-
     // Create buffer for RF commands
     createCommandBuffer();
 
-    // Apply defaults to configurables
-    initConfigurables(Config);
+    if (first) {
+        // Apply defaults to configurables
+        initConfigurables(Config);
+    }
 
     /*!
      *  ======== addParameterMapping  ========
@@ -292,7 +310,7 @@ function create(phyGroup, phyName) {
             case "txPower":
                 // 868 + BLE/IEEE 802.15.4 use "txPower"
                 if (freqBand === 868 || (freqBand === 2400 && PhyGroup !== Common.PHY_PROP)) {
-                    item.options = TargetHandler.getTxPowerValueList(freq, false, false);
+                    item.options = RfDesign.getTxPowerOptions(freq, false);
                     item.default = item.options[0].name;
                     TxPowerCache.default = item.default;
                 }
@@ -300,7 +318,7 @@ function create(phyGroup, phyName) {
             case "txPower433":
                 // 433-527 MHz band uses "txPower433"
                 if (freqBand === 433) {
-                    item.options = TargetHandler.getTxPowerValueList("433", false, false);
+                    item.options = RfDesign.getTxPowerOptions(433, false);
                     item.default = item.options[0].name;
                     TxPowerCache.t433 = item.default;
                 }
@@ -308,7 +326,7 @@ function create(phyGroup, phyName) {
             case "txPower2400":
                 // 2400 - 2480 MHz (proprietary only) use "txPower2400"
                 if (UseTxPower2400) {
-                    item.options = TargetHandler.getTxPowerValueList("2400", false, true);
+                    item.options = RfDesign.getTxPowerOptions(2400, false);
                     item.default = item.options[0].name;
                     TxPowerCache.t2400 = item.default;
                 }
@@ -316,15 +334,17 @@ function create(phyGroup, phyName) {
             case "txPowerHi":
                 // CC1352P: 868 + 2400 MHz bands use "txPowerHi" for High PA
                 if (freqBand === 868 || freqBand === 2400) {
-                    item.options = TargetHandler.getTxPowerValueList(freq, true, false);
-                    item.default = item.options[0].name;
+                    // NB! Using dynamic enumerable due to 10 dBm PA table for P4 Launchpad
+                    const txOptions = RfDesign.getTxPowerOptionsDefault(freq, true);
+                    item.options = (inst) => RfDesign.getTxPowerOptions(freq, true);
+                    item.default = txOptions[0].name;
                     TxPowerCache.high = item.default;
                 }
                 break;
             case "txPower433Hi":
                 // CC1352P/P4: 470-527 MHz band uses "txPower433Hi" for High PA
                 if (freqBand === 433) {
-                    item.options = TargetHandler.getTxPowerValueList("470", true, false);
+                    item.options = RfDesign.getTxPowerOptions(433, true);
                     item.default = item.options[0].name;
                     TxPowerCache.t433Hi = item.default;
                 }
@@ -400,14 +420,14 @@ function create(phyGroup, phyName) {
      *  Get initial settings
      */
     function getRfData() {
-        TargetHandler.init(PhyGroup);
         const txPower = getTxPowerAll();
         const freq = getFrequency();
 
         // Update TX power override
         const txPowActual = getTxPower(txPower);
-        OverrideHandler.init(Setting.Command, PhyGroup);
-        OverrideHandler.updateTxPowerOverride(txPowActual, freq, UseTxPower2400);
+        const highPA = getCmdFieldValue("txPower") === "0xFFFF";
+        OverrideHandler.init(Setting.Command, PhyGroup, highPA);
+        OverrideHandler.updateTxPowerOverride(txPowActual, freq, txPower.high);
 
         let cfgCommon = {
             txPower: txPower.default
@@ -424,7 +444,7 @@ function create(phyGroup, phyName) {
                 symbolRate: parseFloat(getSymbolRate()),
                 deviation: parseFloat(getDeviation()),
                 rxFilterBw: getRxFilterBw(),
-                carrierFrequency: parseFloat(getFrequency()),
+                carrierFrequency: parseFloat(freq),
                 packetLengthRx: parseInt(getPacketLengthRx()),
                 syncWord: parseInt(getSyncWord()),
                 syncWordLength: getSyncwordLength(),
@@ -436,7 +456,7 @@ function create(phyGroup, phyName) {
                 const cfgProp24 = {
                     txPower2400: txPower.t2400
                 };
-                cfgPropBase = Object.assign({}, cfgPropBase, cfgProp24);
+                cfgPropBase = {...cfgPropBase, ...cfgProp24};
             }
 
             let cfgPropExtended = {};
@@ -453,14 +473,14 @@ function create(phyGroup, phyName) {
         }
         else if (PhyGroup === Common.PHY_BLE) {
             const cfgBle = {
-                frequency: getFrequency(),
+                frequency: freq,
                 whitening: getWhitening()
             };
             return Object.assign(cfgCommon, cfgBle);
         }
         else if (phyGroup === Common.PHY_IEEE_15_4) {
             const cfg154 = {
-                frequency: getFrequency()
+                frequency: freq
             };
             return Object.assign(cfgCommon, cfg154);
         }
@@ -471,6 +491,8 @@ function create(phyGroup, phyName) {
      *  ======== getFrequency ========
      *  Calculate Frequency in MHz based on raw CMD value
      *  (CMD_FS, frequency and fraction fields)
+     *
+     *  @returns number as string - frequency
      */
     function getFrequency() {
         if (PhyGroup === Common.PHY_PROP) {
@@ -478,27 +500,31 @@ function create(phyGroup, phyName) {
             const fract = parseInt(getCmdFieldValue("fractFreq"));
             frequency += fract / 65536.0;
 
-            return frequency.toFixed(5);
+            return frequency.toFixed(4);
         }
         return getCmdFieldValueByOpt("frequency", "frequency");
     }
 
     /*!
      *  ======== getDeviation ========
-     *  Calculate Deviation (float) based on raw CMD value
+     *  Calculate deviation based on raw CMD value
      *  (CMD_PROP_RADIO_DIV_SETUP)
+     *
+     *  @returns number as string - deviation
      */
     function getDeviation() {
         const cmd = getCmdFieldValue("modulation.deviation");
-        const deviation = (cmd * 250.0 / 1e3).toFixed(3);
+        const deviation = (cmd * 250.0) / 1e3;
 
-        return deviation;
+        return deviation.toFixed(1);
     }
 
     /*!
      *  ======== getSymbolRate ========
-     *  Get Symbol rate (float) based on raw CMD value
+     *  Get Symbol rate based on raw CMD value
      *  (CMD_PROP_RADIO_DIV_SETUP)
+     *
+     *  @returns number as string - symbolRate
      */
     function getSymbolRate() {
         const rateWord = getCmdFieldValue("symbolRate.rateWord");
@@ -506,7 +532,7 @@ function create(phyGroup, phyName) {
         let calcSymbolRate = (rateWord * 24 * 1e6) / (prescaler * (2.0 ** 20));
         calcSymbolRate /= 1e3;
 
-        return calcSymbolRate.toFixed(5);
+        return calcSymbolRate.toFixed(3);
     }
 
     /*!
@@ -610,16 +636,14 @@ function create(phyGroup, phyName) {
 
         if (DeviceInfo.hasHighPaSupport() && !UseTxPower2400) {
             // High PA
-            let txp = TargetHandler.getTxPowerValuePA(freq, true, TxPowerHi.dbm);
-
-            if (txp !== null) {
-                TxPowerHi.dbm = txp.dbm;
-                TxPowerHi.raw = txp.raw;
+            let raw = RfDesign.getTxPowerValueByDbm(freq, true, TxPowerHi.dbm);
+            if (raw !== null) {
+                TxPowerHi.raw = raw;
                 if (loFreq) {
-                    ret.t433Hi = txp.dbm;
+                    ret.t433Hi = TxPowerHi.dbm;
                 }
                 else {
-                    ret.high = txp.dbm;
+                    ret.high = TxPowerHi.dbm;
                 }
             }
             else {
@@ -635,19 +659,15 @@ function create(phyGroup, phyName) {
             else {
                 dbm = getCmdFieldValueByOpt("txPower", "txPower");
             }
-            txp = TargetHandler.getTxPowerValuePA(freq, false, dbm);
 
-            if (txp !== null) {
-                const val = txp.dbm;
+            raw = RfDesign.getTxPowerValueByDbm(freq, false, dbm);
+            if (raw !== null) {
                 if (loFreq) {
-                    ret.t433 = val;
+                    ret.t433 = dbm;
                 }
                 else {
-                    ret.default = val;
+                    ret.default = dbm;
                 }
-            }
-            else {
-                throw Error("TX Power not available");
             }
         }
         else if (loFreq) {
@@ -820,7 +840,7 @@ function create(phyGroup, phyName) {
         const val = inst.whitening ? 0x51 : 0;
         setCmdFieldValue("whitening", "whitening.init", val);
         setCmdFieldValue("whitening", "whitening.bOverride", 1);
-        setCmdFieldValueDirect("condition.rule", 1);
+        setCmdFieldValueDirect("condition.rule", 1, false);
 
         // Frequency
         setCmdFieldValueByOpt("frequency", "frequency", frequency);
@@ -869,7 +889,11 @@ function create(phyGroup, phyName) {
 
         // Update TX power override
         const txPower = getTxPowerFromInst(inst);
-        OverrideHandler.updateTxPowerOverride(txPower, frequency, UseTxPower2400);
+        let highPA = false;
+        if ("highPA" in inst) {
+            highPA = inst.highPA;
+        }
+        OverrideHandler.updateTxPowerOverride(txPower, frequency, highPA);
 
         // Deviation
         const devField = Math.floor((inst.deviation * 1e3) / 250);
@@ -932,9 +956,10 @@ function create(phyGroup, phyName) {
      *  ======== getPatchInfo ========
      *  Extract patch information from the database
      *
-     *  @param useMultiProtocol - choice of single/multi protocol
+     *  @param protocol - single, multi, coex
+     *
      */
-    function getPatchInfo(useMultiProtocol) {
+    function getPatchInfo(protocol) {
         const patches = Setting.Patch;
 
         const ret = {
@@ -949,8 +974,11 @@ function create(phyGroup, phyName) {
         }
 
         if ("Cpe" in patches) {
-            if (useMultiProtocol) {
+            if (protocol === "multi") {
                 ret.cpe = "rf_patch_cpe_multi_protocol";
+            }
+            else if (protocol === "coex") {
+                ret.cpe = "rf_patch_cpe_multi_bt5_coex";
             }
             else {
                 ret.cpe = patches.Cpe;
@@ -972,10 +1000,10 @@ function create(phyGroup, phyName) {
      *  ======== generatePatchCode ========
      *  Extract patch code from the database
      *
-     *  @param useMultiProtocol - choice of single/multi protocol
+     *  @param protocol - single, multi, coex
      */
-    function generatePatchCode(useMultiProtocol) {
-        const patch = getPatchInfo(useMultiProtocol);
+    function generatePatchCode(protocol) {
+        const patch = getPatchInfo(protocol);
         let code = "    .rfMode = " + patch.mode + ",\n";
 
         if (typeof (patch.cpe) === "string") {
@@ -1010,11 +1038,21 @@ function create(phyGroup, phyName) {
      *  @param custom - Info on custom overrides
      */
     function generateOverrideCode(ovr, custom) {
+        const freq = getFrequency();
+        let txPowerDef = getCmdFieldValue("txPower");
+        // High PA
+        if (txPowerDef === "0xFFFF") {
+            txPowerDef = RfDesign.getTxPowerValueDefault(freq, false);
+        }
+        // Workaround for inconsistent HEX notation in pasettings.json for 2.4 GHz
+        if (!txPowerDef.includes("0x")) {
+            txPowerDef = "0x" + txPowerDef;
+        }
         const data = {
-            txPower: getCmdFieldValue("txPower"),
-            txPowerHi: TxPowerHi.dbm,
+            txPower: txPowerDef,
+            txPowerHi: RfDesign.getTxPowerValueByDbm(freq, true, TxPowerHi.dbm),
             loDivider: getCmdFieldValue("loDivider"),
-            freq: getFrequency(),
+            freq: freq,
             frontend: getCmdFieldValue("config.frontEndMode")
         };
         return OverrideHandler.generateCode(ovr, data, custom);
@@ -1102,17 +1140,12 @@ function create(phyGroup, phyName) {
                 }
                 else {
                     str = "    ." + field.name + " = " + int2hex(val, width) + ",";
-                    if ("value" in field) {
-                        str += " // modified (default: " + int2hex(field.default, width) + ")";
-                    }
                 }
             }
-
             // Reached the offset defined in pParam, the rest is a parameter struct
             if (field.byteOffset >= parOffset) {
                 processingParam = true;
             }
-
             // Aggregate command and parameter struct
             if (processingParam) {
                 code.rfPar.push(str);
@@ -1124,7 +1157,6 @@ function create(phyGroup, phyName) {
             }
             j += 1;
         }
-
         // Strip comma and newline from the last field
         code.rfCmd[nCmd - 1] = code.rfCmd[nCmd - 1].slice(0, -1);
         code.rfCmd = code.rfCmd.join("\n");
@@ -1133,8 +1165,74 @@ function create(phyGroup, phyName) {
             code.rfPar[nPar - 1] = code.rfPar[nPar - 1].slice(0, -1);
             code.rfPar = code.rfPar.join("\n");
         }
-
         return code;
+    }
+
+
+    /*!
+     *  ======== getCommandMap ========
+     *  Get a list of commands that map to the given RF parameter
+     *
+     *  @param rfParam - RF parameter name
+     */
+    function getCommandMap(rfParam) {
+        const uc = rfParam.toUpperCase();
+        if (uc in ParamMap) {
+            return ParamMap[uc];
+        }
+        return null;
+    }
+
+    /*!
+     *  ======== getCommandMap ========
+     *  Get a list of commands that map to the given RF parameter
+     *
+     *  @param inst - PHY setting instance
+     */
+    function getUsedCommands(inst) {
+        let usedCmds;
+
+        switch (PhyGroup) {
+        case Common.PHY_BLE:
+            usedCmds = inst.codeExportConfig.cmdList_ble;
+            break;
+        case Common.PHY_IEEE_15_4:
+            usedCmds = inst.codeExportConfig.cmdList_ieee_15_4;
+            break;
+        default:
+            usedCmds = inst.codeExportConfig.cmdList_prop;
+            break;
+        }
+        usedCmds = _.map(usedCmds, (cmd) => _.snakeCase(cmd).toUpperCase().replace("BLE_5", "BLE5"));
+
+        return usedCmds;
+    }
+
+
+    /*!
+     *  ======== isParameterUsed ========
+     *  Check if an RF parameter is supported by the current selection of RF commands
+     *
+     *  @param rfParam - RF parameter name
+     *  @param usedCmds - currently used RF commands
+     */
+    function isParameterUsed(rfParam, usedCmds) {
+        // Special case: multiple txPower configurables
+        let key = rfParam;
+        if (key.includes("txPower")) {
+            key = "txPower";
+        }
+        // Get paramter- > command map
+        const cmdMap = getCommandMap(key);
+        if (cmdMap === null) {
+            return false;
+        }
+        // Check if the command is selected by the user
+        const cmds = _.intersection(usedCmds, cmdMap);
+        if (cmds.length === 0) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -1173,6 +1271,8 @@ function create(phyGroup, phyName) {
         let summary = "";
         let useHighPA = false;
 
+        const usedCmds = getUsedCommands(inst);
+
         _.each(keys, (key) => {
             const displayName = displayNames[key];
             let value = inst[key];
@@ -1203,8 +1303,8 @@ function create(phyGroup, phyName) {
                 return true;
             }
 
-            // Skip PHY type (included in header)
-            if (key.includes("phyType")) {
+            // Ignore RF parameters that are not supported by an RF command
+            if (!isParameterUsed(key, usedCmds)) {
                 return true;
             }
 
@@ -1232,6 +1332,10 @@ function create(phyGroup, phyName) {
             // Continue _.each iteration
             return true;
         });
+
+        if (summary === "") {
+            summary = "// NB! Setting RF parameters in this design has no effect as no RF commands are selected.\n";
+        }
         return summary;
     }
 
@@ -1276,13 +1380,15 @@ function create(phyGroup, phyName) {
      *  Set the value of a field in an RF command
      *  (the same field may be present in several commands)
      *
+     *  NB! This function only writes to commands that are present in the parameter mapping.
+     *
      *  Field name formats:
      *  - a  (e.g. "txPower")
      *  - a.b (e.g."preamConf.nPreamBytes")
      *
-     *  @param paramName - RF parameter name
+     *  @param paramName - RF parameter name (filter for RF parameter mapping)
      *  @param fieldName - field name
-     *  @param value - value to populate the command field
+     *  @param value - value to populate the command fields with
      *
      */
     function setCmdFieldValue(paramName, fieldName, value) {
@@ -1314,7 +1420,9 @@ function create(phyGroup, phyName) {
     /*!
      *  ======== setCmdFieldValueDirect ========
      *  Set the value of a field in an RF command without referring to RF Parameter
-     *  (the same field may be present in several commands)
+     *  (the same field may be present in several commands).
+     *
+     *  NB! This function ignores the parameter mapping.
      *
      *  Field name formats:
      *  - a  (e.g. "txPower")
@@ -1322,15 +1430,15 @@ function create(phyGroup, phyName) {
      *
      *  @param fieldName - field name
      *  @param value - value to populate the command field
+     *  @param force - apply also to settings controlled by RF parameters
      */
-    function setCmdFieldValueDirect(fieldName, value) {
+    function setCmdFieldValueDirect(fieldName, value, force) {
         const fields = getCmdFieldsByName(fieldName);
         _.each(fields, (item) => {
             const field = item.field;
             const cmd = item.cmd;
-
             // Don't overwrite commands that are included in a setting
-            if (!_.includes(CmdUsed, cmd)) {
+            if (!_.includes(CmdUsed, cmd) || force) {
                 // eslint-disable-next-line
                 if (field.name == fieldName) {
                     // eslint-disable-next-line
@@ -1358,17 +1466,16 @@ function create(phyGroup, phyName) {
     }
 
     /*!
-    *  ======== addFrontEndSettings ========
-    *  Add frontend settings
+    *  ======== updateFrontendSettings ========
+    *  Update the front-end settings with values fetched from the RF Design module.
     */
-    function addFrontEndSettings() {
+    function updateFrontendSettings() {
         // Get frontend settings
         const feFile = DeviceInfo.getFrontEndFile(PhyGroup);
         const feData = system.getScript(feFile);
 
         // Get target settings (index to front-end setting)
-        const tgt = TargetHandler.getTargetInfo();
-        const id = tgt.FrontEnd;
+        const id = RfDesign.getFrontEnd(getFrequencyBand());
 
         let fe = null;
         _.each(feData.frontends.FrontEnd, (feEntry) => {
@@ -1388,7 +1495,6 @@ function create(phyGroup, phyName) {
         else {
             frontEndCmds = Common.forceArray(fe.Command);
         }
-
         // Patch front-end setting into current setting
         const currentCmds = Setting.Command;
         _.each(frontEndCmds, (feCmd) => {
@@ -1405,6 +1511,11 @@ function create(phyGroup, phyName) {
             if (patchedCmd !== null) {
                 const temp = _.merge(patchedCmd.Field, feCmd.Field);
                 patchedCmd.Field = _.uniqBy(temp, "_name");
+
+                // Apply to Command buffer
+                _.each(feCmd.Field, (field) => {
+                    setCmdFieldValueDirect(field._name, field.$, true);
+                });
 
                 if ("OverrideField" in feCmd) {
                     // The patch is deleted after processing by the override handler
@@ -1549,7 +1660,6 @@ function create(phyGroup, phyName) {
             // Continue _.each iteration
             return true;
         });
-
         return ret;
     }
 
@@ -1577,7 +1687,6 @@ function create(phyGroup, phyName) {
                 }
             }
         });
-
         return ret;
     }
 
@@ -1641,7 +1750,6 @@ function create(phyGroup, phyName) {
             // Continue _.each iteration
             return true;
         });
-
         return ret;
     }
 
@@ -1748,7 +1856,6 @@ function create(phyGroup, phyName) {
             // Continue _.each iteration
             return true;
         });
-
         return ret;
     }
 
@@ -1762,6 +1869,7 @@ function create(phyGroup, phyName) {
      */
     function getCommandDescription(cmd) {
         const cmdDef = getCommandDefByName(cmd);
+
         return cmdDef.Description;
     }
 
@@ -1785,19 +1893,12 @@ function create(phyGroup, phyName) {
      *  @param inst - current instance
      */
     function updateTarget(inst) {
-        let highPA = false;
-
-        TargetHandler.init(PhyGroup);
-        if (DeviceInfo.hasHighPaSupport()) {
-            highPA = inst.highPA;
-            TargetHandler.selectTargetPA(inst.target, PhyGroup, highPA, UseTxPower2400);
-        }
-
         // TxPower
         updateTxPower(inst);
 
         // Create override table
-        OverrideHandler.init(Setting.Command, PhyGroup);
+        const highPA = getCmdFieldValue("txPower") === "0xFFFF";
+        OverrideHandler.init(Setting.Command, PhyGroup, highPA);
     }
 
     /*!
@@ -1810,25 +1911,66 @@ function create(phyGroup, phyName) {
     function updateTxPower(inst) {
         const freq = getFrequency();
         const loFreq = freq < Common.LowFreqLimit;
+        let raw;
 
         if (inst.highPA) {
             // TX power is handled by overrides
-            setCmdFieldValue("txPower", "txPower", 0xFFFF);
+            setCmdFieldValue("txPower", "txPower", "0xFFFF");
             TxPowerHi.dbm = loFreq ? inst.txPower433Hi : inst.txPowerHi;
         }
         else if (loFreq && "txPower433" in inst) {
-            setCmdFieldValueByOpt("txPower433", "txPower", inst.txPower433);
+            raw = RfDesign.getTxPowerValueByDbm(freq, false, inst.txPower433);
+            setCmdFieldValue("txPower", "txPower", raw);
         }
         else if (UseTxPower2400) {
-            setCmdFieldValueByOpt("txPower2400", "txPower", inst.txPower2400);
+            raw = RfDesign.getTxPowerValueByDbm(freq, false, inst.txPower2400);
+            setCmdFieldValue("txPower", "txPower", raw);
+
+            if ("highPA" in inst) {
+                // TX Power high not used; set to default
+                const txOptions = RfDesign.getTxPowerOptions(freq, true);
+                TxPowerHi.dbm = txOptions[0].name;
+            }
         }
         else {
-            setCmdFieldValueByOpt("txPower", "txPower", inst.txPower);
+            raw = RfDesign.getTxPowerValueByDbm(freq, false, inst.txPower);
+            setCmdFieldValue("txPower", "txPower", raw);
+            if ("highPA" in inst) {
+                // TX Power high not used; set to default
+                const txOptions = RfDesign.getTxPowerOptions(freq, true);
+                TxPowerHi.dbm = txOptions[0].name;
+            }
+        }
+    }
+
+    /*!
+     *  ======== updateRfCommands ========
+     *  Update the contents of the RF Command database with data extracted
+     *  from the RF parameters instance.
+     *
+     *  @param inst - current instance
+     */
+    function updateRfCommands(inst) {
+        switch (PhyGroup) {
+        case Common.PHY_PROP:
+            updateRfCommandsProp(inst);
+            break;
+        case Common.PHY_BLE:
+            updateRfCommandsBLE(inst);
+            break;
+        case Common.PHY_IEEE_15_4:
+            updateRfCommands154(inst);
+            break;
+        default:
+            throw Error("No such PHY group: " + PhyGroup);
         }
     }
 
     // Return the module's exported functions
     return {
+        getPhyGroup: function() {
+            return PhyGroup;
+        },
         getPhyName: function() {
             return PhyName;
         },
@@ -1847,32 +1989,21 @@ function create(phyGroup, phyName) {
         getCommandName: function(cmd) {
             return cmd._name;
         },
-        updateRfCommands: function(inst) {
-            switch (PhyGroup) {
-            case Common.PHY_PROP:
-                updateRfCommandsProp(inst);
-                break;
-            case Common.PHY_BLE:
-                updateRfCommandsBLE(inst);
-                break;
-            case Common.PHY_IEEE_15_4:
-                updateRfCommands154(inst);
-                break;
-            default:
-                throw Error("No such PHY group: " + PhyGroup);
-            }
-        },
-        updateRfCommandsProp: updateRfCommandsProp,
+        updateRfCommands: updateRfCommands,
         initConfigurables: initConfigurables,
         getCmdList: getCmdList,
         getCommandDescription: getCommandDescription,
         getRfData: getRfData,
         getParameterSummary: getParameterSummary,
+        getCommandMap: getCommandMap,
         getPatchInfo: getPatchInfo,
         generatePatchCode: generatePatchCode,
         generateRfCmdCode: generateRfCmdCode,
         generateOverrideCode: generateOverrideCode,
+        updateFrontendSettings: updateFrontendSettings,
         getFrequencyBand: getFrequencyBand,
-        getFrequency: getFrequency
+        getFrequency: getFrequency,
+        getUsedCommands: getUsedCommands,
+        isParameterUsed: isParameterUsed
     };
 }

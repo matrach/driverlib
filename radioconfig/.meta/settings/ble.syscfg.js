@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,9 +58,6 @@ const CmdHandler = Common.getScript("cmd_handler.js");
 const BleDocs = Common.getScript("settings/ble_docs.js");
 const SharedDocs = Common.getScript("settings/shared_docs.js");
 
-/* Short-hand for error reporting */
-const logError = Common.logError;
-
 /* Setting specific configurable */
 const tmp = system.getScript(DevInfo.getSyscfgParams(PHY_GROUP));
 const config = _.cloneDeep(tmp);
@@ -79,15 +76,9 @@ const settingSpecific = {
 const phyOptions = getPhyOptions();
 addPhyConfigurable();
 
-/* Add Target configurables to the top of the list */
-let TargetConfig = null;
+/* Add high PA configurable if required */
 if (highPaSupport) {
-    TargetConfig = Common.getScript("target_config");
-    TargetConfig.init(PHY_GROUP);
-    const tgtName = TargetConfig.getTargetName();
-    const optHiPa = TargetConfig.getOptimalHiPa(tgtName, "2400");
-
-    RFBase.addTxPowerConfigHigh(config, optHiPa);
+    RFBase.addTxPowerConfigHigh(config);
 }
 
 /*!
@@ -100,13 +91,8 @@ if (highPaSupport) {
 function validate(inst, validation) {
     /* Validation common to all PHY groups */
     Common.validateBasic(inst, validation);
-
-    /* Validate if all phys have the same target (only for CC1352P without board) */
-    if (DevInfo.hasHighPaSupport() && TargetConfig.getBoardName() === null) {
-        if (Common.validateTarget()) {
-            logError(validation, inst, "target", "When no board is selected the"
-            + " frequency band must be consistent across all PHY types (protocols)");
-        }
+    if (inst.paramVisibility) {
+        RFBase.validateRfParams(inst, validation, inst.phyType, PHY_GROUP);
     }
 }
 
@@ -141,12 +127,11 @@ function addPhyConfigurable() {
         description: "Selects the PHY/setting",
         options: phyOptions,
         default: phyOptions[0].name,
-        onChange: function(inst, ui) {
-            let phyType = inst.phyType;
-            if (phyType === "custom") {
-                phyType = phyOptions[0].name;
-            }
+        onChange: (inst, ui) => {
+            const phyType = inst.phyType;
             updatePDUConfig(inst, ui);
+            /* Refresh the instance */
+            RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP);
         }
     });
 }
@@ -160,8 +145,24 @@ function onPermissionsChange(inst, ui) {
     // PHY type:
     // - always ReadOnly with a Custom stack
     // - otherwise controlled by the 'permission' configurable
-    const freqReadOnly = inst.permission === "ReadOnly" || Common.usedByStack(inst, "Custom");
+    const freqReadOnly = inst.permission === "ReadOnly" || inst.parent === "Custom";
     ui.phyType.readOnly = freqReadOnly;
+}
+
+/*!
+ *  ======== onVisibilityChange ========
+ *  Change visibility of RF parameters
+ */
+function onVisibilityChange(inst, ui) {
+    const cmdHandler = CmdHandler.get(PHY_GROUP, inst.phyType);
+    const rfData = cmdHandler.getRfData();
+    const hidden = !inst.paramVisibility;
+
+    _.each(rfData, (value, key) => {
+        if (!("highPA" in inst && key.includes("txPower"))) {
+            ui[key].hidden = hidden;
+        }
+    });
 }
 
 /*!
@@ -182,6 +183,9 @@ function extend(base) {
     /* Add permission configurable */
     RFBase.addPermission(settingSpecific.config, onPermissionsChange);
 
+    /* Add configurable to control visibility of RF parameters */
+    RFBase.addVisibilityConfig(settingSpecific.config, onVisibilityChange);
+
     /* Initialize state of UI elements (readOnly when appropriate) */
     Common.initLongDescription(settingSpecific.config, BleDocs.bleDocs);
     Common.initLongDescription(settingSpecific.config, SharedDocs.sharedDocs);
@@ -191,7 +195,7 @@ function extend(base) {
     cmdHandler.initConfigurables(settingSpecific.config);
     RFBase.pruneConfig(settingSpecific.config);
 
-    return (Object.assign({}, base, settingSpecific));
+    return ({...base, ...settingSpecific});
 }
 
 exports = extend(RFBase);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -436,12 +436,33 @@ function validate(inst, validation) {
     }
 }
 
+/*
+ *  ======== modules ========
+ */
+function modules(inst) {
+    let tmpModules = [];
+
+    // If SCLK_LF derived from HPOSC, tell the power driver it needs to
+    // include the Temperature driver and setup the RTC compensation
+    if ((inst.srcClkHF === "Internal High Precision Oscillator") &&
+        (inst.srcClkLF === "Derived from HF XOSC")) {
+
+        tmpModules.push({
+                            name: "Temperature",
+                            moduleName: "/ti/drivers/Temperature"
+                         });
+    }
+
+    return tmpModules;
+}
+
 const CCFGModule = {
     displayName: "Device Configuration",
     description: "Customer Configuration",
     longDescription: moduleDesc,
     maxInstances: 1,
     moduleStatic: {
+        modules: modules,
         config: config,
         validate: validate,
         moduleInstances: () => { return templateModuleInstance; }

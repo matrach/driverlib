@@ -107,7 +107,8 @@
                         "_name": "pRegOverrideCommon",
                         "Block": [
                             "override_hposc.json",
-                            "override_ble5_setup_override_common.json"
+                            "override_ble5_setup_override_common.json",
+                            "override_ble5_coex.json"
                         ]
                     },
                     {

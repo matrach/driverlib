@@ -1,7 +1,7 @@
 {
     "setting": {
-        "Name": "50 kbps, 2-GFSK, 25 kHz deviation, 433.92 MHz (Preview)",
-        "Description": "50 kbps, 2-GFSK, 25 kHz deviation for 430-520 MHz band (Preview).",
+        "Name": "50 kbps, 2-GFSK, 25 kHz deviation, 433.92 MHz",
+        "Description": "50 kbps, 2-GFSK, 25 kHz deviation for 430-520 MHz band.",
         "Frequency": "433",
         "Patch": {
             "Define": "RF_MODE_AUTO",
@@ -146,6 +146,7 @@
                     "_name": "pRegOverride",
                     "Block": [
                         "override_prop_common.json",
+                        "override_prop_common_sub1g.json",
                         "override_tc112.json"
                     ]
                 }

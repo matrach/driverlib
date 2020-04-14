@@ -48,11 +48,6 @@ const codeExportDocs = [
             + " * Custom - The symbol names are individually configured."
     },
     {
-        configurable: "paExport",
-        longDescription: "Decides the format of the PA table that will be used by "
-            + "the RF driver to set the TX Power."
-    },
-    {
         configurable: "useConst",
         longDescription: "Add the *const* prefix to the generated RF commands.\n\n"
             + "__Default__: false"
@@ -85,11 +80,11 @@ const codeExportDocs = [
     },
     {
         configurable: "txPower",
-        longDescription: "Sets the name for the TX Power table array."
+        longDescription: "Sets the name for the TX power table array."
     },
     {
         configurable: "txPowerSize",
-        longDescription: "Sets the name for the TX Power Table size variable."
+        longDescription: "Sets the name for the TX power Table size variable."
     },
     {
         configurable: "overrides",

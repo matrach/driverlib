@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,19 @@ const CmdHandler = Common.getScript("cmd_handler.js");
 const Docs = Common.getScript("radioconfig_docs.js");
 
 // Manage PHY support
-const hasProp = Common.HAS_PROP || Common.HAS_2_4G_PROP;
+const hasProp = Common.HAS_PROP || Common.HAS_24G_PROP;
 const hasBle = Common.HAS_BLE;
 const hasIeee = Common.HAS_IEEE_15_4;
+
+// Multi-stack validation module
+const msValidationModule = "/ti/easylink/multi_stack_validate";
+let msValidationPresent = true;
+try {
+    system.getScript(msValidationModule);
+}
+catch (err) {
+    msValidationPresent = false;
+}
 
 // PHY information, grouped protocol/frequency band
 const PhyInfo = {
@@ -77,7 +87,7 @@ if (Common.HAS_PROP) {
     };
 }
 
-if (Common.HAS_2_4G_PROP) {
+if (Common.HAS_24G_PROP) {
     PhyInfo.prop2 = {
         displayName: "Proprietary (2400 - 2480 MHz)",
         protocol: Common.PHY_PROP,
@@ -251,6 +261,7 @@ function addRfSettingDependency(phyGroup, phy, displayName) {
     });
 }
 
+
 /*
  *  ======== moduleInstances ========
  *  Determines what modules are added as non-static sub-modules
@@ -275,24 +286,26 @@ function moduleInstances(inst) {
     return dependencyModule;
 }
 
+
 /*
  *  ======== modules ========
- *  Determines what modules are added as non-static sub-modules
+ *  Determines what modules are added as static sub-modules
  *
  *  @returns - Array containing dependency modules
  */
 function modules() {
-    const dependencyModule = [];
-
     // Pull in Multi-Stack validation module
-    dependencyModule.push({
-        name: "multiStack",
-        displayName: "Multi-Stack Validation",
-        moduleName: "/ti/easylink/multi_stack_validate",
-        hidden: true
-    });
-
-    return (dependencyModule);
+    if (msValidationPresent) {
+        return [
+            {
+                name: "multiStack",
+                displayName: "Multi-Stack Validation",
+                moduleName: msValidationModule,
+                hidden: true
+            }
+        ];
+    }
+    return [];
 }
 
 /*
@@ -312,7 +325,7 @@ const moduleStatic = {
 const module = {
     displayName: "Custom",
     description: "Custom Radio Configuration",
-    longDescription: Docs.customLongDescription,
+    longDescription: Docs.customDescription,
     moduleStatic: moduleStatic
 };
 

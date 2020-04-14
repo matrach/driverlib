@@ -45,15 +45,13 @@ const CodeExportHandler = Common.getScript("code_export_param");
 /* RF Command Handler */
 const CmdHandler = Common.getScript("cmd_handler.js");
 
-/* Target handler */
-const TargetHandler = Common.getScript("target_handler.js");
-
 /* PHY header */
 const phyHeader = system.getTemplate("/ti/devices/radioconfig/templates/phyheader.xdt");
 
 /* RadioConfig instances */
 const module = args[0];
 const phyGroup = args[1];
+const useCoex = args[2];
 const instances = module.$instances;
 
 %%}
@@ -62,15 +60,14 @@ const instances = module.$instances;
 %   const inst = instances[i];
 %   const ceConfig = inst.codeExportConfig;
 %   const phy = Common.getPhyType(inst);
-%   const cmdHandler = CmdHandler.get(phyGroup, phy);
-%   cmdHandler.updateRfCommands(inst);
-%   const frequency = cmdHandler.getFrequency();
+%   const cmdHandler = CmdHandler.getUpdatedRfCommands(inst);
 %   const paramSummary = cmdHandler.getParameterSummary(inst);
 %   const symNames = CodeExportHandler.getSymNames(ceConfig, phy);
-%   const prop24 = phyGroup === Common.PHY_PROP && frequency > 2400;
-%   const txPowerCode = TargetHandler.generateTxPowerCode(frequency, symNames, prop24);
-%   const multiProtocol = ceConfig.useMulti;
-%   const patchCode = cmdHandler.generatePatchCode(multiProtocol);
+%   let protocol = ceConfig.useMulti ? "multi" : "single";
+%   if (phyGroup === Common.PHY_BLE && useCoex) {
+%       protocol = "coex";
+%   }
+%   const patchCode = cmdHandler.generatePatchCode(protocol);
 %   const legacy = ceConfig.symGenMethod === "Legacy";
 %   const qualifier = ceConfig.useConst ? 'const ' : '';
 %   const customOverride = [
@@ -84,7 +81,7 @@ const instances = module.$instances;
 %       }
 %   ];
 `phyHeader(cmdHandler)`
-// Parameter summary
+// PARAMETER SUMMARY
 `paramSummary`
 // TI-RTOS RF Mode Object
 RF_Mode `symNames.rfMode` =
@@ -92,12 +89,10 @@ RF_Mode `symNames.rfMode` =
 `patchCode`
 };
 
-% if (txPowerCode !== null) {
-`txPowerCode`
-% }
-% const overrideCode = cmdHandler.generateOverrideCode(symNames.overrides, customOverride);
+% const overrideCode = cmdHandler.generateOverrideCode(symNames.overrides, customOverride).code;
 `overrideCode`
 
+% cmdHandler.updateFrontendSettings();
 % const cmds = cmdHandler.getCommands();
 % for (let j = 0; j < cmds.length; j++) {
 %   const cmd = cmds[j];
@@ -105,7 +100,7 @@ RF_Mode `symNames.rfMode` =
 %   const cmdKey = _.camelCase(cmdName);
 %   if (cmdKey in symNames) {
 %     const cmdDescr = cmdHandler.getCommandDescription(cmdName);
-%     const cmdVarName = symNames[cmdKey];
+%     const varName = symNames[cmdKey].replace("SetupPa", "Setup");
 %     const rfCmdCode = cmdHandler.generateRfCmdCode(cmd, symNames, legacy);
 %     if (rfCmdCode.rfPar.length > 0) {
 %       const ps = rfCmdCode.parStructName;
@@ -119,7 +114,7 @@ rfc_`tn`_t `ps` =
 %     }
 // `cmdName`
 // `cmdDescr`
-`qualifier`rfc_`cmdName`_t `cmdVarName` =
+`qualifier`rfc_`cmdName`_t `varName` =
 {
 `rfCmdCode.rfCmd`
 };

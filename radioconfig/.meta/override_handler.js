@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js")
 
 // Other dependencies
 const DevInfo = Common.getScript("device_info.js");
-const TargetHandler = Common.getScript("target_handler.js");
+const RfDesign = Common.getScript("rfdesign");
 
 // Populated during init()
 let OverridePath = "/";
@@ -64,8 +64,9 @@ exports = {
  *
  *  @param cmds - RF commands from settings file
  *  @phy - current PHY group
+ *  @highPA - true if High PA enabled
  */
-function init(cmds, phy) {
+function init(cmds, phy, highPA) {
     // Override table must be re-generated for each setting
     OverridePath = DevInfo.getOverridePath(phy);
     Overrides = [];
@@ -103,8 +104,14 @@ function init(cmds, phy) {
             else if (typeof block === "undefined") {
                 // There is no block; only pointer names
                 ovrField = cmd.OverrideField;
+
                 // Assume array of entries
                 _.each(ovrField, (item) => {
+                    // Filter away TxPower overrides unless High PA is set.
+                    if (item._name.includes("pRegOverrideTx") && !highPA) {
+                        return;
+                    }
+
                     const entry = {};
                     let blocks = [];
 
@@ -114,6 +121,7 @@ function init(cmds, phy) {
                     else {
                         blocks = item.Block;
                     }
+
                     _.each(blocks, (file) => {
                         const path = OverridePath + file;
                         entry[file] = system.getScript(path);
@@ -160,7 +168,10 @@ function updateTxPowerOverrideFile(ovrFile) {
  *  @param custom - information on custom overrides
  */
 function generateCode(symName, data, custom) {
-    let code = "";
+    const ret = {
+        code: "",
+        stackOffset: 0
+    };
     const ovrTmp = {};
 
     _.each(Overrides, (ovr) => {
@@ -169,13 +180,17 @@ function generateCode(symName, data, custom) {
 
     let tmpCustom = custom;
     _.each(ovrTmp, (ovr) => {
-        code += generateStruct(ovr, data, tmpCustom);
+        const struct = generateStruct(ovr, data, tmpCustom);
+        ret.code += struct.code;
+        if (tmpCustom !== null) {
+            ret.stackOffset = struct.stackOffset;
+        }
         // Custom override only applies to the common structure (first in the list)
         tmpCustom = null;
     });
+    ret.code = ret.code.replace(/pRegOverride/g, symName);
 
-    code = code.replace(/pRegOverride/g, symName);
-    return code;
+    return ret;
 }
 
 /*!
@@ -198,15 +213,15 @@ function getStructNames(symName) {
 
 /*!
  *  ======== updateTxPowerOverride ========
- *  Generate TX Power table (PA table)
+ *  Generate TX power table (PA table)
  *
  *  @param txPower - selected txPower (dBm)
  *  @param freq - frequency (MHz)
- *  @param prop24 - True if proprietary 2.4 GHz
+ *  @param highPA - True if using high PA
  */
-function updateTxPowerOverride(txPower, freq, prop24) {
+function updateTxPowerOverride(txPower, freq, highPA) {
     // Find override for actual TxPower setting
-    const paList = TargetHandler.getPaSettingsByFreq(freq, TargetHandler.isHighPA(), prop24);
+    const paList = RfDesign.getPaTable(freq, highPA);
     _.each(paList, (pv) => {
         if ("Command" in pv) {
             const val = pv._text;
@@ -227,8 +242,12 @@ function updateTxPowerOverride(txPower, freq, prop24) {
  *  @custom - custom override info
  */
 function generateStruct(override, data, custom) {
-    let code = "// Overrides for " + override.cmdName + "\n";
-    code += "uint32_t " + override.ptrName + "[] =\n{\n";
+    const ret = {
+        code: "// Overrides for " + override.cmdName + "\n",
+        stackOffset: 0
+    };
+    ret.code += "uint32_t " + override.ptrName + "[] =\n{\n";
+    let nEntries = 0;
 
     // Generate the code
     for (const key in override) {
@@ -241,15 +260,20 @@ function generateStruct(override, data, custom) {
             // eslint-disable-next-line no-continue
             continue;
         }
-
         // 14 dBm TX Power only apply  to default override
         if (key.includes("14dbm") && override.ptrName !== "pRegOverride") {
             // eslint-disable-next-line no-continue
             continue;
         }
-
+        // Skip Co-Ex unless available and enabled
+        if (key.includes("coex")) {
+            if (Common.getCoexConfig() === null) {
+                // eslint-disable-next-line no-continue
+                continue;
+            }
+        }
         // Name of override file
-        code += "    // " + key + "\n";
+        ret.code += "    // " + key + "\n";
 
         const tmp = obuf.Element32b;
         let items = [];
@@ -261,24 +285,25 @@ function generateStruct(override, data, custom) {
         else {
             items[0] = tmp;
         }
-
         // Process override array
-        code = processOverrideArray(items, code, data);
+        ret.code = processOverrideArray(items, ret.code, data);
+        nEntries += items.length;
     }
     // Add app/stack specific overrides if applicable
     if (custom !== null) {
         for (let i = 0; i < custom.length; i++) {
             const path = custom[i].path;
             if (path !== "") {
-                code += "    // " + path + "\n";
-                code += "    " + custom[i].macro + "(),\n";
+                ret.code += "    // " + path + "\n";
+                ret.code += "    " + custom[i].macro + "(),\n";
             }
         }
+        ret.stackOffset = nEntries;
     }
     // Add termination
-    code += "    (uint32_t)0xFFFFFFFF\n};\n\n";
+    ret.code += "    (uint32_t)0xFFFFFFFF\n};\n\n";
 
-    return code;
+    return ret;
 }
 
 /*!
@@ -311,11 +336,11 @@ function processOverrideArray(items, codeParam, data) {
             code += "    " + el._type + "(" + el.$ + ")";
             break;
         case "TXSTDPA":
-            txPowStd = getTxPowerValue(false, data.freq, data.txPower);
+            txPowStd = data.txPower;
             code += "    TX_STD_POWER_OVERRIDE(" + Common.int2hex(txPowStd, 4) + ")";
             break;
         case "TX20PA":
-            txPow20 = getTxPowerValue(true, data.freq, data.txPowerHi);
+            txPow20 = data.txPowerHi;
             code += "    TX20_POWER_OVERRIDE(" + Common.int2hex(txPow20, 8) + ")";
             hasTx20 = true;
             break;
@@ -337,22 +362,6 @@ function processOverrideArray(items, codeParam, data) {
     return code;
 }
 
-/*!
- *  ======== getTxPowerValue ========
- *  Find the raw value of TX power based on frequency, DBm value, and HIGH PA setting
- *
- *  @reqHighPa - true if high PA setting requested
- *  @freq - frequency in MHz
- *  @txPowerDbm - TX power value in DBm
- */
-function getTxPowerValue(reqHighPa, freq, txPowerDbm) {
-    const paVal = TargetHandler.getTxPowerValuePA(freq, reqHighPa, txPowerDbm);
-    if (paVal !== null) {
-        return parseInt(paVal.raw, 16);
-    }
-
-    throw Error("Power value not found: " + freq + "/" + reqHighPa + "/" + txPowerDbm);
-}
 
 /*!
  *  ======== calcAnaDiv ========

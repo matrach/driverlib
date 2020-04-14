@@ -63,15 +63,15 @@
             },
             {
                 "_file": "categories.json",
-                "$": ".\/..\/config\/cc1352r_prop_pg21\/cmd_settings"
+                "$": ".\/..\/config\/cc1312r\/cmd_settings"
             },
             {
                 "_file": "frontend_settings.json",
-                "$": ".\/..\/config\/cc1352r_prop_pg21\/cmd_settings"
+                "$": ".\/..\/config\/cc1312r\/cmd_settings"
             },
             {
                 "_file": "dummy_file_overrides.json",
-                "$": ".\/..\/config\/cc1352r_prop_pg21\/overrides"
+                "$": ".\/..\/config\/cc1312r\/overrides"
             }
         ]
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,17 +41,17 @@
 const Device = system.deviceData.deviceId;
 const BasePath = "/ti/devices/radioconfig/";
 
-// Manage PHY support
+// Manage protocol support
 const hasProp = Device.includes("CC1352") || Device.includes("CC1312")
                 || Device.includes("CC2652R1") || Device.includes("CC2652P");
 const hasBle = Device.includes("CC1352") || Device.includes("CC2652") || Device.includes("CC2642");
 const hasIeee = Device.includes("CC1352") || Device.includes("CC2652");
 const has24gProp = Device.includes("CC1352") || Device.includes("CC2652R1")
-                    || Device.includes("CC2652P");
+                || Device.includes("CC2652P");
 
 // Exported from this module
 exports = {
-    getScript: file => system.getScript(BasePath + file),
+    getScript: (file) => system.getScript(BasePath + file),
     basePath: BasePath,
     Device: Device,
     PHY_BLE: "ble",
@@ -59,9 +59,11 @@ exports = {
     PHY_IEEE_15_4: "ieee_15_4",
     HAS_PROP: hasProp,
     HAS_BLE: hasBle,
+    HAS_24G: hasBle,
     HAS_IEEE_15_4: hasIeee,
-    IS_SUB1GHZ_DEVICE: () => Device.includes("CC13"),
-    HAS_2_4G_PROP: has24gProp,
+    HAS_24G_PROP: has24gProp,
+    isSub1gDevice: () => Device.includes("CC13"),
+    isSub1gOnlyDevice: () => Device.includes("CC1312"),
     LowFreqLimit: 528,
     HiFreqLimit: 2400,
     int2hex: int2hex,
@@ -70,18 +72,21 @@ exports = {
     forceArray: forceArray,
     calculateWidth: calculateWidth,
     getBitfieldValue: getBitfieldValue,
+    getBoardName: getBoardName,
     getPhyType: getPhyType,
     getPhyGroup: getPhyGroup,
     getDefaultFreqBand: getDefaultFreqBand,
-    usedByStack: usedByStack,
-    validateBasic: validateNames,
+    getCoexConfig: getCoexConfig,
+    validateBasic: (inst, validation) => {
+        validateNames(inst, validation);
+        validateTxPower(inst, validation);
+    },
     flattenConfigs: flattenConfigs,
     logError: logError,
     logWarning: logWarning,
     logInfo: logInfo,
     isCName: isCName,
     initLongDescription: initLongDescription,
-    validateTarget: validateTarget,
     autoForceModules: autoForceModules
 };
 
@@ -99,6 +104,38 @@ const deferred = {
         this.info.push({inst: inst, field: field, msg: msg});
     }
 };
+
+/*!
+ *  ======== getBoardName ========
+ *  Get the name of the board
+ *
+ *  @returns String - Name of the board with prefix /ti/boards and
+ *                    suffix .syscfg.json stripped off.  If no board
+ *                    was specified, null is returned.
+ */
+function getBoardName() {
+    let boardName = null;
+
+    if (system.deviceData.board != null) {
+        boardName = system.deviceData.board.source;
+
+        // Strip off everything up to and including the last '/'
+        boardName = boardName.replace(/.*\//, "");
+
+        // Strip off everything after and including the first '.'
+        boardName = boardName.replace(/\..*/, "");
+
+        // Convert board name to SmartRF Studio notation
+        if (boardName.includes("_LAUNCHXL")) {
+            boardName = "LAUNCHXL-" + boardName.replace("_LAUNCHXL", "");
+            boardName = boardName.replace("_", "-");
+        }
+        else {
+            throw new Error("Unknown board [" + boardName + "]");
+        }
+    }
+    return boardName;
+}
 
 
 /*!
@@ -130,6 +167,9 @@ function int2hex(num, width) {
         break;
     case 4:
         ret = ("0000" + temp).slice(-4);
+        break;
+    case 6:
+        ret = ("000000" + temp).slice(-6);
         break;
     case 8:
         ret = ("00000000" + temp).slice(-8);
@@ -254,17 +294,6 @@ function getDefaultFreqBand() {
 }
 
 /*
- *  ======== usedByStack ========
- *  Return true if invoked from a stack module with the given name
- *
- *  @param inst   - module instance object
- *  @param name   - name of the stack module
- */
-function usedByStack(inst, name) {
-    return inst.parent.includes(name);
-}
-
-/*
  * ======== flattenConfigs ========
  * Make an array of depth one from a group of configurables that
  * may be a tree structure.
@@ -287,6 +316,32 @@ function flattenConfigs(configList) {
 
     return flatConfigList;
 }
+
+/*
+ * ======== getCoexConfig ========
+ * Return the Co-exconfig structure if the device support BLE/Wi-Fi Coex,
+ * otherwise return null;
+ *
+ */
+function getCoexConfig() {
+    const modules = system.modules;
+    let useBLE = false;
+
+    // Iterate RadioConfig modules
+    _.each(modules, (mod) => {
+        if (mod.$name.includes("radioconfig/settings/ble")) {
+            useBLE = true;
+        }
+    });
+
+    if (useBLE) {
+        const RF = system.modules["/ti/drivers/RF"];
+        const CoExConfig = RF.getCoexConfig();
+        return CoExConfig.coExEnable.bCoExEnable === 1 ? CoExConfig : null;
+    }
+    return null;
+}
+
 
 /*
  * ======== initLongDescription ========
@@ -323,6 +378,28 @@ function initLongDescription(configurable, docs) {
             setDocs(item);
         }
     });
+}
+
+
+/*
+ *  ======== validateTxPower ========
+ *  Validate TX Power options
+ *
+ *  @param inst   - module instance object
+ *  @param validation   - validation object
+ */
+function validateTxPower(inst, validation) {
+    // validation for txPowerHi
+    if ("txPowerHi" in inst) {
+        if (inst.highPA) {
+            const validOptions = inst.$module.$configByName.txPowerHi.options(inst);
+            const selectedOptions = inst.txPowerHi;
+            const found = _.find(validOptions, (o) => o.name === selectedOptions);
+            if (!found) {
+                validation[`log${"Error"}`]("Selected option is invalid, please reselect.", inst, "txPowerHi");
+            }
+        }
+    }
 }
 
 /*
@@ -413,7 +490,6 @@ function validateNames(inst, validation) {
  *                  which this error is associated
  *  @msg          - message to display
  */
-/* global global */
 function logError(vo, inst, field, msg) {
     let lvo = vo;
 
@@ -441,7 +517,6 @@ function logError(vo, inst, field, msg) {
  *                  which this remark is associated
  *  @msg          - message to display
  */
-/* global global */
 function logInfo(vo, inst, field, msg) {
     let lvo = vo;
 
@@ -469,7 +544,6 @@ function logInfo(vo, inst, field, msg) {
  *                  which this warning is associated
  *  @msg          - message to display
  */
-/* global global */
 function logWarning(vo, inst, field, msg) {
     let lvo = vo;
 
@@ -504,33 +578,6 @@ function isCName(id) {
     return false;
 }
 
-/* ======= validateTarget =======
- * Validates the target configurable to make sure all CC1352P devices
- * uses the same target. Returns true if there is a mismatch.
- */
-function validateTarget() {
-    const modules = system.modules;
-    let target;
-    let mismatch = false;
-    // Iterate RadioConfig modules
-    _.each(modules, (mod) => {
-        if (mod.$name.includes(BasePath + "settings")) {
-            const instances = mod.$instances;
-            _.each(instances, (inst) => {
-                if (target) {
-                    if (target !== inst.target) {
-                        mismatch = true;
-                    }
-                }
-                else {
-                    target = inst.target;
-                }
-            });
-        }
-    });
-
-    return mismatch;
-}
 
 /*
  *  ======== autoForceModules ========

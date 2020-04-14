@@ -1,7 +1,7 @@
 {
     "setting": {
-        "Name": "100 kbps, 2-GFSK, 50 kHz deviation (Release Candidate)",
-        "Description": "100 kbps, 2-GFSK, 50 kHz deviation.(Release Candidate)",
+        "Name": "100 kbps, 2-GFSK, 50 kHz deviation",
+        "Description": "100 kbps, 2-GFSK, 50 kHz deviation.",
         "Frequency": "2440",
         "Patch": {
             "Define": "RF_MODE_PROPRIETARY_2_4",
@@ -140,15 +140,36 @@
                     {
                         "_name": "loDivider",
                         "$": "0"
+                    },
+                    {
+                        "_name": "pRegOverrideTxStd",
+                        "$": "0"
+                    },
+                    {
+                        "_name": "pRegOverrideTx20",
+                        "$": "0"
                     }
                 ],
-                "OverrideField": {
-                    "_name": "pRegOverride",
-                    "Block": [
-                        "override_tc900.json",
-                        "override_prop_common.json"
-                    ]
-                }
+                "OverrideField": [
+                    {
+                        "_name": "pRegOverride",
+                        "Block": "override_tc900.json"
+                    },
+                    {
+                        "_name": "pRegOverrideTxStd",
+                        "Block": [
+                            "override_txstd_placeholder.json",
+                            "override_phy_tx_pa_ramp_genfsk_std.json"
+                        ]
+                    },
+                    {
+                        "_name": "pRegOverrideTx20",
+                        "Block": [
+                            "override_tx20_placeholder.json",
+                            "override_phy_tx_pa_ramp_genfsk_hpa.json"
+                        ]
+                    }
+                ]
             },
             {
                 "_name": "CMD_FS",

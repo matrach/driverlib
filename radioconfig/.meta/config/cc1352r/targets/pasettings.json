@@ -4,7 +4,7 @@
             "_name": "CC1352EM-XD7793-XD24",
             "FrequencyRange": [
                 {
-                    "Min": "431",
+                    "Min": "420",
                     "Max": "527",
                     "PaSettingTable": {
                         "PaSetting": [

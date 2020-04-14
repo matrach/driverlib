@@ -43,13 +43,15 @@ const bleDocs = [
         configurable: "frequency",
         longDescription: "Sets the Bluetooth data/advertising channel. Channel 0-36 are data channels, "
             + "and 37-39 are advertising channels. The channels span from 2404 MHz to 2480 MHz, with a "
-            + "channel width of 2 MHz. "
+            + "channel width of 2 MHz. Note that the setting only has effect if the commands "
+            + "that support it are selected.\n\n"
     },
     {
         configurable: "whitening",
         longDescription: "Selects if the header and the payload shall be scrambled with a data "
             + "whitening word in order to randomize the data from highly redundant patterns and "
-            + "to minimize DC bias in the packet.\n\n"
+            + "to minimize DC bias in the packet. Note that the setting only has effect if the commands "
+            + "that support it are selected.\n\n"
             + "__Default__: True"
     }
 ];

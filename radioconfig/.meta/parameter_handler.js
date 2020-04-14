@@ -40,10 +40,10 @@
 
 // Common utility functions
 const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js");
+const RfDesign = Common.getScript("rfdesign");
 
 // Other dependencies
 const DevInfo = Common.getScript("device_info.js");
-const TargetHandler = Common.getScript("target_handler.js");
 
 // Constants
 const BLE_ADV_CHAN_37 = 37;
@@ -229,7 +229,7 @@ function validateFreqSymrateRxBW(carrierFrequency, symbolRate, rxFilterBw) {
                 + " The symbol rate must be increased"
         };
     }
-    return undefined;
+    return null;
 }
 
 /*!
@@ -238,11 +238,11 @@ function validateFreqSymrateRxBW(carrierFrequency, symbolRate, rxFilterBw) {
  * file needs to be high or low
  *
  * @param txPower - The current selected TX Power
- * @param carrierFrequency - The selected carrier frequency [MHz]
- * @param prop24 - True if proprietary 2.4 GHz
+ * @param freq - The selected carrier frequency [MHz]
+ * @param highPA - True if using high PA
  */
-function validateTXpower(txPower, carrierFrequency, prop24) {
-    const paTable = TargetHandler.getPaSettingsByFreq(carrierFrequency, TargetHandler.isHighPA(), prop24);
+function validateTXpower(txPower, freq, highPA) {
+    const paTable = RfDesign.getPaTable(freq, highPA);
     let vddr = false;
     _.forEach(paTable, (values) => {
         if (values._text === txPower) {

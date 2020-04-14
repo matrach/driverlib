@@ -8,18 +8,23 @@
             },
             {
                 "_type": "HW_REG_OVERRIDE",
-                "_comment": "Rx: Set AGC reference level to 0x20 (default: 0x2E)",
-                "$": "0x609C,0x0020"
+                "_comment": "Rx: Set AGC reference level to 0x1C (default: 0x2E)",
+                "$": "0x609C,0x001C"
             },
             {
                 "_type": "ELEMENT",
-                "_comment": "Rx: Set RSSI offset to adjust reported RSSI by -8 dB (default: -2), trimmed for external bias and differential configuration",
-                "$": "0x000888A3"
+                "_comment": "Rx: Set RSSI offset to adjust reported RSSI by -7 dB (default: -2), trimmed for external bias and differential configuration",
+                "$": "0x000788A3"
             },
             {
                 "_type": "ADI_HALFREG_OVERRIDE",
                 "_comment": "Rx: Set anti-aliasing filter bandwidth to 0xD (in ADI0, set IFAMPCTL3[7:4]=0xD)",
                 "$": "0,61,0xF,0xD"
+            },
+            {
+                "_type": "HW_REG_OVERRIDE",
+                "_comment": "TX: Reduce analog ramping wait time",
+                "$": "0x6028,0x001A"
             }
         ]
     }

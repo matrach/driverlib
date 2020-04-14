@@ -3,7 +3,7 @@
 *
 *  Description:    CC13x2/CC26x2 API for high-speed mode commands
 *
-*  Copyright (c) 2015 - 2019, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

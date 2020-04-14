@@ -72,7 +72,15 @@ if (hasProp || hasBle || hasIeee) {
             modules: [
                 BasePath + "custom"
             ]
+        },
+        {
+            displayName: "RF Design",
+            description: "RF Design for SimpleLink devices",
+            modules: [
+                BasePath + "rfdesign"
+            ]
         }
+
     ];
 }
 

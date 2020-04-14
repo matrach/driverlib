@@ -2,7 +2,7 @@
     "target": {
         "Name": "LAUNCHXL-CC1352P-2_4-GHZ-HIGH-PA",
         "Revision": [],
-        "Description": "CC1352LP. 7x7 VQFN48 package. Internal bias, differential output. 2.4GHz band.",
+        "Description": "CC1352LP. 7x7 VQFN48 package. External bias, differential output, 2.4 GHz band.",
         "DeviceName": "CC1352P",
         "DevicePackage": "VQFN 7x7",
         "FrontEnd": "XD",

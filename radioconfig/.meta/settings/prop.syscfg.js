@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,8 +45,8 @@ const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js")
 const RFBase = Common.getScript("radioconfig");
 const DevInfo = Common.getScript("device_info.js");
 const CmdHandler = Common.getScript("cmd_handler.js");
-const TargetHandler = Common.getScript("target_handler.js");
 const ParameterHandler = Common.getScript("parameter_handler.js");
+const RfDesign = Common.getScript("rfdesign");
 
 /* Documentation */
 const PropDocs = Common.getScript("settings/prop_docs.js");
@@ -56,21 +56,14 @@ const SharedDocs = Common.getScript("settings/shared_docs.js");
 const PHY_GROUP = Common.PHY_PROP;
 DevInfo.addPhyGroup(PHY_GROUP);
 
-const HAS_SUB1G = Common.IS_SUB1GHZ_DEVICE();
-const HAS_24G = Common.HAS_2_4G_PROP;
-
-/* Target config */
-const highPaSupport = DevInfo.hasHighPaSupport();
-
-let TargetConfig = null;
-if (highPaSupport) {
-    TargetConfig = Common.getScript("target_config");
-    TargetConfig.init(PHY_GROUP);
-}
-
-/* Short-hand for error reporting */
+/* Short-hands from Common */
+const HAS_SUB1G = Common.isSub1gDevice();
+const HAS_24G = Common.HAS_24G_PROP;
 const logError = Common.logError;
 const logWarning = Common.logWarning;
+
+/* High PA support */
+const highPaSupport = DevInfo.hasHighPaSupport();
 
 /* Setting specific configurable */
 const tmp = system.getScript(DevInfo.getSyscfgParams(PHY_GROUP));
@@ -88,7 +81,7 @@ const settingSpecific = {
 let freqBandOptions = [];
 let phyOptions = {};
 
-// All CC13x2 devices support proprietary sub-1GHz PHYs */
+// All CC13x2 devices support proprietary sub-1 GHz PHYs */
 if (HAS_SUB1G) {
     freqBandOptions = [
         {
@@ -170,20 +163,17 @@ config.unshift({
             inst.phyType2400 = phyType;
         }
 
-        /* Hides configurables not relevant to the selected PHY */
-        hideIrrelevantConfigurables(inst, ui);
-
         /* Refresh the view */
-        RFBase.updateConfigurables(inst, ui, phyType, PHY_GROUP);
+        RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP);
+        updateVisibility(inst, ui);
     }
 });
 
-/* Add Target configurables to the top of the list */
+/* Add TX power configurable for High PA */
 if (highPaSupport) {
-    const tgtName = TargetConfig.getTargetName();
-    const optHiPa = TargetConfig.getOptimalHiPa(tgtName, "868");
-    RFBase.addTxPowerConfigHigh(config, optHiPa);
+    RFBase.addTxPowerConfigHigh(config);
 }
+
 
 /*
  *  ======== getPhyOptions ========
@@ -228,19 +218,13 @@ function addPhyConfigurable(freqBand, hide) {
             hidden: hide,
             options: phyOpt,
             default: phyOpt[0].name,
-            onChange: function(inst, ui) {
-                let phyType = Common.getPhyType(inst);
+            onChange: (inst, ui) => {
+                /* Change to new PHY setting */
+                const phyType = Common.getPhyType(inst);
 
-                if (phyType === "custom") {
-                    const phyOption = phyOptions[inst.freqBand];
-                    phyType = phyOption[0].name;
-                }
-
-                /* Hides configurables not relevant to the selected PHY */
-                hideIrrelevantConfigurables(inst, ui);
-
-                /* Refresh the view */
-                RFBase.updateConfigurables(inst, ui, phyType, PHY_GROUP);
+                /* Refresh the instance */
+                RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP);
+                updateVisibility(inst, ui);
             }
         });
     }
@@ -249,29 +233,33 @@ function addPhyConfigurable(freqBand, hide) {
 
 /*!
  *  ======== initConfigurables ========
- *  Connect onChange callbacks for certain configurables
+ *  Set visibility of configurables. Insert onChange functions where needed.
+ *
+ *  @param configurables - configurables to act on
  */
-function initConfigurables(configurable) {
+function initConfigurables(configurables) {
     const dev = DevInfo.getDeviceName();
     const device24Only = dev === "cc2652r" || dev === "cc2652p";
 
+    let cfgPacketLengthConfig = null;
+    let cfgFixedPacketLength = null;
+
     function processConfigurable(item) {
+        if ("onChange" in item) {
+            // Avoid overriding existing onChange handlers if they exist
+            return;
+        }
+
         switch (item.name) {
-        case "permission":
-            item.onChange = onPermissionChange;
-            break;
         case "addressMode":
-            item.onChange = function(inst, ui) {
-                const Hidden = inst.addressMode === "No address check";
-                ui.address0.hidden = Hidden;
-                ui.address1.hidden = Hidden;
-            };
+            item.onChange = updateVisibility;
             break;
         case "packetLengthConfig":
-            item.onChange = function(inst, ui) {
-                const Hidden = inst.packetLengthConfig === "Variable";
-                ui.fixedPacketLength.hidden = Hidden;
-            };
+            item.onChange = updateVisibility;
+            cfgPacketLengthConfig = item;
+            break;
+        case "fixedPacketLength":
+            cfgFixedPacketLength = item;
             break;
         case "txPower":
         case "txPower433":
@@ -292,7 +280,7 @@ function initConfigurables(configurable) {
             break;
         }
     }
-    _.each(configurable, (item) => {
+    _.each(configurables, (item) => {
         if (_.has(item, "config")) {
             _.each(item.config, (subItem) => {
                 processConfigurable(subItem);
@@ -302,6 +290,9 @@ function initConfigurables(configurable) {
             processConfigurable(item);
         }
     });
+
+    // Default visibility
+    cfgFixedPacketLength.hidden = cfgPacketLengthConfig.default === "Variable";
 }
 
 /*!
@@ -323,7 +314,7 @@ function onPermissionChange(inst, ui) {
     });
 
     // RX address filter hidden if parent is a stack
-    if (Common.usedByStack(inst, "Stack")) {
+    if (inst.parent === "Stack") {
         ui.address0.hidden = true;
         ui.address1.hidden = true;
         ui.addressMode.hidden = true;
@@ -332,7 +323,7 @@ function onPermissionChange(inst, ui) {
     // Frequency band
     // - Custom stack: ReadOnly
     // - Standard stack: controlled by the 'permission' configurable
-    const freqReadOnly = readOnly || Common.usedByStack(inst, "Custom");
+    const freqReadOnly = readOnly || inst.parent === "Custom";
     ui.freqBand.readOnly = freqReadOnly;
 
     // PHY type
@@ -340,7 +331,7 @@ function onPermissionChange(inst, ui) {
     // - Custom stack, custom PHY: ReadWrite
     // - Standard stack: controlled by the 'permission' configurable
     let phyTypeReadOnly = false;
-    if (Common.usedByStack(inst, "Custom")) {
+    if (inst.parent === "Custom") {
         const phyType = Common.getPhyType(inst);
         phyTypeReadOnly = !phyType.includes("custom");
     }
@@ -359,13 +350,13 @@ function onPermissionChange(inst, ui) {
 }
 
 /*!
- *  ======== hideIrrelevantConfigurables ========
+ *  ======== updateVisibility ========
  *  Hides configurables that is not relevant for the chosen phyType
  *
  * @param inst - RF Settings instance
  * @param ui - RF Setting UI instance
  */
-function hideIrrelevantConfigurables(inst, ui) {
+function updateVisibility(inst, ui) {
     const phyType = Common.getPhyType(inst);
     const isIeee154 = _.includes(phyType, "154g");
 
@@ -374,15 +365,147 @@ function hideIrrelevantConfigurables(inst, ui) {
     ui.syncWordLength.readOnly = isIeee154;
     ui.preambleMode.readOnly = isIeee154;
 
-    // Make sure the packetLengthConfig is correct for IEEE 802.15.4
-    if (isIeee154) {
-        inst.packetLengthConfig = "Variable";
-    }
-    ui.packetLengthConfig.readOnly = isIeee154;
-
     // Hide if IEEE 802.15.4
+    ui.packetLengthConfig.hidden = isIeee154;
     ui.packetLengthRx.hidden = isIeee154;
-    ui.fixedPacketLength.hidden = isIeee154;
+    ui.fixedPacketLength.hidden = isIeee154 || inst.packetLengthConfig === "Variable";
+
+    // Address filter
+    const hidden = inst.addressMode === "No address check";
+    ui.address0.hidden = hidden;
+    ui.address1.hidden = hidden;
+}
+
+
+/*!
+ *  ======== validateFrequency ========
+ *  Check if a frequency is valid
+ *
+ *  @param inst - RF Settings instance to be validated
+ */
+function validateFrequency(inst) {
+    const status = {
+        valid: false,
+        msg: ""
+    };
+
+    const MIN_FREQ = 0;
+    const MAX_FREQ = 3000;
+    const BAND_24G = inst.freqBand === "2400";
+    const BAND_433 = inst.freqBand === "433";
+
+    const freq = inst.carrierFrequency;
+    const loFreq = freq < Common.LowFreqLimit;
+
+    // Sanity check
+    if (freq < MIN_FREQ || freq > MAX_FREQ) {
+        status.msg = "Valid range: " + MIN_FREQ + " to " + MAX_FREQ + " MHz";
+        return status;
+    }
+
+    // Check for correct frequency band
+    if (BAND_24G) {
+        if (freq < 2400) {
+            status.msg = "Carrier frequency is not within the 2.4 GHz frequency Band";
+            return status;
+        }
+    }
+    else if (BAND_433) {
+        if (!loFreq) {
+            status.msg = "Carrier frequency is not within the 433 MHz frequency Band";
+            return status;
+        }
+    }
+    else if (loFreq || freq > 2399) {
+        status.msg = "Carrier frequency is not within the 868 MHz frequency Band";
+        return status;
+    }
+
+    const prop24 = BAND_24G;
+    const highPA = DevInfo.hasHighPaSupport() && !prop24 ? inst.highPA : false;
+    const paSetting = RfDesign.getPaTable(freq, highPA);
+
+    // Check if PA table is supported
+    if (paSetting === null) {
+        // No PA-table, not a valid range
+        const freqRanges = RfDesign.freqBands;
+
+        const midFreq = parseInt(inst.freqBand);
+        let msg = "Frequency out of range. Valid range:";
+        _.each(freqRanges, (range) => {
+            if (midFreq >= range.min && midFreq <= range.max) {
+                msg += " [" + range.min + ".." + range.max + "]";
+            }
+        });
+        status.msg = msg;
+        return status;
+    }
+
+    // Validation passed
+    status.valid = true;
+
+    return status;
+}
+
+/*!
+ *  ======== validateSymbolRate ========
+ *  Check if the symbol rate is valid
+ *
+ *  @param inst - RF Settings instance to be validated
+ */
+function validateSymbolRate(inst) {
+    const BAND_24G = inst.freqBand === "2400";
+    const SYM_RATE_MIN = 4.3;
+    const SYM_RATE_MAX = BAND_24G ? 2200 : 1000;
+
+    const status = {
+        valid: false,
+        msg: ""
+    };
+
+    const symbolRate = parseFloat(inst.symbolRate);
+
+    if (symbolRate < SYM_RATE_MIN || symbolRate > SYM_RATE_MAX) {
+        status.msg = "Valid range: " + SYM_RATE_MIN + " to " + SYM_RATE_MAX + " kBaud";
+        return status;
+    }
+
+    const result = ParameterHandler.validateFreqSymrateRxBW(inst.carrierFrequency, inst.symbolRate, inst.rxFilterBw);
+    if (result !== null) {
+        status.msg = result.message;
+        return status;
+    }
+
+    // Validation passed
+    status.valid = true;
+
+    return status;
+}
+
+/*!
+ *  ======== validateDeviation ========
+ *  Check if deviation is valid
+ *
+ *  @param inst - RF Settings instance to be validated
+ */
+function validateDeviation(inst) {
+    const DEV_MIN = 0;
+    const DEV_MAX = 1000;
+
+    const status = {
+        valid: false,
+        msg: ""
+    };
+
+    if (inst.deviation < DEV_MIN || inst.deviation > DEV_MAX) {
+        status.msg = "Valid range: " + DEV_MIN + " to " + DEV_MAX + " kHz";
+        return status;
+    }
+
+    // Validation passed
+    status.valid = true;
+
+    return status;
 }
 
 /*!
@@ -393,49 +516,27 @@ function hideIrrelevantConfigurables(inst, ui) {
  *  @param validation - Issue reporting object
  */
 function validate(inst, validation) {
-    const MIN_FREQ = 0;
-    const MAX_FREQ = 3000;
     const BAND_24G = inst.freqBand === "2400";
-    const SYM_RATE_MAX = BAND_24G ? 2200 : 200;
 
     // Validation common to all PHY groups
     Common.validateBasic(inst, validation);
 
     // Validate frequency ranges
+    let status = validateFrequency(inst);
+    if (!status.valid) {
+        logError(validation, inst, "carrierFrequency", status.msg);
+        return;
+    }
+
     const freq = inst.carrierFrequency;
     const loFreq = freq < Common.LowFreqLimit;
 
-    // Sanity check
-    if (freq < MIN_FREQ || freq > MAX_FREQ) {
-        logError(validation, inst, "carrierFrequency",
-            "Valid range: " + MIN_FREQ + " to " + MAX_FREQ + " MHz");
-        return;
-    }
-
-    // Check for correct frequency band
-    const loFreqBand = inst.freqBand === "433";
-    if (BAND_24G) {
-        if (freq < 2400) {
-            logError(validation, inst, "carrierFrequency",
-                "Carrier Frequency does not match the selected Frequency Band");
-            return;
-        }
-    }
-    else if (loFreqBand !== loFreq) {
-        logError(validation, inst, "carrierFrequency",
-            "Carrier Frequency does not match the selected Frequency Band");
-        return;
-    }
-
-    // Update RF commands with data from current instance
-    const cmdHandler = CmdHandler.get(PHY_GROUP, Common.getPhyType(inst));
-    cmdHandler.updateRfCommands(inst);
-
-    const prop24 = inst.freqBand === "2400";
+    const prop24 = BAND_24G;
     const highPA = DevInfo.hasHighPaSupport() && !prop24 ? inst.highPA : false;
-    const paSetting = TargetHandler.getPaSettingsByFreq(freq, highPA, prop24);
+    const paSetting = RfDesign.getPaTable(freq, highPA);
+    const loFreqBand = inst.freqBand === "433";
 
-    if (paSetting.length > 1) {
+    if (paSetting !== null) {
         // Valid range, check if characterized
         let isOutsideofRange = true;
         let cRanges;
@@ -483,33 +584,18 @@ function validate(inst, validation) {
             logWarning(validation, inst, "carrierFrequency", msg);
         }
     }
-    else {
-        // No PA-table, not a valid range
-        const freqRanges = TargetHandler.getFrequencyRanges(highPA);
-        let midFreq = parseInt(inst.freqBand);
-        if (loFreqBand) {
-            midFreq = 490;
-        }
-
-        let msg = "Frequency out of range. Valid range:";
-        _.each(freqRanges, (range) => {
-            if (midFreq >= range.Min && midFreq <= range.Max) {
-                msg += " [" + range.Min + ".." + range.Max + "]";
-            }
-        });
-        logError(validation, inst, "carrierFrequency", msg);
-        return;
-    }
 
     // Validate symbol rate
-    if (inst.symbolRate < 9.6 || inst.symbolRate > SYM_RATE_MAX) {
-        logError(validation, inst, "symbolRate", "Valid range: 9.6 to " + SYM_RATE_MAX + " kBaud");
+    status = validateSymbolRate(inst);
+    if (!status.valid) {
+        logError(validation, inst, "symbolRate", status.msg);
         return;
     }
 
     // Validate deviation
-    if (inst.deviation < 0 || inst.deviation > 1000) {
-        logError(validation, inst, "deviation", "Valid range: 0 to 1000 kHz");
+    status = validateDeviation(inst);
+    if (!status.valid) {
+        logError(validation, inst, "deviation", status.msg);
         return;
     }
 
@@ -568,45 +654,33 @@ function validate(inst, validation) {
 
     // Validate consistency between frequency, symbol rate and RX Bandwidth
     const result = ParameterHandler.validateFreqSymrateRxBW(freq, inst.symbolRate, inst.rxFilterBw);
-    if (!(_.isUndefined(result))) {
+    if (result !== null) {
         logError(validation, inst, result.inst, result.message);
         return;
     }
 
     // Validate TX power CCFG
     const ccfg = system.modules["/ti/devices/CCFG"];
+    const txPower = loFreq ? inst.txPower433 : inst.txPower;
 
-    // This is a temporary fix until CCFG is included in the SDK
-    if (ccfg != null) {
-        const txPower = loFreq ? inst.txPower433 : inst.txPower;
+    // Force VDDR off
+    if (ParameterHandler.validateTXpower(txPower, freq, highPA) && ccfg.$static.forceVddr === false) {
+        logWarning(validation, ccfg.$static, "forceVddr",
+            "The selected RF TX Power requires Force VDDR to be enabled.");
 
-        // Force VDDR off
-        if (ParameterHandler.validateTXpower(txPower, freq, prop24) && ccfg.$static.forceVddr === false) {
-            logWarning(validation, ccfg.$static, "forceVddr",
-                "The selected RF TX Power requires Force VDDR to be enabled.");
-
-            const cfg = loFreq ? "txPower433" : "txPower";
-            logWarning(validation, inst, cfg,
-                "The selected TX Power requires Force VDDR in the Device Configuration module to be enabled.");
-        }
-        // Force VDDR on
-        else if (!ParameterHandler.validateTXpower(txPower, freq, prop24) && ccfg.$static.forceVddr === true) {
-            logWarning(validation, ccfg.$static, "forceVddr",
-                "The selected RF TX Power has not been characterized with Force VDDR enabled.");
-
-            const cfg = loFreq ? "txPower433" : "txPower";
-            logWarning(validation, inst, cfg,
-                "The selected TX Power has not been characterized with Force VDDR in the Device Configuration "
-                + "module enabled, and may give wrong output power and higher current draw.");
-        }
+        const cfg = loFreq ? "txPower433" : "txPower";
+        logWarning(validation, inst, cfg,
+            "The selected TX Power requires Force VDDR in the Device Configuration module to be enabled.");
     }
+    // Force VDDR on
+    else if (!ParameterHandler.validateTXpower(txPower, freq, highPA) && ccfg.$static.forceVddr === true) {
+        logWarning(validation, ccfg.$static, "forceVddr",
+            "The selected RF TX Power has not been characterized with Force VDDR enabled.");
 
-    // Validate if all phys have the same target (only for CC1352P without board)
-    if (DevInfo.hasHighPaSupport() && TargetConfig.getBoardName() === null) {
-        if (Common.validateTarget()) {
-            logError(validation, inst, "target", "When no board is selected the"
-            + " frequency band must be consistent across all PHY types (protocols)");
-        }
+        const cfg = loFreq ? "txPower433" : "txPower";
+        logWarning(validation, inst, cfg,
+            "The selected TX Power has not been characterized with Force VDDR in the Device Configuration "
+            + "module enabled, and may give wrong output power and higher current draw.");
     }
 }
 
@@ -618,11 +692,6 @@ function validate(inst, validation) {
 function extend(base) {
     /* Add permission configurable */
     RFBase.addPermission(settingSpecific.config, onPermissionChange);
-
-    /* Initialize state of UI elements (readOnly when appropriate) */
-    initConfigurables(settingSpecific.config);
-    Common.initLongDescription(settingSpecific.config, PropDocs.propDocs);
-    Common.initLongDescription(settingSpecific.config, SharedDocs.sharedDocs);
 
     if (HAS_24G) {
         if (phyOptions["2400"].length > 0) {
@@ -646,9 +715,14 @@ function extend(base) {
         }
     }
 
+    /* Initialize state of UI elements (readOnly/hidden when appropriate) */
+    Common.initLongDescription(settingSpecific.config, PropDocs.propDocs);
+    Common.initLongDescription(settingSpecific.config, SharedDocs.sharedDocs);
+    initConfigurables(settingSpecific.config);
+
     RFBase.pruneConfig(settingSpecific.config);
 
-    return (Object.assign({}, base, settingSpecific));
+    return ({...base, ...settingSpecific});
 }
 
 exports = extend(RFBase);

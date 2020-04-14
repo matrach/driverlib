@@ -113,7 +113,10 @@
                 "OverrideField": [
                     {
                         "_name": "pRegOverrideCommon",
-                        "Block": "override_ble5_setup_override_common_hpa.json"
+                        "Block": [
+                            "override_ble5_setup_override_common_hpa.json",
+                            "override_ble5_coex.json"
+                        ]
                     },
                     {
                         "_name": "pRegOverride1Mbps",

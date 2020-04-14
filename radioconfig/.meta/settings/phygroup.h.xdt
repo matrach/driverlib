@@ -1,6 +1,6 @@
 %%{
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,22 +31,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
- 
+
 /*
  *  ======== phygroup.h.xdt ========
  */
 
 /* Common utility functions */
 const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js");
-    
+
 /* Radio code export configuration */
 const CodeExportHandler = Common.getScript("code_export_param");
 
 /* RF Command Handler */
 const CmdHandler = Common.getScript("cmd_handler.js");
-
-/* Target handler */
-const TargetHandler = Common.getScript("target_handler.js");
 
 /* Override handler */
 const OverrideHandler = Common.getScript("override_handler.js");
@@ -65,38 +62,60 @@ const instances = module.$instances;
 %   const inst = instances[i];
 %   const ceConfig = inst.codeExportConfig;
 %   const phy = Common.getPhyType(inst);
-%   const cmdHandler = CmdHandler.get(phyGroup, phy);
-%   cmdHandler.updateRfCommands(inst);
+%   const cmdHandler = CmdHandler.getUpdatedRfCommands(inst);
 %   const symNames = CodeExportHandler.getSymNames(ceConfig, phy);
-%   const frequency = cmdHandler.getFrequency();
-%   const prop24 = phyGroup === Common.PHY_PROP && frequency > 2400;
-%   const txPowerHeader = TargetHandler.generateTxPowerHeader(frequency, symNames, prop24);
 %   const qualifier = ceConfig.useConst ? 'const ' : '';
+%   const customOverride = [
+%       {
+%           "path": ceConfig.stackOverride,
+%           "macro": ceConfig.stackOverrideMacro
+%       },
+%       {
+%           "path": ceConfig.appOverride,
+%           "macro": ceConfig.appOverrideMacro
+%       }
+%   ];
+%   const pa = module.getPaUsage(inst);
 `phyHeader(cmdHandler)`
-% if (txPowerHeader != null) {
-`txPowerHeader`
-% }
-// TI-RTOS RF Mode Object
+%   const soMacro = symNames.stackOverrideMacro;
+%   if (soMacro !== "" && i === 0) {
+%     const stackOffset = cmdHandler.generateOverrideCode(symNames.overrides, customOverride).stackOffset;
+%     if (stackOffset > 0) {
+#define `soMacro`_OFFSET `stackOffset`
+
+%     }
+%   }
+%   if (pa !== null) {
+// PA table usage
+`pa.size`
+`pa.code`
+%   }
+// TI-RTOS RF Mode object
 extern RF_Mode `symNames.rfMode`;
+%
+%   let needHeader = true;
+%   const cmds = cmdHandler.getCommands();
+%   for (let j = 0; j < cmds.length; j++) {
+%     const cmd = cmds[j];
+%     const cmdName = cmdHandler.getCommandName(cmd);
+%     const cmdKey = _.camelCase(cmdName);
+%     if (cmdKey in symNames) {
+%       if (needHeader) {
 
 // RF Core API commands
-% const cmds = cmdHandler.getCommands();
-% for (let j = 0; j < cmds.length; j++) {
-%   const cmd = cmds[j];
-%   const cmdName = cmdHandler.getCommandName(cmd);
-%   const cmdKey = _.camelCase(cmdName);
-%   if (cmdKey in symNames) {
-%     const cmdVarName = symNames[cmdKey];
-extern `qualifier`rfc_`cmdName`_t `cmdVarName`;
+%         needHeader = false;
+%       }
+%       const varName = symNames[cmdKey].replace("SetupPa", "Setup");
+extern `qualifier`rfc_`cmdName`_t `varName`;
+%     }
 %   }
-% }
 %
-% const structNames = OverrideHandler.getStructNames(symNames.overrides);
-% if (structNames.length > 0) {
+%   const structNames = OverrideHandler.getStructNames(symNames.overrides);
+%   if (structNames.length > 0) {
 
-// RF Core API Overrides
-% _.each(structNames, function(str) {
+// RF Core API overrides
+%     _.each(structNames, function(str) {
 extern uint32_t `str`[];
-% });
-% }
+%     });
+%   }
 % }

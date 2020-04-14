@@ -3,7 +3,7 @@
 *
 *  Description:    CC13x2/CC26x2 API for Bluetooth Low Energy commands
 *
-*  Copyright (c) 2015 - 2019, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -747,6 +747,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_RADIO_SETUP_s {
                                         //!<        Others: <i>Reserved</i>
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
+      uint16_t :1;
+      uint16_t bSynthNarrowBand:1;      //!< \brief 0: Normal synth mode<br>
+                                        //!<        1: Narrow-band synth mode
    } config;                            //!<        Configuration options
    uint16_t txPower;                    //!<        Default transmit power
    uint32_t* pRegOverrideCommon;        //!< \brief Pointer to a list of hardware and configuration registers to override during common
@@ -1556,6 +1559,9 @@ struct __RFC_STRUCT rfc_CMD_BLE5_RADIO_SETUP_PA_s {
                                         //!<        Others: <i>Reserved</i>
       uint16_t bNoFsPowerUp:1;          //!< \brief 0: Power up frequency synth<br>
                                         //!<        1: Do not power up frequency synth
+      uint16_t :1;
+      uint16_t bSynthNarrowBand:1;      //!< \brief 0: Normal synth mode<br>
+                                        //!<        1: Narrow-band synth mode
    } config;                            //!<        Configuration options
    uint16_t txPower;                    //!<        Default transmit power
    uint32_t* pRegOverrideCommon;        //!< \brief Pointer to a list of hardware and configuration registers to override during common

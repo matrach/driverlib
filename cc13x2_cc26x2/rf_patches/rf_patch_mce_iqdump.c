@@ -3,7 +3,7 @@
 *
 *  Description: RF core patch for IQ-dump support in CC13x2 PG2.1 and CC26x2 PG2.1
 *
-*  Copyright (c) 2015-2019, Texas Instruments Incorporated
+*  Copyright (c) 2015-2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

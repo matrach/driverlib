@@ -2,7 +2,7 @@
     "target": {
         "Name": "LAUNCHXL-CC1352P-HIGH-PA",
         "Revision": [],
-        "Description": "CC1352P LP. 7x7 VQFN48 package. External bias, differential output. 770-930MHz.",
+        "Description": "CC1352P LP. 7x7 VQFN48 package. External bias, differential output, 770-930 MHz band.",
         "DeviceName": "CC1352P",
         "DevicePackage": "VQFN 7x7",
         "FrontEnd": "XD",

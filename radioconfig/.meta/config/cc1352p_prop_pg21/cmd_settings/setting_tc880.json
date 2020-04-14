@@ -155,6 +155,7 @@
                         "_name": "pRegOverride",
                         "Block": [
                             "override_phy_simplelink_long_range_dsss2.json",
+                            "override_prop_common_sub1g.json",
                             "override_tc880_tc881_tc882.json",
                             "override_prop_common.json"
                         ]

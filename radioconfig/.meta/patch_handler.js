@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,6 +53,7 @@ const StandardIncludes = "#include <ti/devices/DeviceFamily.h>\n"
   + driverLibCmdInclude("common");
 const RfDriverInclude = "#include <ti/drivers/rf/RF.h>\n";
 const RfInclude = "#include \"ti_radio_config.h\"\n";
+const CoExIncludeDriverLib = "#include DeviceFamily_constructPath(driverlib/rf_bt5_coex.h)\n";
 
 /*!
 *  ======== generateIncludesH ========
@@ -86,8 +87,9 @@ function generateIncludesH(modules) {
 *  Generated include directives for use in the implementation file (*.c)
 *
 *  @param modules - all modules in the SDK
+*  @param useCoEx - include BLE/WiFi CoEx
 */
-function generateIncludesC(modules) {
+function generateIncludesC(modules, useCoEx) {
     // Common includes (for compatibility with SmartRF Studio)
     let incl = StandardIncludes;
     let patchIncludes = {};
@@ -110,16 +112,23 @@ function generateIncludesC(modules) {
             phyGroup = Common.PHY_IEEE_802_15_4;
         }
         else {
-            // not a RadioConfig module, so skip
+            // Not a RadioConfig module, skip
             return true;
         }
         incl += driverLibCmdInclude(libPath);
 
         // Aggregate patch includes
         const mod = system.modules[modpath];
-        patchIncludes = Object.assign(patchIncludes, getPatchIncludes(phyGroup, mod.$instances));
+        patchIncludes = Object.assign(patchIncludes, getPatchIncludes(phyGroup, mod.$instances, useCoEx));
+
+
         return true;
     });
+
+    // Use Co-Ex DriverLib entry if applicable
+    if (useCoEx) {
+        incl += CoExIncludeDriverLib;
+    }
 
     // RF driver
     incl += RfDriverInclude;
@@ -129,7 +138,7 @@ function generateIncludesC(modules) {
         incl += patchInclude(patchName);
     });
 
-    // RF settings header file
+    // Radio Config header file
     incl += RfInclude;
 
     return incl;
@@ -142,8 +151,9 @@ function generateIncludesC(modules) {
 *
 *  @param phyGroup - ble, prop or ieee_154
 *  @param instances - list of instances to generate patch includes for
+*  @param useCoEx - Co-ex override to apply
 */
-function getPatchIncludes(phyGroup, instances) {
+function getPatchIncludes(phyGroup, instances, useCoEx) {
     const includes = {};
 
     _.each(instances, (inst) => {
@@ -159,8 +169,14 @@ function getPatchIncludes(phyGroup, instances) {
             throw Error("Unknown PHY type");
         }
 
-        const useMultiProtocol = inst.codeExportConfig.useMulti;
-        const patch = CmdHandler.get(phyGroup, phy).getPatchInfo(useMultiProtocol);
+        let protocol;
+        if (useCoEx) {
+            protocol = "coex";
+        }
+        else {
+            protocol = inst.codeExportConfig.useMulti ? "multi" : "single";
+        }
+        const patch = CmdHandler.get(phyGroup, phy).getPatchInfo(protocol);
         if (typeof (patch.cpe) === "string") {
             includes[patch.cpe] = true;
         }

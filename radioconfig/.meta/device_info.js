@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 "use strict";
 
 // Module version
-const RADIO_CONFIG_VERSION = "1.4";
+const RADIO_CONFIG_VERSION = "1.5";
 
 // Common utility functions
 const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js");
@@ -48,8 +48,8 @@ const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js")
 const ConfigPath = Common.basePath + "config/";
 
 // Mapping SysCfg device name notation to SmartRF Studio format */
-const devNameMap = {
-    // SysCfg name : SmartRF Studio name
+const DevNameMap = {
+    // SysCfg name: SmartRF Studio name
     CC1352R1F3RGZ: "cc1352r",
     CC1352P1F3RGZ: "cc1352p",
     CC1312R1F3RGZ: "cc1312r",
@@ -60,14 +60,14 @@ const devNameMap = {
 };
 
 // SmartRF Studio compatible device name
-const DeviceName = devNameMap[Common.Device];
+const DeviceName = DevNameMap[Common.Device];
 
 if (!DeviceName) {
     throw Error(Common.Device + " is not supported by RadioConfig");
 }
 
-// true if High PA device
-const highPaDevice = DeviceName === "cc1352p" || DeviceName === "cc2652p";
+// True if High PA device
+const HighPaDevice = DeviceName === "cc1352p" || DeviceName === "cc2652p";
 
 /*
  * Global device information
@@ -85,18 +85,18 @@ const DevInfo = {
     // Board name on SmartRF Studio format
     target: "",
     // True if device supports High PA (CC1352P and CC2652P)
-    highPaSupport: highPaDevice
+    highPaSupport: HighPaDevice
 };
 
 // Load the device configuration database
 const DevConfig = getDeviceConfig();
 
 // Mapping PHY setting names to SmartRF Studio setting file names
-let settingsMapProp = [];
+let SettingsMapProp = [];
 
 // Proprietary settings for 2.4 GHz band
-if (Common.HAS_2_4G_PROP) {
-    settingsMapProp = [
+if (Common.HAS_24G_PROP) {
+    SettingsMapProp = [
         {
             name: "2gfsk100kbps",
             description: "100 kbps, 2-GFSK, 50 kHz deviation",
@@ -123,10 +123,21 @@ if (Common.HAS_2_4G_PROP) {
 // Proprietary settings for SUB 1GHz band
 if (DeviceName === "cc1352r" || DeviceName === "cc1312r") {
     const settingsMapPropSub1G = [
+        // 868 MHz
         {
             name: "2gfsk50kbps",
             description: "50 kbps, 2-GFSK",
             file: "setting_tc106.json"
+        },
+        {
+            name: "2gfsk1mbps868",
+            description: "1 Mbps, 2-GFSK, 350 kHz deviation (868 MHz)",
+            file: "setting_tc782.json"
+        },
+        {
+            name: "2gfsk1mbps915",
+            description: "1 Mbps, 2-GFSK, 350 kHz deviation (915 MHz)",
+            file: "setting_tc783.json"
         },
         {
             name: "2gfsk50kbps154g",
@@ -149,6 +160,17 @@ if (DeviceName === "cc1352r" || DeviceName === "cc1312r") {
             file: "setting_tc481.json"
         },
         {
+            name: "ook48kbps",
+            description: "4.8 kbps OOK",
+            file: "setting_tc597.json"
+        },
+        {
+            name: "custom868",
+            description: "Custom PHY Setting",
+            file: "setting_tc106_custom.json"
+        },
+        // 433 MHz
+        {
             name: "2gfsk50kbps433mhz",
             description: "50 kbps, 2-GFSK",
             file: "setting_tc112.json"
@@ -157,6 +179,11 @@ if (DeviceName === "cc1352r" || DeviceName === "cc1312r") {
             name: "2gfsk50kbps433mhz154g",
             description: "50 kbps, 2-GFSK, 15.4g",
             file: "setting_tc112_154g.json"
+        },
+        {
+            name: "2gfsk200kpbs433mhz",
+            description: "200 kbps, 2-GFSK, 50 kHz deviation",
+            file: "setting_tc148.json"
         },
         {
             name: "slr5kbps433mhz",
@@ -169,9 +196,14 @@ if (DeviceName === "cc1352r" || DeviceName === "cc1312r") {
             file: "setting_tc441.json"
         },
         {
-            name: "custom868",
-            description: "Custom PHY Setting",
-            file: "setting_tc106_custom.json"
+            name: "2gfsk48kpbs426mhz",
+            description: "4.8 kbps, 2-GFSK, 2 kHz deviation",
+            file: "setting_tc596.json"
+        },
+        {
+            name: "ook48kbps433mhz",
+            description: "4.8 kbps OOK",
+            file: "setting_tc599.json"
         },
         {
             name: "custom433",
@@ -181,19 +213,30 @@ if (DeviceName === "cc1352r" || DeviceName === "cc1312r") {
     ];
 
     if (DeviceName === "cc1312r") {
-        settingsMapProp = settingsMapPropSub1G;
+        SettingsMapProp = settingsMapPropSub1G;
     }
     else {
         // CC1352R
-        settingsMapProp = settingsMapProp.concat(settingsMapPropSub1G);
+        SettingsMapProp = SettingsMapProp.concat(settingsMapPropSub1G);
     }
 }
 else if (DeviceName === "cc1352p") {
     const settingsMapPropSub1G = [
+        // 868 MHz
         {
             name: "2gfsk50kbps",
             description: "50 kbps, 2-GFSK",
             file: "setting_tc706.json"
+        },
+        {
+            name: "2gfsk1mbps868",
+            description: "1 Mbps, 2-GFSK, 350 kHz deviation (868 MHz)",
+            file: "setting_tc784.json"
+        },
+        {
+            name: "2gfsk1mbps915",
+            description: "1 Mbps, 2-GFSK, 350 kHz deviation (915 MHz)",
+            file: "setting_tc785.json"
         },
         {
             name: "2gfsk50kbps154g",
@@ -216,6 +259,17 @@ else if (DeviceName === "cc1352p") {
             file: "setting_tc881.json"
         },
         {
+            name: "ook48kbps",
+            description: "4.8 kbps OOK",
+            file: "setting_tc597.json"
+        },
+        {
+            name: "custom868",
+            description: "Custom PHY Setting",
+            file: "setting_tc706_custom.json"
+        },
+        // 433 MHz
+        {
             name: "2gfsk50kbps433mhz",
             description: "50 kbps, 2-GFSK",
             file: "setting_tc112.json"
@@ -224,6 +278,11 @@ else if (DeviceName === "cc1352p") {
             name: "2gfsk50kbps154g433mhz",
             description: "50 kbps, 2-GFSK, 15.4g",
             file: "setting_tc112_154g.json"
+        },
+        {
+            name: "2gfsk200kpbs433mhz",
+            description: "200 kbps, 2-GFSK, 50 kHz deviation",
+            file: "setting_tc148.json"
         },
         {
             name: "slr5kbps2gfsk433mhz",
@@ -236,19 +295,14 @@ else if (DeviceName === "cc1352p") {
             file: "setting_tc441.json"
         },
         {
-            name: "mrfsk50kbps433mhz",
-            description: "50 kbps, 2-GFSK, High PA",
-            file: "setting_tc712.json"
+            name: "2gfsk48kpbs429mhz",
+            description: "4.8 kbps, 2-GFSK, 2 kHz deviation",
+            file: "setting_tc596.json"
         },
         {
-            name: "mrfsk50kbps154g433mhz",
-            description: "50 kbps, 2-GFSK, 15.4g, High PA",
-            file: "setting_tc712_154g.json"
-        },
-        {
-            name: "custom868",
-            description: "Custom PHY Setting",
-            file: "setting_tc706_custom.json"
+            name: "ook48kbps433mhz",
+            description: "4.8 kbps OOK",
+            file: "setting_tc599.json"
         },
         {
             name: "custom433",
@@ -256,11 +310,10 @@ else if (DeviceName === "cc1352p") {
             file: "setting_tc112_custom.json"
         }
     ];
-    settingsMapProp = settingsMapProp.concat(settingsMapPropSub1G);
+    SettingsMapProp = SettingsMapProp.concat(settingsMapPropSub1G);
 }
 
-// Mapping PHY setting names to SmartRF Studio setting file names
-const settingsMapBLE = [
+let SettingsMapBLE = [
     {
         name: "bt5le1m",
         description: "Bluetooth 5, 1 Mbps",
@@ -288,7 +341,28 @@ const settingsMapBLE = [
     }
 ];
 
-const settingsMap154 = [
+if (HighPaDevice) {
+    const settings10dbm = [
+        {
+            name: "bt5le1mp10",
+            description: "Bluetooth 5, 1 Mbps, 10 dBm",
+            file: "setting_bt5_le_1m_10_dbm.json"
+        },
+        {
+            name: "bt5le1madvncp10",
+            description: "Bluetooth 5, 1 Mbps, BT4 compatible, 10 dBm",
+            file: "setting_bt5_le_1m_adv_nc_10_dbm.json"
+        },
+        {
+            name: "bt5le2mp10",
+            description: "Bluetooth 5, 2 Mbps, 10 dBm",
+            file: "setting_bt5_le_2m_10_dbm.json"
+        }
+    ];
+    SettingsMapBLE = SettingsMapBLE.concat(settings10dbm);
+}
+
+const SettingsMap154 = [
     {
         name: "ieee154",
         description: "IEEE 802.15.4, 250 kbps",
@@ -296,19 +370,29 @@ const settingsMap154 = [
     }
 ];
 
+if (HighPaDevice) {
+    const setting10dbm = {
+        name: "ieee154p10",
+        description: "IEEE 802.15.4, 250 kbps, 10 dBm",
+        file: "setting_ieee_802_15_4_10_dbm.json"
+    };
+    SettingsMap154.push(setting10dbm);
+}
+
+
 // Exported from this module
 exports = {
     addPhyGroup: addPhyGroup,
     getVersionInfo: getVersionInfo,
     getSettingMap: function(phy) {
         if (phy === Common.PHY_IEEE_15_4) {
-            return settingsMap154;
+            return SettingsMap154;
         }
         else if (phy === Common.PHY_BLE) {
-            return settingsMapBLE;
+            return SettingsMapBLE;
         }
         else if (phy === Common.PHY_PROP) {
-            return settingsMapProp;
+            return SettingsMapProp;
         }
         throw Error("Unknown protocol: ", phy);
     },

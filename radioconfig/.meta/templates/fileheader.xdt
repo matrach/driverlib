@@ -55,7 +55,7 @@ const file = args[0];
  *
  *  DO NOT EDIT - This file is generated for the `devId`
  *  by the SysConfig tool.
- *  
+ *
  *  Radio Config module version : `versions.moduleVersion`
  *  SmartRF Studio data version : `versions.dataVersion`
  */

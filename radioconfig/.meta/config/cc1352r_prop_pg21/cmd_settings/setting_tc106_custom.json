@@ -146,6 +146,7 @@
                     "_name": "pRegOverride",
                     "Block": [
                         "override_prop_common.json",
+                        "override_prop_common_sub1g.json",
                         "override_tc106.json"
                     ]
                 }
