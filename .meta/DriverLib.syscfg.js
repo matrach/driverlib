@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -109,20 +109,10 @@ function getAttrs(deviceId, part)
             result.deviceDefine = "DeviceFamily_MSP432E401Y";
         }
     }
-    else if (deviceId.match(/MSP432P4.1.I/) || deviceId.match(/MSP432P4111/)) {
-        result.deviceDir = "msp432p4xx";
-        result.deviceGroup = "MSP";
-        result.deviceDefine = "DeviceFamily_MSP432P4x1xI";
-    }
-    else if (deviceId.match(/MSP432P4.1.T/)) { /* issue: remove, not suported? */
-        result.deviceDir = "msp432p4xx";
-        result.deviceGroup = "MSP";
-        result.deviceDefine = "DeviceFamily_MSP432P4x1xT";
-    }
-    else if (deviceId.match(/MSP432P401/)) {
-        result.deviceDir = "msp432p4xx";
-        result.deviceGroup = "MSP";
-        result.deviceDefine = "DeviceFamily_MSP432P401x";
+    else if (deviceId.match(/dragon/)) {
+        result.deviceDir = "mtxx";
+        result.deviceGroup = "MTXX";
+        result.deviceDefine = "DeviceFamily_MTL";
     }
     else {
         result.deviceDir = "";
@@ -148,7 +138,8 @@ function getLibs(mod)
         LPRF: "ti/devices/{devDir}/driverlib/bin/{tcDir}/driverlib.lib",
         WIFI: "ti/devices/{devDir}/driverlib/{tcDir}/Release/driverlib.a",
         TIVA: "ti/devices/{devDir}/driverlib/lib/{tcDir}/m4f/{devDir}_driverlib.a",
-        MSP:  "ti/devices/{devDir}/driverlib/{tcDir}/{devDir}_driverlib.lib"
+        MSP:  "ti/devices/{devDir}/driverlib/{tcDir}/{devDir}_driverlib.lib",
+        MTXX: ""
     };
 
     let lib;

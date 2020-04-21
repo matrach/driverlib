@@ -2604,11 +2604,12 @@ unsigned long PRCMDeviceTypeGet()
     }
     else if( ulDevMajorVer == 0x2 )
     {
-      ulDevType  |= (PRCM_DEV_TYPE_FLAG_PRE_PROD|PRCM_DEV_TYPE_FLAG_3220);
+            ulDevType |=
+                    (PRCM_DEV_TYPE_FLAG_PRE_PROD | PRCM_DEV_TYPE_FLAG_3220);
       
       if( ((ulDevType & PRCM_DEV_TYPE_FLAG_Z) != 0) )
       {
-        if((ulDevMinorVer == 0x0))
+                if (ulDevMinorVer == 0x0)
         {
           ulDevType |= PRCM_DEV_TYPE_FLAG_REV1; 
         }
@@ -2619,7 +2620,7 @@ unsigned long PRCMDeviceTypeGet()
       }
       else
       {
-        if((ulDevMinorVer == 0x1))
+                if (ulDevMinorVer == 0x1)
         {
           ulDevType |= PRCM_DEV_TYPE_FLAG_REV1;
         }
@@ -2627,11 +2628,12 @@ unsigned long PRCMDeviceTypeGet()
     }
     else
     {
-      if( (ulDevMinorVer == 0x4))
+            if (ulDevMinorVer == 0x4)
       {
         if( ((ulDevType & PRCM_DEV_TYPE_FLAG_Z) != 0))
         {
-          ulDevType |= (PRCM_DEV_TYPE_FLAG_PRE_PROD|PRCM_DEV_TYPE_FLAG_3220);
+                    ulDevType |= (PRCM_DEV_TYPE_FLAG_PRE_PROD
+                            | PRCM_DEV_TYPE_FLAG_3220);
         }
         else
         {
@@ -2640,7 +2642,8 @@ unsigned long PRCMDeviceTypeGet()
       }
       else
       {
-        ulDevType |= (PRCM_DEV_TYPE_FLAG_PRE_PROD|PRCM_DEV_TYPE_FLAG_3200);
+                ulDevType |= (PRCM_DEV_TYPE_FLAG_PRE_PROD
+                        | PRCM_DEV_TYPE_FLAG_3200);
       }
     }	  
   }

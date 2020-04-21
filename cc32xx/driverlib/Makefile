@@ -37,6 +37,7 @@
 
 # Find subdirectories
 RELEASE-CCS-SUBDIRS   = $(wildcard ./ccs/Release/.)
+RELEASE-TICLANG-SUBDIRS   = $(wildcard ./ticlang/Release/.)
 RELEASE-GCC-SUBDIRS   = $(wildcard ./gcc/Release/.)
 RELEASE-IAR-SUBDIRS   = $(wildcard ./iar/Release/.)
 
@@ -45,6 +46,9 @@ include ../../../../../imports.mak
 RELEASE-SUBDIRS =
 ifneq ($(CCS_ARMCOMPILER),)
 	RELEASE-SUBDIRS += $(RELEASE-CCS-SUBDIRS)
+endif
+ifneq ($(TICLANG_ARMCOMPILER),)
+	RELEASE-SUBDIRS += $(RELEASE-TICLANG-SUBDIRS)
 endif
 ifneq ($(GCC_ARMCOMPILER),)
 	RELEASE-SUBDIRS += $(RELEASE-GCC-SUBDIRS)
