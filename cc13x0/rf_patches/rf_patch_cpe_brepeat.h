@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_cpe_brepeat.h
-*  Revised:        $Date: 2019-06-05 10:53:39 +0200 (Mi, 05 Jun 2019) $
-*  Revision:       $Revision: 19080 $
+*  Revised:        $Date: 2020-02-27 12:45:42 +0100 (Thu, 27 Feb 2020) $
+*  Revision:       $Revision: 19307 $
 *
 *  Description: RF core patch for CC13x0 for 1.2kbps and 2.4kbps Generic FSK
 *
@@ -71,26 +71,27 @@ extern "C"
 
 
 CPE_PATCH_TYPE patchImageBrepeat[] = {
-   0x2100058d,
-   0x21000461,
-   0x210004a1,
+   0x21000595,
+   0x21000465,
    0x210004a5,
-   0x210004cd,
-   0x21000671,
-   0x21000721,
-   0x21000749,
-   0x2100053b,
-   0x21000501,
-   0x2100078b,
-   0x210007ad,
-   0x21000579,
+   0x210004a9,
+   0x210004d1,
+   0x21000679,
+   0x21000729,
+   0x21000751,
+   0x2100053f,
+   0x2100054f,
+   0x21000505,
+   0x21000793,
+   0x210007b5,
+   0x21000581,
    0x4710b5f8,
    0x460eb5f8,
    0x25012100,
    0x473004ad,
    0x7803480d,
    0xd00207d8,
-   0x21814846,
+   0x21814847,
    0xf0006041,
    0x079bf80f,
    0x4c13d00b,
@@ -113,9 +114,9 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x467082c8,
    0x47001c80,
    0x40086200,
-   0x21000818,
+   0x21000820,
    0x08080f07,
-   0xf890f000,
+   0xf892f000,
    0x0a0a9905,
    0xd1092a6c,
    0x61782008,
@@ -132,25 +133,26 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x2950b2e1,
    0x2804d00b,
    0x2806d001,
-   0x490dd107,
+   0x490fd107,
    0x07c97809,
    0x7821d103,
    0xd4000709,
-   0x490a2002,
+   0x490c2002,
    0x210c780a,
    0xd0024211,
-   0x22804908,
+   0x2280490a,
    0xbdfe600a,
-   0x4907b5fe,
-   0x48044708,
-   0x22407801,
-   0x70014391,
-   0x47004804,
+   0x4909b5fe,
+   0x22404708,
+   0x78194b05,
+   0x70194391,
+   0x1c924672,
+   0x22604710,
+   0x0000e7f6,
    0x210000c8,
    0x21000117,
    0xe000e200,
    0x0000ccf1,
-   0x0000d103,
    0x4605b5ff,
    0x4c03b085,
    0xb5ff4720,
@@ -168,7 +170,7 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x2900d006,
    0x4a11d006,
    0xf7ff4628,
-   0xbd70ff57,
+   0xbd70ff55,
    0xe000480f,
    0x2405480f,
    0xd8034283,
@@ -180,14 +182,14 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x4906d007,
    0x31802300,
    0xf7ff4628,
-   0xb2e0ff41,
+   0xb2e0ff3f,
    0x4902bd70,
    0x316c4b04,
    0x0000e7f6,
    0x00005c83,
    0x2386bca0,
    0x230d8300,
-   0x210007e8,
+   0x210007f0,
    0x4e1ab5f8,
    0x6b714605,
    0x09cc4819,
@@ -230,7 +232,7 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0xe0004313,
    0x634b4393,
    0xf7ff491d,
-   0xbd10ff2b,
+   0xbd10ff29,
    0x4d1ab538,
    0x28007f28,
    0x481ad127,
@@ -275,7 +277,7 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0x2100026b,
    0x40046058,
    0x4c03b510,
-   0xfed2f7ff,
+   0xfed0f7ff,
    0x28006820,
    0xbd10d1fa,
    0x40041100,
@@ -328,11 +330,11 @@ CPE_PATCH_TYPE patchImageBrepeat[] = {
    0xe5e0e3c1,
    0x000000ff,
 };
-#define _NWORD_PATCHIMAGE_BREPEAT 256
+#define _NWORD_PATCHIMAGE_BREPEAT 258
 
 #define _NWORD_PATCHSYS_BREPEAT 0
 
-#define _IRQ_PATCH_0 0x2100069d
+#define _IRQ_PATCH_0 0x210006a5
 
 
 #ifndef _BREPEAT_SYSRAM_START
@@ -379,10 +381,11 @@ PATCH_FUN_SPEC void configureBrepeatPatch(void)
    pPatchTab[65] = 6;
    pPatchTab[13] = 7;
    pPatchTab[43] = 8;
-   pPatchTab[45] = 9;
-   pPatchTab[48] = 10;
-   pParserPatchTab[0] = 11;
-   pPatchTab[56] = 12;
+   pPatchTab[44] = 9;
+   pPatchTab[45] = 10;
+   pPatchTab[48] = 11;
+   pParserPatchTab[0] = 12;
+   pPatchTab[56] = 13;
 
    pIrqPatch[1] = _IRQ_PATCH_0;
 }

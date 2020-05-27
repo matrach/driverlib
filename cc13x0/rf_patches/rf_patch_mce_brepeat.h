@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_brepeat.h
-*  Revised:        $Date: 2019-01-31 15:04:25 +0100 (Do, 31 Jan 2019) $
-*  Revision:       $Revision: 18842 $
+*  Revised:        $Date: 2020-02-27 12:45:42 +0100 (Thu, 27 Feb 2020) $
+*  Revision:       $Revision: 19307 $
 *
 *  Description: RF core patch for CC13x0 for 1.2kbps and 2.4kbps Generic FSK
 *
@@ -58,7 +58,7 @@
 #define MCE_PATCH_MODE 0
 #endif
 
-MCE_PATCH_TYPE patchBrepeatMce[302] = { 
+MCE_PATCH_TYPE patchBrepeatMce[304] = { 
    0x2fcf604e,
    0x030c3f9d,
    0x070c680a,
@@ -125,7 +125,7 @@ MCE_PATCH_TYPE patchBrepeatMce[302] = {
    0x00108181,
    0xb0709180,
    0x60796063,
-   0x6656c030,
+   0x6659c030,
    0xc282c1e1,
    0x1820c470,
    0x6e236f13,
@@ -223,7 +223,7 @@ MCE_PATCH_TYPE patchBrepeatMce[302] = {
    0xa760b073,
    0xb7607378,
    0x226080b0,
-   0x661c454b,
+   0x661f454b,
    0xb88f6141,
    0x18f08960,
    0x100f9550,
@@ -236,19 +236,19 @@ MCE_PATCH_TYPE patchBrepeatMce[302] = {
    0xb04d4536,
    0xc300b06d,
    0xb2019070,
-   0x6656c040,
+   0x6659c040,
    0x7000a044,
    0x8180b88c,
    0x392489a4,
    0x00043184,
    0xc0509184,
-   0x73766656,
+   0x73766659,
    0x72487276,
    0x72027206,
    0x73057204,
    0x60797306,
    0xb32d721b,
-   0x6656c060,
+   0x6659c060,
    0x6521b0f8,
    0xb107b0d7,
    0xb1077100,
@@ -257,17 +257,17 @@ MCE_PATCH_TYPE patchBrepeatMce[302] = {
    0xb1077100,
    0x8090120a,
    0x44632200,
-   0x161a6605,
+   0x161a6608,
    0x1e0b815b,
    0x85524189,
    0x9862d070,
-   0x1cba6656,
+   0x1cba6659,
    0x18ab4da2,
    0x499e1efb,
    0x1af010b0,
-   0x699c6605,
+   0x699c6608,
    0xc0f0a205,
-   0x69a06605,
+   0x69a06608,
    0x6166a0d7,
    0x45a82201,
    0x61a913f2,
@@ -295,86 +295,88 @@ MCE_PATCH_TYPE patchBrepeatMce[302] = {
    0x940000b0,
    0xa405b404,
    0x1e4185e1,
-   0x1e3141e9,
-   0x841041e1,
-   0x31103180,
-   0x94203980,
-   0x841061ee,
+   0x1e3141e7,
+   0x841041e0,
    0x39803180,
-   0x31101001,
-   0x94201410,
-   0x841061ee,
+   0x61eb3110,
+   0x31808410,
+   0x10013980,
+   0x14103110,
+   0x841061eb,
    0x39803180,
-   0x94203120,
-   0x84301201,
-   0x87d097c0,
-   0x84401401,
-   0x87d097c0,
-   0xc1001401,
-   0x31111801,
-   0x70009571,
-   0x22011202,
-   0x3a324201,
-   0x38326202,
-   0x69fd3911,
-   0x85e37000,
-   0x71001202,
-   0xb107b88d,
-   0x31818b11,
-   0x14123d81,
-   0x31818b21,
-   0x14123d81,
-   0x1e031a13,
-   0x22f24607,
-   0x12124619,
-   0x1202621a,
-   0x70009192,
-   0x22b08ab0,
-   0x1e3b4622,
-   0x62244654,
-   0x46541e7b,
-   0xb889c00b,
-   0x31808940,
-   0x16103d80,
-   0x140c3d30,
+   0xc7f13120,
+   0x49f01c01,
+   0x61f19420,
+   0x12019421,
+   0x97c08430,
+   0x140187d0,
+   0x97c08440,
+   0x140187d0,
+   0x1801c100,
+   0x95713111,
+   0x12027000,
+   0x42042201,
+   0x62053a32,
+   0x39113832,
+   0x70006a00,
+   0x120285e3,
+   0xb88d7100,
+   0x8b11b107,
+   0x3d813181,
+   0x8b211412,
+   0x3d813181,
+   0x1a131412,
+   0x460a1e03,
+   0x461c22f2,
+   0x621d1212,
+   0x91921202,
+   0x8ab07000,
+   0x462522b0,
+   0x46571e3b,
+   0x1e7b6227,
+   0xc00b4657,
+   0x8940b889,
+   0x3d803180,
+   0x3d301610,
+   0x80b0140c,
+   0x42332260,
+   0x8ab37000,
+   0x06f33983,
+   0xcff08ab1,
+   0x30310401,
+   0x4e4f1c1c,
+   0x18101200,
+   0x4a511c0c,
    0x226080b0,
-   0x70004230,
-   0x39838ab3,
-   0x8ab106f3,
-   0x0401cff0,
-   0x1c1c3031,
-   0x12004e4c,
-   0x1c0c1810,
-   0x80b04a4e,
-   0x42412260,
-   0x10c27000,
-   0x3c321612,
-   0x83208ae1,
-   0x42502210,
-   0x93016252,
-   0x7000b0f2,
-   0x623d101c,
-   0x623d100c,
-   0x62491821,
-   0x62491421,
-   0x624a161b,
-   0x88409850,
-   0x46572200,
-   0x7000b830
+   0x70004244,
+   0x161210c2,
+   0x8ae13c32,
+   0x22108320,
+   0x62554253,
+   0xb0f29301,
+   0x101c7000,
+   0x100c6240,
+   0x18216240,
+   0x1421624c,
+   0x161b624c,
+   0x9850624d,
+   0x22008840,
+   0xb830465a,
+   0x00007000
 };
 
 PATCH_FUN_SPEC void rf_patch_mce_brepeat(void)
 {
 #ifdef __PATCH_NO_UNROLLING
    uint32_t i;
-   for (i = 0; i < 302; i++) {
+   for (i = 0; i < 304; i++) {
       HWREG(RFC_MCERAM_BASE + 4 * i) = patchBrepeatMce[i];
    }
 #else
    const uint32_t *pS = patchBrepeatMce;
    volatile unsigned long *pD = &HWREG(RFC_MCERAM_BASE);
    uint32_t t1, t2, t3, t4, t5, t6, t7, t8;
-   uint32_t nIterations = 37;
+   uint32_t nIterations = 38;
 
    do {
       t1 = *pS++;
@@ -394,19 +396,6 @@ PATCH_FUN_SPEC void rf_patch_mce_brepeat(void)
       *pD++ = t7;
       *pD++ = t8;
    } while (--nIterations);
-
-   t1 = *pS++;
-   t2 = *pS++;
-   t3 = *pS++;
-   t4 = *pS++;
-   t5 = *pS++;
-   t6 = *pS++;
-   *pD++ = t1;
-   *pD++ = t2;
-   *pD++ = t3;
-   *pD++ = t4;
-   *pD++ = t5;
-   *pD++ = t6;
 #endif
 }
 

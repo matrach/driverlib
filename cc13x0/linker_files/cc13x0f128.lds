@@ -2,7 +2,7 @@
  @file      cc13x0f128.lds
  @brief     CC13x0F128 linker configuration file for GNU compiler.
 
- Revised    $Date: 2017-08-07 11:44:47 +0200 (Mo, 07 Aug 2017) $
+ Revised    $Date: 2017-08-07 11:44:47 +0200 (Mon, 07 Aug 2017) $
  Revision   $Revision: 17870 $
 
  This file is auto-generated.

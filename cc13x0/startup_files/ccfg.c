@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       ccfg.c
-*  Revised:        $Date: 2017-08-08 15:34:36 +0200 (Di, 08 Aug 2017) $
+*  Revised:        $Date: 2017-08-08 15:34:36 +0200 (Tue, 08 Aug 2017) $
 *  Revision:       $Revision: 17873 $
 *
 *  Description:    Customer Configuration for CC13x0 device family (HW rev 2).

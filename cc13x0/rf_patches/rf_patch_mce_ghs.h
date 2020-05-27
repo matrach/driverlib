@@ -1,6 +1,6 @@
 /******************************************************************************
 *  Filename:       rf_patch_mce_ghs.h
-*  Revised:        $Date: 2019-06-05 10:53:39 +0200 (Mi, 05 Jun 2019) $
+*  Revised:        $Date: 2019-06-05 10:53:39 +0200 (Wed, 05 Jun 2019) $
 *  Revision:       $Revision: 19080 $
 *
 *  Description: RF core patch for CC13x0 Generic 4FSK up to 1.5Mbps

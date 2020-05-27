@@ -2,7 +2,7 @@
 //! @file       cc13x0f64.cmd
 //! @brief      CC13x0F64 rev2 linker file for Code Composer Studio.
 //!
-//! Revised     $Date: 2017-03-28 15:32:09 +0200 (Di, 28 Mrz 2017) $
+//! Revised     $Date: 2017-03-28 15:32:09 +0200 (Tue, 28 Mar 2017) $
 //! Revision    $Revision: 17730 $
 //
 //  This file is auto-generated.
