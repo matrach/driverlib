@@ -186,10 +186,10 @@ SHAMD5IntEnable(uint32_t ui32Base, uint32_t ui32IntFlags)
     // Check the arguments.
     //
     ASSERT(ui32Base == SHAMD5_BASE);
-    ASSERT((ui32IntFlags == SHAMD5_INT_CONTEXT_READY) ||
-           (ui32IntFlags == SHAMD5_INT_PARTHASH_READY) ||
-           (ui32IntFlags == SHAMD5_INT_INPUT_READY) ||
-           (ui32IntFlags == SHAMD5_INT_OUTPUT_READY));
+    ASSERT((ui32IntFlags & SHAMD5_INT_CONTEXT_READY) ||
+           (ui32IntFlags & SHAMD5_INT_PARTHASH_READY) ||
+           (ui32IntFlags & SHAMD5_INT_INPUT_READY) ||
+           (ui32IntFlags & SHAMD5_INT_OUTPUT_READY));
 
     //
     // Enable the interrupt sources.
@@ -229,10 +229,10 @@ SHAMD5IntDisable(uint32_t ui32Base, uint32_t ui32IntFlags)
     // Check the arguments.
     //
     ASSERT(ui32Base == SHAMD5_BASE);
-    ASSERT((ui32IntFlags == SHAMD5_INT_CONTEXT_READY) ||
-           (ui32IntFlags == SHAMD5_INT_PARTHASH_READY) ||
-           (ui32IntFlags == SHAMD5_INT_INPUT_READY) ||
-           (ui32IntFlags == SHAMD5_INT_OUTPUT_READY));
+    ASSERT((ui32IntFlags & SHAMD5_INT_CONTEXT_READY) ||
+           (ui32IntFlags & SHAMD5_INT_PARTHASH_READY) ||
+           (ui32IntFlags & SHAMD5_INT_INPUT_READY) ||
+           (ui32IntFlags & SHAMD5_INT_OUTPUT_READY));
 
     //
     // Clear the corresponding flags disabling the interrupt sources.
