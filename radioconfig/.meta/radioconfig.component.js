@@ -95,7 +95,6 @@ const templates = [
     }
 ];
 
-
 exports = {
     templates: templates,
     displayName: displayName,

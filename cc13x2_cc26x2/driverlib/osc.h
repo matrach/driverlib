@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       osc.h
-*  Revised:        2020-02-14 11:30:20 +0100 (Fri, 14 Feb 2020)
-*  Revision:       56760
+*  Revised:        2020-03-06 14:44:21 +0100 (Fri, 06 Mar 2020)
+*  Revision:       56985
 *
 *  Description:    Defines and prototypes for the system oscillator control.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -94,8 +94,9 @@ extern "C"
     #define OSCHF_SwitchToRcOscTurnOffXosc  NOROM_OSCHF_SwitchToRcOscTurnOffXosc
     #define OSCHF_DebugGetCrystalAmplitude  NOROM_OSCHF_DebugGetCrystalAmplitude
     #define OSCHF_DebugGetExpectedAverageCrystalAmplitude NOROM_OSCHF_DebugGetExpectedAverageCrystalAmplitude
-    #define OSC_HPOSC_Debug_InitFreqOffsetParams NOROM_OSC_HPOSC_Debug_InitFreqOffsetParams
     #define OSC_HPOSCInitializeFrequencyOffsetParameters NOROM_OSC_HPOSCInitializeFrequencyOffsetParameters
+    #define OSC_HPOSC_Debug_InitFreqOffsetParams NOROM_OSC_HPOSC_Debug_InitFreqOffsetParams
+    #define OSC_HPOSCInitializeSingleInsertionFreqOffsParams NOROM_OSC_HPOSCInitializeSingleInsertionFreqOffsParams
     #define OSC_HPOSCRelativeFrequencyOffsetGet NOROM_OSC_HPOSCRelativeFrequencyOffsetGet
     #define OSC_AdjustXoscHfCapArray        NOROM_OSC_AdjustXoscHfCapArray
     #define OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert NOROM_OSC_HPOSCRelativeFrequencyOffsetToRFCoreFormatConvert
@@ -483,6 +484,20 @@ extern uint32_t OSCHF_DebugGetExpectedAverageCrystalAmplitude( void );
 
 //*****************************************************************************
 //
+//! \brief HPOSC initialization function. Must always be called before using HPOSC.
+//!
+//! Calculates the fitting curve parameters (polynomials) to be used by the
+//! HPOSC temperature compensation.
+//!
+//! \return None
+//!
+//! \sa OSC_HPOSC_Debug_InitFreqOffsetParams(), OSC_HPOSCInitializeSingleInsertionFreqOffsParams()
+//
+//*****************************************************************************
+extern void OSC_HPOSCInitializeFrequencyOffsetParameters( void );
+
+//*****************************************************************************
+//
 //! \brief Data structure for experimental HPOSC polynomials calculation.
 //!
 //! The structure of the meas_1, meas_2 and meas_3 parameter is
@@ -516,17 +531,18 @@ extern void OSC_HPOSC_Debug_InitFreqOffsetParams( HposcDebugData_t * pDebugData 
 
 //*****************************************************************************
 //
-//! \brief HPOSC initialization function. Must always be called before using HPOSC.
+//! \brief Special HPOSC initialization function for single temperature compensation.
 //!
-//! Calculates the fitting curve parameters (polynomials) to used by the
-//! HPOSC temperature compensation.
+//! Used when a single temperature offset measurement is available.
+//! This is espesially designed to get a better crystal performance (SW TCXO) on the SiP module
+//! but can also be usful to get better crystal performance over the entire temperature range on a standard design as well.
 //!
 //! \return None
 //!
-//! \sa OSC_HPOSC_Debug_InitFreqOffsetParams()
+//! \sa OSC_HPOSCInitializeFrequencyOffsetParameters()
 //
 //*****************************************************************************
-extern void OSC_HPOSCInitializeFrequencyOffsetParameters( void );
+extern void OSC_HPOSCInitializeSingleInsertionFreqOffsParams( uint32_t measFieldAddress );
 
 //*****************************************************************************
 //
@@ -684,13 +700,17 @@ extern void OSC_HPOSCRtcCompensate( int32_t relFreqOffset );
         #undef  OSCHF_DebugGetExpectedAverageCrystalAmplitude
         #define OSCHF_DebugGetExpectedAverageCrystalAmplitude ROM_OSCHF_DebugGetExpectedAverageCrystalAmplitude
     #endif
+    #ifdef ROM_OSC_HPOSCInitializeFrequencyOffsetParameters
+        #undef  OSC_HPOSCInitializeFrequencyOffsetParameters
+        #define OSC_HPOSCInitializeFrequencyOffsetParameters ROM_OSC_HPOSCInitializeFrequencyOffsetParameters
+    #endif
     #ifdef ROM_OSC_HPOSC_Debug_InitFreqOffsetParams
         #undef  OSC_HPOSC_Debug_InitFreqOffsetParams
         #define OSC_HPOSC_Debug_InitFreqOffsetParams ROM_OSC_HPOSC_Debug_InitFreqOffsetParams
     #endif
-    #ifdef ROM_OSC_HPOSCInitializeFrequencyOffsetParameters
-        #undef  OSC_HPOSCInitializeFrequencyOffsetParameters
-        #define OSC_HPOSCInitializeFrequencyOffsetParameters ROM_OSC_HPOSCInitializeFrequencyOffsetParameters
+    #ifdef ROM_OSC_HPOSCInitializeSingleInsertionFreqOffsParams
+        #undef  OSC_HPOSCInitializeSingleInsertionFreqOffsParams
+        #define OSC_HPOSCInitializeSingleInsertionFreqOffsParams ROM_OSC_HPOSCInitializeSingleInsertionFreqOffsParams
     #endif
     #ifdef ROM_OSC_HPOSCRelativeFrequencyOffsetGet
         #undef  OSC_HPOSCRelativeFrequencyOffsetGet

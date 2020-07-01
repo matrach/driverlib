@@ -200,7 +200,6 @@ if (DeviceInfo.hasHighPaSupport()) {
     });
 }
 
-
 /*
  *  ======== getDefaultSub1g ========
  *  Get default sub-1 GHz frequency band
@@ -213,7 +212,6 @@ function getDefaultSub1g() {
     }
     return "fb868";
 }
-
 
 /*
  *  ======== onPaChange ========
@@ -297,7 +295,6 @@ function getOptions24G() {
     return opts;
 }
 
-
 /*!
  *  ======== setHighPaAccess ========
  *  Set the frequency band assignment to high PA according to RF design.
@@ -326,7 +323,6 @@ function getHighPaAssociation(inst) {
     }
     return "none";
 }
-
 
 /*!
  *  ======== isFreqBandSelected ========
@@ -383,7 +379,6 @@ function getFreqBandShortName(freq) {
     return name;
 }
 
-
 /*!
  *  ======== getPaTableExportMethods ========
  *  Check what PA table export methods are used in the design
@@ -416,7 +411,6 @@ function getPaTableExportMethods() {
 
     return methods;
 }
-
 
 /*!
  *  ======== validate ========
@@ -538,7 +532,6 @@ function validate(rfinst, validation) {
     });
 }
 
-
 /*!
  *  ======== getTargetInfo ========
  *
@@ -548,7 +541,6 @@ function validate(rfinst, validation) {
 function getTargetInfo() {
     return CurrentDesign;
 }
-
 
 /*!
  *  ======== getTxPowerOptions ========
@@ -601,7 +593,6 @@ function getTxPowerOptionsDefault(freq, highPA) {
     return ret;
 }
 
-
 /*!
  *  ======== getPaTable ========
  *  Get a PA table by frequency and PA state (high, default)
@@ -616,7 +607,6 @@ function getPaTable(freq, highPA) {
     }
     return highPA ? fb.paTableHi : fb.paTable;
 }
-
 
 /*!
  *  ======== loadTargetInfo ========
@@ -833,7 +823,7 @@ function getDesignData() {
                     433: "431",
                     2400: "2.4"
                 };
-                let ret = data.Description.includes(searchStr[freq]);
+                let ret = getDescription(data).includes(searchStr[freq]);
                 if (!ret) {
                     // Description does not contain information on 433 MHz band, handle separately
                     ret = freq === 433
@@ -856,16 +846,28 @@ function getDesignData() {
             else {
                 name = td;
             }
+            // Process description
+            const descr = getDescription(rfDesign[td]);
+
             options.push(
                 {
                     name: name,
-                    description: rfDesign[td].Description
+                    description: descr
                 }
             );
         }
     }
     rfDesign.options = options;
 
+    function getDescription(data) {
+        let descr = data.Description;
+        if (typeof descr === "object") {
+            // Contains HTML: get first part of description as tool-tip
+            // Ignore further details to avoid excessively large tool-tip
+            descr = descr.p[0];
+        }
+        return descr;
+    }
     return rfDesign;
 }
 
@@ -970,7 +972,6 @@ function generatePaEntryString(pv) {
     return paEntry;
 }
 /* eslint-enable no-bitwise */
-
 
 /*!
  *  ======== generateTxPowerCode ========

@@ -766,11 +766,11 @@
                         "ListValues": {
                             "Value": [
                                 {
-                                    "_text": "Variable",
+                                    "_text": "Fixed",
                                     "$": "0"
                                 },
                                 {
-                                    "_text": "Fixed",
+                                    "_text": "Variable",
                                     "$": "1"
                                 }
                             ]

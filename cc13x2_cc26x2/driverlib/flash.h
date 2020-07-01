@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       flash.h
-*  Revised:        2020-02-14 11:30:20 +0100 (Fri, 14 Feb 2020)
-*  Revision:       56760
+*  Revised:        2020-03-05 13:34:18 +0100 (Thu, 05 Mar 2020)
+*  Revision:       56956
 *
 *  Description:    Defines and prototypes for the Flash driver.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

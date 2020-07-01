@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       hw_types.h
-*  Revised:        2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016)
-*  Revision:       47152
+*  Revised:        2020-03-03 10:57:48 +0100 (Tue, 03 Mar 2020)
+*  Revision:       56905
 *
 *  Description:    Common types and macros.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

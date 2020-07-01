@@ -44,7 +44,10 @@
                     },
                     {
                         "_names": "packetLengthBle",
-                        "rfCommand": "CMD_BLE_ADV_NC"
+                        "rfCommand": [
+                            "CMD_BLE_ADV_NC",
+                            "CMD_PROP_TX_ADV"
+                        ]
                     },
                     {
                         "_names": "accessAddress",
@@ -56,6 +59,17 @@
                     {
                         "_names": "modulated",
                         "rfCommand": "CMD_TX_TEST"
+                    },
+                    {
+                        "_names": "packetLengthTx",
+                        "rfCommand": "CMD_PROP_TX_ADV"
+                    },
+                    {
+                        "_names": "syncWord",
+                        "rfCommand": [
+                            "CMD_PROP_TX_ADV",
+                            "CMD_PROP_RX_ADV"
+                        ]
                     }
                 ]
             }

@@ -1,6 +1,6 @@
 {
     "devicelist": {
-        "version": "2.17.0",
+        "version": "2.18.0",
         "DeviceGroup": [
             {
                 "Name": "Sub-1 GHz",
@@ -168,6 +168,14 @@
                         "DeviceName": {
                             "_family": "Chameleon",
                             "$": "CC2640R2F"
+                        },
+                        "Brief": "2.4 GHz",
+                        "DeviceType": "Wireless MCU"
+                    },
+                    {
+                        "DeviceName": {
+                            "_family": "Chameleon",
+                            "$": "CC2640R2L"
                         },
                         "Brief": "2.4 GHz",
                         "DeviceType": "Wireless MCU"

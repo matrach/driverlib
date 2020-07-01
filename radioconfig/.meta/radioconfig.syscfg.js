@@ -55,16 +55,18 @@ const RfDesign = Common.getScript("rfdesign");
  *  @param ui - module UI state
  *  @phyType - currently selected setting (PHY)
  *  @phyGroup - currently used PHY group
+ *  @preserve - list of configurables to preserve the value of
  */
-function reloadInstanceFromPhy(inst, ui, phyType, phyGroup) {
+function reloadInstanceFromPhy(inst, ui, phyType, phyGroup, preserve) {
     const cmdHandler = CmdHandler.get(phyGroup, phyType);
     const rfData = cmdHandler.getRfData();
     _.each(rfData, (value, key) => {
-        inst[key] = value;
+        if (!preserve.includes(key)) {
+            inst[key] = value;
+        }
     });
-    updateHighPA(inst, ui);
+    updateTxPowerVisibility(inst, ui);
 }
-
 
 /*
  *  ======== validateRfParams ========
@@ -92,14 +94,13 @@ function validateRfParams(inst, validation, phyType, phyGroup) {
 }
 
 /*
- *  ======== updateHighPA ========
- *  Update high PA configurable when board or setting changes
+ *  ======== updateTxPowerVisibility ========
+ *  Update the visibility of txPower configurables
  *
  *  @param inst  - module instance
  *  @param ui - module UI state
  */
-function updateHighPA(inst, ui) {
-    // Handle high PA separately
+function updateTxPowerVisibility(inst, ui) {
     if ("highPA" in inst) {
         let prop24 = false;
         let freqBand = "2400";
@@ -119,10 +120,8 @@ function updateHighPA(inst, ui) {
             ui.txPower433.hidden = inst.highPA || !fb433;
             ui.txPower433Hi.hidden = !inst.highPA || !fb433;
         }
-        inst.highPA = false;
     }
 }
-
 
 /*!
  *  ======== getPaUsage ========
@@ -295,27 +294,30 @@ function addTxPowerConfigHigh(config) {
 
 /*
  *  ======== pruneConfig ========
- *  Removed 'key' member from options list
+ *  Removed option list members that are not accepted by SysConfig.
  *
  *  @param config - configurable array to be modified
  */
 function pruneConfig(config) {
     _.each(config, (item) => {
-        if (_.has(item, "options")) {
-            _.each(item.options, (opt) => {
-                delete opt.key;
-            });
-        }
-        else if (_.has(item, "config")) {
+        deleteKeys(item, "key");
+        deleteKeys(item, "info");
+
+        if (_.has(item, "config")) {
             _.each(item.config, (subItem) => {
-                if (_.has(subItem, "options")) {
-                    _.each(subItem.options, (opt) => {
-                        delete opt.key;
-                    });
-                }
+                deleteKeys(subItem, "key");
+                deleteKeys(subItem, "info");
             });
         }
     });
+
+    function deleteKeys(item, key) {
+        if (_.has(item, "options")) {
+            _.each(item.options, (opt) => {
+                delete opt[key];
+            });
+        }
+    }
 }
 
 /*
@@ -328,7 +330,7 @@ function pruneConfig(config) {
 function moduleInstances(inst) {
     // Controls visibility/access of code export config
     const noAccess = inst.permission === "ReadOnly";
-    const phy = Common.getPhyType(inst);
+    const phyType = Common.getPhyType(inst);
     const phyGroup = Common.getPhyGroup(inst);
 
     return [
@@ -340,7 +342,7 @@ function moduleInstances(inst) {
             readOnly: noAccess,
             hidden: noAccess,
             args: {
-                phyType: phy,
+                phyType: phyType,
                 phyGroup: phyGroup
             }
         }

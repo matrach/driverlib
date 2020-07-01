@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       flash.c
-*  Revised:        2020-02-14 11:30:20 +0100 (Fri, 14 Feb 2020)
-*  Revision:       56760
+*  Revised:        2020-03-25 10:30:05 +0100 (Wed, 25 Mar 2020)
+*  Revision:       57186
 *
 *  Description:    Driver for on chip Flash.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

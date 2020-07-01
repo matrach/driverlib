@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       sha2.c
-*  Revised:        2020-02-14 11:30:20 +0100 (Fri, 14 Feb 2020)
-*  Revision:       56760
+*  Revised:        2020-04-02 14:56:08 +0200 (Thu, 02 Apr 2020)
+*  Revision:       57246
 *
 *  Description:    Driver for the SHA-2 functions of the crypto module
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

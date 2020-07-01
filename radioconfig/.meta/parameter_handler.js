@@ -78,7 +78,6 @@ exports = {
     validateTXpower: validateTXpower
 };
 
-
 /*!
  *  ======== bleChanToFreq ========
  * Function to convert from BLE channel to frequency (MHz)
@@ -226,7 +225,7 @@ function validateFreqSymrateRxBW(carrierFrequency, symbolRate, rxFilterBw) {
         return {
             inst: "symbolRate",
             message: "Incompatible values for Frequency, Symbol Rate and RX Filter Bandwidth."
-                + " The symbol rate must be increased"
+                + " The symbol rate must be decreased"
         };
     }
     return null;
@@ -256,7 +255,6 @@ function validateTXpower(txPower, freq, highPA) {
     return vddr;
 }
 
-
 /*
  * Private functions
  */
@@ -273,6 +271,9 @@ function calculateDecimationFactor(rxBw) {
 
     // Get the register value from the RX Filter BW
     const rxBwReg = rxBwToRegValue(rxBw);
+    if (rxBwReg === null) {
+        return -1;
+    }
 
     // Channel filter lookup table
     // Table taken from SmartRF Studio
@@ -326,7 +327,6 @@ function calculateDecimationFactor(rxBw) {
     return decFactor;
 }
 
-
 /*!
  *  ======== rxBwToRegValue ========
  *  Returns the register value from the selected RX Filter Bandwidth
@@ -341,12 +341,15 @@ function rxBwToRegValue(RxBw) {
     // Find the RxBwValue in the parameterObjects options
     const RxBwValue = _.find(parameterObject.options, ["name", RxBw]);
 
-    return RxBwValue.key;
+    if (typeof RxBwValue !== "undefined") {
+        return RxBwValue.key;
+    }
+    return null;
 }
 
 /*!
  *  ======== calculateVcoFrequency ========
- *  The VCO frequency will be calculated depening on the carrier frequency and
+ *  The VCO frequency will be calculated deepening on the carrier frequency and
  *  the LO divider.
  *
  *  @param frequency - carrier frequency

@@ -1,7 +1,7 @@
 {
     "setting": {
-        "Name": "4.8 kbps, OOK, 868 MHz (Preview)",
-        "Description": "4.8 kbps OOK for 868 MHz band (Preview).",
+        "Name": "4.8 kbps, OOK, 868 MHz",
+        "Description": "4.8 kbps OOK for 868 MHz band.",
         "Frequency": "868",
         "Patch": {
             "Define": "RF_MODE_AUTO",
@@ -55,11 +55,11 @@
                     },
                     {
                         "_name": "modulation.modType",
-                        "$": "1"
+                        "$": "2"
                     },
                     {
                         "_name": "modulation.deviation",
-                        "$": "100"
+                        "$": "0"
                     },
                     {
                         "_name": "symbolRate.preScale",

@@ -1,7 +1,7 @@
 {
     "setting": {
-        "Name": "4.8 kbps, OOK, 433 MHz (Preview)",
-        "Description": "4.8 kbps OOK for 433 MHz band (Preview).",
+        "Name": "4.8 kbps, OOK, 433 MHz",
+        "Description": "4.8 kbps OOK for 433 MHz band.",
         "Frequency": "433",
         "Patch": {
             "Define": "RF_MODE_AUTO",
@@ -55,11 +55,11 @@
                     },
                     {
                         "_name": "modulation.modType",
-                        "$": "1"
+                        "$": "2"
                     },
                     {
                         "_name": "modulation.deviation",
-                        "$": "100"
+                        "$": "0"
                     },
                     {
                         "_name": "symbolRate.preScale",

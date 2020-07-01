@@ -45,17 +45,12 @@ const sharedDocs = [
     },
     {
         configurable: ["txPower", "txPowerHi", "txPower433", "txPower433Hi"],
-        longDescription: "TX power, short for transmit power, is a parameter used to set "
+        longDescription: "TX power, short for transmit power, a parameter used to set "
             + "the desired output power during packet transmissions."
     },
     {
         configurable: "highPA",
         longDescription: "Select if the High Power Amplifier in the chip should be used."
-    },
-    {
-        configurable: "target",
-        longDescription: "Select which frequency band to optimise the PA-table for."
-        + " This is only necessary when no board has been selected"
     }
 ];
 

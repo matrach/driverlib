@@ -75,12 +75,14 @@ const rfCmdNames = {};
 // List of PA options
 const PaOptions = getPaOptions();
 
-// List of commands, indexed by PHY group
+// List of commands, indexed by PHY group ("ble", "prop" or "ieee_15_4")
+// Populated by createCommandList()
 const CmdMap = {};
 
-// Storage for customized command list (additional commands kept when changing PHY)
-let CmdListCustom = [];
+// Storage for command lists that has been changed by the user, overrides default command list for PHY
+let CustomCmdList = [];
 
+// Category configurables for symbols of individual RF commands
 const cmdSymbolsCat = {
     displayName: "RF Command Symbols",
     collapsed: true,
@@ -230,7 +232,8 @@ const config = [
         // PHY setting acronym
         name: "phyType",
         default: "none",
-        hidden: true
+        hidden: true,
+        onChange: onPhyTypeChanged
     }
 ];
 
@@ -246,7 +249,6 @@ exports = {
     createCommandList: createCommandList,
     getCustomOverrideInfo: getCustomOverrideInfo
 };
-
 
 /*!
  * ======== createCommandList ========
@@ -290,8 +292,8 @@ function createCommandList(phyGroup) {
         minSelections: 0,
         options: cmdOpts,
         default: [], // all commands unchecked by default
-        onChange: function(inst, ui) {
-            CmdListCustom = inst[cmdListName];
+        onChange: (inst, ui) => {
+            CustomCmdList = inst[cmdListName];
             updateCommandVisibility(inst, ui);
             onCmdFormatChanged(inst);
         }
@@ -319,7 +321,6 @@ function createCommandList(phyGroup) {
     });
 }
 
-
 /*!
  * ======== updateCommandVisibility ========
  * Update the visibility state of the individual commands
@@ -344,39 +345,41 @@ function updateCommandVisibility(inst, ui) {
 }
 
 /*!
- * ======== updatePhyTypeCommands ========
+ * ======== onPhyTypeChanged ========
  * Set the visibility state of RF commands according to their presence
  * in the active PHY setting of the active PHY group
  *
  * @param inst - Code Export Param instance
  * @param ui - UI state object
+ *
  */
-function updatePhyTypeCommands(inst, ui) {
-    const phySetting = inst.phyType;
+function onPhyTypeChanged(inst, ui) {
+    const phyType = inst.phyType;
     const phyGroup = inst.phyGroup;
-    const key = "cmdList_" + phyGroup;
+    const cmdList = "cmdList_" + phyGroup;
 
-    if (key in inst) {
-        // Current command list
-        let cmdList = inst[key];
-
-        if (cmdList.length === 0) {
-            // Use default (basic) command list the first time
-            cmdList = CmdHandler.get(phyGroup, phySetting).getCmdList("basic");
+    if (cmdList in inst) {
+        if (CustomCmdList.length === 0) {
+            inst[cmdList] = getCmdList();
         }
-
-        // Create list of checked commands in Command list
-        const selected = [];
-        _.each(cmdList, (cmd) => {
-            const id = _.camelCase(cmd);
-            selected.push(id);
-        });
-
-        // Apply list of selected commands
-        inst[key] = selected;
 
         // Update visibility of individual commands
         updateCommandVisibility(inst, ui);
+
+        // Make sure the symbol names are updated
+        if (inst.symGenMethod === "Automatic") {
+            onSymGenMethodChanged(inst, ui);
+        }
+    }
+
+    function getCmdList() {
+        const tmpList = CmdHandler.get(phyGroup, phyType).getCmdList("basic");
+        const ccList = [];
+        _.each(tmpList, (cmd) => {
+            const id = _.camelCase(cmd);
+            ccList.push(id);
+        });
+        return ccList;
     }
 }
 
@@ -391,9 +394,8 @@ function updatePhyTypeCommands(inst, ui) {
  */
 function onPhyGroupChanged(inst, ui) {
     const phyGroup = inst.phyGroup;
+    CustomCmdList = [];
 
-    // Clear custom command selection when PHY group changes
-    CmdListCustom = [];
     // Update visibility of command selection
     const visDescr = {
         prop: phyGroup !== Common.PHY_PROP,
@@ -402,26 +404,14 @@ function onPhyGroupChanged(inst, ui) {
     };
 
     _.each(visDescr, (hidden, pg) => {
-        const keyId = "cmdList_" + pg;
-        if (keyId in ui) {
-            ui[keyId].hidden = hidden;
+        const cmdList = "cmdList_" + pg;
+        if (cmdList in ui) {
+            ui[cmdList].hidden = hidden;
         }
     });
 
-    // Merge in any changes made to the command list
-    const cmdListName = "cmdList_" + phyGroup;
-    let cmdListCached = inst[cmdListName];
-
-    cmdListCached = _.union(cmdListCached, CmdListCustom);
-    inst[cmdListName] = cmdListCached;
-
-    // Update the command list
-    updatePhyTypeCommands(inst, ui);
-
-    // Make sure the symbol names are updated
-    onSymGenMethodChanged(inst, ui);
+    onPhyTypeChanged(inst, ui);
 }
-
 
 /*!
  *  ======== getSelectedCommands ========
@@ -431,10 +421,10 @@ function onPhyGroupChanged(inst, ui) {
  */
 function getSelectedCommands(inst) {
     const phyGroup = inst.phyGroup;
-    const key = "cmdList_" + phyGroup;
+    const cmdList = "cmdList_" + phyGroup;
     let ret = [];
-    if (key in inst) {
-        ret = inst[key];
+    if (cmdList in inst) {
+        ret = inst[cmdList];
     }
     return ret;
 }
@@ -479,7 +469,6 @@ function getSymNames(inst) {
             }
         }
     }
-
     return cache;
 }
 
@@ -497,28 +486,22 @@ function getSymNames(inst) {
  */
 function onSymGenMethodChanged(inst, ui) {
     const automatic = inst.symGenMethod === "Automatic";
-    const customEnable = inst.symGenMethod === "Custom";
+    const custom = inst.symGenMethod === "Custom";
     const allVars = {...symNames, ...rfCmdNames};
 
-    // Reset defaults
-    _.each(allVars, (name) => {
-        const cfgName = _.replace(name, "RF_", "");
-        const cfgDef = inst.$module.$configByName[cfgName];
-        if (cfgDef) {
-            inst[cfgName] = cfgDef.default;
-        }
-    });
-
-    // Set RF Commands read-write when custom mode
-    if (customEnable) {
-        for (const name in allVars) {
-            if (name in ui) {
-                ui[name].readOnly = false;
+    // Reset symbols and update UI
+    for (const name in allVars) {
+        if (name in inst) {
+            const cfgDef = inst.$module.$configByName[name];
+            if (cfgDef) {
+                inst[name] = cfgDef.default;
             }
+            ui[name].readOnly = !custom;
         }
     }
+
     if (automatic) {
-        // Restore default values
+        // Update symbol names
         for (const name in allVars) {
             if (name in inst) {
                 inst[name] = getDefaultValue(inst, name);
@@ -526,25 +509,12 @@ function onSymGenMethodChanged(inst, ui) {
         }
     }
     else {
-        // Restore default values for symbols
-        for (const name in symNames) {
-            if (name in inst) {
-                inst[name] = getDefaultValue(inst, name);
-            }
-        }
-        // Refresh command names
-        onCmdFormatChanged(inst, ui);
+        // Legacy
+        onCmdFormatChanged(inst);
     }
-    // Set RF Commands read-only when not custom mode
-    if (!customEnable) {
-        for (const name in allVars) {
-            if (name in ui) {
-                ui[name].readOnly = true;
-            }
-        }
-    }
-    ui.cmdPrefix.hidden = customEnable || automatic;
-    ui.cmdFormat.hidden = customEnable || automatic;
+
+    ui.cmdPrefix.hidden = custom || automatic;
+    ui.cmdFormat.hidden = custom || automatic;
 }
 
 /*!
@@ -571,7 +541,6 @@ function onCmdFormatChanged(inst) {
         inst[cmdName] = newName;
     });
 }
-
 
 /*!
  * ======== getDefaultValue ========
@@ -787,7 +756,6 @@ function validate(inst, validation) {
     // Verify application override file path name and application override macro name
     validateCustomOverride(inst, validation, "appOverride", "appOverrideMacro");
 }
-
 
 /*!
  *  ======== validateCustomOverride ========

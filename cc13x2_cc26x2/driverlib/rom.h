@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       rom.h
-*  Revised:        2020-02-14 11:30:20 +0100 (Fri, 14 Feb 2020)
-*  Revision:       56760
+*  Revised:        2020-03-03 13:22:52 +0100 (Tue, 03 Mar 2020)
+*  Revision:       56913
 *
 *  Description:    Prototypes for the ROM utility functions.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -74,6 +74,7 @@ typedef uint32_t     (* FPTR_RESERVED2_T)          ( void );
 typedef uint32_t     (* FPTR_RESERVED3_T)          ( uint8_t*                          ,\
                                                      uint32_t                          ,\
                                                      uint32_t                          );
+
 typedef void         (* FPTR_RESETDEV_T)           ( void );
 
 typedef uint32_t     (* FPTR_FLETCHER32_T)         ( uint16_t*    /* pui16Data       */,\
@@ -534,10 +535,6 @@ typedef struct
 #define ROM_PRCMPeripheralDeepSleepDisable \
     ((void (*)(uint32_t ui32Peripheral)) \
     ROM_API_PRCM_TABLE[12])
-
-#define ROM_PRCMPowerDomainStatus \
-    ((uint32_t (*)(uint32_t ui32Domains)) \
-    ROM_API_PRCM_TABLE[13])
 
 #define ROM_PRCMDeepSleep \
     ((void (*)(void)) \

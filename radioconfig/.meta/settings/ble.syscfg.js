@@ -63,12 +63,14 @@ const tmp = system.getScript(DevInfo.getSyscfgParams(PHY_GROUP));
 const config = _.cloneDeep(tmp);
 
 const highPaSupport = DevInfo.hasHighPaSupport();
+let hasWBMS = false;
 
 const settingSpecific = {
     displayName: "RF Settings BLE",
     description: "RF Settings BLE",
     longDescription: "RF Settings module for Bluetooth Low Energy protocol",
     validate: validate,
+    hasWBMS: () => hasWBMS,
     phyGroup: PHY_GROUP,
     config: config
 };
@@ -91,8 +93,20 @@ if (highPaSupport) {
 function validate(inst, validation) {
     /* Validation common to all PHY groups */
     Common.validateBasic(inst, validation);
-    if (inst.paramVisibility) {
-        RFBase.validateRfParams(inst, validation, inst.phyType, PHY_GROUP);
+    const phyType = inst.phyType;
+    hasWBMS = phyType.includes("wbms");
+
+    if (inst.paramVisibility && !hasWBMS) {
+        RFBase.validateRfParams(inst, validation, phyType, PHY_GROUP);
+    }
+
+    // Check if a wBMS setting is included
+    const instances = inst.$module.$instances;
+    for (let i = 0; i < instances.length && !hasWBMS; i++) {
+        const vinst = instances[i];
+        if (vinst.phyType.includes("wbms")) {
+            hasWBMS = true;
+        }
     }
 }
 
@@ -130,12 +144,16 @@ function addPhyConfigurable() {
         onChange: (inst, ui) => {
             const phyType = inst.phyType;
             updatePDUConfig(inst, ui);
-            /* Refresh the instance */
-            RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP);
+
+            // Refresh the instance
+            RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP, ["txPower", "txPowerHi"]);
+
+            // Hide whitening if wBMS setting
+            hasWBMS = phyType.includes("wbms");
+            ui.whitening.hidden = hasWBMS;
         }
     });
 }
-
 
 /*!
  *  ======== onPermissionsChange ========
@@ -172,7 +190,6 @@ function onVisibilityChange(inst, ui) {
 function updatePDUConfig(inst, ui) {
     ui.packetLengthBle.hidden = inst.phyType !== "bt5le1madvnc";
 }
-
 
 /*!
  *  ======== extend ========

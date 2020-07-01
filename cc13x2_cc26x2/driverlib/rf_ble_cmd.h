@@ -1508,6 +1508,8 @@ struct __RFC_STRUCT rfc_CMD_BLE5_ADV_SCAN_s {
 
 //! @}
 
+#define CMD_BLE5_RADIO_SETUP_PA                                 CMD_BLE5_RADIO_SETUP
+
 //! \addtogroup CMD_BLE5_RADIO_SETUP_PA
 //! @{
 //! Bluetooth 5 Radio Setup Command for all PHYs with PA Switching Fields

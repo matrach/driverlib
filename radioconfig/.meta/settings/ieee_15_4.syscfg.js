@@ -139,7 +139,6 @@ function onPermissionsChange(inst, ui) {
     ui.phyType.readOnly = freqReadOnly;
 }
 
-
 /*!
  *  ======== extend ========
  *  Extends BLE object to include RF Basic module

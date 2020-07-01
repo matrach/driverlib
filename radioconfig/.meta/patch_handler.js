@@ -70,6 +70,11 @@ function generateIncludesH(modules) {
         }
         else if (modpath === BasePath + "settings/ble") {
             incl += driverLibCmdInclude("ble");
+            // Handle wBMS
+            const mod = system.modules[modpath];
+            if (mod.hasWBMS()) {
+                incl += driverLibCmdInclude("prop");
+            }
         }
         else if (modpath === BasePath + "settings/ieee_15_4") {
             incl += driverLibCmdInclude("ieee");
@@ -117,10 +122,13 @@ function generateIncludesC(modules, useCoEx) {
         }
         incl += driverLibCmdInclude(libPath);
 
-        // Aggregate patch includes
         const mod = system.modules[modpath];
-        patchIncludes = Object.assign(patchIncludes, getPatchIncludes(phyGroup, mod.$instances, useCoEx));
+        if (phyGroup === Common.PHY_BLE && mod.hasWBMS()) {
+            incl += driverLibCmdInclude("prop");
+        }
 
+        // Aggregate patch includes
+        patchIncludes = Object.assign(patchIncludes, getPatchIncludes(phyGroup, mod.$instances, useCoEx));
 
         return true;
     });

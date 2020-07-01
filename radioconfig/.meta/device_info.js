@@ -39,7 +39,7 @@
 "use strict";
 
 // Module version
-const RADIO_CONFIG_VERSION = "1.5";
+const RADIO_CONFIG_VERSION = "1.6";
 
 // Common utility functions
 const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js");
@@ -68,6 +68,9 @@ if (!DeviceName) {
 
 // True if High PA device
 const HighPaDevice = DeviceName === "cc1352p" || DeviceName === "cc2652p";
+
+// True if wBMS support
+const wbmsSupport = DeviceName === "cc2642r";
 
 /*
  * Global device information
@@ -161,8 +164,78 @@ if (DeviceName === "cc1352r" || DeviceName === "cc1312r") {
         },
         {
             name: "ook48kbps",
-            description: "4.8 kbps OOK",
+            description: "4.8 kbps OOK (868 MHz)",
             file: "setting_tc597.json"
+        },
+        {
+            name: "ook48kbps915",
+            description: "4.8 kbps OOK (915 MHz)",
+            file: "setting_tc598.json"
+        },
+        {
+            name: "2gfsk50kbps915wsun",
+            description: "50 kbps, 2-GFSK, 12.5 KHz dev., WiSUN PHY (915 MHz)",
+            file: "setting_tc119.json"
+        },
+        {
+            name: "2gfsk50kbps868wsun",
+            description: "50 kbps, 2-GFSK, 12.5 KHz dev., WiSUN PHY (868 MHz)",
+            file: "setting_tc120.json"
+        },
+        {
+            name: "2gfsk100kbps50dev915wsun",
+            description: "100 kbps, 2-GFSK, 50 KHz dev., WiSUN PHY (915 MHz)",
+            file: "setting_tc136.json"
+        },
+        {
+            name: "2gfsk100kbps50dev868wsun",
+            description: "100 kbps, 2-GFSK, 50 Khz dev., WiSUN PHY (868 MHz)",
+            file: "setting_tc137.json"
+        },
+        {
+            name: "2gfsk100kbps25dev915wsun",
+            description: "100 kbps, 2-GFSK, 25 KHz dev., WiSUN PHY, (915 MHz)",
+            file: "setting_tc140.json"
+        },
+        {
+            name: "2gfsk100kbps25dev868wsun",
+            description: "100 kbps, 2-GFSK, 25 Khz dev., WiSUN PHY, (868 MHz)",
+            file: "setting_tc141.json"
+        },
+        {
+            name: "2gfsk200kbps100dev915wsun",
+            description: "200 kbps, 2-GFSK, 100 KHz dev., WiSUN PHY, (915 MHz)",
+            file: "setting_tc150.json"
+        },
+        {
+            name: "2gfsk200kbps100dev868wsun",
+            description: "200 kbps, 2-GFSK, 100 Khz dev., WiSUN PHY, (868 MHz)",
+            file: "setting_tc151.json"
+        },
+        {
+            name: "2gfsk48kbpstcxo",
+            description: "9.6 kbps, 2-GFSK, 2.4 kHz deviation (TCXO)",
+            file: "setting_tc594.json"
+        },
+        {
+            name: "wbdsss480ksps240kbps",
+            description: "WBDSSS 480 ksps, 240 kbps",
+            file: "setting_tc380.json"
+        },
+        {
+            name: "wbdsss480ksps120kbps",
+            description: "WBDSSS 480 ksps, 120 kbps",
+            file: "setting_tc381.json"
+        },
+        {
+            name: "wbdsss480ksps60kbps",
+            description: "WBDSSS 480 ksps, 60 kbps",
+            file: "setting_tc382.json"
+        },
+        {
+            name: "wbdsss480ksps30kbps",
+            description: "WBDSSS 480 ksps, 30 kbps",
+            file: "setting_tc383.json"
         },
         {
             name: "custom868",
@@ -264,6 +337,71 @@ else if (DeviceName === "cc1352p") {
             file: "setting_tc597.json"
         },
         {
+            name: "ook48kbps915",
+            description: "4.8 kbps OOK (915 MHz)",
+            file: "setting_tc598.json"
+        },
+        {
+            name: "2gfsk50kbps915wsun",
+            description: "50 kbps, 2-GFSK, 12.5 KHz dev., WiSUN PHY (915 MHz)",
+            file: "setting_tc719.json"
+        },
+        {
+            name: "2gfsk50kbps868wsun",
+            description: "50 kbps, 2-GFSK, 12.5 KHz dev., WiSUN PHY (868 MHz)",
+            file: "setting_tc720.json"
+        },
+        {
+            name: "2gfsk100kbps50dev915wsun",
+            description: "100 kbps, 2-GFSK, 50 KHz dev., WiSUN PHY (915 MHz)",
+            file: "setting_tc736.json"
+        },
+        {
+            name: "2gfsk100kbps50dev868wsun",
+            description: "100 kbps, 2-GFSK, 50 Khz dev., WiSUN PHY (868 MHz)",
+            file: "setting_tc737.json"
+        },
+        {
+            name: "2gfsk100kbps25dev915wsun",
+            description: "100 kbps, 2-GFSK, 25 KHz dev., WiSUN PHY, (915 MHz)",
+            file: "setting_tc740.json"
+        },
+        {
+            name: "2gfsk100kbps25dev868wsun",
+            description: "100 kbps, 2-GFSK, 25 Khz dev., WiSUN PHY, (868 MHz)",
+            file: "setting_tc741.json"
+        },
+        {
+            name: "2gfsk200kbps100dev915wsun",
+            description: "200 kbps, 2-GFSK, 100 KHz dev., WiSUN PHY, (915 MHz)",
+            file: "setting_tc750.json"
+        },
+        {
+            name: "2gfsk200kbps100dev868wsun",
+            description: "200 kbps, 2-GFSK, 100 Khz dev., WiSUN PHY, (868 MHz)",
+            file: "setting_tc751.json"
+        },
+        {
+            name: "wbdsss480ksps240kbps",
+            description: "WBDSSS 480 ksps, 240 kbps",
+            file: "setting_tc380.json"
+        },
+        {
+            name: "wbdsss480ksps120kbps",
+            description: "WBDSSS 480 ksps, 120 kbps",
+            file: "setting_tc381.json"
+        },
+        {
+            name: "wbdsss480ksps60kbps",
+            description: "WBDSSS 480 ksps, 60 kbps",
+            file: "setting_tc382.json"
+        },
+        {
+            name: "wbdsss480ksps30kbps",
+            description: "WBDSSS 480 ksps, 30 kbps",
+            file: "setting_tc383.json"
+        },
+        {
             name: "custom868",
             description: "Custom PHY Setting",
             file: "setting_tc706_custom.json"
@@ -341,6 +479,17 @@ let SettingsMapBLE = [
     }
 ];
 
+if (wbmsSupport) {
+    const settingsWBMS = [
+        {
+            name: "wbms2m",
+            description: "wBMS, 2 Mbps",
+            file: "setting_wbms_2m.json"
+        }
+    ];
+    SettingsMapBLE = SettingsMapBLE.concat(settingsWBMS);
+}
+
 if (HighPaDevice) {
     const settings10dbm = [
         {
@@ -378,7 +527,6 @@ if (HighPaDevice) {
     };
     SettingsMap154.push(setting10dbm);
 }
-
 
 // Exported from this module
 exports = {
@@ -444,7 +592,6 @@ function getVersionInfo() {
     const smartRFDataVersion = deviceList.devicelist.version;
     return {moduleVersion: RADIO_CONFIG_VERSION, dataVersion: smartRFDataVersion};
 }
-
 
 /*!
  *  ======== getDeviceConfig ========

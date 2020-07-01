@@ -124,7 +124,6 @@ const propDocs = [
     }
 ];
 
-
 exports = {
     propDocs: propDocs
 };

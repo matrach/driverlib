@@ -156,7 +156,7 @@ _.each(PhyInfo, (pi, key) => {
 
 /*
  *  ======== getPhyOptions ========
- *  Creates an array of protocol (PHY group) With options of check-boxes
+ *  Creates an array of protocol (PHY group) with options of check-boxes
  *
  *  @param phyList - list of PHY
  */
@@ -192,11 +192,12 @@ function getRfOptions(phyList) {
 
     _.each(phyList.settings, (phy) => {
         const cmdHandler = CmdHandler.get(phyGroup, phy.name);
-        const longDescr = cmdHandler.getSettingLongName();
+        const displayName = cmdHandler.getSettingLongName();
+        const description = cmdHandler.getSettingDescription();
         const opt = {
             name: phy.name,
-            displayName: phy.description,
-            description: longDescr
+            displayName: displayName,
+            description: description
         };
         options.push(opt);
     });
@@ -261,7 +262,6 @@ function addRfSettingDependency(phyGroup, phy, displayName) {
     });
 }
 
-
 /*
  *  ======== moduleInstances ========
  *  Determines what modules are added as non-static sub-modules
@@ -285,7 +285,6 @@ function moduleInstances(inst) {
     });
     return dependencyModule;
 }
-
 
 /*
  *  ======== modules ========

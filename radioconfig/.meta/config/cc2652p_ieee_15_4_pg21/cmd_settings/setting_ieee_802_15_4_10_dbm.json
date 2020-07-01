@@ -1,7 +1,7 @@
 {
     "setting": {
-        "Name": "IEEE 802.15.4 O-QPSK DSSS PHY (250 kbps) at 2450 MHz band",
-        "Description": "IEEE 802.15.4 O-QPSK DSSS PHY (250 kbps) at 2450 MHz band",
+        "Name": "IEEE 802.15.4 O-QPSK DSSS PHY (250 kbps) at 2450 MHz band (10 dBm)",
+        "Description": "IEEE 802.15.4 O-QPSK DSSS PHY (250 kbps) at 2450 MHz band for 10 dBm",
         "Frequency": "2405",
         "Patch": {
             "Define": "RF_MODE_AUTO",
@@ -100,7 +100,11 @@
                         "Block": "override_ieee_802_15_4_10_dbm.json"
                     },
                     {
-                        "_name": "pRegOverrideTxStd"
+                        "_name": "pRegOverrideTxStd",
+                        "Block": [
+                            "override_txstd_placeholder.json",
+                            "override_txstd_settings.json"
+                        ]
                     },
                     {
                         "_name": "pRegOverrideTx20",

@@ -137,7 +137,6 @@ function getBoardName() {
     return boardName;
 }
 
-
 /*!
  *  ======== isHex ========
  *  Return true if string is a hex value
@@ -342,7 +341,6 @@ function getCoexConfig() {
     return null;
 }
 
-
 /*
  * ======== initLongDescription ========
  * Searches through the docs object to find the correct longDescription
@@ -379,7 +377,6 @@ function initLongDescription(configurable, docs) {
         }
     });
 }
-
 
 /*
  *  ======== validateTxPower ========
@@ -577,7 +574,6 @@ function isCName(id) {
     }
     return false;
 }
-
 
 /*
  *  ======== autoForceModules ========

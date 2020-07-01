@@ -73,7 +73,6 @@ exports = {
     getUpdatedRfCommands: getUpdatedRfCommands
 };
 
-
 /*!
  *  ======== get ========
  *  Get the Command Handler for a PHY layer. Create the
@@ -389,7 +388,6 @@ function create(phyGroup, phyName, first) {
         });
     }
 
-
     /*!
      *  ======== getCmdList ========
      *  Get list of commands available for this setting
@@ -429,18 +427,15 @@ function create(phyGroup, phyName, first) {
         OverrideHandler.init(Setting.Command, PhyGroup, highPA);
         OverrideHandler.updateTxPowerOverride(txPowActual, freq, txPower.high);
 
-        let cfgCommon = {
-            txPower: txPower.default
-        };
+        const cfgCommon = {};
 
         if (DeviceInfo.hasHighPaSupport()) {
-            cfgCommon = Object.assign(cfgCommon, {txPowerHi: txPower.high});
+            cfgCommon.txPowerHi = txPower.high;
         }
 
         if (PhyGroup === Common.PHY_PROP) {
             let cfgPropBase = {
                 whitening: getWhitening(),
-                txPower433: txPower.t433,
                 symbolRate: parseFloat(getSymbolRate()),
                 deviation: parseFloat(getDeviation()),
                 rxFilterBw: getRxFilterBw(),
@@ -452,12 +447,17 @@ function create(phyGroup, phyName, first) {
                 preambleMode: getPreambleMode()
             };
 
-            if (UseTxPower2400) {
-                const cfgProp24 = {
-                    txPower2400: txPower.t2400
-                };
-                cfgPropBase = {...cfgPropBase, ...cfgProp24};
+            const cfgTxPower = {};
+            if (UseTxPower2400 && FreqBand === 2400) {
+                cfgTxPower.txPower2400 = txPower.t2400;
             }
+            else if (FreqBand === 433) {
+                cfgTxPower.txPower433 = txPower.t433;
+            }
+            else {
+                cfgTxPower.txPower = txPower.default;
+            }
+            cfgPropBase = {...cfgPropBase, ...cfgTxPower};
 
             let cfgPropExtended = {};
             if (CmdUsed.includes("CMD_PROP_RX")) {
@@ -473,6 +473,7 @@ function create(phyGroup, phyName, first) {
         }
         else if (PhyGroup === Common.PHY_BLE) {
             const cfgBle = {
+                txPower: txPower.default,
                 frequency: freq,
                 whitening: getWhitening()
             };
@@ -480,6 +481,7 @@ function create(phyGroup, phyName, first) {
         }
         else if (phyGroup === Common.PHY_IEEE_15_4) {
             const cfg154 = {
+                txPower: txPower.default,
                 frequency: freq
             };
             return Object.assign(cfgCommon, cfg154);
@@ -517,6 +519,17 @@ function create(phyGroup, phyName, first) {
         const deviation = (cmd * 250.0) / 1e3;
 
         return deviation.toFixed(1);
+    }
+
+    /*!
+     *  ======== getDecimMode ========
+     *  Get the decimation mode bit-field
+     *  (CMD_PROP_RADIO_DIV_SETUP)
+     *
+     *  @returns number as string
+     */
+    function getDecimMode() {
+        return getCmdFieldValue("symbolRate.decimMode");
     }
 
     /*!
@@ -683,7 +696,6 @@ function create(phyGroup, phyName, first) {
         return ret;
     }
 
-
     /*!
      *  ======== getSyncwordLength ========
      *  Get the Sync Word length as a string ("8 Bits" ... "32 Bits")
@@ -707,7 +719,6 @@ function create(phyGroup, phyName, first) {
     function getFixedPacketLength() {
         return getCmdFieldValue("pktLen");
     }
-
 
     /*!
      *  ======== getPktConf ========
@@ -1168,7 +1179,6 @@ function create(phyGroup, phyName, first) {
         return code;
     }
 
-
     /*!
      *  ======== getCommandMap ========
      *  Get a list of commands that map to the given RF parameter
@@ -1208,7 +1218,6 @@ function create(phyGroup, phyName, first) {
         return usedCmds;
     }
 
-
     /*!
      *  ======== isParameterUsed ========
      *  Check if an RF parameter is supported by the current selection of RF commands
@@ -1234,7 +1243,6 @@ function create(phyGroup, phyName, first) {
         }
         return true;
     }
-
 
     /*!
      *  ======== getParameterSummary ========
@@ -1300,6 +1308,11 @@ function create(phyGroup, phyName, first) {
             }
 
             if ((key === "txPower433Hi") && (!useHighPA || !loFreq)) {
+                return true;
+            }
+
+            // Ignore modulation and loDivider (invisible)
+            if (key === "loDivider" || key === "modulation") {
                 return true;
             }
 
@@ -2003,6 +2016,7 @@ function create(phyGroup, phyName, first) {
         updateFrontendSettings: updateFrontendSettings,
         getFrequencyBand: getFrequencyBand,
         getFrequency: getFrequency,
+        getDecimMode: getDecimMode,
         getUsedCommands: getUsedCommands,
         isParameterUsed: isParameterUsed
     };

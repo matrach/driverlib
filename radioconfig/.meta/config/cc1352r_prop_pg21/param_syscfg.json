@@ -198,6 +198,11 @@
                     {
                         "name": "3767.4",
                         "key": 103
+                    },
+                    {
+                        "name": "17.1",
+                        "key": 115,
+                        "info": "decimMode=7"
                     }
                 ]
             },
@@ -205,7 +210,8 @@
                 "name": "txPower",
                 "displayName": "TX Power (dBm)",
                 "description": "TX Power",
-                "default": "14"
+                "default": "14",
+                "longDescription": ""
             },
             {
                 "name": "txPower433",

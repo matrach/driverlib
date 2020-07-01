@@ -1,9 +1,9 @@
 /******************************************************************************
 *  Filename:       hw_sysctl.h
-*  Revised:        2015-03-16 14:43:45 +0100 (Mon, 16 Mar 2015)
-*  Revision:       42989
+*  Revised:        2020-03-04 12:09:10 +0100 (Wed, 04 Mar 2020)
+*  Revision:       56934
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

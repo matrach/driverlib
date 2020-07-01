@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       chipinfo.c
-*  Revised:        2020-02-17 10:51:36 +0100 (Mon, 17 Feb 2020)
-*  Revision:       56781
+*  Revised:        2020-03-04 09:51:14 +0100 (Wed, 04 Mar 2020)
+*  Revision:       56925
 *
 *  Description:    Collection of functions returning chip information.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

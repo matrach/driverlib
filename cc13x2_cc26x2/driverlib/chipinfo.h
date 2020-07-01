@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2020-02-17 10:51:36 +0100 (Mon, 17 Feb 2020)
-*  Revision:       56781
+*  Revised:        2020-03-03 13:22:52 +0100 (Tue, 03 Mar 2020)
+*  Revision:       56913
 *
 *  Description:    Collection of functions returning chip information.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2020, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -366,9 +366,10 @@ typedef enum {
    FAMILY_Unknown          = -1, //!< -1 means that the chip's family member is unknown.
    FAMILY_CC26x0           =  0, //!<  0 means that the chip is a CC26x0 family member.
    FAMILY_CC13x0           =  1, //!<  1 means that the chip is a CC13x0 family member.
-   FAMILY_CC26x1           =  2, //!<  2 means that the chip is a CC26x1 family member.
+   FAMILY_CC13x1_CC26x1    =  2, //!<  2 means that the chip is a CC13x1, CC26x1 family member.
    FAMILY_CC26x0R2         =  3, //!<  3 means that the chip is a CC26x0R2 family (new ROM contents).
-   FAMILY_CC13x2_CC26x2    =  4  //!<  4 means that the chip is a CC13x2, CC26x2 family member.
+   FAMILY_CC13x2_CC26x2    =  4, //!<  4 means that the chip is a CC13x2, CC26x2 family member.
+   FAMILY_CC13x3_CC26x3    =  5  //!<  4 means that the chip is a CC13x3, CC26x3 family member.
 } ChipFamily_t;
 
 //*****************************************************************************
@@ -388,9 +389,10 @@ extern ChipFamily_t ChipInfo_GetChipFamily( void );
 //*****************************************************************************
 #define DRIVERLIB_BUILD_CC26X0        0 //!< 0 is the driverlib build ID for the cc26x0 driverlib.
 #define DRIVERLIB_BUILD_CC13X0        1 //!< 1 is the driverlib build ID for the cc13x0 driverlib.
-#define DRIVERLIB_BUILD_CC26X1        2 //!< 2 is the driverlib build ID for the cc26x1 driverlib.
+#define DRIVERLIB_BUILD_CC13X1_CC26X1 2 //!< 2 is the driverlib build ID for the cc13x1_cc26x1 driverlib.
 #define DRIVERLIB_BUILD_CC26X0R2      3 //!< 3 is the driverlib build ID for the cc26x0r2 driverlib.
 #define DRIVERLIB_BUILD_CC13X2_CC26X2 4 //!< 4 is the driverlib build ID for the cc13x2_cc26x2 driverlib.
+#define DRIVERLIB_BUILD_CC13X3_CC26X3 5 //!< 5 is the driverlib build ID for the cc13x3_cc26x3 driverlib.
 
 //*****************************************************************************
 //
@@ -445,16 +447,16 @@ ChipInfo_ChipFamilyIs_CC26x0R2( void )
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC26x1 family.
+//! \brief Returns true if this chip is member of the CC13x1, CC26x1 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC26x1 family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC13x1, CC26x1 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIs_CC26x1( void )
+ChipInfo_ChipFamilyIs_CC13x1_CC26x1( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC26x1 );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x1_CC26x1 );
 }
 
 //*****************************************************************************
@@ -469,6 +471,20 @@ __STATIC_INLINE bool
 ChipInfo_ChipFamilyIs_CC13x2_CC26x2( void )
 {
    return ( ChipInfo_GetChipFamily() == FAMILY_CC13x2_CC26x2 );
+}
+
+//*****************************************************************************
+//
+//! \brief Returns true if this chip is member of the CC13x3, CC26x3 family.
+//!
+//! \return
+//! Returns \c true if this chip is member of the CC13x3, CC26x3 family, \c false otherwise.
+//
+//*****************************************************************************
+__STATIC_INLINE bool
+ChipInfo_ChipFamilyIs_CC13x3_CC26x3( void )
+{
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x3_CC26x3 );
 }
 
 //*****************************************************************************

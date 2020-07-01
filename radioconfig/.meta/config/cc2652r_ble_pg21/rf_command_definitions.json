@@ -211,6 +211,12 @@
                                         "BitIndex": "10..10",
                                         "BitDescription": "0: Power up frequency synth<br>\n  1: Do not power up frequency synth",
                                         "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bSynthNarrowBand",
+                                        "BitIndex": "12..12",
+                                        "BitDescription": "0: Normal synth mode<br>\n  1: Narrow-band synth mode",
+                                        "BitAccess": "W"
                                     }
                                 ],
                                 "Description": "Configuration options",
@@ -4945,6 +4951,12 @@
                                         "BitIndex": "10..10",
                                         "BitDescription": "0: Power up frequency synth<br>\n  1: Do not power up frequency synth",
                                         "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bSynthNarrowBand",
+                                        "BitIndex": "12..12",
+                                        "BitDescription": "0: Normal synth mode<br>\n  1: Narrow-band synth mode",
+                                        "BitAccess": "W"
                                     }
                                 ],
                                 "Description": "Configuration options",
@@ -6407,7 +6419,7 @@
                                 "_type": "pointer",
                                 "Offset": "32",
                                 "PtrType": "uint8_t*",
-                                "PtrName": "ble5Scanner",
+                                "PtrName": "ble5ScannerPar",
                                 "ByteIndex": "20..23",
                                 "Description": "Pointer to command specific parameter structure",
                                 "Access": "W"
@@ -6426,6 +6438,338 @@
                                 "ByteIndex": "28..31",
                                 "Description": "If <code>txPower<\/code> = 0xFFFF:<br>\n  If <code>tx20Power<\/code> < 0x10000000: Transmit power to use for the 20-dBm PA;\n  overrides the one given in radio setup for the duration of the command. <br>\n  If <code>tx20Power<\/code> >= 0x10000000: Pointer to PA change override structure\n  as for CMD_CHANGE_PA ; permanently changes the PA and PA power set in radio setup.<br>\n  For other values of <code>txPower<\/code>, this field is not accessed by the radio\n  CPU and may be omitted from the structure.",
                                 "Access": "W"
+                            },
+                            {
+                                "_name": "pRxQ",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "ble5ScannerParRxQ",
+                                "ByteIndex": "32..35"
+                            },
+                            {
+                                "_name": "rxConfig",
+                                "ByteIndex": "36..36",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushIgnored",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically remove ignored packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushCrcErr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically remove packets with CRC error from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushEmpty",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, automatically remove empty packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeLenByte",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received length byte in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendStatus",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append a status word to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "scanConfig",
+                                "ByteIndex": "37..37",
+                                "BitField": [
+                                    {
+                                        "_name": "scanFilterPolicy",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "Scanning filter policy regarding advertiser address<br>\n  0: Accept all advertisement packets<br>\n  1: Accept only advertisement packets from devices where the advertiser's address\n  is in the White list.",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bActiveScan",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "0: Passive scan<br>\n  1: Active scan",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "deviceAddrType",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "The type of the device address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "rpaFilterPolicy",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Filter policy for initA of ADV_DIRECT_IND messages<br>\n  0: Accept only initA that matches own address<br>\n  1: Also accept all resolvable private addresses",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bStrictLenFilter",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Accept any packet with a valid advertising packet length<br>\n  1: Discard messages with illegal length for the given packet type",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoWlIgnore",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not set ignore bit in white list from radio CPU for legacy packets<br>\n  1: Automatically set ignore bit in white list for legacy packets",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEndOnRpt",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "0: Continue scanner operation after each reporting ADV*_IND or sending SCAN_RSP<br>\n  1: End scanner operation after each reported ADV*_IND and potentially SCAN_RSP",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "rpaMode",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "Resolvable private address mode<br>\n  0: Normal operation<br>\n  1: Use white list for a received RPA regardless of filter policy",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "randomState",
+                                "ByteIndex": "38..39"
+                            },
+                            {
+                                "_name": "backoffCount",
+                                "ByteIndex": "40..41"
+                            },
+                            {
+                                "_name": "backoffPar",
+                                "ByteIndex": "42..42",
+                                "BitField": [
+                                    {
+                                        "_name": "logUpperLimit",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Binary logarithm of parameter upperLimit used in scanner backoff procedure",
+                                        "BitAccess": "RW"
+                                    },
+                                    {
+                                        "_name": "bLastSucceeded",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "1 if the last SCAN_RSP was successfully received and <code>upperLimit<\/code>\n  not changed",
+                                        "BitAccess": "RW"
+                                    },
+                                    {
+                                        "_name": "bLastFailed",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "1 if reception of the last SCAN_RSP failed and <code>upperLimit<\/code> was not\n  changed",
+                                        "BitAccess": "RW"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "extFilterConfig",
+                                "ByteIndex": "43..43",
+                                "BitField": [
+                                    {
+                                        "_name": "bCheckAdi",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Do not perform ADI filtering<br>\n  1: Perform ADI filtering on packets where ADI is present",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoAdiUpdate",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "0: Do not update ADI entries in radio CPU using legacy mode (recommended)<br>\n  1: Legacy mode: Automatically update ADI entry for received packets with\n  AdvDataInfo after first occurrence",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bApplyDuplicateFiltering",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "0: Do not apply duplicate filtering based on device address for extended\n  advertiser packets (recommended)<br>\n  1: Apply duplicate filtering based on device address for extended advertiser\n  packets with no ADI field",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoWlIgnore",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "0: Do not set ignore bit in white list from radio CPU for extended advertising packets<br>\n  1: Automatically set ignore bit in white list for extended advertising packets",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoAdiProcess",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Do not use automatic ADI processing<br>\n  1: Automatically update ADI entry for received packets so that only the same\n  ADI is accepted for the rest of the chain and the SID\/DID combination is\n  ignored after the entire chain is received.",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bExclusiveSid",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Set <code>adiStatus.state<\/code> to 0 when command starts so that all\n  valid SIDs are accepted<br>\n  1: Do not modify adiStatus.state when command starts<br>",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "adiStatus",
+                                "ByteIndex": "44..44",
+                                "BitField": [
+                                    {
+                                        "_name": "lastAcceptedSid",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Indication of SID of last successfully received packet that was not ignored",
+                                        "BitAccess": "RW"
+                                    },
+                                    {
+                                        "_name": "state",
+                                        "BitIndex": "4..6",
+                                        "BitDescription": "0: No extended packet received, or last extended packet didn't have an ADI;\n  <code>lastAcceptedSid<\/code> field is not valid<br>\n  1: A message with ADI has been received, but no chain is under reception;\n  ADI filtering to be performed normally<br>\n  2: A message with SID as given in <code>lastAcceptedSid<\/code> has been\n  received, and chained messages are still pending. Messages without this\n  SID will be ignored<br>\n  3: An AUX_SCAN_RSP message has been received after receiving messages with SID\n  as given in <code>lastAcceptedSid<\/code>, and chained messages are\n  pending. Messages with an ADI field will be ignored.<br>\n  4: A message with no ADI has been received, and chained messages are still\n  pending. Messages with an ADI field will be ignored.<br>\n  Others: <i>Reserved<\/i>",
+                                        "BitAccess": "RW"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "45..46"
+                            },
+                            {
+                                "_name": "__dummy1",
+                                "ByteIndex": "47..47"
+                            },
+                            {
+                                "_name": "pDeviceAddress",
+                                "_type": "pointer",
+                                "PtrType": "uint16_t*",
+                                "PtrName": "ble5ScannerParDeviceAddress",
+                                "ByteIndex": "48..51"
+                            },
+                            {
+                                "_name": "pWhiteList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "ble5ScannerParWhiteList",
+                                "ByteIndex": "52..55"
+                            },
+                            {
+                                "_name": "pAdiList",
+                                "_type": "pointer",
+                                "PtrType": "uint16_t*",
+                                "PtrName": "ble5ScannerParAdiList",
+                                "ByteIndex": "56..59"
+                            },
+                            {
+                                "_name": "maxWaitTimeForAuxCh",
+                                "ByteIndex": "60..61"
+                            },
+                            {
+                                "_name": "timeoutTrigger",
+                                "ByteIndex": "62..62",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "63..63",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "timeoutTime",
+                                "ByteIndex": "64..67"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "68..71"
+                            },
+                            {
+                                "_name": "rxStartTime",
+                                "ByteIndex": "72..75"
+                            },
+                            {
+                                "_name": "rxListenTime",
+                                "ByteIndex": "76..77"
+                            },
+                            {
+                                "_name": "channelNo",
+                                "ByteIndex": "78..78"
+                            },
+                            {
+                                "_name": "phyMode",
+                                "ByteIndex": "79..79"
+                            },
+                            {
+                                "_name": "auxChRes",
+                                "ByteIndex": "72..72",
+                                "CodeGen": {
+                                    "Action": "DISABLE_FIELD",
+                                    "ValComment": "The value must be integrated as part of the previous field"
+                                }
                             }
                         ]
                     },
@@ -6573,7 +6917,7 @@
                                 "_type": "pointer",
                                 "Offset": "32",
                                 "PtrType": "uint8_t*",
-                                "PtrName": "ble5Initiator",
+                                "PtrName": "ble5InitiatorPar",
                                 "ByteIndex": "20..23",
                                 "Description": "Pointer to command specific parameter structure",
                                 "Access": "W"
@@ -6592,6 +6936,266 @@
                                 "ByteIndex": "28..31",
                                 "Description": "If <code>txPower<\/code> = 0xFFFF:<br>\n  If <code>tx20Power<\/code> < 0x10000000: Transmit power to use for the 20-dBm PA;\n  overrides the one given in radio setup for the duration of the command. <br>\n  If <code>tx20Power<\/code> >= 0x10000000: Pointer to PA change override structure\n  as for CMD_CHANGE_PA ; permanently changes the PA and PA power set in radio setup.<br>\n  For other values of <code>txPower<\/code>, this field is not accessed by the radio\n  CPU and may be omitted from the structure.",
                                 "Access": "W"
+                            },
+                            {
+                                "_name": "pRxQ",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "ble5InitiatorParRxQ",
+                                "ByteIndex": "32..35"
+                            },
+                            {
+                                "_name": "rxConfig",
+                                "ByteIndex": "36..36",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushIgnored",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically remove ignored packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushCrcErr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically remove packets with CRC error from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushEmpty",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, automatically remove empty packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeLenByte",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received length byte in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendStatus",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append a status word to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "initConfig",
+                                "ByteIndex": "37..37",
+                                "BitField": [
+                                    {
+                                        "_name": "bUseWhiteList",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "Initiator filter policy<br>\n  0: Use specific peer address<br>\n  1: Use white list",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bDynamicWinOffset",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "1: Use dynamic WinOffset insertion",
+                                        "BitAccess": []
+                                    },
+                                    {
+                                        "_name": "deviceAddrType",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "The type of the device address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "peerAddrType",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "The type of the peer address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bStrictLenFilter",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Accept any packet with a valid advertising packet length<br>\n  1: Discard messages with illegal length for the given packet type",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "chSel",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not report support of Channel Selection Algorithm #2 in CONNECT_IND<br>\n  1: Report support of Channel Selection Algorithm #2 in CONNECT_IND",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "randomState",
+                                "ByteIndex": "38..39"
+                            },
+                            {
+                                "_name": "backoffCount",
+                                "ByteIndex": "40..41"
+                            },
+                            {
+                                "_name": "backoffPar",
+                                "ByteIndex": "42..42",
+                                "BitField": [
+                                    {
+                                        "_name": "logUpperLimit",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Binary logarithm of parameter upperLimit used in scanner backoff procedure",
+                                        "BitAccess": "RW"
+                                    },
+                                    {
+                                        "_name": "bLastSucceeded",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "1 if the last SCAN_RSP was successfully received and <code>upperLimit<\/code>\n  not changed",
+                                        "BitAccess": "RW"
+                                    },
+                                    {
+                                        "_name": "bLastFailed",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "1 if reception of the last SCAN_RSP failed and <code>upperLimit<\/code> was not\n  changed",
+                                        "BitAccess": "RW"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "connectReqLen",
+                                "ByteIndex": "43..43"
+                            },
+                            {
+                                "_name": "pConnectReqData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "ble5InitiatorParConnectReqData",
+                                "ByteIndex": "44..47"
+                            },
+                            {
+                                "_name": "pDeviceAddress",
+                                "_type": "pointer",
+                                "PtrType": "uint16_t*",
+                                "PtrName": "ble5InitiatorParDeviceAddress",
+                                "ByteIndex": "48..51"
+                            },
+                            {
+                                "_name": "pWhiteList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "ble5InitiatorParWhiteList",
+                                "ByteIndex": "52..55"
+                            },
+                            {
+                                "_name": "connectTime",
+                                "ByteIndex": "56..59"
+                            },
+                            {
+                                "_name": "maxWaitTimeForAuxCh",
+                                "ByteIndex": "60..61"
+                            },
+                            {
+                                "_name": "timeoutTrigger",
+                                "ByteIndex": "62..62",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "63..63",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "timeoutTime",
+                                "ByteIndex": "64..67"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "68..71"
+                            },
+                            {
+                                "_name": "rxStartTime",
+                                "ByteIndex": "72..75"
+                            },
+                            {
+                                "_name": "rxListenTime",
+                                "ByteIndex": "76..77"
+                            },
+                            {
+                                "_name": "channelNo",
+                                "ByteIndex": "78..78"
+                            },
+                            {
+                                "_name": "phyMode",
+                                "ByteIndex": "79..79"
+                            },
+                            {
+                                "_name": "auxChRes",
+                                "ByteIndex": "72..72",
+                                "CodeGen": {
+                                    "Action": "DISABLE_FIELD",
+                                    "ValComment": "The value must be integrated as part of the previous field"
+                                }
                             }
                         ]
                     },
@@ -7272,7 +7876,7 @@
                                 "_type": "pointer",
                                 "Offset": "32",
                                 "PtrType": "uint8_t*",
-                                "PtrName": "ble5Adv",
+                                "PtrName": "bleAdvPar",
                                 "ByteIndex": "20..23",
                                 "Description": "Pointer to command specific parameter structure",
                                 "Access": "W"
@@ -7291,6 +7895,199 @@
                                 "ByteIndex": "28..31",
                                 "Description": "If <code>txPower<\/code> = 0xFFFF:<br>\n  If <code>tx20Power<\/code> < 0x10000000: Transmit power to use for the 20-dBm PA;\n  overrides the one given in radio setup for the duration of the command. <br>\n  If <code>tx20Power<\/code> >= 0x10000000: Pointer to PA change override structure\n  as for CMD_CHANGE_PA ; permanently changes the PA and PA power set in radio setup.<br>\n  For other values of <code>txPower<\/code>, this field is not accessed by the radio\n  CPU and may be omitted from the structure.",
                                 "Access": "W"
+                            },
+                            {
+                                "_name": "pRxQ",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "bleAdvParRxQ",
+                                "ByteIndex": "32..35"
+                            },
+                            {
+                                "_name": "rxConfig",
+                                "ByteIndex": "36..36",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushIgnored",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically remove ignored packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushCrcErr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically remove packets with CRC error from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushEmpty",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, automatically remove empty packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeLenByte",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received length byte in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendStatus",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append a status word to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advConfig",
+                                "ByteIndex": "37..37",
+                                "BitField": [
+                                    {
+                                        "_name": "advFilterPolicy",
+                                        "BitIndex": "0..1",
+                                        "BitDescription": "Advertiser filter policy<br>\n  0: Process scan and connect requests from all devices<br>\n  1: Process connect requests from all devices and only scan requests from\n  devices that are in the white list<br>\n  2: Process scan requests from all devices and only connect requests from\n  devices that are in the white list<br>\n  3: Process scan and connect requests only from devices in the white list",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "deviceAddrType",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "The type of the device address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "peerAddrType",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Directed advertiser: The type of the peer address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bStrictLenFilter",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Accept any packet with a valid advertising packet length<br>\n  1: Discard messages with illegal length for the given packet type",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "chSel",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not report support of Channel Selection Algorithm #2<br>\n  1: Report support of Channel Selection Algorithm #2",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "privIgnMode",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "0: Filter on bPrivIgn only when white list is used\n  1: Filter on bPrivIgn always",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "rpaMode",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "Resolvable private address mode<br>\n  0: Normal operation<br>\n  1: Use white list for a received RPA regardless of filter policy",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advLen",
+                                "ByteIndex": "38..38"
+                            },
+                            {
+                                "_name": "scanRspLen",
+                                "ByteIndex": "39..39"
+                            },
+                            {
+                                "_name": "pAdvData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParAdvData",
+                                "ByteIndex": "40..43"
+                            },
+                            {
+                                "_name": "pScanRspData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParScanRspData",
+                                "ByteIndex": "44..47"
+                            },
+                            {
+                                "_name": "pDeviceAddress",
+                                "_type": "pointer",
+                                "PtrType": "uint16_t*",
+                                "PtrName": "bleAdvParDeviceAddress",
+                                "ByteIndex": "48..51"
+                            },
+                            {
+                                "_name": "pWhiteList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "bleAdvParWhiteList",
+                                "ByteIndex": "52..55"
+                            },
+                            {
+                                "_name": "behConfig",
+                                "ByteIndex": "56..56",
+                                "BitField": {
+                                    "_name": "scanRspEndType",
+                                    "BitIndex": "0..0",
+                                    "BitDescription": "Command status at end if SCAN_RSP was sent:<br>\n  0: End with BLE_DONE_OK and result True<br>\n  1: End with BLE_DONE_SCAN_RSP and result False",
+                                    "BitAccess": "W"
+                                }
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "57..58"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "59..59",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "60..63"
                             }
                         ]
                     },
@@ -7438,7 +8235,7 @@
                                 "_type": "pointer",
                                 "Offset": "32",
                                 "PtrType": "uint8_t*",
-                                "PtrName": "ble5AdvDir",
+                                "PtrName": "bleAdvPar",
                                 "ByteIndex": "20..23",
                                 "Description": "Pointer to command specific parameter structure",
                                 "Access": "W"
@@ -7457,6 +8254,199 @@
                                 "ByteIndex": "28..31",
                                 "Description": "If <code>txPower<\/code> = 0xFFFF:<br>\n  If <code>tx20Power<\/code> < 0x10000000: Transmit power to use for the 20-dBm PA;\n  overrides the one given in radio setup for the duration of the command. <br>\n  If <code>tx20Power<\/code> >= 0x10000000: Pointer to PA change override structure\n  as for CMD_CHANGE_PA ; permanently changes the PA and PA power set in radio setup.<br>\n  For other values of <code>txPower<\/code>, this field is not accessed by the radio\n  CPU and may be omitted from the structure.",
                                 "Access": "W"
+                            },
+                            {
+                                "_name": "pRxQ",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "bleAdvParRxQ",
+                                "ByteIndex": "32..35"
+                            },
+                            {
+                                "_name": "rxConfig",
+                                "ByteIndex": "36..36",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushIgnored",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically remove ignored packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushCrcErr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically remove packets with CRC error from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushEmpty",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, automatically remove empty packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeLenByte",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received length byte in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendStatus",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append a status word to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advConfig",
+                                "ByteIndex": "37..37",
+                                "BitField": [
+                                    {
+                                        "_name": "advFilterPolicy",
+                                        "BitIndex": "0..1",
+                                        "BitDescription": "Advertiser filter policy<br>\n  0: Process scan and connect requests from all devices<br>\n  1: Process connect requests from all devices and only scan requests from\n  devices that are in the white list<br>\n  2: Process scan requests from all devices and only connect requests from\n  devices that are in the white list<br>\n  3: Process scan and connect requests only from devices in the white list",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "deviceAddrType",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "The type of the device address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "peerAddrType",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Directed advertiser: The type of the peer address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bStrictLenFilter",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Accept any packet with a valid advertising packet length<br>\n  1: Discard messages with illegal length for the given packet type",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "chSel",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not report support of Channel Selection Algorithm #2<br>\n  1: Report support of Channel Selection Algorithm #2",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "privIgnMode",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "0: Filter on bPrivIgn only when white list is used\n  1: Filter on bPrivIgn always",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "rpaMode",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "Resolvable private address mode<br>\n  0: Normal operation<br>\n  1: Use white list for a received RPA regardless of filter policy",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advLen",
+                                "ByteIndex": "38..38"
+                            },
+                            {
+                                "_name": "scanRspLen",
+                                "ByteIndex": "39..39"
+                            },
+                            {
+                                "_name": "pAdvData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParAdvData",
+                                "ByteIndex": "40..43"
+                            },
+                            {
+                                "_name": "pScanRspData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParScanRspData",
+                                "ByteIndex": "44..47"
+                            },
+                            {
+                                "_name": "pDeviceAddress",
+                                "_type": "pointer",
+                                "PtrType": "uint16_t*",
+                                "PtrName": "bleAdvParDeviceAddress",
+                                "ByteIndex": "48..51"
+                            },
+                            {
+                                "_name": "pWhiteList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "bleAdvParWhiteList",
+                                "ByteIndex": "52..55"
+                            },
+                            {
+                                "_name": "behConfig",
+                                "ByteIndex": "56..56",
+                                "BitField": {
+                                    "_name": "scanRspEndType",
+                                    "BitIndex": "0..0",
+                                    "BitDescription": "Command status at end if SCAN_RSP was sent:<br>\n  0: End with BLE_DONE_OK and result True<br>\n  1: End with BLE_DONE_SCAN_RSP and result False",
+                                    "BitAccess": "W"
+                                }
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "57..58"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "59..59",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "60..63"
                             }
                         ]
                     },
@@ -7604,7 +8594,7 @@
                                 "_type": "pointer",
                                 "Offset": "32",
                                 "PtrType": "uint8_t*",
-                                "PtrName": "ble5AdvNc",
+                                "PtrName": "bleAdvPar",
                                 "ByteIndex": "20..23",
                                 "Description": "Pointer to command specific parameter structure",
                                 "Access": "W"
@@ -7623,6 +8613,199 @@
                                 "ByteIndex": "28..31",
                                 "Description": "If <code>txPower<\/code> = 0xFFFF:<br>\n  If <code>tx20Power<\/code> < 0x10000000: Transmit power to use for the 20-dBm PA;\n  overrides the one given in radio setup for the duration of the command. <br>\n  If <code>tx20Power<\/code> >= 0x10000000: Pointer to PA change override structure\n  as for CMD_CHANGE_PA ; permanently changes the PA and PA power set in radio setup.<br>\n  For other values of <code>txPower<\/code>, this field is not accessed by the radio\n  CPU and may be omitted from the structure.",
                                 "Access": "W"
+                            },
+                            {
+                                "_name": "pRxQ",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "bleAdvParRxQ",
+                                "ByteIndex": "32..35"
+                            },
+                            {
+                                "_name": "rxConfig",
+                                "ByteIndex": "36..36",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushIgnored",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically remove ignored packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushCrcErr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically remove packets with CRC error from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushEmpty",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, automatically remove empty packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeLenByte",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received length byte in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendStatus",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append a status word to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advConfig",
+                                "ByteIndex": "37..37",
+                                "BitField": [
+                                    {
+                                        "_name": "advFilterPolicy",
+                                        "BitIndex": "0..1",
+                                        "BitDescription": "Advertiser filter policy<br>\n  0: Process scan and connect requests from all devices<br>\n  1: Process connect requests from all devices and only scan requests from\n  devices that are in the white list<br>\n  2: Process scan requests from all devices and only connect requests from\n  devices that are in the white list<br>\n  3: Process scan and connect requests only from devices in the white list",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "deviceAddrType",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "The type of the device address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "peerAddrType",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Directed advertiser: The type of the peer address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bStrictLenFilter",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Accept any packet with a valid advertising packet length<br>\n  1: Discard messages with illegal length for the given packet type",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "chSel",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not report support of Channel Selection Algorithm #2<br>\n  1: Report support of Channel Selection Algorithm #2",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "privIgnMode",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "0: Filter on bPrivIgn only when white list is used\n  1: Filter on bPrivIgn always",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "rpaMode",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "Resolvable private address mode<br>\n  0: Normal operation<br>\n  1: Use white list for a received RPA regardless of filter policy",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advLen",
+                                "ByteIndex": "38..38"
+                            },
+                            {
+                                "_name": "scanRspLen",
+                                "ByteIndex": "39..39"
+                            },
+                            {
+                                "_name": "pAdvData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParAdvData",
+                                "ByteIndex": "40..43"
+                            },
+                            {
+                                "_name": "pScanRspData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParScanRspData",
+                                "ByteIndex": "44..47"
+                            },
+                            {
+                                "_name": "pDeviceAddress",
+                                "_type": "pointer",
+                                "PtrType": "uint16_t*",
+                                "PtrName": "bleAdvParDeviceAddress",
+                                "ByteIndex": "48..51"
+                            },
+                            {
+                                "_name": "pWhiteList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "bleAdvParWhiteList",
+                                "ByteIndex": "52..55"
+                            },
+                            {
+                                "_name": "behConfig",
+                                "ByteIndex": "56..56",
+                                "BitField": {
+                                    "_name": "scanRspEndType",
+                                    "BitIndex": "0..0",
+                                    "BitDescription": "Command status at end if SCAN_RSP was sent:<br>\n  0: End with BLE_DONE_OK and result True<br>\n  1: End with BLE_DONE_SCAN_RSP and result False",
+                                    "BitAccess": "W"
+                                }
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "57..58"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "59..59",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "60..63"
                             }
                         ]
                     },
@@ -7770,7 +8953,7 @@
                                 "_type": "pointer",
                                 "Offset": "32",
                                 "PtrType": "uint8_t*",
-                                "PtrName": "ble5AdvScan",
+                                "PtrName": "bleAdvPar",
                                 "ByteIndex": "20..23",
                                 "Description": "Pointer to command specific parameter structure",
                                 "Access": "W"
@@ -7788,6 +8971,740 @@
                                 "_name": "tx20Power",
                                 "ByteIndex": "28..31",
                                 "Description": "If <code>txPower<\/code> = 0xFFFF:<br>\n  If <code>tx20Power<\/code> < 0x10000000: Transmit power to use for the 20-dBm PA;\n  overrides the one given in radio setup for the duration of the command. <br>\n  If <code>tx20Power<\/code> >= 0x10000000: Pointer to PA change override structure\n  as for CMD_CHANGE_PA ; permanently changes the PA and PA power set in radio setup.<br>\n  For other values of <code>txPower<\/code>, this field is not accessed by the radio\n  CPU and may be omitted from the structure.",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pRxQ",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "bleAdvParRxQ",
+                                "ByteIndex": "32..35"
+                            },
+                            {
+                                "_name": "rxConfig",
+                                "ByteIndex": "36..36",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushIgnored",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically remove ignored packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushCrcErr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically remove packets with CRC error from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushEmpty",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "If 1, automatically remove empty packets from Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeLenByte",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received length byte in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendStatus",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append a status word to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the Rx queue",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advConfig",
+                                "ByteIndex": "37..37",
+                                "BitField": [
+                                    {
+                                        "_name": "advFilterPolicy",
+                                        "BitIndex": "0..1",
+                                        "BitDescription": "Advertiser filter policy<br>\n  0: Process scan and connect requests from all devices<br>\n  1: Process connect requests from all devices and only scan requests from\n  devices that are in the white list<br>\n  2: Process scan requests from all devices and only connect requests from\n  devices that are in the white list<br>\n  3: Process scan and connect requests only from devices in the white list",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "deviceAddrType",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "The type of the device address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "peerAddrType",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "Directed advertiser: The type of the peer address &ndash; public (0) or random (1)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bStrictLenFilter",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Accept any packet with a valid advertising packet length<br>\n  1: Discard messages with illegal length for the given packet type",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "chSel",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not report support of Channel Selection Algorithm #2<br>\n  1: Report support of Channel Selection Algorithm #2",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "privIgnMode",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "0: Filter on bPrivIgn only when white list is used\n  1: Filter on bPrivIgn always",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "rpaMode",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "Resolvable private address mode<br>\n  0: Normal operation<br>\n  1: Use white list for a received RPA regardless of filter policy",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "advLen",
+                                "ByteIndex": "38..38"
+                            },
+                            {
+                                "_name": "scanRspLen",
+                                "ByteIndex": "39..39"
+                            },
+                            {
+                                "_name": "pAdvData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParAdvData",
+                                "ByteIndex": "40..43"
+                            },
+                            {
+                                "_name": "pScanRspData",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "bleAdvParScanRspData",
+                                "ByteIndex": "44..47"
+                            },
+                            {
+                                "_name": "pDeviceAddress",
+                                "_type": "pointer",
+                                "PtrType": "uint16_t*",
+                                "PtrName": "bleAdvParDeviceAddress",
+                                "ByteIndex": "48..51"
+                            },
+                            {
+                                "_name": "pWhiteList",
+                                "_type": "pointer",
+                                "PtrType": "uint32_t*",
+                                "PtrName": "bleAdvParWhiteList",
+                                "ByteIndex": "52..55"
+                            },
+                            {
+                                "_name": "behConfig",
+                                "ByteIndex": "56..56",
+                                "BitField": {
+                                    "_name": "scanRspEndType",
+                                    "BitIndex": "0..0",
+                                    "BitDescription": "Command status at end if SCAN_RSP was sent:<br>\n  0: End with BLE_DONE_OK and result True<br>\n  1: End with BLE_DONE_SCAN_RSP and result False",
+                                    "BitAccess": "W"
+                                }
+                            },
+                            {
+                                "_name": "__dummy0",
+                                "ByteIndex": "57..58"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "59..59",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ]
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "60..63"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_PROP_RX_ADV",
+                        "id": "0x3804",
+                        "Description": "Proprietary Mode Advanced Receive Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x3804",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "propRxAdvNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "pktConf",
+                                "ByteIndex": "14..14",
+                                "BitField": [
+                                    {
+                                        "_name": "bFsOff",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Keep frequency synth on after command<br>\n  1: Turn frequency synth off after command",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bRepeatOk",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "0: End operation after receiving a packet correctly<br>\n  1: Go back to sync search after receiving a packet correctly",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bRepeatNok",
+                                        "BitIndex": "2..2",
+                                        "BitDescription": "0: End operation after receiving a packet with CRC error<br>\n  1: Go back to sync search after receiving a packet with CRC error",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bUseCrc",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "0: Do not check CRC<br>\n  1: Check CRC",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bCrcIncSw",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: Do not include sync word in CRC calculation<br>\n  1: Include sync word in CRC calculation",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bCrcIncHdr",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not include header in CRC calculation <br>\n  1: Include header in CRC calculation",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "endType",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "0: Packet is received to the end if end trigger happens after sync is obtained<br>\n  1: Packet reception is stopped if end trigger happens",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "filterOp",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: Stop receiver and restart sync search on address mismatch<br>\n  1: Receive packet and mark it as ignored on address mismatch",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "rxConf",
+                                "ByteIndex": "15..15",
+                                "BitField": [
+                                    {
+                                        "_name": "bAutoFlushIgnored",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "If 1, automatically discard ignored packets from RX queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAutoFlushCrcErr",
+                                        "BitIndex": "1..1",
+                                        "BitDescription": "If 1, automatically discard packets with CRC error from RX queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeHdr",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "If 1, include the received header or length byte in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bIncludeCrc",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "If 1, include the received CRC field in the stored packet; otherwise discard it",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendRssi",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "If 1, append an RSSI byte to the packet in the RX queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendTimestamp",
+                                        "BitIndex": "6..6",
+                                        "BitDescription": "If 1, append a timestamp to the packet in the RX queue",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bAppendStatus",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "If 1, append a status byte to the packet in the RX queue",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "RX configuration",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "syncWord0",
+                                "ByteIndex": "16..19",
+                                "Description": "Sync word to listen for",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "syncWord1",
+                                "ByteIndex": "20..23",
+                                "Description": "Alternative sync word if non-zero",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "maxPktLen",
+                                "ByteIndex": "24..25",
+                                "Description": "Packet length for fixed length, maximum packet length for variable length<br>\n  0: Unlimited or unknown length",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "hdrConf",
+                                "ByteIndex": "26..27",
+                                "BitField": [
+                                    {
+                                        "_name": "numHdrBits",
+                                        "BitIndex": "0..5",
+                                        "BitDescription": "Number of bits in header (0&ndash;32)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "lenPos",
+                                        "BitIndex": "6..10",
+                                        "BitDescription": "Position of length field in header (0&ndash;31)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "numLenBits",
+                                        "BitIndex": "11..15",
+                                        "BitDescription": "Number of bits in length field (0&ndash;16)",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "addrConf",
+                                "ByteIndex": "28..29",
+                                "BitField": [
+                                    {
+                                        "_name": "addrType",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Address after header<br>\n  1: Address in header",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "addrSize",
+                                        "BitIndex": "1..5",
+                                        "BitDescription": "If <code>addrType<\/code> = 0: Address size in bytes<br>\n  If <code>addrType<\/code> = 1: Address size in bits",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "addrPos",
+                                        "BitIndex": "6..10",
+                                        "BitDescription": "If <code>addrType<\/code> = 1: Bit position of address in header<br>\n  If <code>addrType<\/code> = 0: Non-zero to extend address with sync word identifier",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "numAddr",
+                                        "BitIndex": "11..15",
+                                        "BitDescription": "Number of addresses in address list",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "lenOffset",
+                                "ByteIndex": "30..30",
+                                "Description": "Signed value to add to length field",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTrigger",
+                                "ByteIndex": "31..31",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger classifier for ending the operation",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "endTime",
+                                "ByteIndex": "32..35",
+                                "Description": "Time used together with <code>endTrigger<\/code> for ending the operation",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pAddr",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "propRxAdvAddr",
+                                "ByteIndex": "36..39",
+                                "Description": "Pointer to address list",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pQueue",
+                                "_type": "pointer",
+                                "PtrType": "dataQueue_t*",
+                                "PtrName": "propRxAdvQueue",
+                                "ByteIndex": "40..43",
+                                "Description": "Pointer to receive queue",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pOutput",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "propRxAdvOutput",
+                                "ByteIndex": "44..47",
+                                "Description": "Pointer to output structure",
+                                "Access": "W"
+                            }
+                        ]
+                    },
+                    {
+                        "_name": "CMD_PROP_TX_ADV",
+                        "id": "0x3803",
+                        "Description": "Proprietary Mode Advanced Transmit Command",
+                        "Field": [
+                            {
+                                "_name": "commandNo",
+                                "ByteIndex": "0..1",
+                                "Description": "The command ID number 0x3803",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "status",
+                                "ByteIndex": "2..3",
+                                "Description": "An integer telling the status of the command. This value is\n  updated by the radio CPU during operation and may be read by the\n  system CPU at any time.",
+                                "Access": "RW"
+                            },
+                            {
+                                "_name": "pNextOp",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "propTxAdvNextOp",
+                                "ByteIndex": "4..7",
+                                "Description": "Pointer to the next operation to run after this operation is done",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTime",
+                                "ByteIndex": "8..11",
+                                "Description": "Absolute or relative start time (depending on the value of <code>startTrigger<\/code>)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startTrigger",
+                                "ByteIndex": "12..12",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Identification of the trigger that starts the operation",
+                                "Access": []
+                            },
+                            {
+                                "_name": "condition",
+                                "ByteIndex": "13..13",
+                                "BitField": [
+                                    {
+                                        "_name": "rule",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "Condition for running next command: Rule for how to proceed",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "nSkip",
+                                        "BitIndex": "4..7",
+                                        "BitDescription": "Number of skips + 1 if the rule involves skipping. 0: same, 1: next, 2: skip next, ...",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "pktConf",
+                                "ByteIndex": "14..14",
+                                "BitField": [
+                                    {
+                                        "_name": "bFsOff",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Keep frequency synth on after command<br>\n  1: Turn frequency synth off after command",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bUseCrc",
+                                        "BitIndex": "3..3",
+                                        "BitDescription": "0: Do not append CRC<br>\n  1: Append CRC",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bCrcIncSw",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0:Do not include sync word in CRC calculation<br>\n  1: Include sync word in CRC calculation",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bCrcIncHdr",
+                                        "BitIndex": "5..5",
+                                        "BitDescription": "0: Do not include header in CRC calculation<br>\n  1: Include header in CRC calculation",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "numHdrBits",
+                                "ByteIndex": "15..15",
+                                "Description": "Number of bits in header (0&ndash;32)",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pktLen",
+                                "ByteIndex": "16..17",
+                                "Description": "Packet length. 0: Unlimited",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "startConf",
+                                "ByteIndex": "18..18",
+                                "BitField": [
+                                    {
+                                        "_name": "bExtTxTrig",
+                                        "BitIndex": "0..0",
+                                        "BitDescription": "0: Start packet on a fixed time from the command start trigger<br>\n  1: Start packet on an external trigger (input event to RAT)",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "inputMode",
+                                        "BitIndex": "1..2",
+                                        "BitDescription": "Input mode if external trigger is used for TX start<br>\n  0: Rising edge<br>\n  1: Falling edge<br>\n  2: Both edges<br>\n  3: <i>Reserved<\/i>",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "source",
+                                        "BitIndex": "3..7",
+                                        "BitDescription": "RAT input event number used for capture if external trigger is used for TX start",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Access": []
+                            },
+                            {
+                                "_name": "preTrigger",
+                                "ByteIndex": "19..19",
+                                "BitField": [
+                                    {
+                                        "_name": "triggerType",
+                                        "BitIndex": "0..3",
+                                        "BitDescription": "The type of trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "bEnaCmd",
+                                        "BitIndex": "4..4",
+                                        "BitDescription": "0: No alternative trigger command<br>\n  1: CMD_TRIGGER can be used as an alternative trigger",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "triggerNo",
+                                        "BitIndex": "5..6",
+                                        "BitDescription": "The trigger number of the CMD_TRIGGER command that triggers this action",
+                                        "BitAccess": "W"
+                                    },
+                                    {
+                                        "_name": "pastTrig",
+                                        "BitIndex": "7..7",
+                                        "BitDescription": "0: A trigger in the past is never triggered, or for start of commands, give an error<br>\n  1: A trigger in the past is triggered as soon as possible",
+                                        "BitAccess": "W"
+                                    }
+                                ],
+                                "Description": "Trigger for transition from preamble to sync word",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "preTime",
+                                "ByteIndex": "20..23",
+                                "Description": "Time used together with <code>preTrigger<\/code> for transition from preamble to sync\n  word. If <code>preTrigger.triggerType<\/code> is set to \"now\", one preamble as\n  configured in the setup will be sent. Otherwise, the preamble will be repeated until\n  this trigger is observed.",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "syncWord",
+                                "ByteIndex": "24..27",
+                                "Description": "Sync word to transmit",
+                                "Access": "W"
+                            },
+                            {
+                                "_name": "pPkt",
+                                "_type": "pointer",
+                                "PtrType": "uint8_t*",
+                                "PtrName": "propTxAdvPkt",
+                                "ByteIndex": "28..31",
+                                "Description": "Pointer to packet, or TX queue for unlimited length",
                                 "Access": "W"
                             }
                         ]

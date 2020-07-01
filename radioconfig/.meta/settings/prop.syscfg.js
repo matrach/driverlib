@@ -80,6 +80,11 @@ const settingSpecific = {
 
 let freqBandOptions = [];
 let phyOptions = {};
+const RxFilterBwOptions7 = []; // For decimMode = 7
+const RxFilterBwOptions0 = []; // For decimMode = 0
+
+// Configurables to preserve during reload
+const configPreserve = ["txPower", "txPowerHi", "txPower433", "txPower433Hi", "txPower2400"];
 
 // All CC13x2 devices support proprietary sub-1 GHz PHYs */
 if (HAS_SUB1G) {
@@ -164,7 +169,7 @@ config.unshift({
         }
 
         /* Refresh the view */
-        RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP);
+        RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP, []);
         updateVisibility(inst, ui);
     }
 });
@@ -173,7 +178,6 @@ config.unshift({
 if (highPaSupport) {
     RFBase.addTxPowerConfigHigh(config);
 }
-
 
 /*
  *  ======== getPhyOptions ========
@@ -222,14 +226,66 @@ function addPhyConfigurable(freqBand, hide) {
                 /* Change to new PHY setting */
                 const phyType = Common.getPhyType(inst);
 
-                /* Refresh the instance */
-                RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP);
+                /* Refresh the instance from PHY setting */
+                RFBase.reloadInstanceFromPhy(inst, ui, phyType, PHY_GROUP, configPreserve);
                 updateVisibility(inst, ui);
+
+                // Special handling of OOK settings
+                if (phyType.includes("ook")) {
+                    const fb = inst.freqBand;
+                    const opts = RfDesign.getTxPowerOptions(fb, false);
+                    if (fb === "433") {
+                        inst.txPower433 = opts[1].name;
+                    }
+                    else {
+                        inst.txPower = opts[1].name;
+                    }
+                }
             }
         });
     }
 }
 
+/*!
+ *  ======== getRxFilterBwOptions ========
+ *  Get the options list for RX Filter Bandwidth. The list depends
+ *  om decimMode.
+ *
+ *  @param inst - inst from which update data are fetched
+ */
+function getRxFilterBwOptions(inst) {
+    const phyName = Common.getPhyType(inst);
+    const cmdHandler = CmdHandler.get(PHY_GROUP, phyName);
+
+    const decimMode = cmdHandler.getDecimMode();
+    if (decimMode === "0") {
+        // Default
+        return RxFilterBwOptions0;
+    }
+    else if (decimMode === "7") {
+        // TCXO
+        return RxFilterBwOptions7;
+    }
+    throw Error("Decimation mode not supported: " + decimMode);
+}
+
+/*!
+ *  ======== createRxFilterBwOptions ========
+ *  Create RX filter Bandwidth options for decimation modes 0 and 7.
+ *
+ *  @param rawOptions - raw option list from SmartRF Studio.
+ */
+function createRxFilterBwOptions(rawOptions) {
+    _.each(rawOptions, (item) => {
+        if ("info" in item) {
+            // For now only the only info is: "decimMode=7"
+            RxFilterBwOptions7.push({name: item.name});
+        }
+        else {
+            RxFilterBwOptions0.push({name: item.name});
+        }
+    });
+}
 
 /*!
  *  ======== initConfigurables ========
@@ -273,6 +329,10 @@ function initConfigurables(configurables) {
                 item.default = false;
             }
             break;
+        case "rxFilterBw":
+            createRxFilterBwOptions(item.options);
+            item.options = (inst) => getRxFilterBwOptions(inst);
+            break;
         case "txPower2400":
             item.hidden = !device24Only;
             break;
@@ -280,6 +340,7 @@ function initConfigurables(configurables) {
             break;
         }
     }
+
     _.each(configurables, (item) => {
         if (_.has(item, "config")) {
             _.each(item.config, (subItem) => {
@@ -375,7 +436,6 @@ function updateVisibility(inst, ui) {
     ui.address0.hidden = hidden;
     ui.address1.hidden = hidden;
 }
-
 
 /*!
  *  ======== validateFrequency ========
@@ -629,7 +689,8 @@ function validate(inst, validation) {
     }
 
     // Validate packetLengthRx
-    if (_.includes(Common.getPhyType(inst), "154g")) {
+    const phyType = Common.getPhyType(inst);
+    if (_.includes(phyType, "154g")) {
         if (inst.packetLengthRx > 2047 || inst.packetLengthRx < 0) {
             logError(validation, inst, "packetLengthRx", "Max Packet Length must be between 0 and 2047");
             return;
@@ -641,7 +702,7 @@ function validate(inst, validation) {
     }
 
     // Validate fixedPacketLength
-    if (_.includes(Common.getPhyType(inst), "154g")) {
+    if (_.includes(phyType, "154g")) {
         if (inst.fixedPacketLength > 2047 || inst.fixedPacketLength < 0) {
             logError(validation, inst, "fixedPacketLength", "Fixed Packet Length must be between 0 and 2047");
             return;
