@@ -1,21 +1,21 @@
 {
     "setting": {
-        "Name": "100 kbps, 2-GFSK, 25 kHz deviation, 868 MHz",
-        "Description": "100 kbps, 2-GFSK, 25 kHz deviation PHY.",
-        "Frequency": "868",
+        "Name": "Bluetooth 5, LE Coded PHY with S=2 coding (1 Msym\/s GFSK, 500 kbps data rate) 10 dBm settings -- Packet Tx with AUX_ADV_IND PDU",
+        "Description": "Bluetooth 5, LE Coded PHY with S=2 coding (1 Msym\/s GFSK, 500 kbps data rate) for the 2.4 GHz ISM band .",
+        "Frequency": "2440",
         "Patch": {
             "Define": "RF_MODE_AUTO",
-            "Cpe": "rf_patch_cpe_prop",
+            "Cpe": "rf_patch_cpe_bt5",
             "Mce": [],
             "Rfe": []
         },
         "Command": [
             {
-                "_name": "CMD_PROP_RADIO_DIV_SETUP_PA",
+                "_name": "CMD_BLE5_RADIO_SETUP_PA",
                 "Field": [
                     {
                         "_name": "commandNo",
-                        "$": "CMD_PROP_RADIO_DIV_SETUP"
+                        "$": "CMD_BLE5_RADIO_SETUP"
                     },
                     {
                         "_name": "status",
@@ -54,55 +54,15 @@
                         "$": "0"
                     },
                     {
-                        "_name": "modulation.modType",
+                        "_name": "defaultPhy.mainMode",
+                        "$": "2"
+                    },
+                    {
+                        "_name": "defaultPhy.coding",
                         "$": "1"
                     },
                     {
-                        "_name": "modulation.deviation",
-                        "$": "100"
-                    },
-                    {
-                        "_name": "symbolRate.preScale",
-                        "$": "15"
-                    },
-                    {
-                        "_name": "symbolRate.rateWord",
-                        "$": "65536"
-                    },
-                    {
-                        "_name": "symbolRate.decimMode",
-                        "$": "0"
-                    },
-                    {
-                        "_name": "rxBw",
-                        "$": "84"
-                    },
-                    {
-                        "_name": "preamConf.nPreamBytes",
-                        "$": "4"
-                    },
-                    {
-                        "_name": "preamConf.preamMode",
-                        "$": "0"
-                    },
-                    {
-                        "_name": "formatConf.nSwBits",
-                        "$": "24"
-                    },
-                    {
-                        "_name": "formatConf.bBitReversal",
-                        "$": "0"
-                    },
-                    {
-                        "_name": "formatConf.bMsbFirst",
-                        "$": "1"
-                    },
-                    {
-                        "_name": "formatConf.fecMode",
-                        "$": "0"
-                    },
-                    {
-                        "_name": "formatConf.whitenMode",
+                        "_name": "loDivider",
                         "$": "0"
                     },
                     {
@@ -111,11 +71,11 @@
                     },
                     {
                         "_name": "config.biasMode",
-                        "$": "1"
+                        "$": "0"
                     },
                     {
                         "_name": "config.analogCfgMode",
-                        "$": "0"
+                        "$": "0x00"
                     },
                     {
                         "_name": "config.bNoFsPowerUp",
@@ -126,20 +86,20 @@
                         "$": "0xFFFF"
                     },
                     {
-                        "_name": "pRegOverride",
+                        "_name": "pRegOverrideCommon",
                         "$": "0"
                     },
                     {
-                        "_name": "centerFreq",
-                        "$": "868"
+                        "_name": "pRegOverride1Mbps",
+                        "$": "0"
                     },
                     {
-                        "_name": "intFreq",
-                        "$": "0x599"
+                        "_name": "pRegOverride2Mbps",
+                        "$": "0"
                     },
                     {
-                        "_name": "loDivider",
-                        "$": "5"
+                        "_name": "pRegOverrideCoded",
+                        "$": "0"
                     },
                     {
                         "_name": "pRegOverrideTxStd",
@@ -152,25 +112,36 @@
                 ],
                 "OverrideField": [
                     {
-                        "_name": "pRegOverride",
+                        "_name": "pRegOverrideCommon",
                         "Block": [
-                            "override_prop_common_sub1g.json",
-                            "override_prop_common.json",
-                            "override_tc740_tc741.json"
+                            "override_ble5_setup_override_common_10_dbm.json",
+                            "override_ble5_coex.json"
                         ]
+                    },
+                    {
+                        "_name": "pRegOverride1Mbps",
+                        "Block": "override_ble5_setup_override_1mbps_10_dbm.json"
+                    },
+                    {
+                        "_name": "pRegOverride2Mbps",
+                        "Block": "override_ble5_setup_override_2mbps_10_dbm.json"
+                    },
+                    {
+                        "_name": "pRegOverrideCoded",
+                        "Block": "override_ble5_setup_override_coded_10_dbm.json"
                     },
                     {
                         "_name": "pRegOverrideTxStd",
                         "Block": [
                             "override_txstd_placeholder.json",
-                            "override_phy_tx_pa_ramp_genfsk_std.json"
+                            "override_txstd_settings.json"
                         ]
                     },
                     {
                         "_name": "pRegOverrideTx20",
                         "Block": [
                             "override_tx20_placeholder.json",
-                            "override_phy_tx_pa_ramp_genfsk_hpa.json"
+                            "override_tx20_settings.json"
                         ]
                     }
                 ]
@@ -220,7 +191,7 @@
                     },
                     {
                         "_name": "frequency",
-                        "$": "868"
+                        "$": "2440"
                     },
                     {
                         "_name": "fractFreq",
@@ -238,10 +209,10 @@
             }
         ],
         "TestFunc": {
-            "ContTX": "testfunction_prop_cont_tx_WiSUN.json",
-            "ContRX": "testfunction_prop_cont_rx_WiSUN.json",
-            "PacketTX": "testfunction_prop_packet_tx_WiSUN.json",
-            "PacketRX": "testfunction_prop_packet_rx_WiSUN.json"
+            "ContTX": "testfunction_cont_tx_bt5.json",
+            "ContRX": "testfunction_cont_rx_bt5.json",
+            "PacketTX": "testfunction_packet_tx_bt5_le_coded_s2.json",
+            "PacketRX": "testfunction_packet_rx_bt5_le_coded_s2.json"
         }
     }
 }
