@@ -114,6 +114,7 @@
 #undef ROM_SHAMD5HMACKeySet
 #undef ROM_PinConfigSet
 #undef ROM_PinModeSet
+#undef ROM_SDHostInit
 #endif
 
 #endif // __ROM_PATCH_H__

@@ -71,7 +71,7 @@ SDHostInit(unsigned long ulBase)
   //
   // Assert module reset
   //
-  HWREG(ulBase + MMCHS_O_SYSCONFIG) = 0x2;
+  HWREG(ulBase + MMCHS_O_SYSCONFIG) = 0x1;
 
   //
   // Wait for soft reset to complete
