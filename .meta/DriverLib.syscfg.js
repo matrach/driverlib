@@ -79,15 +79,15 @@ function getAttrs(deviceId, part)
         result.deviceGroup = "LPRF";
         result.deviceDefine = "DeviceFamily_CC26X1";
     }
-    else if (deviceId.match(/CC13.2..F6/)) {
-        result.deviceDir  = "cc13x2f6_cc26x2f6";
+    else if (deviceId.match(/CC13.2.7/)) {
+        result.deviceDir  = "cc13x2x7_cc26x2x7";
         result.deviceGroup = "LPRF";
-        result.deviceDefine = "DeviceFamily_CC13X2F6";
+        result.deviceDefine = "DeviceFamily_CC13X2X7";
     }
-    else if (deviceId.match(/CC26.2..F6/)) {
-        result.deviceDir = "cc13x2f6_cc26x2f6";
+    else if (deviceId.match(/CC26.2.7/)) {
+        result.deviceDir = "cc13x2x7_cc26x2x7";
         result.deviceGroup = "LPRF";
-        result.deviceDefine = "DeviceFamily_CC26X2F6";
+        result.deviceDefine = "DeviceFamily_CC26X2X7";
     }
     else if (deviceId.match(/CC13.2/)) {
         result.deviceDir  = "cc13x2_cc26x2";
