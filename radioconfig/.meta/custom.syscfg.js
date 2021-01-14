@@ -46,12 +46,12 @@ const CmdHandler = Common.getScript("cmd_handler.js");
 const Docs = Common.getScript("radioconfig_docs.js");
 
 // Manage PHY support
-const hasProp = Common.HAS_PROP || Common.HAS_24G_PROP;
+const hasProp = Common.HAS_PROP;
 const hasBle = Common.HAS_BLE;
 const hasIeee = Common.HAS_IEEE_15_4;
 
 // Multi-stack validation module
-const msValidationModule = "/ti/easylink/multi_stack_validate";
+const msValidationModule = "/ti/common/multi_stack_validate";
 let msValidationPresent = true;
 try {
     system.getScript(msValidationModule);
@@ -102,11 +102,11 @@ if (Common.HAS_24G_PROP) {
 
 // Add PHY settings depending on device name
 if (hasProp) {
-    const cfgs = DeviceInfo.getConfiguration(Common.PHY_PROP).configs;
+    const configs = DeviceInfo.getConfiguration(Common.PHY_PROP).configs;
 
     // PHY types are in positions 1 to 4 in the config array
     for (let i = 1; i <= 4; i++) {
-        const cfg = cfgs[i];
+        const cfg = configs[i];
         if (cfg.name === "phyType868" && "prop8" in PhyInfo) {
             PhyInfo.prop8.settings = cfg.options;
         }
@@ -123,13 +123,13 @@ if (hasProp) {
 }
 
 if (hasBle) {
-    const cfgs = DeviceInfo.getConfiguration(Common.PHY_BLE).configs;
-    PhyInfo.ble.settings = cfgs[0].options;
+    const configs = DeviceInfo.getConfiguration(Common.PHY_BLE).configs;
+    PhyInfo.ble.settings = configs[0].options;
 }
 
 if (hasIeee) {
-    const cfgs = DeviceInfo.getConfiguration(Common.PHY_IEEE_15_4).configs;
-    PhyInfo.ieee.settings = cfgs[0].options;
+    const configs = DeviceInfo.getConfiguration(Common.PHY_IEEE_15_4).configs;
+    PhyInfo.ieee.settings = configs[0].options;
 }
 
 // Create configurables with checkbox options list

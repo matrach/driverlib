@@ -75,7 +75,7 @@ exports = {
     ieee154FreqToChan: ieee154FreqToChan,
     ieee154ChanToFreq: ieee154ChanToFreq,
     validateFreqSymrateRxBW: validateFreqSymrateRxBW,
-    validateTXpower: validateTXpower
+    validateTxPower: validateTxPower
 };
 
 /*!
@@ -232,7 +232,7 @@ function validateFreqSymrateRxBW(carrierFrequency, symbolRate, rxFilterBw) {
 }
 
 /*!
- *  ======== validateTXpower ========
+ *  ======== validateTxPower ========
  * Function to verify if the value of CCFG_FORCE_VDDR_HH in the ccfg.c
  * file needs to be high or low
  *
@@ -240,7 +240,7 @@ function validateFreqSymrateRxBW(carrierFrequency, symbolRate, rxFilterBw) {
  * @param freq - The selected carrier frequency [MHz]
  * @param highPA - True if using high PA
  */
-function validateTXpower(txPower, freq, highPA) {
+function validateTxPower(txPower, freq, highPA) {
     const paTable = RfDesign.getPaTable(freq, highPA);
     let vddr = false;
     _.forEach(paTable, (values) => {

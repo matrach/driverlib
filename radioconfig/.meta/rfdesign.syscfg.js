@@ -1,6 +1,6 @@
 /* eslint-disable guard-for-in */
 /*
- * Copyright (c) 2020 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2020-2021 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -132,6 +132,9 @@ const config = [
             const name = getDesignName(inst);
             TargetName = name;
             CurrentDesign = DesignData[name];
+            if (!(name in DesignData)) {
+                throw new Error("RF Design does not exists: " + name);
+            }
             Has10dBmPA = TargetName === "LAUNCHXL-CC1352P-4" || TargetName === "LP_CC2652PSIP";
             const rfDesign169 = name.includes("XS169");
 
@@ -189,7 +192,9 @@ const config = [
         hidden: OptionsSub1G.length === 1,
         options: FrontEndOptions,
         onChange: (inst) => {
-            CurrentDesign.feSub1g = inst.feSub1g;
+            if (!HasTiBoard) {
+                CurrentDesign.feSub1g = inst.feSub1g;
+            }
         },
         default: CurrentDesign.FrontEnd
     },
@@ -200,7 +205,9 @@ const config = [
         hidden: !Common.HAS_24G,
         options: FrontEndOptions,
         onChange: (inst) => {
-            CurrentDesign.fe24g = inst.fe24g;
+            if (!HasTiBoard) {
+                CurrentDesign.fe24g = inst.fe24g;
+            }
         },
         default: CurrentDesign.FrontEnd
     }
@@ -208,25 +215,37 @@ const config = [
 
 // Added configurable for High PA
 if (DeviceInfo.hasHighPaSupport()) {
+    const opts = [
+        {
+            name: "none",
+            displayName: "None"
+        }
+    ];
+
+    if (Common.isSub1gDevice()) {
+        opts.push(
+            {
+                name: "fbSub1g",
+                displayName: "Sub-1 GHz"
+            }
+        );
+    }
+
+    if (Common.HAS_24G) {
+        opts.push(
+            {
+                name: "fb24g",
+                displayName: "2.4 GHz"
+            }
+        );
+    }
+
     config.push({
         name: "pa20",
         displayName: "Assign High PA To Frequency Band",
         description: "Include support for High-Power Amplifier in the design.",
         onChange: onPaChange,
-        options: [
-            {
-                name: "none",
-                displayName: "None"
-            },
-            {
-                name: "fbSub1g",
-                displayName: "Sub-1 GHz"
-            },
-            {
-                name: "fb24g",
-                displayName: "2.4 GHz"
-            }
-        ],
+        options: opts,
         default: Common.isSub1gDevice() ? "fbSub1g" : "fb24g"
     });
 }
@@ -241,7 +260,7 @@ function getDefaultSub1g() {
         return "fb169";
     }
     if (DeviceInfo.hasHighPaSupport()) {
-        if (DeviceInfo.getDeviceName() === "cc2652p") {
+        if (DeviceInfo.getDeviceName().includes("cc2652p")) {
             return "none";
         }
         // Depends on RF design
@@ -261,20 +280,17 @@ function onPaChange(inst) {
     let name = getDesignName(inst);
 
     if (inst.pa20 !== "none") {
-        const is1352p = DeviceInfo.getDeviceName() === "cc1352p";
+        const devName = DeviceInfo.getDeviceName();
 
-        if (name === "LAUNCHXL-CC1352P-4" && is1352p) {
+        if (name === "LAUNCHXL-CC1352P-4" && devName === "cc1352p") {
             name = "LAUNCHXL-CC1352P-2_4GHZ";
         }
 
-        let hiPaSuffix;
-        if (Has10dBmPA) {
-            hiPaSuffix = "-HIGH-PA_10DBM";
+        name += "-HIGH-PA_10DBM";
+        if (!(name in DesignData)) {
+            // 20 dBm PA, suffix "-HIGH-PA"
+            name = name.replace("_10DBM", "");
         }
-        else {
-            hiPaSuffix = "-HIGH-PA";
-        }
-        name += hiPaSuffix;
     }
     CurrentDesign = DesignData[name];
 }
@@ -286,7 +302,7 @@ function onPaChange(inst) {
 function getOptionsSub1G() {
     const opts = [];
 
-    if (getFrequencyBandByFreq(868) !== null) {
+    if (getFrequencyBandByFreq(868, false) !== null) {
         opts.push({
             name: "fb868",
             displayName: "770 - 930 MHz",
@@ -294,7 +310,7 @@ function getOptionsSub1G() {
         });
     }
 
-    if (getFrequencyBandByFreq(433) !== null) {
+    if (getFrequencyBandByFreq(433, false) !== null) {
         opts.push({
             name: "fb433",
             displayName: "420 - 527 MHz",
@@ -302,7 +318,7 @@ function getOptionsSub1G() {
         });
     }
 
-    if (getFrequencyBandByFreq(169) !== null) {
+    if (getFrequencyBandByFreq(169, false) !== null) {
         opts.push({
             name: "fb169",
             displayName: "169 MHz",
@@ -327,7 +343,7 @@ function getOptionsSub1G() {
 function getOptions24G() {
     const opts = [];
 
-    if (getFrequencyBandByFreq(2400) !== null) {
+    if (getFrequencyBandByFreq(2400, false) !== null) {
         opts.push({
             name: "fb2400",
             displayName: "2400 - 2483 MHz",
@@ -335,7 +351,7 @@ function getOptions24G() {
         });
     }
 
-    if (getFrequencyBandByFreq(868) !== null) {
+    if (getFrequencyBandByFreq(868, false) !== null) {
         opts.push({
             name: "none",
             displayName: "Not used",
@@ -352,7 +368,7 @@ function getOptions24G() {
  *  @param inst - instance
  */
 function setHighPaAccess(inst) {
-    if (inst.rfDesign === "LAUNCHXL-CC1352P1") {
+    if (inst.rfDesign === "LAUNCHXL-CC1352P1" || inst.rfDesign === "LP_CC1352P7-1") {
         inst.pa20 = "fbSub1g";
     }
     else {
@@ -382,16 +398,21 @@ function getHighPaAssociation(inst) {
  *  @param target - current target
  */
 function isFreqBandSelected(inst, target) {
-    const freq = target.min;
+    const freq = target.max;
     const cfg = Prefix + getFreqBandShortName(freq);
 
-    if (freq === 2400) {
+    if (freq > 2400) {
         let use = inst.fb24g === cfg;
-        if (use) {
-            if (target.highPA && !Has10dBmPA) {
+        if (use && DeviceInfo.hasHighPaSupport()) {
+            const info = getPaTableInfo(target, true);
+            if (!info) {
+                return false;
+            }
+
+            if (info.pa === "20" && Has10dBmPA) {
                 use = false;
             }
-            if (!target.highPA && Has10dBmPA) {
+            if (info.pa === "10" && !Has10dBmPA) {
                 use = false;
             }
         }
@@ -408,7 +429,7 @@ function isFreqBandSelected(inst, target) {
  */
 function getFreqBandShortName(freq) {
     let name = null;
-    const fb = getFrequencyBandByFreq(freq);
+    const fb = getFrequencyBandByFreq(freq, false);
 
     if (fb !== null) {
         switch (fb.min) {
@@ -422,6 +443,7 @@ function getFreqBandShortName(freq) {
         case 770:
             name = "868";
             break;
+        case 2360:
         case 2400:
             name = "2400";
             break;
@@ -473,11 +495,22 @@ function getPaTableExportMethods() {
  *  @param validation - Issue reporting object
  */
 function validate(rfinst, validation) {
-    // Validate RF design selection versus system board selection
+    // Validate RF design versus system board selection
     if (HasTiBoard) {
+        const lockMsg = "Changing front-end is only possible on custom boards";
         if (TiBoard !== rfinst.rfDesign) {
             Common.logError(validation, rfinst, "rfDesign",
                 "RF Design must align with board selection: " + TiBoard);
+            return;
+        }
+
+        if (rfinst.feSub1g !== CurrentDesign.feSub1g) {
+            Common.logError(validation, rfinst, "feSub1g", lockMsg);
+            return;
+        }
+
+        if (rfinst.fe24g !== CurrentDesign.fe24g) {
+            Common.logError(validation, rfinst, "fe24g", lockMsg);
             return;
         }
     }
@@ -632,14 +665,20 @@ function getTxPowerOptions(freq, highPA) {
 function getTxPowerOptionsDefault(freq, highPA) {
     // Fake the target name to get the PA table for the default target
     const tgtNameTmp = TargetName;
-    if (freq >= 2400 && TargetName === "LAUNCHXL-CC1352P-4") {
-        TargetName = "LAUNCHXL-CC1352P1";
+    const has10DbmPaTmp = Has10dBmPA;
+
+    if (freq >= 2360) {
+        if (TargetName === "LAUNCHXL-CC1352P-4") {
+            TargetName = "LAUNCHXL-CC1352P1";
+            Has10dBmPA = false;
+        }
     }
 
     const paList = getPaTable(freq, highPA);
 
     // Restore current target name
     TargetName = tgtNameTmp;
+    Has10dBmPA = has10DbmPaTmp;
 
     // Iterate the TX power list
     const ret = [];
@@ -660,7 +699,7 @@ function getTxPowerOptionsDefault(freq, highPA) {
  *  @param highPA - set if using high PA table
  */
 function getPaTable(freq, highPA) {
-    const fb = getFrequencyBandByFreq(freq);
+    const fb = getFrequencyBandByFreq(freq, highPA);
     if (fb === null) {
         return null;
     }
@@ -775,7 +814,7 @@ function loadTargetInfo() {
                             const name = fr.Min + "-" + fr.Max + paSuffix;
 
                             // Workaround: do not show 2.4 GHz for CC1312
-                            if (!(onlySub1G && range.min === 2400)) {
+                            if (!(onlySub1G && (range.min === 2400 || range.min === 2360))) {
                                 freqRanges[name] = range;
                             }
                         }
@@ -822,7 +861,6 @@ function getFrequencyBands() {
             paTable: null,
             paTableHi: null
         };
-        let frName = null;
 
         // Each virtual target
         for (let i = 0; i < ti.TARGET_DATA.length; i++) {
@@ -834,7 +872,7 @@ function getFrequencyBands() {
                 tmp.max = data.max;
                 tmp.highPA = data.hiPa;
                 insertTaTable(tmp, data);
-                frName = fr.replace("P", "");
+                const frName = fr.replace("P", "");
 
                 if (frName in freqBands) {
                     insertTaTable(freqBands[frName], data);
@@ -849,6 +887,7 @@ function getFrequencyBands() {
     function insertTaTable(dest, data) {
         if (data.hiPa) {
             dest.paTableHi = data.paTable;
+            dest.highPA = true;
         }
         else {
             dest.paTable = data.paTable;
@@ -881,6 +920,7 @@ function getDesignData() {
                     169: "169",
                     868: "770",
                     433: "431",
+                    2360: "2.4",
                     2400: "2.4"
                 };
                 let ret = getDescription(data).includes(searchStr[freq]);
@@ -950,13 +990,9 @@ function getDesignName(inst) {
  *  Return the frequency band info by frequency.
  *
  */
-function getFrequencyBandByFreq(freq) {
-    // Special case for P4 launchpad
+function getFrequencyBandByFreq(freq, highPA) {
     let lFreq;
-    if (freq >= 2400 && Has10dBmPA) {
-        lFreq = 2499;
-    }
-    else if (freq < Common.FreqHigher169) {
+    if (freq < Common.FreqHigher169) {
         // For 169 MHz band
         lFreq = 169;
     }
@@ -967,7 +1003,22 @@ function getFrequencyBandByFreq(freq) {
     for (const fr in FreqBands) {
         const fb = FreqBands[fr];
         if (lFreq >= fb.min && lFreq <= fb.max) {
-            return fb;
+            // In frequency band but no high PA support, try next band
+            if (fb.paTableHi === null && highPA) {
+                // eslint-disable-next-line no-continue
+                continue;
+            }
+            // Devices without PA
+            if (fb.paTableHi === null || !highPA) {
+                return fb;
+            }
+            // Devices with PA
+            if (Has10dBmPA && fb.paTableHi[0]._text === "10") {
+                return fb;
+            }
+            else if (fb.paTableHi[0]._text === "20") {
+                return fb;
+            }
         }
     }
     return null;
@@ -1205,6 +1256,11 @@ function getPaTableInfo(target, highPa) {
     // Get the first (highest) entry of the PA table, this determines which PA table name we generate
     const fbName = getFreqBandShortName(target.min);
     const paTable = highPa ? target.paTableHi : target.paTable;
+
+    if (paTable === null) {
+        return null;
+    }
+
     const paDefault = paTable[0];
     let pa = paDefault._text;
 
@@ -1298,7 +1354,7 @@ function getTxPowerValueByDbm(freqStr, highPA, dbm) {
     const freq = parseFloat(freqStr);
 
     // Pick settings according to PA
-    const fb = getFrequencyBandByFreq(freq);
+    const fb = getFrequencyBandByFreq(freq, highPA);
     if (fb === null) {
         return null;
     }
@@ -1333,7 +1389,7 @@ function getTxPowerDbmByRegValue(freqStr, raw) {
     const freq = parseFloat(freqStr);
 
     // Pick settings according to PA
-    const fb = getFrequencyBandByFreq(freq);
+    const fb = getFrequencyBandByFreq(freq, false);
     const paList = fb.paTable;
 
     for (const i in paList) {
@@ -1360,7 +1416,7 @@ function getTxPowerValueDefault(freqStr, highPA) {
     let ret;
 
     // Pick settings according to PA
-    const fb = getFrequencyBandByFreq(freq);
+    const fb = getFrequencyBandByFreq(freq, highPA);
     const paList = highPA ? fb.paTableHi : fb.paTable;
     const pa = paList[0];
 
@@ -1457,6 +1513,7 @@ const module = {
     getTxPowerValueByDbm: getTxPowerValueByDbm,
     getTxPowerDbmByRegValue: getTxPowerDbmByRegValue,
     freqBands: FreqBands,
+    getCurrentDesign: () => CurrentDesign,
     generateTxPowerCode: generateTxPowerCode,
     generateTxPowerHeader: generateTxPowerHeader,
     generateFrontEndCode: generateFrontEndCode,

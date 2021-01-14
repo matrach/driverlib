@@ -1,6 +1,6 @@
 {
     "setting": {
-        "Name": "100 kbps, 2-GFSK, 50 kHz deviation, 868 MHz",
+        "Name": "100 kbps, 50 kHz Deviation, 2-GFSK, 196 kHz RX Bandwidth",
         "Description": "100 kbps, 2-GFSK, 50 kHz deviation PHY.",
         "Frequency": "868",
         "Patch": {

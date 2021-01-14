@@ -21,19 +21,19 @@
             "options": [
                 {
                     "name": "2gfsk100kbps",
-                    "displayName": "100 kbps, 2-GFSK, 50 kHz deviation, 2.4 GHz"
+                    "displayName": "100 kbps, 50 kHz Deviation, 2-GFSK, 311 kHz RX Bandwidth"
                 },
                 {
                     "name": "2gfsk250kbps",
-                    "displayName": "250 kbps, 2-GFSK, 125 kHz deviation, 2.4 GHz"
+                    "displayName": "250 kpbs, 125 kHz Deviation, 2-GFSK, 471 kHz RX Bandwidth"
                 },
                 {
                     "name": "2msk250kbps",
-                    "displayName": "250 kbps MSK, 62.5 kHz deviation, 2.4 GHz"
+                    "displayName": "250 kbps, 62.5 kHz Deviation, MSK, 471 kHz RX Bandwidth"
                 },
                 {
                     "name": "custom2400",
-                    "displayName": "Custom PHY Setting, 2.4 GHz"
+                    "displayName": "Custom PHY Setting, 2400 Mhz band"
                 }
             ],
             "default": "2gfsk100kbps"
@@ -69,7 +69,7 @@
                     "name": "carrierFrequency",
                     "displayName": "Frequency (MHz)",
                     "description": "Frequency.",
-                    "default": 868,
+                    "default": 2440,
                     "displayFormat": {
                         "radix": "dec",
                         "fixedPoint": 4
@@ -99,7 +99,7 @@
                     "name": "rxFilterBw",
                     "displayName": "RX Filter BW (kHz)",
                     "description": "RX Filter BW",
-                    "default": "49.0",
+                    "default": "98.0",
                     "options": [
                         {
                             "name": "4.3",
@@ -269,6 +269,20 @@
                     "description": "TX Power",
                     "default": "14",
                     "longDescription": ""
+                },
+                {
+                    "name": "txPowerHi",
+                    "displayName": "TX Power (dBm)",
+                    "description": "TX Power",
+                    "default": "20",
+                    "hidden": true
+                },
+                {
+                    "name": "highPA",
+                    "displayName": "High PA",
+                    "description": "Select if the High Power Amplifier on the device should be used",
+                    "default": false,
+                    "hidden": false
                 },
                 {
                     "name": "txPower2400",
@@ -671,29 +685,27 @@
         }
     ],
     "phys": {
-        "prop2400": {
-            "standard": [
-                {
-                    "name": "2gfsk100kbps",
-                    "description": "100 kbps, 2-GFSK, 50 kHz deviation, 2.4 GHz",
-                    "file": "setting_tc900.json"
-                },
-                {
-                    "name": "2gfsk250kbps",
-                    "description": "250 kbps, 2-GFSK, 125 kHz deviation, 2.4 GHz",
-                    "file": "setting_tc901.json"
-                },
-                {
-                    "name": "2msk250kbps",
-                    "description": "250 kbps MSK, 62.5 kHz deviation, 2.4 GHz",
-                    "file": "setting_tc902.json"
-                },
-                {
-                    "name": "custom2400",
-                    "description": "Custom PHY Setting, 2.4 GHz",
-                    "file": "setting_tc900_custom.json"
-                }
-            ]
-        }
+        "prop2400": [
+            {
+                "file": "setting_tc900.json",
+                "name": "2gfsk100kbps",
+                "description": "100 kbps, 50 kHz Deviation, 2-GFSK, 311 kHz RX Bandwidth"
+            },
+            {
+                "file": "setting_tc901.json",
+                "name": "2gfsk250kbps",
+                "description": "250 kpbs, 125 kHz Deviation, 2-GFSK, 471 kHz RX Bandwidth"
+            },
+            {
+                "file": "setting_tc902.json",
+                "name": "2msk250kbps",
+                "description": "250 kbps, 62.5 kHz Deviation, MSK, 471 kHz RX Bandwidth"
+            },
+            {
+                "file": "setting_tc900_custom.json",
+                "name": "custom2400",
+                "description": "Custom PHY Setting, 2400 Mhz band"
+            }
+        ]
     }
 }

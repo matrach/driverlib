@@ -44,14 +44,14 @@ const inst = mod.$static;
 
 const useHpa = mod.getHighPaAssociation(inst) !== "none";
 const frontendCode = mod.generateFrontEndCode(inst);
-
+const design = inst.rfDesign;
 %%}
 // *********************************************************************************
 //   RF Frontend configuration
 // *********************************************************************************
 %
-// RF design based on: `inst.rfDesign`
-#define `inst.rfDesign.replace(/-|\s+/g, "_").replace(/,/, "").toUpperCase()`
+// RF design based on: `design` (`mod.getCurrentDesign().RfDesign`)
+#define `design.replace(/-|\s+/g, "_").replace(/,/, "").toUpperCase()`
 
 % if (useHpa) {
 // High-Power Amplifier supported

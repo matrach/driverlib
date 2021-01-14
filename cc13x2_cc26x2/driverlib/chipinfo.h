@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.h
-*  Revised:        2020-06-29 22:40:37 +0200 (Mon, 29 Jun 2020)
-*  Revision:       57868
+*  Revised:        2020-10-22 14:03:07 +0200 (Thu, 22 Oct 2020)
+*  Revision:       59146
 *
 *  Description:    Collection of functions returning chip information.
 *
@@ -329,25 +329,31 @@ ChipInfo_GetUserId( void )
 //
 //*****************************************************************************
 typedef enum {
-   CHIP_TYPE_Unknown       = -1, //!< -1 means that the chip type is unknown.
-   CHIP_TYPE_CC1310        =  0, //!<  0 means that this is a CC1310 chip.
-   CHIP_TYPE_CC1350        =  1, //!<  1 means that this is a CC1350 chip.
-   CHIP_TYPE_CC2620        =  2, //!<  2 means that this is a CC2620 chip.
-   CHIP_TYPE_CC2630        =  3, //!<  3 means that this is a CC2630 chip.
-   CHIP_TYPE_CC2640        =  4, //!<  4 means that this is a CC2640 chip.
-   CHIP_TYPE_CC2650        =  5, //!<  5 means that this is a CC2650 chip.
-   CHIP_TYPE_CUSTOM_0      =  6, //!<  6 means that this is a CUSTOM_0 chip.
-   CHIP_TYPE_CUSTOM_1      =  7, //!<  7 means that this is a CUSTOM_1 chip.
-   CHIP_TYPE_CC2640R2      =  8, //!<  8 means that this is a CC2640R2 chip.
-   CHIP_TYPE_CC2642        =  9, //!<  9 means that this is a CC2642 chip.
-   CHIP_TYPE_unused        =  10,//!< 10 unused value
-   CHIP_TYPE_CC2652        =  11,//!< 11 means that this is a CC2652 chip.
-   CHIP_TYPE_CC1312        =  12,//!< 12 means that this is a CC1312 chip.
-   CHIP_TYPE_CC1352        =  13,//!< 13 means that this is a CC1352 chip.
-   CHIP_TYPE_CC1352P       =  14,//!< 14 means that this is a CC1352P chip.
-   CHIP_TYPE_CC2652P       =  15,//!< 15 means that this is a CC2652P chip.
-   CHIP_TYPE_CC2652RB      =  16,//!< 16 means that this is a CC2652RB chip.
-   CHIP_TYPE_CC2652PB      =  17 //!< 17 means that this is a CC2652PB chip.
+   CHIP_TYPE_Unknown       = -1,    //!< -1 means that the chip type is unknown.
+   CHIP_TYPE_CC1310        =  0,    //!<  0 means that this is a CC1310 chip.
+   CHIP_TYPE_CC1350        =  1,    //!<  1 means that this is a CC1350 chip.
+   CHIP_TYPE_CC2620        =  2,    //!<  2 means that this is a CC2620 chip.
+   CHIP_TYPE_CC2630        =  3,    //!<  3 means that this is a CC2630 chip.
+   CHIP_TYPE_CC2640        =  4,    //!<  4 means that this is a CC2640 chip.
+   CHIP_TYPE_CC2650        =  5,    //!<  5 means that this is a CC2650 chip.
+   CHIP_TYPE_CUSTOM_0      =  6,    //!<  6 means that this is a CUSTOM_0 chip.
+   CHIP_TYPE_CUSTOM_1      =  7,    //!<  7 means that this is a CUSTOM_1 chip.
+   CHIP_TYPE_CC2640R2      =  8,    //!<  8 means that this is a CC2640R2 chip.
+   CHIP_TYPE_CC2642        =  9,    //!<  9 means that this is a CC2642 chip.
+   CHIP_TYPE_unused        =  10,   //!< 10 unused value
+   CHIP_TYPE_CC2652        =  11,   //!< 11 means that this is a CC2652 chip.
+   CHIP_TYPE_CC1312        =  12,   //!< 12 means that this is a CC1312 chip.
+   CHIP_TYPE_CC1352        =  13,   //!< 13 means that this is a CC1352 chip.
+   CHIP_TYPE_CC1352P       =  14,   //!< 14 means that this is a CC1352P chip.
+   CHIP_TYPE_CC2652P       =  15,   //!< 15 means that this is a CC2652P chip.
+   CHIP_TYPE_CC2652RB      =  16,   //!< 16 means that this is a CC2652RB chip.
+   CHIP_TYPE_CC2652PB      =  17,   //!< 17 means that this is a CC2652PB chip.
+   CHIP_TYPE_CC1312R7      =  23,   //!< 23 means that this is a CC1312R7 chip.
+   CHIP_TYPE_unused1       =  24,   //!< 24 unused value
+   CHIP_TYPE_CC1352R7      =  25,   //!< 25 means that this is a CC1352R7 chip.
+   CHIP_TYPE_CC1352P7      =  26,   //!< 26 means that this is a CC1352P7 chip.
+   CHIP_TYPE_CC2652R7      =  27,   //!< 27 means that this is a CC2652R7 chip.
+   CHIP_TYPE_CC2652P7      =  28,   //!< 28 means that this is a CC2652P7 chip.
 } ChipType_t;
 
 //*****************************************************************************
@@ -372,8 +378,7 @@ typedef enum {
    FAMILY_CC13x1_CC26x1     =  2, //!<  2 means that the chip is a CC13x1, CC26x1 family member.
    FAMILY_CC26x0R2          =  3, //!<  3 means that the chip is a CC26x0R2 family (new ROM contents).
    FAMILY_CC13x2_CC26x2     =  4, //!<  4 means that the chip is a CC13x2, CC26x2 family member.
-   FAMILY_CC13x2F6_CC26x2F6 =  5, //!<  5 means that the chip is a CC13x2F6, CC26x2F6 family member.
-   FAMILY_CC14x2_CC27x2     =  6  //!<  6 means that the chip is a CC14x2, CC27x2 family member.
+   FAMILY_CC13x2x7_CC26x2x7 =  5, //!<  5 means that the chip is a CC13x2x7, CC26x2x7 family member.
 } ChipFamily_t;
 
 //*****************************************************************************
@@ -396,8 +401,7 @@ extern ChipFamily_t ChipInfo_GetChipFamily( void );
 #define DRIVERLIB_BUILD_CC13X1_CC26X1     2 //!< 2 is the driverlib build ID for the cc13x1_cc26x1 driverlib.
 #define DRIVERLIB_BUILD_CC26X0R2          3 //!< 3 is the driverlib build ID for the cc26x0r2 driverlib.
 #define DRIVERLIB_BUILD_CC13X2_CC26X2     4 //!< 4 is the driverlib build ID for the cc13x2_cc26x2 driverlib.
-#define DRIVERLIB_BUILD_CC13X2F6_CC26X2F6 5 //!< 5 is the driverlib build ID for the cc13x2F6_cc26x2F6 driverlib.
-#define DRIVERLIB_BUILD_CC14X2_CC27X2     6 //!< 6 is the driverlib build ID for the cc14x2_cc27x2 driverlib.
+#define DRIVERLIB_BUILD_CC13X2X7_CC26X2X7 5 //!< 5 is the driverlib build ID for the cc13x2x7_cc26x2x7 driverlib.
 
 //*****************************************************************************
 //
@@ -480,16 +484,16 @@ ChipInfo_ChipFamilyIs_CC13x2_CC26x2( void )
 
 //*****************************************************************************
 //
-//! \brief Returns true if this chip is member of the CC13x2F6, CC26x2F6 family.
+//! \brief Returns true if this chip is member of the CC13x2x7, CC26x2x7 family.
 //!
 //! \return
-//! Returns \c true if this chip is member of the CC13x2F6, CC26x2F6 family, \c false otherwise.
+//! Returns \c true if this chip is member of the CC13x2x7, CC26x2x7 family, \c false otherwise.
 //
 //*****************************************************************************
 __STATIC_INLINE bool
-ChipInfo_ChipFamilyIs_CC13x2F6_CC26x2F6( void )
+ChipInfo_ChipFamilyIs_CC13x2x7_CC26x2x7( void )
 {
-   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x2F6_CC26x2F6 );
+   return ( ChipInfo_GetChipFamily() == FAMILY_CC13x2x7_CC26x2x7 );
 }
 
 //*****************************************************************************

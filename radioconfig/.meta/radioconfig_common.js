@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2021 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,12 +42,10 @@ const Device = system.deviceData.deviceId;
 const BasePath = "/ti/devices/radioconfig/";
 
 // Manage protocol support
-const hasProp = Device.includes("CC1352") || Device.includes("CC1312") || Device.includes("CC2642")
-                || Device.includes("CC2652R1FRGZ") || Device.includes("CC2652PRGZ");
-const hasBle = Device.includes("CC1352") || Device.includes("CC2652") || Device.includes("CC2642");
-const hasIeee = Device.includes("CC1352") || Device.includes("CC2652");
-const has24gProp = Device.includes("CC1352") || Device.includes("CC2652R1FRGZ")
-|| Device.includes("CC2642") || Device.includes("CC2652PRGZ");
+const hasProp = Device.match(/CC13|CC265[12][RP][137]|CC2642R/);
+const hasBle = Device.match(/CC..[45][12]/);
+const hasIeee = Device.match(/CC..5[12][RP][137B]/);
+const has24gProp = hasProp && !Device.includes("CC131");
 
 // Exported from this module
 exports = {
@@ -64,6 +62,7 @@ exports = {
     HAS_24G_PROP: has24gProp,
     isSub1gDevice: () => Device.includes("CC13"),
     isSub1gOnlyDevice: () => Device.includes("CC1312"),
+    is24gOnlyDevice: () => Device.includes("CC26"),
     FreqLower169: 169.4,
     FreqHigher169: 169.475,
     FreqLower433: 420,
@@ -136,7 +135,7 @@ function getBoardName() {
             boardName = boardName.replace("LPSTK_CC1352R", "LPSTK-CC1352R1");
         }
         else if (boardName.includes("LP_")) {
-            // SIP LaunchPads; SmartRF Studio and SysConfig board names are identical
+            boardName = boardName.replace("P7_", "P7-");
         }
         else {
             throw new Error("RadioConfig: Unknown board [" + boardName + "]");
@@ -319,7 +318,7 @@ function flattenConfigs(configList) {
 
 /*
  * ======== getCoexConfig ========
- * Return the Co-exconfig structure if the device support BLE/Wi-Fi Coex,
+ * Return the Co-ex config structure if the device support BLE/Wi-Fi Coex,
  * otherwise return null;
  *
  */
@@ -582,23 +581,23 @@ function isCName(id) {
  *  Returns an implementation of a module's modules method that just
  *  forces the addition of the specified modules
  *
- *  @param kwargs An array of module name strings.
+ *  @param args An array of module name strings.
  *
  *  @return An array with module instance objects
  *
  *  Example:
  *     modules: Common.autoForceModules(["Board", "DMA"])
  */
-function autoForceModules(kwargs) {
+function autoForceModules(args) {
     return (function() {
         const modArray = [];
 
-        if (kwargs === undefined || kwargs === null || !Array.isArray(kwargs)) {
-            return (modArray);
+        if (args === undefined || args === null || !Array.isArray(args)) {
+            return modArray;
         }
 
-        for (let args = kwargs.length - 1; args >= 0; args--) {
-            let modPath = kwargs[args];
+        for (let arg = args.length - 1; args >= 0; arg--) {
+            let modPath = args[arg];
             if (modPath.indexOf("/") === -1) {
                 modPath = "/ti/drivers/" + modPath;
             }
@@ -608,7 +607,6 @@ function autoForceModules(kwargs) {
                 hidden: true
             });
         }
-
         return modArray;
     });
 }

@@ -1,6 +1,6 @@
 {
     "setting": {
-        "Name": "Bluetooth 5, LE 2M PHY (2 Msym\/s GFSK, 2 Mbps data rate) for high output power PA -- Packet Tx with AUX_ADV_IND PDU",
+        "Name": "BLE, 2 Mbps, LE 2M",
         "Description": "Bluetooth 5, LE 2M PHY (2 Msym\/s GFSK, 2 Mbps data rate) for the 2.4 GHz ISM band .",
         "Frequency": "2440",
         "Patch": {

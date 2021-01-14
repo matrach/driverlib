@@ -8,8 +8,8 @@
             },
             {
                 "_type": "ELEMENT",
-                "_comment": "Rx: Set RSSI offset to adjust reported RSSI by -1 dB (default: -2), trimmed for external bias and differential configuration",
-                "$": "0x000188A3"
+                "_comment": "Rx: Set RSSI offset to adjust reported RSSI by -2 dB (default: -2), trimmed for external bias and differential configuration",
+                "$": "0x000288A3"
             },
             {
                 "_type": "HW_REG_OVERRIDE",
@@ -58,8 +58,13 @@
             },
             {
                 "_type": "HW_REG_OVERRIDE",
-                "_comment": "Transmit C\/T-packet",
-                "$": "0x5328,0x4000"
+                "_comment": "Set correlator threshold",
+                "$": "0x5114,0x197F"
+            },
+            {
+                "_type": "ELEMENT",
+                "_comment": "Set LNA IB offset to 0xF",
+                "$": "0x000F8883"
             },
             {
                 "_type": "ELEMENT",

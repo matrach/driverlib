@@ -93,8 +93,7 @@ function validate(inst, validation) {
     // Check if a wBMS setting is included
     const instances = inst.$module.$instances;
     for (let i = 0; i < instances.length && !hasWBMS; i++) {
-        const vinst = instances[i];
-        if (vinst.phyType.includes("wbms")) {
+        if (instances[i].phyType.includes("wbms")) {
             hasWBMS = true;
         }
     }
@@ -150,7 +149,7 @@ function onVisibilityChange(inst, ui) {
  *  Either shows or hides the PDU config if the phyType supports it
  */
 function updatePDUConfig(inst, ui) {
-    ui.packetLengthBle.hidden = inst.phyType !== "bt5le1madvnc";
+    ui.packetLengthBle.hidden = !inst.phyType.includes("bt5le1madvnc");
 }
 
 /*!

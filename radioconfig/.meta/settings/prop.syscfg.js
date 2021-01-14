@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2021 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,11 +99,13 @@ function freqBandOnChange(inst, ui) {
         ui.phyType868.hidden = c868hidden;
         ui.txPower.hidden = c868hidden;
 
-        ui.phyType433.hidden = c433hidden;
-        ui.txPower433.hidden = c433hidden;
+        if ("phyType433" in ui) {
+            ui.phyType433.hidden = c433hidden;
+            ui.txPower433.hidden = c433hidden;
 
-        ui.phyType169.hidden = c169hidden;
-        ui.txPower169.hidden = c169hidden;
+            ui.phyType169.hidden = c169hidden;
+            ui.txPower169.hidden = c169hidden;
+        }
     }
 
     if (HAS_24G) {
@@ -138,10 +140,10 @@ function freqBandOnChange(inst, ui) {
     updateVisibility(inst, ui);
 
     function getDefaultValue(cfgName) {
-        const cfgs = inst.$module.config;
-        for (const i in cfgs) {
-            if (cfgName === cfgs[i].name) {
-                return cfgs[i].default;
+        const configs = inst.$module.config;
+        for (const i in configs) {
+            if (cfgName === configs[i].name) {
+                return configs[i].default;
             }
         }
         return null;
@@ -185,7 +187,7 @@ function getRxFilterBwOptions(inst) {
     const phyName = Common.getPhyType(inst);
     const cmdHandler = CmdHandler.get(PHY_GROUP, phyName);
 
-    const decimMode = cmdHandler.getDecimMode();
+    const decimMode = cmdHandler.getDecimationMode();
     if (decimMode === "0") {
         // Default
         return RxFilterBwOptions0;
@@ -223,7 +225,7 @@ function createRxFilterBwOptions(rawOptions) {
  */
 function initConfigurables(configurables) {
     const dev = DevInfo.getDeviceName();
-    const device24Only = dev === "cc2652r" || dev === "cc2652p";
+    const device24Only = Common.is24gOnlyDevice();
 
     let cfgPacketLengthConfig = null;
     let cfgFixedPacketLength = null;
@@ -366,8 +368,10 @@ function onPermissionChange(inst, ui) {
 
     if (HAS_SUB1G) {
         ui.phyType868.readOnly = phyTypeReadOnly;
-        ui.phyType433.readOnly = phyTypeReadOnly;
-        ui.phyType169.readOnly = phyTypeReadOnly;
+        if ("phyType433" in ui) {
+            ui.phyType433.readOnly = phyTypeReadOnly;
+            ui.phyType169.readOnly = phyTypeReadOnly;
+        }
     }
 
     if (HAS_24G) {
@@ -572,7 +576,7 @@ function validate(inst, validation) {
 
     if (paSetting !== null) {
         // Valid range, check if characterized
-        let isOutsideofRange = true;
+        let isOutsideRange = true;
         let cRanges;
 
         if (freq169) {
@@ -616,10 +620,10 @@ function validate(inst, validation) {
         _.each(cRanges, (range) => {
             rangeMsg += " [" + range.Min + ".." + range.Max + "]";
             const tempResult = (freq < range.Min || freq > range.Max);
-            isOutsideofRange = isOutsideofRange && tempResult;
+            isOutsideRange = isOutsideRange && tempResult;
         });
 
-        if (isOutsideofRange) {
+        if (isOutsideRange) {
             let msg = "The selected frequency belongs to a range that has not been characterized"
             + ", settings can give non-optimal performance";
             msg += " Characterized ranges:" + rangeMsg;
@@ -702,12 +706,12 @@ function validate(inst, validation) {
     const forceVddrHref = system.getReference(ccfg.$static, "forceVddr");
 
     // Force VDDR off
-    if (ParameterHandler.validateTXpower(txPower, freq, highPA) && ccfg.$static.forceVddr === false) {
+    if (ParameterHandler.validateTxPower(txPower, freq, highPA) && ccfg.$static.forceVddr === false) {
         logWarning(validation, inst, cfg,
             `The selected TX Power requires Force VDDR in ${forceVddrHref} to be enabled.`);
     }
     // Force VDDR on
-    else if (!ParameterHandler.validateTXpower(txPower, freq, highPA) && ccfg.$static.forceVddr === true) {
+    else if (!ParameterHandler.validateTxPower(txPower, freq, highPA) && ccfg.$static.forceVddr === true) {
         logWarning(validation, inst, cfg,
             `The selected TX Power requires Force VDDR in ${forceVddrHref}`
             + " to be disabled, otherwise the output power may be wrong and the current draw too high.");
@@ -720,27 +724,21 @@ function validate(inst, validation) {
  *
  */
 function extend(base) {
-    if (HAS_24G) {
-        /* Offset in 'config' of 2.4 GHz PHY type */
-        let offset24 = 1;
-        if (HAS_SUB1G) {
-            offset24 += 3;
+    /* Make sure our copy of configurables is updated */
+    let cmdHandler;
+
+    /* First configurable is "freqBands", follow by one phyType for each band */
+    const nFreqBands = config[0].options.length;
+
+    /* Initialize the default PHY in each frequency band */
+    for (let i = nFreqBands; i > 0; i--) {
+        const cfg = config[i].name;
+        if (cfg.includes("phyType")) {
+            if ((HAS_SUB1G && cfg !== "phyType2400") || (HAS_24G && cfg === "phyType2400")) {
+                cmdHandler = CmdHandler.get(PHY_GROUP, config[i].default);
+                cmdHandler.initConfigurables(settingSpecific.config);
+            }
         }
-        /* Make sure our copy of configurables is updated */
-        const cmdHandler = CmdHandler.get(PHY_GROUP, config[offset24].default);
-        cmdHandler.initConfigurables(settingSpecific.config);
-    }
-
-    if (HAS_SUB1G) {
-        /* Make sure our copy of configurables is updated */
-        let cmdHandler = CmdHandler.get(PHY_GROUP, config[3].default);
-        cmdHandler.initConfigurables(settingSpecific.config);
-
-        cmdHandler = CmdHandler.get(PHY_GROUP, config[2].default);
-        cmdHandler.initConfigurables(settingSpecific.config);
-
-        cmdHandler = CmdHandler.get(PHY_GROUP, config[1].default);
-        cmdHandler.initConfigurables(settingSpecific.config);
     }
 
     /* Initialize state of UI elements (readOnly/hidden when appropriate) */

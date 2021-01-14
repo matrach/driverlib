@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2021 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 "use strict";
 
 // Module version
-const RADIO_CONFIG_VERSION = "1.7";
+const RADIO_CONFIG_VERSION = "1.8";
 
 // Common utility functions
 const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js");
@@ -47,29 +47,38 @@ const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js")
 // Global path to Radio configuration root
 const ConfigPath = Common.basePath + "config/";
 
-// Mapping SysCfg device name notation to SmartRF Studio format */
+// Mapping SysCfg device name notation to SmartRF Studio format
 const DevNameMap = {
     // SysCfg name: SmartRF Studio name
     CC1352R1F3RGZ: "cc1352r",
     CC1352P1F3RGZ: "cc1352p",
     CC1312R1F3RGZ: "cc1312r",
     CC2652R1FRGZ: "cc2652r",
-    CC2652R1FSIP: "cc2652rs",
     CC2642R1FRGZ: "cc2642r",
-    CC2652RB: "cc2652rb",
-    CC2652PRGZ: "cc2652p",
-    CC2652P1FSIP: "cc2652ps"
+    CC2652P1FRGZ: "cc2652p",
+    // BAW
+    CC2652RB1FRGZ: "cc2652rb",
+    // SIP
+    CC2652R1FSIP: "cc2652rsip",
+    CC2652P1FSIP: "cc2652psip",
+    // Agama 704
+    CC1312R7RGZ: "cc1312r7",
+    CC2652R7RGZ: "cc2652r7",
+    CC2652P7RGZ: "cc2652p7",
+    CC1352P7RGZ: "cc1352p7",
+    // Agama Lite
+    CC2651R3RGZ: "cc2651r3",
+    CC2651P3RGZ: "cc2651p3",
+    CC1311P3RGZ: "cc1311p3",
+    CC1311R3RGZ: "cc1311r3"
 };
 
 // SmartRF Studio compatible device name
-const DeviceName = DevNameMap[Common.Device];
-
-if (!DeviceName) {
-    throw Error(Common.Device + " is not supported by RadioConfig");
-}
+const DeviceName = DevNameMap[Common.Device] || "none";
+const DeviceSupported = DeviceName !== "none";
 
 // True if High PA device
-const HighPaDevice = DeviceName === "cc1352p" || DeviceName.includes("cc2652p");
+const HighPaDevice = DeviceName.includes("cc1352p") || DeviceName.includes("cc2652p");
 
 // True if wBMS support
 const wbmsSupport = DeviceName === "cc2642r";
@@ -94,12 +103,16 @@ const DevInfo = {
 };
 
 // Load the device configuration database
-const DevConfig = getDeviceConfig();
+let DevConfig;
+if (DeviceSupported) {
+    DevConfig = getDeviceConfig();
+}
 
 // Exported from this module
 exports = {
     addPhyGroup: addPhyGroup,
     getVersionInfo: getVersionInfo,
+    isDeviceSupported: () => DeviceSupported,
     getConfiguration: (phy) => DevInfo.phyGroup[phy].config,
     getSettingMap: (phy) => DevInfo.phyGroup[phy].settings,
     getDeviceName: () => DeviceName,
@@ -143,10 +156,9 @@ function loadConfiguration(phy) {
  */
 function createSettingMap(phy) {
     const data = DevInfo.phyGroup[phy].config;
-    const paKey = HighPaDevice ? "highPA" : "standard";
 
     if (phy === Common.PHY_IEEE_15_4) {
-        return data.phys.ieee[paKey];
+        return data.phys.ieee;
     }
     else if (phy === Common.PHY_BLE) {
         if (wbmsSupport) {
@@ -155,17 +167,23 @@ function createSettingMap(phy) {
                 description: "wBMS, 2 Mbps",
                 file: "setting_wbms_2m.json"
             };
-            data.phys.ble.standard.push(settingsWBMS);
+            data.phys.ble.push(settingsWBMS);
         }
-        return HighPaDevice ? data.phys.ble.highPA : data.phys.ble.standard;
+        return data.phys.ble;
     }
     else if (phy === Common.PHY_PROP) {
         let settingMap = [];
         if (Common.isSub1gDevice()) {
-            settingMap = data.phys.prop868[paKey].concat(data.phys.prop433[paKey]).concat(data.phys.prop169[paKey]);
+            settingMap = settingMap.concat(data.phys.prop868);
+            if ("prop433" in data.phys) {
+                settingMap = settingMap.concat(data.phys.prop433);
+            }
+            if ("prop169" in data.phys) {
+                settingMap = settingMap.concat(data.phys.prop169);
+            }
         }
         if (Common.HAS_24G_PROP) {
-            settingMap = settingMap.concat(data.phys.prop2400.standard);
+            settingMap = settingMap.concat(data.phys.prop2400);
         }
         return settingMap;
     }
@@ -187,7 +205,7 @@ function getVersionInfo() {
  *  ======== getDeviceConfig ========
  *  Create a device configuration database.
  *
- *  Grouped by the PHY's that are available for the current device.
+ *  Grouped by the PHYs that are available for the current device.
  */
 function getDeviceConfig() {
     const files = system.getScript(DevInfo.devicePath + "device_config.json").configFiles.path;

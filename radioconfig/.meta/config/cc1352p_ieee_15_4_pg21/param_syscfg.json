@@ -7,11 +7,11 @@
             "options": [
                 {
                     "name": "ieee154",
-                    "displayName": "IEEE 802.15.4, 250 kbps"
+                    "displayName": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8"
                 },
                 {
                     "name": "ieee154p10",
-                    "displayName": "IEEE 802.15.4, 250 kbps, 10 dBm"
+                    "displayName": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8, 10 dBm"
                 }
             ],
             "default": "ieee154"
@@ -150,26 +150,17 @@
         }
     ],
     "phys": {
-        "ieee": {
-            "standard": [
-                {
-                    "name": "ieee154",
-                    "description": "IEEE 802.15.4, 250 kbps",
-                    "file": "setting_ieee_802_15_4.json"
-                }
-            ],
-            "highPA": [
-                {
-                    "name": "ieee154",
-                    "description": "IEEE 802.15.4, 250 kbps",
-                    "file": "setting_ieee_802_15_4.json"
-                },
-                {
-                    "name": "ieee154p10",
-                    "description": "IEEE 802.15.4, 250 kbps, 10 dBm",
-                    "file": "setting_ieee_802_15_4_10_dbm.json"
-                }
-            ]
-        }
+        "ieee": [
+            {
+                "file": "setting_ieee_802_15_4.json",
+                "name": "ieee154",
+                "description": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8"
+            },
+            {
+                "file": "setting_ieee_802_15_4_10_dbm.json",
+                "name": "ieee154p10",
+                "description": "IEEE 802.15.4-2006, 250 kbps, OQPSK, DSSS = 1:8, 10 dBm"
+            }
+        ]
     }
 }

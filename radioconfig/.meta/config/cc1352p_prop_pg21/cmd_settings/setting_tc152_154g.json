@@ -1,6 +1,6 @@
 {
     "setting": {
-        "Name": "100 kbps, 2-GFSK, h=0.5, IEEE 802.15.4g MR-FSK PHY mode",
+        "Name": "100 kbps, 25 kHz Deviation, 2-GFSK, 137 kHz RX Bandwidth",
         "Description": "100 kbps, 2-GFSK, h=0.5, IEEE 802.15.4g MR-FSK PHY mode, for 863-930 MHz band.",
         "Frequency": "868",
         "Patch": {

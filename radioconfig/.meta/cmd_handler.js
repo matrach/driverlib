@@ -187,13 +187,7 @@ function create(phyGroup, phyName, first) {
             const params = parItem._names.split(",");
             _.each(params, (par) => {
                 const cmds = parItem.rfCommand;
-                let pmap = [];
-                if (Array.isArray(cmds)) {
-                    pmap = cmds;
-                }
-                else {
-                    pmap.push(cmds);
-                }
+                const pmap = Common.forceArray(cmds);
                 let lpar = par;
                 if (par === "CARRIER_FREQUENCY") {
                     lpar = "CARRIERFREQUENCY";
@@ -221,14 +215,7 @@ function create(phyGroup, phyName, first) {
             _.each(fields, (field) => {
                 if ("BitField" in field) {
                     // Word contains bit fields
-                    let bitFields = [];
-                    if (Array.isArray(field.BitField)) {
-                        bitFields = field.BitField;
-                    }
-                    else {
-                        // Assume single element
-                        bitFields.push(field.BitField);
-                    }
+                    const bitFields = Common.forceArray(field.BitField);
 
                     // Work-around: bit-fields in setting not defined
                     let name = field._name + "." + bitFields[0]._name;
@@ -456,7 +443,7 @@ function create(phyGroup, phyName, first) {
                 carrierFrequency: parseFloat(freq),
                 packetLengthRx: parseInt(getPacketLengthRx()),
                 syncWord: parseInt(getSyncWord()),
-                syncWordLength: getSyncwordLength(),
+                syncWordLength: getSyncWordLength(),
                 preambleCount: getPreambleCount(),
                 preambleMode: getPreambleMode()
             };
@@ -540,13 +527,13 @@ function create(phyGroup, phyName, first) {
     }
 
     /*!
-     *  ======== getDecimMode ========
+     *  ======== getDecimationMode ========
      *  Get the decimation mode bit-field
      *  (CMD_PROP_RADIO_DIV_SETUP)
      *
      *  @returns number as string
      */
-    function getDecimMode() {
+    function getDecimationMode() {
         return getCmdFieldValue("symbolRate.decimMode");
     }
 
@@ -559,9 +546,10 @@ function create(phyGroup, phyName, first) {
      */
     function getSymbolRate() {
         const rateWord = getCmdFieldValue("symbolRate.rateWord");
-        const prescaler = getCmdFieldValue("symbolRate.preScale");
-        let calcSymbolRate = (rateWord * 24 * 1e6) / (prescaler * (2.0 ** 20));
+        const preScaler = getCmdFieldValue("symbolRate.preScale");
+        let calcSymbolRate = (rateWord * 24 * 1e6) / (preScaler * (2.0 ** 20));
         calcSymbolRate /= 1e3;
+        calcSymbolRate /= OverrideHandler.getRepetitionFactor();
 
         return calcSymbolRate.toFixed(3);
     }
@@ -734,16 +722,16 @@ function create(phyGroup, phyName, first) {
     }
 
     /*!
-     *  ======== getSyncwordLength ========
+     *  ======== getSyncWordLength ========
      *  Get the Sync Word length as a string ("8 Bits" ... "32 Bits")
      */
-    function getSyncwordLength() {
+    function getSyncWordLength() {
         return getCmdFieldValueByOpt("syncWordLength", "formatConf.nSwBits");
     }
 
     /*!
      *  ======== getPreambleMode ========
-     *  Get the Preamble mode as a desciptive string
+     *  Get the Preamble mode as a descriptive string
      */
     function getPreambleMode() {
         return getCmdFieldValueByOpt("preambleMode", "preamConf.preamMode");
@@ -820,13 +808,14 @@ function create(phyGroup, phyName, first) {
      */
     function setSymbolRate(symRate) {
         // Get current pre-scaler value
-        const prescaler = getCmdFieldValue("symbolRate.preScale");
+        const preScaler = getCmdFieldValue("symbolRate.preScale");
+        const repFactor = OverrideHandler.getRepetitionFactor();
 
         // Initial calculations
-        const rate = (symRate * 1e3 * prescaler * (2.0 ** 20)) / (24 * 1e6);
-        const intpart = Math.floor(rate);
-        let rateWord = intpart;
-        const calcSymbolRate = (rateWord * 24 * 1e6) / (prescaler * (2.0 ** 20));
+        const rate = (symRate * 1e3 * preScaler * (2.0 ** 20)) / (24 * 1e6);
+        const intPart = Math.floor(rate);
+        let rateWord = intPart;
+        const calcSymbolRate = (rateWord * 24 * 1e6) / (preScaler * (2.0 ** 20));
 
         // Check if the rateWord can be trimmed to give a calculated value closer to the given input
         const inSymbolRate = symRate * 1e3;
@@ -842,11 +831,11 @@ function create(phyGroup, phyName, first) {
             if (diffBefore > 0) {
                 if (tempSymbolRate < inSymbolRate) {
                     tempRateWord += 1;
-                    tempSymbolRate = (tempRateWord * 24 * 1e6) / (prescaler * (2.0 ** 20));
+                    tempSymbolRate = (tempRateWord * 24 * 1e6) / (preScaler * (2.0 ** 20));
                 }
                 else {
                     tempRateWord -= 1;
-                    tempSymbolRate = (tempRateWord * 24 * 1e6) / (prescaler * (2.0 ** 20));
+                    tempSymbolRate = (tempRateWord * 24 * 1e6) / (preScaler * (2.0 ** 20));
                 }
                 diffAfter = Math.abs(tempSymbolRate - inSymbolRate);
 
@@ -864,7 +853,7 @@ function create(phyGroup, phyName, first) {
             }
         }
         // Apply calculated rate word
-        setCmdFieldValue("symbolRate", "symbolRate.rateWord", rateWord);
+        setCmdFieldValue("symbolRate", "symbolRate.rateWord", rateWord * repFactor);
     }
 
     /*!
@@ -1310,8 +1299,8 @@ function create(phyGroup, phyName, first) {
 
         _.each(inst.$module.config, (cfg) => {
             if (_.has(cfg, "config")) {
-                _.each(cfg.config, (subcfg) => {
-                    pushKeys(subcfg);
+                _.each(cfg.config, (subCfg) => {
+                    pushKeys(subCfg);
                 });
             }
             else {
@@ -2002,7 +1991,7 @@ function create(phyGroup, phyName, first) {
 
             if ("highPA" in inst) {
                 // TX Power high not used; set to default
-                const txOptions = RfDesign.getTxPowerOptions(freq, true);
+                const txOptions = RfDesign.getTxPowerOptionsDefault(freq, true);
                 TxPowerHi.dbm = txOptions[0].name;
             }
         }
@@ -2011,7 +2000,7 @@ function create(phyGroup, phyName, first) {
             setCmdFieldValue("txPower", "txPower", raw);
             if ("highPA" in inst) {
                 // TX Power high not used; set to default
-                const txOptions = RfDesign.getTxPowerOptions(freq, true);
+                const txOptions = RfDesign.getTxPowerOptionsDefault(freq, true);
                 TxPowerHi.dbm = txOptions[0].name;
             }
         }
@@ -2077,7 +2066,7 @@ function create(phyGroup, phyName, first) {
         updateFrontendSettings: updateFrontendSettings,
         getFrequencyBand: getFrequencyBand,
         getFrequency: getFrequency,
-        getDecimMode: getDecimMode,
+        getDecimationMode: getDecimationMode,
         getUsedCommands: getUsedCommands,
         isParameterUsed: isParameterUsed
     };

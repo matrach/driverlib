@@ -548,7 +548,7 @@ function onCmdFormatChanged(inst) {
  * @param cfgName - configurable name
  */
 function getDefaultValue(inst, cfgName) {
-    const cfgs = inst.$module.config;
+    const configs = inst.$module.config;
     let ret = "";
     function setRet(cfg) {
         if (cfgName === cfg.name) {
@@ -557,10 +557,10 @@ function getDefaultValue(inst, cfgName) {
         }
         return true;
     }
-    _.each(cfgs, (cfg) => {
+    _.each(configs, (cfg) => {
         if (_.has(cfg, "config")) {
-            _.each(cfg.config, (subcfg) => {
-                setRet(subcfg);
+            _.each(cfg.config, (subCfg) => {
+                setRet(subCfg);
             });
         }
         else {

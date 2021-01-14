@@ -1,6 +1,6 @@
 {
     "setting": {
-        "Name": "4.8 kbps, 169.45 MHz GFSK, LBW = 75 kHz, channel 1-5, TX",
+        "Name": "WMBUS N-MODE, 4.8 kbps, 2.4 kHz Deviation, 2-GFSK, 10 kHz RX Bandwidth, channel 1-5, TX",
         "Description": "4.8 kbps, 169.45 MHz GFSK PHY, LBW = 75 kHz, channel 1-5, TX.",
         "Frequency": "169",
         "Patch": {

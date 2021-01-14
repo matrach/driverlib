@@ -1,6 +1,6 @@
 {
     "setting": {
-        "Name": "Bluetooth 5, LE 1M PHY (1 Msym\/s GFSK, 1 Mbps data rate) -- Packet Tx with ADV_NONCONN_IND PDU (compatible with Bluetooth 4.0, 4.1, and 4.2)",
+        "Name": "BLE, 1 Mbps, BT4",
         "Description": "Bluetooth 5, LE 1M PHY (1 Msym\/s GFSK, 1 Mbps data rate) for the 2.4 GHz ISM band.",
         "Frequency": "2440",
         "Patch": {

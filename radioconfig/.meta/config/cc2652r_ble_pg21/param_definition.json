@@ -59,8 +59,8 @@
                         "DefValue": "2402",
                         "Validation": {
                             "_type": "minmax",
-                            "Min": "2402",
-                            "Max": "2480"
+                            "Min": "2360",
+                            "Max": "2500"
                         },
                         "Tooltip": "Frequency.",
                         "Row": "0",

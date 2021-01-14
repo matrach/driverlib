@@ -1,8 +1,8 @@
 {
     "setting": {
-        "Name": "100 kbps, 2-GFSK, 45 kHz deviation WMBUS C-Mode PHY (Release candidate)",
-        "Description": "100 kbps, 2-GFSK, 45 kHz deviation WMBUS C-Mode PHY for 863-930 MHz band (Release candidate).",
-        "Frequency": "868",
+        "Name": "WMBUS C-Mode, 100 kbps, 2-GFSK, 235 kHz RX Bandwidth",
+        "Description": "100 kbps, 2-GFSK, 45 kHz deviation WMBUS C-Mode PHY for 863-930 MHz band.",
+        "Frequency": "868.95",
         "Patch": {
             "Define": "RF_MODE_AUTO",
             "Cpe": "rf_patch_cpe_prop",
@@ -146,6 +146,7 @@
                     "_name": "pRegOverride",
                     "Block": [
                         "override_tc210_tc216.json",
+                        "override_tc216.json",
                         "override_prop_common.json",
                         "override_prop_common_sub1g.json"
                     ]
@@ -200,7 +201,7 @@
                     },
                     {
                         "_name": "fractFreq",
-                        "$": "0"
+                        "$": "62260"
                     },
                     {
                         "_name": "synthConf.bTxMode",
