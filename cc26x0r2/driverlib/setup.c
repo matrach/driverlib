@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2019-04-09 14:36:20 +0200 (Tue, 09 Apr 2019)
-*  Revision:       55614
+*  Revised:        2021-01-13 11:56:38 +0100 (Wed, 13 Jan 2021)
+*  Revision:       60062
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -46,6 +46,8 @@
 #include "../inc/hw_aon_sysctl.h"
 #include "../inc/hw_aon_wuc.h"
 #include "../inc/hw_aux_wuc.h"
+#include "../inc/hw_ddi_0_osc.h"
+#include "../inc/hw_ddi.h"
 #include "../inc/hw_ccfg.h"
 #include "../inc/hw_fcfg1.h"
 #include "../inc/hw_flash.h"
@@ -272,6 +274,20 @@ TrimAfterColdResetWakeupFromShutDown(uint32_t ui32Fcfg1Revision)
     //
     // Enable for JTAG to be powered down (will still be powered on if debugger is connected)
     AONWUCJtagPowerOff();
+
+    {
+        // Check if the RCOSC_HF trims have to be reloaded - this is a workaround needed on one specific production lot
+        uint32_t fcfg1MiscTrimReg = HWREG( FCFG1_BASE + FCFG1_O_MISC_TRIM );
+        if (( fcfg1MiscTrimReg & 0x80000000 ) == 0 ) {
+            // Reload the RCOSCHF_CTRIM with the CTRIM found in the FCFG1 shadow register.
+            HWREGB( AUX_DDI0_OSC_BASE + DDI_0_OSC_O_RCOSCHFCTL + 1 ) =
+               ((( HWREG( FCFG1_BASE + FCFG1_O_SHDW_OSC_BIAS_LDO_TRIM ) & FCFG1_SHDW_OSC_BIAS_LDO_TRIM_RCOSCHF_CTRIM_M ) >> FCFG1_SHDW_OSC_BIAS_LDO_TRIM_RCOSCHF_CTRIM_S ) ^ 0xC0 );
+            // Reload the RCOSCHF_FINE_RESISTOR trim with the MISC_TRIM[30:29] (Mask bits in [7:6]=0xC0, Data in [3:2](0xC) (shift(29-2))
+            HWREGB( AUX_DDI0_OSC_BASE + DDI_O_MASK4B + ( DDI_0_OSC_O_ATESTCTL * 2 ) + 2 ) = ( 0xC0 | (( fcfg1MiscTrimReg >> 27 ) & 0xC ));
+            // Set HFCTRIMFRACT_EN
+            HWREG( AUX_DDI0_OSC_BASE + DDI_O_SET + DDI_0_OSC_O_CTL1 ) = DDI_0_OSC_CTL1_RCOSCHFCTRIMFRACT_EN ;
+        }
+    }
 
     // read the MODE_CONF register in CCFG
     ccfg_ModeConfReg = HWREG( CCFG_BASE + CCFG_O_MODE_CONF );

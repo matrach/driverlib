@@ -63,7 +63,7 @@ extern "C"
 /// DriverLib release group number
 #define DRIVERLIB_RELEASE_GROUP   0
 /// DriverLib release build number
-#define DRIVERLIB_RELEASE_BUILD   56883
+#define DRIVERLIB_RELEASE_BUILD   60062
 
 
 
@@ -83,7 +83,7 @@ extern "C"
     const volatile uint8_t driverlib_release_##group##_##build
 
 /// External declaration of the DriverLib release locking object
-extern DRIVERLIB_DECLARE_RELEASE(0, 56883);
+extern DRIVERLIB_DECLARE_RELEASE(0, 60062);
 
 
 
@@ -135,7 +135,7 @@ extern DRIVERLIB_DECLARE_RELEASE(0, 56883);
 //
 //*****************************************************************************
 #define DRIVERLIB_ASSERT_CURR_RELEASE() \
-    DRIVERLIB_ASSERT_RELEASE(0, 56883)
+    DRIVERLIB_ASSERT_RELEASE(0, 60062)
 
 
 
