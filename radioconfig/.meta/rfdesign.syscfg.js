@@ -285,7 +285,7 @@ function onPaChange(inst) {
     if (inst.pa20 !== "none") {
         const devName = DeviceInfo.getDeviceName();
 
-        if (name === "LAUNCHXL-CC1352P-4" && (devName === "cc1352p" || devName === "cc2672p")) {
+        if (name === "LAUNCHXL-CC1352P-4" && (devName === "cc1352p" || devName === "cc2672p3")) {
             name = "LAUNCHXL-CC1352P-2_4GHZ";
         }
 

@@ -236,6 +236,9 @@ function create(phyGroup, phyName, first) {
             const cmdDef = getCommandDefByName(cmd._name);
             const fields = cmdDef.Field;
             _.each(fields, (field) => {
+                const range = field.ByteIndex.split("..");
+                const byteIndex = range[0];
+
                 if ("BitField" in field) {
                     // Word contains bit fields
                     const bitFields = Common.forceArray(field.BitField);
@@ -261,13 +264,14 @@ function create(phyGroup, phyName, first) {
                         }
                         _.each(bitFields, (bitfield) => {
                             name = field._name + "." + bitfield._name;
-                            const range = bitfield.BitIndex.split("..");
-                            const width = calculateWidth(range);
+                            const bitrange = bitfield.BitIndex.split("..");
+                            const width = calculateWidth(bitrange);
                             const item = {
                                 name: name,
                                 isPointer: false,
+                                byteOffset: byteIndex,
                                 width: 0,
-                                default: getBitfieldValue(initValue, range[0], width)
+                                default: getBitfieldValue(initValue, bitrange[0], width)
                             };
                             cmdBuf.push(item);
                         });
@@ -279,6 +283,7 @@ function create(phyGroup, phyName, first) {
                             const item = {
                                 name: name,
                                 isPointer: false,
+                                byteOffset: byteIndex,
                                 width: 0,
                                 default: getSettingFieldDefault(fullName)
                             };
@@ -296,11 +301,10 @@ function create(phyGroup, phyName, first) {
                     if (isEnabled) {
                         const isPointer = "_type" in field && field._type === "pointer";
                         const fullName = cmd._name + "." + field._name;
-                        const range = field.ByteIndex.split("..");
                         const item = {
                             name: field._name,
                             isPointer: isPointer,
-                            byteOffset: range[0],
+                            byteOffset: byteIndex,
                             width: calculateWidth(range) * 2,
                             default: getSettingFieldDefault(fullName)
                         };
@@ -752,6 +756,14 @@ function create(phyGroup, phyName, first) {
     }
 
     /*!
+     *  ======== is154g ========
+     *  True if the setting supports IEEE 802.15.4g (proprietary advanced RX/TX commands)
+     */
+    function is154g() {
+        return CmdUsed.includes("CMD_PROP_RX_ADV");
+    }
+
+    /*!
      *  ======== getSyncWordLength ========
      *  Get the Sync Word length as a string ("8 Bits" ... "32 Bits")
      */
@@ -1046,8 +1058,11 @@ function create(phyGroup, phyName, first) {
             if (protocol === "multi") {
                 ret.cpe = "rf_patch_cpe_multi_protocol";
             }
-            else if (protocol === "coex") {
+            else if (protocol === "coex_ble") {
                 ret.cpe = "rf_patch_cpe_multi_bt5_coex";
+            }
+            else if (protocol === "coex_ieee") {
+                ret.cpe = "rf_patch_cpe_ieee_coex";
             }
             else {
                 ret.cpe = patches.Cpe;
@@ -1059,7 +1074,7 @@ function create(phyGroup, phyName, first) {
         }
 
         if ("Rfe" in patches) {
-            if (protocol === "coex") {
+            if (protocol === "coex_ble") {
                 ret.rfe = "rf_patch_rfe_ble_coex";
             }
             else {
@@ -2072,6 +2087,7 @@ function create(phyGroup, phyName, first) {
         getCommandName: function(cmd) {
             return cmd._name;
         },
+        is154g: is154g,
         updateRfCommands: updateRfCommands,
         initConfigurables: initConfigurables,
         getCmdList: getCmdList,

@@ -3,13 +3,13 @@
         "Element32b": [
             {
                 "_type": "HW_REG_OVERRIDE",
-                "_comment": "Bluetooth 5: Reconfigure to 35 us pilot tone length for high output power PA",
-                "$": "0x6024,0x5B20"
+                "_comment": "Bluetooth 5: Reconfigure to 20 us pilot tone length for high output power PA",
+                "$": "0x6024,0x2E20"
             },
             {
                 "_type": "ELEMENT",
-                "_comment": "Bluetooth 5: Compensate for 35 us pilot tone length",
-                "$": "0x01640263"
+                "_comment": "Bluetooth 5: Compensate for reduced pilot tone length",
+                "$": "0x01280263"
             },
             {
                 "_type": "ELEMENT",

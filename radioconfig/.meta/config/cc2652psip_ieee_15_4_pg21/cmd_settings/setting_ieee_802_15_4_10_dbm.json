@@ -99,7 +99,8 @@
                         "_name": "pRegOverride",
                         "Block": [
                             "override_ieee_802_15_4_10_dbm.json",
-                            "override_hposc.json"
+                            "override_hposc.json",
+                            "override_ieee_coex.json"
                         ]
                     },
                     {

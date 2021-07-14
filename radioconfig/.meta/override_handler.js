@@ -172,7 +172,8 @@ function updateTxPowerOverrideFile(ovrFile) {
 function generateCode(symName, data, custom) {
     const ret = {
         code: "",
-        stackOffset: 0
+        stackOffset: 0,
+        appOffset: 0
     };
     const ovrTmp = {};
     ccfg = system.modules["/ti/devices/CCFG"];
@@ -187,6 +188,7 @@ function generateCode(symName, data, custom) {
         ret.code += struct.code;
         if (tmpCustom !== null) {
             ret.stackOffset = struct.stackOffset;
+            ret.appOffset = struct.appOffset;
         }
         // Custom override only applies to the common structure (first in the list)
         tmpCustom = null;
@@ -281,7 +283,8 @@ function updateTxPowerOverride(txPower, freq, highPA) {
 function generateStruct(override, data, custom) {
     const ret = {
         code: "// Overrides for " + override.cmdName + "\n",
-        stackOffset: 0
+        stackOffset: 0,
+        appOffset: 0
     };
     ret.code += "uint32_t " + override.ptrName + "[] =\n{\n";
     let nEntries = 0;
@@ -339,14 +342,20 @@ function generateStruct(override, data, custom) {
     }
     // Add app/stack specific overrides if applicable
     if (custom !== null) {
-        for (let i = 0; i < custom.length; i++) {
-            const path = custom[i].path;
-            if (path !== "") {
-                ret.code += "    // " + path + "\n";
-                ret.code += "    " + custom[i].macro + "(),\n";
-            }
+        let path = custom.stackOverride;
+        if (path !== "") {
+            ret.code += "    // " + path + "\n";
+            ret.code += "    " + custom.stackOverrideMacro + "(),\n";
+            ret.stackOffset = nEntries;
+            nEntries += 1;
         }
-        ret.stackOffset = nEntries;
+
+        path = custom.appOverride;
+        if (path !== "") {
+            ret.code += "    // " + path + "\n";
+            ret.code += "    " + custom.appOverrideMacro + "(),\n";
+            ret.appOffset = nEntries;
+        }
     }
     // Add termination
     ret.code += "    (uint32_t)0xFFFFFFFF\n};\n\n";

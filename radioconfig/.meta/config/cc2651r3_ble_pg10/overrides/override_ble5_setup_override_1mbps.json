@@ -10,6 +10,21 @@
                 "_type": "ELEMENT",
                 "_comment": "Bluetooth 5: Compensate syncTimeadjust",
                 "$": "0x015302A3"
+            },
+            {
+                "_type": "HW_REG_OVERRIDE",
+                "_comment": "Symbol tracking: timing correction",
+                "$": "0x50D4,0x00F9"
+            },
+            {
+                "_type": "HW_REG_OVERRIDE",
+                "_comment": "Symbol tracking: reduce sample delay",
+                "$": "0x50E0,0x0087"
+            },
+            {
+                "_type": "HW_REG_OVERRIDE",
+                "_comment": "Symbol tracking: demodulation order",
+                "$": "0x50F8,0x0014"
             }
         ]
     }

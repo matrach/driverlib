@@ -7,7 +7,7 @@
             "options": [
                 {
                     "name": "bt5le1m",
-                    "displayName": "BLE, 1 Mbps, LE 1M (Pre-silicon settings)"
+                    "displayName": "BLE, 1 Mbps, LE 1M"
                 },
                 {
                     "name": "bt5le1madvnc",
@@ -15,15 +15,15 @@
                 },
                 {
                     "name": "bt5le2m",
-                    "displayName": "BLE, 2 Mbps, LE 2M (Pre-silicon settings)"
+                    "displayName": "BLE, 2 Mbps, LE 2M"
                 },
                 {
                     "name": "bt5lecodeds2",
-                    "displayName": "BLE, 500 kbps, LE Coded (Pre-silicon settings)"
+                    "displayName": "BLE, 500 kbps, LE Coded"
                 },
                 {
                     "name": "bt5lecodeds8",
-                    "displayName": "BLE, 125 kbps, LE Coded (Pre-silicon settings)"
+                    "displayName": "BLE, 125 kbps, LE Coded"
                 }
             ],
             "default": "bt5le1m"
@@ -291,7 +291,7 @@
             {
                 "file": "setting_bt5_le_1m.json",
                 "name": "bt5le1m",
-                "description": "BLE, 1 Mbps, LE 1M (Pre-silicon settings)"
+                "description": "BLE, 1 Mbps, LE 1M"
             },
             {
                 "file": "setting_bt5_le_1m_adv_nc.json",
@@ -301,17 +301,17 @@
             {
                 "file": "setting_bt5_le_2m.json",
                 "name": "bt5le2m",
-                "description": "BLE, 2 Mbps, LE 2M (Pre-silicon settings)"
+                "description": "BLE, 2 Mbps, LE 2M"
             },
             {
                 "file": "setting_bt5_le_coded_s2.json",
                 "name": "bt5lecodeds2",
-                "description": "BLE, 500 kbps, LE Coded (Pre-silicon settings)"
+                "description": "BLE, 500 kbps, LE Coded"
             },
             {
                 "file": "setting_bt5_le_coded_s8.json",
                 "name": "bt5lecodeds8",
-                "description": "BLE, 125 kbps, LE Coded (Pre-silicon settings)"
+                "description": "BLE, 125 kbps, LE Coded"
             }
         ]
     }

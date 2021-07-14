@@ -1,7 +1,7 @@
 {
     "setting": {
-        "Name": "BLE, 125 kbps, LE Coded, 10 dBm (Pre-silicon settings)",
-        "Description": "Bluetooth 5, LE Coded PHY with S=8 coding (1 Msym\/s GFSK, 125 kbps data rate) for the 2.4 GHz ISM band. (Pre-silicon settings)",
+        "Name": "BLE, 125 kbps, LE Coded, 10 dBm (Release Candidate)",
+        "Description": "Bluetooth 5, LE Coded PHY with S=8 coding (1 Msym\/s GFSK, 125 kbps data rate) for the 2.4 GHz ISM band. (Release Candidate)",
         "Frequency": "2440",
         "Patch": {
             "Define": "RF_MODE_AUTO",
@@ -113,31 +113,19 @@
                 "OverrideField": [
                     {
                         "_name": "pRegOverrideCommon",
-                        "Block": [
-                            "override_ble5_setup_override_common_10_dbm.json",
-                            "override_ble5_coex.json"
-                        ]
+                        "Block": "override_ble5_setup_override_common_10_dbm.json"
                     },
                     {
                         "_name": "pRegOverride1Mbps",
-                        "Block": [
-                            "override_ble5_setup_override_1mbps_coex.json",
-                            "override_ble5_setup_override_1mbps_10_dbm.json"
-                        ]
+                        "Block": "override_ble5_setup_override_1mbps_10_dbm.json"
                     },
                     {
                         "_name": "pRegOverride2Mbps",
-                        "Block": [
-                            "override_ble5_setup_override_2mbps_coex.json",
-                            "override_ble5_setup_override_2mbps_10_dbm.json"
-                        ]
+                        "Block": "override_ble5_setup_override_2mbps_10_dbm.json"
                     },
                     {
                         "_name": "pRegOverrideCoded",
-                        "Block": [
-                            "override_ble5_setup_override_coded_coex.json",
-                            "override_ble5_setup_override_coded_10_dbm.json"
-                        ]
+                        "Block": "override_ble5_setup_override_coded_10_dbm.json"
                     },
                     {
                         "_name": "pRegOverrideTxStd",

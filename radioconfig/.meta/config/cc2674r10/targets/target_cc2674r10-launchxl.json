@@ -1,0 +1,16 @@
+{
+    "target": {
+        "Name": "LP_CC2674R10",
+        "Revision": [],
+        "Description": "CC2674R10 LP (FPGA). Internal bias, differential output. 2.4 GHz frequency band.",
+        "DeviceName": "CC2674R10",
+        "DevicePackage": "VQFN 7x7",
+        "FrontEnd": "ID",
+        "PaSettings": "pasettings.json",
+        "RfDesign": "CC2642EM-7ID",
+        "DefaultCategory": "Settings",
+        "IoSettingsIdle": [],
+        "IoSettingsRx": [],
+        "IoSettingsTx": []
+    }
+}

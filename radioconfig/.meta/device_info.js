@@ -39,7 +39,7 @@
 "use strict";
 
 // Module version
-const RADIO_CONFIG_VERSION = "1.9";
+const RADIO_CONFIG_VERSION = "1.10";
 
 // Common utility functions
 const Common = system.getScript("/ti/devices/radioconfig/radioconfig_common.js");
@@ -53,8 +53,8 @@ const DevNameMap = {
     CC1352R1F3RGZ: "cc1352r",
     CC1352P1F3RGZ: "cc1352p",
     CC1312R1F3RGZ: "cc1312r",
-    CC2672R3RGZ: "cc2672r",
-    CC2672P3RGZ: "cc2672p",
+    CC2672R3RGZ: "cc2672r3",
+    CC2672P3RGZ: "cc2672p3",
     CC2652R1FRGZ: "cc2652r",
     CC2642R1FRGZ: "cc2642r",
     CC2652P1FRGZ: "cc2652p",
@@ -77,8 +77,8 @@ const DevNameMap = {
     CC1311R3RKP: "cc1311r3",
     CC1311P3RGZ: "cc1311p3",
     // Device class 10
-    CC2654R10RGZ: "cc2654r10",
-    CC2654P10RGZ: "cc2654p10",
+    CC2674R10RGZ: "cc2674r10",
+    CC2674P10RGZ: "cc2674p10",
     CC1314R10RGZ: "cc1314r10",
     CC1354R10RGZ: "cc1354r10",
     CC1354P10RGZ: "cc1354p10"

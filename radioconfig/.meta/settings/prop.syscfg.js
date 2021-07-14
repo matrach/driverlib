@@ -345,18 +345,19 @@ function onPermissionChange(inst, ui) {
  * @param ui - RF Setting UI instance
  */
 function updateVisibility(inst, ui) {
-    const phyType = Common.getPhyType(inst);
-    const isIeee154 = _.includes(phyType, "154g");
+    const phyName = Common.getPhyType(inst);
+    const cmdHandler = CmdHandler.get(PHY_GROUP, phyName);
+    const is154g = cmdHandler.is154g();
 
     // Read Only if IEEE 802.15.4
-    ui.syncWord.readOnly = isIeee154;
-    ui.syncWordLength.readOnly = isIeee154;
-    ui.preambleMode.readOnly = isIeee154;
+    ui.syncWord.readOnly = is154g;
+    ui.syncWordLength.readOnly = is154g;
+    ui.preambleMode.readOnly = is154g;
 
     // Hide if IEEE 802.15.4
-    ui.packetLengthConfig.hidden = isIeee154;
-    ui.packetLengthRx.hidden = isIeee154;
-    ui.fixedPacketLength.hidden = isIeee154 || inst.packetLengthConfig === "Variable";
+    ui.packetLengthConfig.hidden = is154g;
+    ui.addressMode.hidden = is154g;
+    ui.fixedPacketLength.hidden = inst.packetLengthConfig === "Variable"; // Tx packet length
 
     // Address filter
     const hidden = inst.addressMode === "No address check";
@@ -462,6 +463,12 @@ function validateSymbolRate(inst) {
 
     if (symbolRate < SYM_RATE_MIN || symbolRate > SYM_RATE_MAX) {
         status.msg = "Valid range: " + SYM_RATE_MIN + " to " + SYM_RATE_MAX + " kBaud";
+        return status;
+    }
+
+    // Workaround for Wi-SUN #5 validation problem on CC1312R7 (SRFSTUDIO-3084)
+    if (inst.phyType868 === "2gfsk300kbps75dev915wsun5" && Common.Device.includes("CC1312R7")) {
+        status.valid = true;
         return status;
     }
 

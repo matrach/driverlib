@@ -3,17 +3,17 @@
         "Element32b": [
             {
                 "_type": "ELEMENT",
-                "_comment": "Set RTIM offset to default for standard PA",
+                "_comment": "IEEE 15.4: Set RTIM offset to default for standard PA",
                 "$": "0x00008783"
             },
             {
                 "_type": "ELEMENT",
-                "_comment": "Set synth mux to default value for standard PA",
+                "_comment": "IEEE 15.4: Set synth mux to default value for standard PA",
                 "$": "0x050206C3"
             },
             {
                 "_type": "HW_REG_OVERRIDE",
-                "_comment": "Set TXRX pin to 0 in RX and high impedance in idle\/TX. ",
+                "_comment": "Set TXRX pin to 0 in RX and high impedance in idle\/TX",
                 "$": "0x60A8,0x0401"
             }
         ]

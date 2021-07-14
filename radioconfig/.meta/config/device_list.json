@@ -1,6 +1,6 @@
 {
     "devicelist": {
-        "version": "2.21.0",
+        "version": "2.22.0",
         "DeviceGroup": [
             {
                 "Name": "Sub-1 GHz",
@@ -57,7 +57,7 @@
                     {
                         "DeviceName": {
                             "_family": "Agama",
-                            "$": "CC2672P"
+                            "$": "CC2672P3"
                         },
                         "Brief": "Dual Band",
                         "DeviceType": "Wireless MCU"
@@ -65,7 +65,7 @@
                     {
                         "DeviceName": {
                             "_family": "Agama",
-                            "$": "CC2672R"
+                            "$": "CC2672R3"
                         },
                         "Brief": "Dual Band",
                         "DeviceType": "Wireless MCU"
