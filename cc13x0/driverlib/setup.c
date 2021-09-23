@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2019-04-09 14:36:20 +0200 (Tue, 09 Apr 2019)
-*  Revision:       55614
+*  Revised:        2021-01-13 11:56:38 +0100 (Wed, 13 Jan 2021)
+*  Revision:       60062
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *
@@ -46,6 +46,8 @@
 #include "../inc/hw_aon_sysctl.h"
 #include "../inc/hw_aon_wuc.h"
 #include "../inc/hw_aux_wuc.h"
+#include "../inc/hw_ddi_0_osc.h"
+#include "../inc/hw_ddi.h"
 #include "../inc/hw_ccfg.h"
 #include "../inc/hw_fcfg1.h"
 #include "../inc/hw_flash.h"
