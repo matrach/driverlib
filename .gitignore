@@ -5,3 +5,5 @@
 /tirtos*
 /home
 /matraszek
+.ipynb_checkpoints/
+/*.ipynb
