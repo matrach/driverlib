@@ -263,6 +263,19 @@
             "longDescription": ""
         },
         {
+            "name": "txPowerHi",
+            "displayName": "TX Power (dBm)",
+            "description": "TX Power",
+            "default": "20",
+            "hidden": true
+        },
+        {
+            "name": "highPA",
+            "displayName": "High PA",
+            "description": "Select if the High Power Amplifier on the device should be used",
+            "default": false
+        },
+        {
             "name": "packetLengthBle",
             "displayName": "PDU Payload length",
             "description": "The PDU payload includes the Extended header, Advertising address and the Advertising data.",

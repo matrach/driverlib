@@ -32,6 +32,16 @@
                 "$": ".\/..\/config\/cc2672p3\/targets"
             },
             {
+                "_file": "targets.json",
+                "_phy": "ieee_15_4",
+                "$": ".\/..\/config\/cc2672p3_ble_pg21\/targets"
+            },
+            {
+                "_file": "targets.json",
+                "_phy": "ble",
+                "$": ".\/..\/config\/cc2672p3_ble_pg21\/targets"
+            },
+            {
                 "_file": "pasettings.json",
                 "$": ".\/..\/config\/cc1352p\/targets"
             },

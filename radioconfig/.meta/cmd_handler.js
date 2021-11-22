@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2019-2021 Texas Instruments Incorporated - http://www.ti.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -182,9 +182,6 @@ function create(phyGroup, phyName, first) {
 
     // Commands contained in the setting
     addUsedCommands();
-
-    // Add test functions (commands included from setting file)
-    addTestFunctions();
 
     // Add commands that are not used by the setting
     addUnusedCommands();
@@ -459,7 +456,7 @@ function create(phyGroup, phyName, first) {
         // Update TX power override
         const txPowActual = getTxPower(txPower);
         const highPA = getCmdFieldValue("txPower") === "0xFFFF";
-        OverrideHandler.init(Setting.Command, PhyGroup, highPA);
+        OverrideHandler.init(Setting.Command, highPA);
         OverrideHandler.updateTxPowerOverride(txPowActual, freq, txPower.high);
 
         const cfgCommon = {};
@@ -1619,19 +1616,6 @@ function create(phyGroup, phyName, first) {
     }
 
     /*!
-     *  ======== addTestFunctions ========
-     *  Add additional test settings includes from the settings file (e.g CMD_PROP_TX)
-     */
-    function addTestFunctions() {
-        for (const testFunc in Setting.TestFunc) {
-            if (_.has(Setting.TestFunc, testFunc)) {
-                const file = Setting.TestFunc[testFunc];
-                addSetting(file);
-            }
-        }
-    }
-
-    /*!
     *  ======== addUnusedCommands ========
     *  Add unused commands to the list as these may optionally be used
     *  by the code export. Unused commands are those not referred to
@@ -1658,55 +1642,6 @@ function create(phyGroup, phyName, first) {
             // Add if not already in place
             if (!present) {
                 currentCmds.push(cmd);
-            }
-        });
-    }
-
-    /*!
-     *  ======== addSetting ========
-     * The setting name is here the name of the file that contains the setting
-     * Example: setting_tc106.json (file imported from SmartRF Studio)
-     *
-     * @param fileName - name of the settings file
-     */
-    function addSetting(fileName) {
-        // Replace the extension of the file, and load
-        const added = system.getScript(SettingPath + fileName);
-
-        // Get the command part of the file (JSON object)
-        const newEntry = added.testfunction.Command;
-        const currentCmds = Setting.Command;
-
-        // Create array of commands to be added
-        let newCmds = [];
-        if ("Field" in newEntry) {
-            // Single new entry
-            newCmds.push(newEntry);
-        }
-        else {
-            // Multiple entries
-            newCmds = newEntry;
-        }
-
-        // Apply new commands
-        _.each(newCmds, (newCmd) => {
-            const name = newCmd._name;
-
-            // Check if duplicate
-            let present = false;
-            _.each(currentCmds, (cmd) => {
-                if (name === cmd._name) {
-                    present = true;
-                    return false;
-                }
-                // Continue _.each iteration
-                return true;
-            });
-
-            // Add if not already in place
-            if (!present) {
-                CmdUsed.push(name);
-                currentCmds.push(newCmd);
             }
         });
     }
@@ -1991,7 +1926,7 @@ function create(phyGroup, phyName, first) {
 
         // Create override table
         const highPA = getCmdFieldValue("txPower") === "0xFFFF";
-        OverrideHandler.init(Setting.Command, PhyGroup, highPA);
+        OverrideHandler.init(Setting.Command, highPA);
     }
 
     /*!

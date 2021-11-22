@@ -64,6 +64,7 @@ exports = {
     isSub1gOnlyDevice: () => Device.includes("CC131"),
     is24gOnlyDevice: () => Device.match(/CC26[457]/) && !Device.includes("CC2672"),
     isDeviceClass3: () => Device.match(/1[PR]3R/) !== null,
+    isDeviceClass7: () => Device.match(/2[PR]7R/) !== null,
     isDeviceClass10: () => Device.match(/[157]4[RP]10/) !== null,
     FreqLower169: 169.4,
     FreqHigher169: 169.475,

@@ -129,6 +129,19 @@
             "description": "TX Power",
             "default": "14",
             "longDescription": ""
+        },
+        {
+            "name": "txPowerHi",
+            "displayName": "TX Power (dBm)",
+            "description": "TX Power",
+            "default": "20",
+            "hidden": true
+        },
+        {
+            "name": "highPA",
+            "displayName": "High PA",
+            "description": "Select if the High Power Amplifier on the device should be used",
+            "default": false
         }
     ],
     "phys": {

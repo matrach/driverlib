@@ -1,5 +1,11 @@
 {
     "patables": {
+        "DefaultPaTable": {
+            "PaSetting": {
+                "_text": "13",
+                "Value": "0x3F"
+            }
+        },
         "RfDesign": {
             "_name": "CC2642EM-7ID",
             "FrequencyRange": {
@@ -69,12 +75,6 @@
                         }
                     ]
                 }
-            }
-        },
-        "DefaultPaTable": {
-            "PaSetting": {
-                "_text": "Unknown",
-                "Value": "0xFFFF"
             }
         }
     }

@@ -113,10 +113,6 @@ function freqBandOnChange(inst, ui) {
         ui.txPower2400.hidden = !prop24;
     }
 
-    if (highPaSupport) {
-        ui.highPA.hidden = prop24 || !c169hidden;
-    }
-
     // Get the PHY type for the current frequency band
     const phyType = Common.getPhyType(inst);
 
@@ -356,7 +352,12 @@ function updateVisibility(inst, ui) {
 
     // Hide if IEEE 802.15.4
     ui.packetLengthConfig.hidden = is154g;
-    ui.addressMode.hidden = is154g;
+    if (inst.parent === "Stack") {
+        ui.addressMode.hidden = true;
+    }
+    else {
+        ui.addressMode.hidden = is154g;
+    }
     ui.fixedPacketLength.hidden = inst.packetLengthConfig === "Variable"; // Tx packet length
 
     // Address filter
@@ -418,7 +419,7 @@ function validateFrequency(inst) {
     }
 
     const prop24 = BAND_24G;
-    const highPA = DevInfo.hasHighPaSupport() && !prop24 ? inst.highPA : false;
+    const highPA = highPaSupport && !prop24 ? inst.highPA : false;
     const paSetting = RfDesign.getPaTable(freq, highPA);
 
     // Check if PA table is supported
@@ -466,8 +467,12 @@ function validateSymbolRate(inst) {
         return status;
     }
 
-    // Workaround for Wi-SUN #5 validation problem on CC1312R7 (SRFSTUDIO-3084)
-    if (inst.phyType868 === "2gfsk300kbps75dev915wsun5" && Common.Device.includes("CC1312R7")) {
+    // Workaround for validation issues ( Wi-SUN #5, and sub-1GHz ZigBee 500 kbps)
+    const deviceNeedsWorkAround = Common.isDeviceClass7() || Common.isDeviceClass3();
+    const phyType = inst.phyType868;
+    const phyNeedsWorkaround = phyType === "2gfsk300kbps75dev915wsun5" || phyType === "2gfsk500kbps154g";
+
+    if (deviceNeedsWorkAround && phyNeedsWorkaround) {
         status.valid = true;
         return status;
     }
@@ -539,7 +544,7 @@ function validate(inst, validation) {
     const freq433 = freq < Common.FreqHigher433 && !freq169;
 
     const prop24 = BAND_24G;
-    const highPA = DevInfo.hasHighPaSupport() && !prop24 ? inst.highPA : false;
+    const highPA = highPaSupport && !prop24 ? inst.highPA : false;
     const paSetting = RfDesign.getPaTable(freq, highPA);
 
     if (paSetting !== null) {
