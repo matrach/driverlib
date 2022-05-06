@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_aux_anaif_h
-*  Revised:        2017-05-30 11:42:02 +0200 (Tue, 30 May 2017)
-*  Revision:       49074
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.c
-*  Revised:        2018-10-18 17:33:32 +0200 (Thu, 18 Oct 2018)
-*  Revision:       52954
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for the PRCM.
 *

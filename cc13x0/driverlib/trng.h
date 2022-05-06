@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       trng.h
-*  Revised:        2017-05-23 12:08:52 +0200 (Tue, 23 May 2017)
-*  Revision:       49048
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the true random number gen.
 *

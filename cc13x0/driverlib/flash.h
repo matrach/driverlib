@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       flash.h
-*  Revised:        2017-11-02 16:09:32 +0100 (Thu, 02 Nov 2017)
-*  Revision:       50166
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the Flash driver.
 *

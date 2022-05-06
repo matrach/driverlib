@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.c
-*  Revised:        2019-04-03 09:33:56 +0200 (Wed, 03 Apr 2019)
-*  Revision:       55552
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for the System Control.
 *

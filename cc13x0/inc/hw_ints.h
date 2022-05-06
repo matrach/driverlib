@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_ints_h
-*  Revised:        2017-05-04 21:56:26 +0200 (Thu, 04 May 2017)
-*  Revision:       48904
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.

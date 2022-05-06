@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_sysctl.h
-*  Revised:        2015-03-16 14:43:45 +0100 (Mon, 16 Mar 2015)
-*  Revision:       42989
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.

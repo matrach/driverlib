@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.c
-*  Revised:        2018-05-08 10:04:01 +0200 (Tue, 08 May 2018)
-*  Revision:       51972
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Instruction wrappers for special CPU instructions needed by
 *                  the drivers.

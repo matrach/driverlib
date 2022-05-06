@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       gpio_doc.h
-*  Revised:        2016-03-30 13:03:59 +0200 (Wed, 30 Mar 2016)
-*  Revision:       45971
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.

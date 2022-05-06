@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aes.h
-*  Revised:        2019-01-25 14:45:16 +0100 (Fri, 25 Jan 2019)
-*  Revision:       54287
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    AES header file.
 *

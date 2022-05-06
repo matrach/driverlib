@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       vims.h
-*  Revised:        2016-10-06 17:21:09 +0200 (Thu, 06 Oct 2016)
-*  Revision:       47343
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the VIMS.
 *

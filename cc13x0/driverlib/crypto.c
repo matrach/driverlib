@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       crypto.c
-*  Revised:        2020-01-15 10:03:07 +0100 (Wed, 15 Jan 2020)
-*  Revision:       56652
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for the Crypto module
 *

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       setup.c
-*  Revised:        2021-01-13 11:56:38 +0100 (Wed, 13 Jan 2021)
-*  Revision:       60062
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Setup file for CC13xx/CC26xx devices.
 *

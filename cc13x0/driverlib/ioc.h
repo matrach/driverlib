@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       ioc.h
-*  Revised:        2017-11-02 14:16:14 +0100 (Thu, 02 Nov 2017)
-*  Revision:       50156
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the IO Controller.
 *

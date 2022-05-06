@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       osc.c
-*  Revised:        2019-03-15 08:53:15 +0100 (Fri, 15 Mar 2019)
-*  Revision:       55262
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for setting up the system Oscillators
 *

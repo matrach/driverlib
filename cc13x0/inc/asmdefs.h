@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       asmdefs.h
-*  Revised:        2015-06-05 14:39:10 +0200 (Fri, 05 Jun 2015)
-*  Revision:       43803
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Macros to allow assembly code be portable among tool chains.
 *

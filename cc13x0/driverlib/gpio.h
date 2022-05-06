@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       gpio.h
-*  Revised:        2018-05-02 11:11:40 +0200 (Wed, 02 May 2018)
-*  Revision:       51951
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the GPIO.
 *

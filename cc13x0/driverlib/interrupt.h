@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       interrupt.h
-*  Revised:        2017-11-14 15:26:03 +0100 (Tue, 14 Nov 2017)
-*  Revision:       50272
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the NVIC Interrupt Controller
 *

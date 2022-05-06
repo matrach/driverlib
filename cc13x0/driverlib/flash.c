@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       flash.c
-*  Revised:        2017-10-30 13:37:49 +0100 (Mon, 30 Oct 2017)
-*  Revision:       50105
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for on chip Flash.
 *

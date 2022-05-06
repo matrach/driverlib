@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       watchdog_doc.h
-*  Revised:        2020-09-07 14:45:02 +0200 (Mon, 07 Sep 2020)
-*  Revision:       58504
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 *  All rights reserved.

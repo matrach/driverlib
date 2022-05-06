@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_adc.c
-*  Revised:        2017-11-20 14:31:35 +0100 (Mon, 20 Nov 2017)
-*  Revision:       50315
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for the AUX Time to Digital Converter interface.
 *

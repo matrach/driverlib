@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_fcfg1_h
-*  Revised:        2017-02-06 19:32:22 +0100 (Mon, 06 Feb 2017)
-*  Revision:       48408
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.

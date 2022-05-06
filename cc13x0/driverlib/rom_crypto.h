@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       rom_crypto.h
-*  Revised:        2018-09-17 09:24:56 +0200 (Mon, 17 Sep 2018)
-*  Revision:       52624
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    This header file is the API to the crypto functions
 *                  built into ROM on the CC13xx/CC26xx.
@@ -54,6 +54,8 @@ extern "C"
 {
 #endif
 
+#include <stdbool.h>
+#include <string.h>
 ///////////////////////////////////* AES-128 *//////////////////////////////////
 
 //*****************************************************************************
@@ -103,10 +105,16 @@ extern void AES_ECB_DecryptData(uint8_t *text, uint16_t textLen, uint8_t *aesKey
  * \return Zero when successful.
  */
 //*****************************************************************************
-extern int8_t AES_CCM_EncryptData(uint8_t encryptFlag, uint8_t MACLen, uint8_t *nonce,
-                                  uint8_t *plainText, uint16_t textLen,
-                                  uint8_t *addDataBuf, uint16_t addBufLen,
-                                  uint8_t *aesKey, uint8_t *MAC, uint8_t ccmLVal);
+extern int8_t AES_CCM_EncryptData(uint8_t encryptFlag,
+                                  uint8_t MACLen,
+                                  uint8_t *nonce,
+                                  uint8_t *plainText,
+                                  uint16_t textLen,
+                                  uint8_t *addDataBuf,
+                                  uint16_t addBufLen,
+                                  uint8_t *aesKey,
+                                  uint8_t *MAC,
+                                  uint8_t ccmLVal);
 
 //*****************************************************************************
 /*!
@@ -128,10 +136,16 @@ extern int8_t AES_CCM_EncryptData(uint8_t encryptFlag, uint8_t MACLen, uint8_t *
  * \return Zero when Successful.
  */
 //*****************************************************************************
-extern int8_t AES_CCM_DecryptData(uint8_t decryptFlag, uint8_t MACLen, uint8_t *nonce,
-                                  uint8_t *cipherText, uint16_t textLen,
-                                  uint8_t *addDataBuf, uint16_t addBufLen,
-                                  uint8_t *aesKey, uint8_t *MAC, uint8_t ccmLVal);
+extern int8_t AES_CCM_DecryptData(uint8_t decryptFlag,
+                                  uint8_t MACLen,
+                                  uint8_t *nonce,
+                                  uint8_t *cipherText,
+                                  uint16_t textLen,
+                                  uint8_t *addDataBuf,
+                                  uint16_t addBufLen,
+                                  uint8_t *aesKey,
+                                  uint8_t *MAC,
+                                  uint8_t ccmLVal);
 
 //*****************************************************************************
 /*!
@@ -146,8 +160,10 @@ extern int8_t AES_CCM_DecryptData(uint8_t decryptFlag, uint8_t MACLen, uint8_t *
  * \return None
  */
 //*****************************************************************************
-extern uint8_t AES_CTR_EncryptData(uint8_t *plainText, uint16_t textLen,
-                                   uint8_t *aesKey, uint8_t *nonce,
+extern uint8_t AES_CTR_EncryptData(uint8_t *plainText,
+                                   uint16_t textLen,
+                                   uint8_t *aesKey,
+                                   uint8_t *nonce,
                                    uint8_t *initVector);
 
 //*****************************************************************************
@@ -163,8 +179,10 @@ extern uint8_t AES_CTR_EncryptData(uint8_t *plainText, uint16_t textLen,
  * \return None
  */
 //*****************************************************************************
-extern uint8_t AES_CTR_DecryptData(uint8_t *cipherText, uint16_t textLen,
-                                   uint8_t *aesKey, uint8_t *nonce,
+extern uint8_t AES_CTR_DecryptData(uint8_t *cipherText,
+                                   uint16_t textLen,
+                                   uint8_t *aesKey,
+                                   uint8_t *nonce,
                                    uint8_t *initVector);
 
 ////////////////////////////////////* ECC */////////////////////////////////////
@@ -211,11 +229,23 @@ extern uint8_t AES_CTR_DecryptData(uint8_t *cipherText, uint16_t textLen,
 #define ECC_ORDER_MSW_IS_ZERO              0x23
 #define ECC_ECC_KEY_TOO_LONG               0x25
 #define ECC_ECC_KEY_LENGTH_ZERO            0x52
+#define ECC_X_LARGER_THAN_PRIME            0x11
+#define ECC_Y_LARGER_THAN_PRIME            0x12
+#define ECC_X_ZERO                         0x13
+#define ECC_Y_ZERO                         0x14
+#define ECC_POINT_NOT_ON_CURVE             0x15
+#define ECC_POINT_ON_CURVE                 0x16
+#define PRIVATE_KEY_ZERO                   0x17
+#define PRIVATE_KEY_LARGER_EQUAL_ORDER     0x18
+#define ECC_PRIVATE_VALID                  0x19
 #define ECC_DIGEST_TOO_LONG                0x27
 #define ECC_DIGEST_LENGTH_ZERO             0x72
 #define ECC_ECDSA_SIGN_OK                  0x32
 #define ECC_ECDSA_INVALID_SIGNATURE        0x5A
 #define ECC_ECDSA_VALID_SIGNATURE          0xA5
+#define ECC_ECDSA_RAND_STRING_INVALID      0x88
+#define ECC_ECDSA_S1_INVALID               0x89
+#define ECC_ECDSA_S2_INVALID               0x90
 #define ECC_SIG_P1_TOO_LONG                0x11
 #define ECC_SIG_P1_LENGTH_ZERO             0x12
 #define ECC_SIG_P2_TOO_LONG                0x22
@@ -231,6 +261,8 @@ extern uint8_t AES_CTR_DecryptData(uint8_t *cipherText, uint16_t textLen,
  *
  * This function can be called again to point the ECC workzone at
  * a different memory buffer.
+ * This function will always initialize ECC workzone with NIST P-256 curve parameters
+ * Thus, ECC ROM only supports NIST P-256
  *
  * \param pWorkzone Pointer to memory allocated for computations, input.
  *                  See description at beginning of ECC section for
@@ -243,7 +275,13 @@ extern uint8_t AES_CTR_DecryptData(uint8_t *cipherText, uint16_t textLen,
 
 //*****************************************************************************
  /*!
- * \brief Generate a key.
+ * \brief Generate a public key from a private key,
+ * after validating the private key.
+ *
+ * Private key validation includes checking if the key is between [1, n-1],
+ * n is the order of the curve.
+ * As described in NIST SP 800-56A Rev. 3: Recommendation for Pair-Wise
+ * Key-Establishment Schemes Using Discrete Logarithm Cryptography
  *
  * This is used for both ECDH and ECDSA.
  *
@@ -255,12 +293,37 @@ extern uint8_t AES_CTR_DecryptData(uint8_t *cipherText, uint16_t textLen,
  * \return Status
  */
 //*****************************************************************************
-extern uint8_t ECC_generateKey(uint32_t *randString, uint32_t *privateKey,
-                               uint32_t *publicKey_x, uint32_t *publicKey_y);
+extern uint8_t ECC_generateKey(uint32_t *randString,
+                               uint32_t *privateKey,
+                               uint32_t *publicKey_x,
+                               uint32_t *publicKey_y);
+
+//*****************************************************************************
+ /*!
+ * \brief Generate a public key from a private key,
+ * without validating private key.
+ *
+ * This is used for both ECDH and ECDSA.
+ *
+ * \param randString  Pointer to random string, input.
+ * \param privateKey  Pointer to the private key, output.
+ * \param publicKey_x Pointer to public key X-coordinate, output.
+ * \param publicKey_y Pointer to public key Y-coordinate, output.
+ *
+ * \return Status
+ */
+//*****************************************************************************
+extern uint8_t ECC_generateKeyWithoutValidation(uint32_t *randString,
+                                                uint32_t *privateKey,
+                                                uint32_t *publicKey_x,
+                                                uint32_t *publicKey_y);
 
 //*****************************************************************************
 /*!
- * \brief Sign data.
+ * \brief Sign data after validating rand string input.
+ * Validating rand string input includes checking if it is between [1, n-1],
+ * where n is the order of the curve.
+ * As described in FIPS PUB 186-5 (Draft): Digital Signature Standard
  *
  * \param secretKey  Pointer to the secret key, input.
  * \param text       Pointer to the message, input.
@@ -271,12 +334,21 @@ extern uint8_t ECC_generateKey(uint32_t *randString, uint32_t *privateKey,
  * \return Status
  */
 //*****************************************************************************
-extern uint8_t ECC_ECDSA_sign(uint32_t *secretKey, uint32_t *text, uint32_t *randString,
-                              uint32_t *sign1, uint32_t *sign2);
+extern uint8_t ECC_ECDSA_sign(uint32_t *secretKey,
+                              uint32_t *text,
+                              uint32_t *randString,
+                              uint32_t *sign1,
+                              uint32_t *sign2);
 
 //*****************************************************************************
 /*!
- * \brief Verify signature.
+ * \brief Verify signature after validating public key and signature components.
+ * Partial public key validation includes checking if key coordinates are between
+ * [1, n-1], n is the order of the curve, and verifying that public key
+ * is a point on the curve.
+ * Signature components, sign1 and sig2, validation includes checking if they
+ * are between [1, n-1], where n is the order of the curve.
+ * As described in FIPS PUB 186-5 (Draft): Digital Signature Standard
  *
  * \param publicKey_x Pointer to public key X-coordinate, input.
  * \param publicKey_y Pointer to public key Y-coordinate, input.
@@ -287,12 +359,62 @@ extern uint8_t ECC_ECDSA_sign(uint32_t *secretKey, uint32_t *text, uint32_t *ran
  * \return Status
  */
 //*****************************************************************************
-extern uint8_t ECC_ECDSA_verify(uint32_t *publicKey_x, uint32_t *publicKey_y,
-                                uint32_t *text, uint32_t *sign1, uint32_t *sign2);
+extern uint8_t ECC_ECDSA_verify(uint32_t *publicKey_x,
+                                uint32_t *publicKey_y,
+                                uint32_t *text,
+                                uint32_t *sign1,
+                                uint32_t *sign2);
 
 //*****************************************************************************
 /*!
- * \brief Compute the shared secret.
+ * \brief Sign data without validating rand string input.
+ *
+ * \param secretKey  Pointer to the secret key, input.
+ * \param text       Pointer to the message, input.
+ * \param randString Pointer to random string, input.
+ * \param sign1      Pointer to signature part 1, output.
+ * \param sign2      Pointer to signature part 2, output.
+ *
+ * \return Status
+ */
+//*****************************************************************************
+extern uint8_t ECC_ECDSA_signWithoutValidation(uint32_t *secretKey,
+                                               uint32_t *text,
+                                               uint32_t *randString,
+                                               uint32_t *sign1,
+                                               uint32_t *sign2);
+
+//*****************************************************************************
+/*!
+ * \brief Verify signature without validating public key and signature components
+ *
+ * \param publicKey_x Pointer to public key X-coordinate, input.
+ * \param publicKey_y Pointer to public key Y-coordinate, input.
+ * \param text        Pointer to message data, input.
+ * \param sign1       Pointer to signature part 1, input.
+ * \param sign2       Pointer to signature part 2, input.
+ *
+ * \return Status
+ */
+//*****************************************************************************
+extern uint8_t ECC_ECDSA_verifyWithoutValidation(uint32_t *publicKey_x,
+                                                 uint32_t *publicKey_y,
+                                                 uint32_t *text,
+                                                 uint32_t *sign1,
+                                                 uint32_t *sign2);
+
+//*****************************************************************************
+/*!
+ * \brief Compute the shared secret after partially validating public key.
+ *
+ * Partial public key validation includes checking of key coordinates is in
+ * [1, n-1], n is order of the curve, and verifying that public key
+ * is a point on the curve.
+ * For NIST P-256, partial public key validation is equivalent to full public
+ * key validation as its cofactor(h) is 1.
+ *
+ * As described in NIST SP 800-56A Rev. 3: Recommendation for Pair-Wise
+ * Key-Establishment Schemes Using Discrete Logarithm Cryptography
  *
  * \param privateKey     Pointer to private key, input.
  * \param publicKey_x    Pointer to public key X-coordinate, input.
@@ -309,6 +431,24 @@ extern uint8_t ECC_ECDH_computeSharedSecret(uint32_t *privateKey,
                                             uint32_t *sharedSecret_x,
                                             uint32_t *sharedSecret_y);
 
+//*****************************************************************************
+/*!
+ * \brief Compute the shared secret without validating public key.
+ *
+ * \param privateKey     Pointer to private key, input.
+ * \param publicKey_x    Pointer to public key X-coordinate, input.
+ * \param publicKey_y    Pointer to public key Y-coordinate, input.
+ * \param sharedSecret_x Pointer to shared secret X-coordinate, output.
+ * \param sharedSecret_y Pointer to shared secret Y-coordinate, output.
+ *
+ * \return Status
+ */
+//*****************************************************************************
+extern uint8_t ECC_ECDH_computeSharedSecretWithoutValidation(uint32_t *privateKey,
+                                                             uint32_t *publicKey_x,
+                                                             uint32_t *publicKey_y,
+                                                             uint32_t *sharedSecret_x,
+                                                             uint32_t *sharedSecret_y);
 
 ///////////////////////////////////* SHA-256 *//////////////////////////////////
 
@@ -337,8 +477,10 @@ typedef struct
  * \return Status
  */
 //*****************************************************************************
-extern uint8_t SHA256_runFullAlgorithm(SHA256_memory_t *memory, uint8_t *pBufIn,
-                                       uint32_t bufLen, uint8_t *pBufOut);
+extern uint8_t SHA256_runFullAlgorithm(SHA256_memory_t *memory,
+                                       uint8_t *pBufIn,
+                                       uint32_t bufLen,
+                                       uint8_t *pBufOut);
 
 //*****************************************************************************
 /*!
@@ -367,8 +509,7 @@ extern uint8_t SHA256_initialize(SHA256_memory_t *workZone);
  * \return Status
  */
 //*****************************************************************************
-extern uint8_t SHA256_execute(SHA256_memory_t *config, uint8_t *pBufIn,
-                              uint32_t bufLen);
+extern uint8_t SHA256_execute(SHA256_memory_t *config, uint8_t *pBufIn, uint32_t bufLen);
 
 //*****************************************************************************
 /*!

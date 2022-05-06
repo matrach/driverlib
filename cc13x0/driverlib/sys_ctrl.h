@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       sys_ctrl.h
-*  Revised:        2018-09-17 14:58:51 +0200 (Mon, 17 Sep 2018)
-*  Revision:       52634
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the System Controller.
 *

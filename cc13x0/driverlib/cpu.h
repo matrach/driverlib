@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       cpu.h
-*  Revised:        2018-06-04 16:10:13 +0200 (Mon, 04 Jun 2018)
-*  Revision:       52111
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the CPU instruction wrapper
 *                  functions.

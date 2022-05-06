@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       pwr_ctrl.c
-*  Revised:        2017-06-05 12:13:49 +0200 (Mon, 05 Jun 2017)
-*  Revision:       49096
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Power Control driver.
 *

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       prcm.h
-*  Revised:        2018-10-23 10:19:14 +0200 (Tue, 23 Oct 2018)
-*  Revision:       52979
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the PRCM
 *

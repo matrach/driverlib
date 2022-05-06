@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       aux_adc.h
-*  Revised:        2018-02-07 09:45:39 +0100 (Wed, 07 Feb 2018)
-*  Revision:       51437
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the AUX Analog-to-Digital
 *                  Converter

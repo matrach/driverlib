@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       event.c
-*  Revised:        2016-09-19 10:36:17 +0200 (Mon, 19 Sep 2016)
-*  Revision:       47179
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for the Event Fabric.
 *

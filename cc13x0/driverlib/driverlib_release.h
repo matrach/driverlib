@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       driverlib_release.h
-*  Revised:        $Date: 2015-07-16 12:12:04 +0200 (Thu, 16 Jul 2015) $
-*  Revision:       $Revision: 44151 $
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Provides macros for ensuring that a specfic release of
 *                  DriverLib is used.
@@ -63,7 +63,7 @@ extern "C"
 /// DriverLib release group number
 #define DRIVERLIB_RELEASE_GROUP   0
 /// DriverLib release build number
-#define DRIVERLIB_RELEASE_BUILD   60062
+#define DRIVERLIB_RELEASE_BUILD   3_05_20_00001
 
 
 
@@ -83,7 +83,7 @@ extern "C"
     const volatile uint8_t driverlib_release_##group##_##build
 
 /// External declaration of the DriverLib release locking object
-extern DRIVERLIB_DECLARE_RELEASE(0, 60062);
+extern DRIVERLIB_DECLARE_RELEASE(0, 3_05_20_00001);
 
 
 
@@ -135,7 +135,7 @@ extern DRIVERLIB_DECLARE_RELEASE(0, 60062);
 //
 //*****************************************************************************
 #define DRIVERLIB_ASSERT_CURR_RELEASE() \
-    DRIVERLIB_ASSERT_RELEASE(0, 60062)
+    DRIVERLIB_ASSERT_RELEASE(0, 3_05_20_00001)
 
 
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_aux_tdc_h
-*  Revised:        2017-05-16 19:35:21 +0200 (Tue, 16 May 2017)
-*  Revision:       49005
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 * Copyright (c) 2015 - 2017, Texas Instruments Incorporated
 * All rights reserved.

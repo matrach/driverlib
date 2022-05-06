@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       interrupt.c
-*  Revised:        2017-05-19 11:31:39 +0200 (Fri, 19 May 2017)
-*  Revision:       49017
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Driver for the NVIC Interrupt Controller.
 *

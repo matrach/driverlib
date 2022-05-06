@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       pwr_ctrl.h
-*  Revised:        2017-11-02 15:41:14 +0100 (Thu, 02 Nov 2017)
-*  Revision:       50165
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Defines and prototypes for the System Power Control.
 *

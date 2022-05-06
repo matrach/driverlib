@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       hw_types.h
-*  Revised:        2016-09-13 14:21:40 +0200 (Tue, 13 Sep 2016)
-*  Revision:       47152
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Common types and macros.
 *

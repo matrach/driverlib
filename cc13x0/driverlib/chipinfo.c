@@ -1,7 +1,7 @@
 /******************************************************************************
 *  Filename:       chipinfo.c
-*  Revised:        2018-08-17 09:28:06 +0200 (Fri, 17 Aug 2018)
-*  Revision:       52354
+*  Revised:        $Date$
+*  Revision:       $Revision$
 *
 *  Description:    Collection of functions returning chip information.
 *
